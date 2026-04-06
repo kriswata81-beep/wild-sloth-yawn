@@ -548,9 +548,10 @@ interface GatePageProps {
   handle: string;
   phone: string;
   onConfirm: () => void;
+  onLogoTap?: () => void;
 }
 
-export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
+export default function GatePage({ handle, phone, onConfirm, onLogoTap }: GatePageProps) {
   const { days, hours, minutes } = useCountdown();
   const [activeNav, setActiveNav] = useState("Home");
   const [sheet, setSheet] = useState<"alii" | "mana" | "nakoa" | null>(null);
@@ -598,7 +599,7 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 16px", height: 48,
       }}>
-        <span className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1rem", letterSpacing: "0.04em" }}>
+        <span className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1rem", letterSpacing: "0.04em", cursor: "pointer" }} onClick={onLogoTap}>
           Mākoa
         </span>
         <div style={{ display: "flex", gap: 2 }}>

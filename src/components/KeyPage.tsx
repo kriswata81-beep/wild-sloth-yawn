@@ -8,9 +8,10 @@ interface KeyPageProps {
   onHandleChange: (v: string) => void;
   onPhoneChange: (v: string) => void;
   onEnter: () => void;
+  onLogoTap?: () => void;
 }
 
-export default function KeyPage({ handle, phone, onHandleChange, onPhoneChange, onEnter }: KeyPageProps) {
+export default function KeyPage({ handle, phone, onHandleChange, onPhoneChange, onEnter, onLogoTap }: KeyPageProps) {
   return (
     <div
       style={{
@@ -39,7 +40,7 @@ export default function KeyPage({ handle, phone, onHandleChange, onPhoneChange, 
       />
 
       {/* Crest */}
-      <div className="anim-fade-in" style={{ marginBottom: 32, zIndex: 1 }}>
+      <div className="anim-fade-in" style={{ marginBottom: 32, zIndex: 1 }} onClick={onLogoTap}>
         <MakoaCrest />
       </div>
 
