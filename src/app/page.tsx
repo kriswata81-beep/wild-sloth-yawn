@@ -335,6 +335,24 @@ function GatePage({ handle, onConfirm }: { handle: string; onConfirm: () => void
         </div>
       </div>
 
+      {/* (1) Declaration section */}
+      <div style={{
+        padding: "28px 24px",
+        textAlign: "center",
+        borderBottom: "1px solid rgba(255,255,255,0.05)",
+      }}>
+        <p style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontStyle: "italic",
+          fontSize: "1rem",
+          color: "rgba(232,224,208,0.75)",
+          lineHeight: 2.2,
+          margin: 0,
+        }}>
+          This is not a club. This is not a program. This is an order — under the Malu Trust — building something that will outlast every man in it. Entrance is earned. Not purchased. The 72 is where brothers are sworn in. The oath is the only authority here.
+        </p>
+      </div>
+
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "0 16px" }}>
 
         {/* Three cards */}
@@ -379,6 +397,66 @@ function GatePage({ handle, onConfirm }: { handle: string; onConfirm: () => void
             War Room · Mastermind · Elite Training · Founding Circle.<br />
             The only event where new brothers are elevated and sworn in.
           </p>
+
+          {/* (2) Experience lines */}
+          <div style={{
+            borderLeft: "2px solid rgba(176,142,80,0.5)",
+            paddingLeft: 14,
+            marginBottom: 18,
+          }}>
+            {[
+              "4am ice bath as the Flower Moon sets over the Pacific.",
+              "72 hours of war room and reset.",
+              "Brothers sworn in at the founding fire.",
+              "The only event where elevation happens.",
+            ].map(line => (
+              <p key={line} style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontStyle: "italic",
+                color: "rgba(232,224,208,0.7)",
+                fontSize: "0.95rem",
+                lineHeight: 2.2,
+                margin: 0,
+              }}>{line}</p>
+            ))}
+          </div>
+
+          {/* (3) Three pack cards */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 20 }}>
+            {/* Aliʻi */}
+            <div style={{
+              border: "1px solid rgba(176,142,80,0.4)", borderRadius: 8,
+              padding: "12px 8px", background: "rgba(176,142,80,0.04)",
+            }}>
+              <p style={{ color: GOLD, fontSize: "0.6rem", marginBottom: 8, textAlign: "center" }}>👑 Aliʻi</p>
+              {["Boardroom", "72hr War Room", "Embassy Suites", "Ice bath 4am", "Founding gear", "Council seat"].map(i => (
+                <p key={i} style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.4rem", lineHeight: 1.8, textAlign: "center" }}>{i}</p>
+              ))}
+              <p style={{ color: "#e05c5c", fontSize: "0.4rem", textAlign: "center", marginTop: 6, fontWeight: 600 }}>12 seats open</p>
+            </div>
+            {/* Mana */}
+            <div style={{
+              border: "1px solid rgba(88,166,255,0.3)", borderRadius: 8,
+              padding: "12px 8px", background: "rgba(88,166,255,0.03)",
+            }}>
+              <p style={{ color: BLUE, fontSize: "0.6rem", marginBottom: 8, textAlign: "center" }}>🌀 Mana</p>
+              {["Mastermind", "72hr reset", "Hampton Inn", "Ice bath 4am", "Brotherhood", "Sworn in"].map(i => (
+                <p key={i} style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.4rem", lineHeight: 1.8, textAlign: "center" }}>{i}</p>
+              ))}
+              <p style={{ color: "#f0883e", fontSize: "0.4rem", textAlign: "center", marginTop: 6, fontWeight: 600 }}>20 seats open</p>
+            </div>
+            {/* Nā Koa */}
+            <div style={{
+              border: "1px solid rgba(63,185,80,0.3)", borderRadius: 8,
+              padding: "12px 8px", background: "rgba(63,185,80,0.03)",
+            }}>
+              <p style={{ color: GREEN, fontSize: "0.6rem", marginBottom: 8, textAlign: "center" }}>⚔ Nā Koa</p>
+              {["2-day pass", "4am Sat+Sun", "Ice bath free", "Beach training", "Full moon"].map(i => (
+                <p key={i} style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.4rem", lineHeight: 1.8, textAlign: "center" }}>{i}</p>
+              ))}
+              <p style={{ color: GREEN, fontSize: "0.4rem", textAlign: "center", marginTop: 6, fontWeight: 600 }}>Open · $49.99</p>
+            </div>
+          </div>
 
           {/* Countdown */}
           <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
@@ -501,7 +579,7 @@ function GatePage({ handle, onConfirm }: { handle: string; onConfirm: () => void
             Follow the 72 — updates drop on Telegram
           </p>
           <a
-            href="https://t.me/makoa_order"
+            href="https://t.me/+dsS4Mz0p5wM4OGYx"
             target="_blank"
             rel="noopener noreferrer"
             style={{
