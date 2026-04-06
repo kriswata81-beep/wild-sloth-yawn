@@ -138,22 +138,16 @@ function TierCard({ label, sub, color, onClick }: { label: string; sub: string; 
     <button
       onClick={onClick}
       style={{
-        flex: 1, background: CARD_BG, border: `1px solid ${color}33`,
-        borderRadius: 10, padding: "18px 8px", cursor: "pointer",
-        display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
-        transition: "border-color 0.2s, background 0.2s",
+        flex: 1, background: "#080c10", border: "0.5px solid #141820",
+        borderRadius: 6, padding: "12px 6px", cursor: "pointer",
+        display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+        transition: "border-color 0.2s",
       }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.borderColor = color + "88";
-        (e.currentTarget as HTMLButtonElement).style.background = color + "08";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.borderColor = color + "33";
-        (e.currentTarget as HTMLButtonElement).style.background = CARD_BG;
-      }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = color + "50"; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#141820"; }}
     >
-      <span style={{ color, fontSize: "0.65rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", textTransform: "uppercase" }}>{label}</span>
-      <span style={{ color: color + "77", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", textAlign: "center", lineHeight: 1.4, whiteSpace: "pre-line" }}>{sub}</span>
+      <span className="font-cormorant" style={{ fontStyle: "italic", fontSize: "1rem", color, marginBottom: 2 }}>{label}</span>
+      <span style={{ color: color + "60", fontSize: "0.46rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.1em" }}>{sub} →</span>
     </button>
   );
 }
@@ -162,32 +156,21 @@ function TierCard({ label, sub, color, onClick }: { label: string; sub: string; 
 function AliiContent({ onClose, onPledge }: { onClose: () => void; onPledge: () => void }) {
   return (
     <div>
-      <p style={{ color: GOLD, fontSize: "0.6rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 10px" }}>Aliʻi · Network to Network</p>
-      <h2 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.6rem", margin: "0 0 16px", lineHeight: 1.2 }}>
-        You already lead. This is the room that matches you.
-      </h2>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
-        <div>
-          <p style={{ color: GOLD_DIM, fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", textTransform: "uppercase", margin: "0 0 8px" }}>You bring</p>
-          {["Leadership and vision", "B2B access and referrals", "Presence at the founding council"].map((item) => (
-            <p key={item} style={{ color: GOLD, fontSize: "0.68rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 6px", lineHeight: 1.5 }}>· {item}</p>
-          ))}
-        </div>
-        <div>
-          <p style={{ color: GOLD_DIM, fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", textTransform: "uppercase", margin: "0 0 8px" }}>You get</p>
-          {["12-man founding council seat", "Zello 808 Command access", "Net-to-net B2B referral pool", "Aliʻi gear at every 72"].map((item) => (
-            <p key={item} style={{ color: GOLD, fontSize: "0.68rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 6px", lineHeight: 1.5 }}>· {item}</p>
-          ))}
-        </div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+        <div style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: GOLD, fontFamily: "var(--font-jetbrains)" }}>Aliʻi · Network to Network</div>
+        <button onClick={onClose} style={{ background: "none", border: "none", color: "#4a4a4a", cursor: "pointer", fontSize: 14 }}>✕</button>
       </div>
-      <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", lineHeight: 1.7, margin: "0 0 18px" }}>
-        Aliʻi applicants must have achieved distinction in their professional field — business, law, medicine, military, government, or philanthropy — and be recognized as a leader in their community.
-      </p>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <button onClick={onPledge} style={{ width: "100%", background: GOLD, color: "#000", border: "none", fontFamily: "var(--font-jetbrains)", fontSize: "0.7rem", letterSpacing: "0.2em", padding: "14px", cursor: "pointer", borderRadius: 6, textTransform: "uppercase", fontWeight: 700 }}>
-          PLEDGE MY SEAT — ALIĪ
+      <div className="font-cormorant" style={{ fontStyle: "italic", fontWeight: 300, fontSize: "1.15rem", color: "#ede8e0", lineHeight: 1.5, marginBottom: 14, whiteSpace: "pre-line" }}>
+        {"You already lead.\nThis is the room that matches you."}
+      </div>
+      <div style={{ fontSize: "0.62rem", color: "#6a7080", lineHeight: 2, whiteSpace: "pre-line", marginBottom: 16, fontFamily: "var(--font-jetbrains)" }}>
+        {"You bring your network, your word, and your B2B access.\nYou get 11 men who run at your level — and a seat that no money alone can buy.\n\nAliʻi are selected by the council.\nYour application opens when a seat does."}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <button onClick={onPledge} style={{ width: "100%", background: GOLD, border: "none", color: "#000", padding: "11px", borderRadius: 4, fontFamily: "var(--font-jetbrains)", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer" }}>
+          This is my level
         </button>
-        <button onClick={onClose} style={{ width: "100%", background: "transparent", color: GOLD_DIM, border: "1px solid rgba(176,142,80,0.2)", fontFamily: "var(--font-jetbrains)", fontSize: "0.62rem", letterSpacing: "0.1em", padding: "10px", cursor: "pointer", borderRadius: 6 }}>
+        <button onClick={onClose} style={{ width: "100%", background: "transparent", color: GOLD_DIM, border: "1px solid rgba(176,142,80,0.2)", fontFamily: "var(--font-jetbrains)", fontSize: "0.58rem", letterSpacing: "0.1em", padding: "9px", cursor: "pointer", borderRadius: 4 }}>
           Not my level
         </button>
       </div>
@@ -198,32 +181,21 @@ function AliiContent({ onClose, onPledge }: { onClose: () => void; onPledge: () 
 function ManaContent({ onClose, onPledge }: { onClose: () => void; onPledge: () => void }) {
   return (
     <div>
-      <p style={{ color: BLUE, fontSize: "0.6rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 10px" }}>Mana · Build · B2B</p>
-      <h2 className="font-cormorant" style={{ fontStyle: "italic", color: BLUE, fontSize: "1.6rem", margin: "0 0 16px", lineHeight: 1.2 }}>
-        You have the skills. This is the network that needs them.
-      </h2>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
-        <div>
-          <p style={{ color: BLUE + "88", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", textTransform: "uppercase", margin: "0 0 8px" }}>You bring</p>
-          {["Trade and craft", "Ability to teach", "B2B services"].map((item) => (
-            <p key={item} style={{ color: BLUE, fontSize: "0.68rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 6px", lineHeight: 1.5 }}>· {item}</p>
-          ))}
-        </div>
-        <div>
-          <p style={{ color: BLUE + "88", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", textTransform: "uppercase", margin: "0 0 8px" }}>You get</p>
-          {["Brotherhood council seat", "Wednesday school and job queue", "Aliʻi War Room with 5k stone", "72 Mastermind"].map((item) => (
-            <p key={item} style={{ color: BLUE, fontSize: "0.68rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 6px", lineHeight: 1.5 }}>· {item}</p>
-          ))}
-        </div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+        <div style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: BLUE, fontFamily: "var(--font-jetbrains)" }}>Mana · Build · B2B + B2C</div>
+        <button onClick={onClose} style={{ background: "none", border: "none", color: "#4a4a4a", cursor: "pointer", fontSize: 14 }}>✕</button>
       </div>
-      <p style={{ color: "rgba(88,166,255,0.4)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", lineHeight: 1.7, margin: "0 0 18px" }}>
-        Mana brothers bring their trade, craft, or professional service to the network. Every chapter house is committed to serve its region — and Mana is the engine that makes that possible.
-      </p>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <button onClick={onPledge} style={{ width: "100%", background: BLUE, color: "#000", border: "none", fontFamily: "var(--font-jetbrains)", fontSize: "0.7rem", letterSpacing: "0.2em", padding: "14px", cursor: "pointer", borderRadius: 6, textTransform: "uppercase", fontWeight: 700 }}>
-          PLEDGE MY SEAT — MANA
+      <div className="font-cormorant" style={{ fontStyle: "italic", fontWeight: 300, fontSize: "1.15rem", color: "#ede8e0", lineHeight: 1.5, marginBottom: 14, whiteSpace: "pre-line" }}>
+        {"You have the skill.\nThis is the network that needs it."}
+      </div>
+      <div style={{ fontSize: "0.62rem", color: "#6a7080", lineHeight: 2, whiteSpace: "pre-line", marginBottom: 16, fontFamily: "var(--font-jetbrains)" }}>
+        {"You bring your trade, your craft, your ability to teach.\nYou get the Wednesday school, the job queue, the B2B pipeline — and brothers who show up when the job calls.\n\nMana run the services.\nMana teach the army.\nMana build the order from the inside."}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <button onClick={onPledge} style={{ width: "100%", background: BLUE, border: "none", color: "#000", padding: "11px", borderRadius: 4, fontFamily: "var(--font-jetbrains)", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer" }}>
+          This is my level
         </button>
-        <button onClick={onClose} style={{ width: "100%", background: "transparent", color: BLUE + "66", border: `1px solid ${BLUE}22`, fontFamily: "var(--font-jetbrains)", fontSize: "0.62rem", letterSpacing: "0.1em", padding: "10px", cursor: "pointer", borderRadius: 6 }}>
+        <button onClick={onClose} style={{ width: "100%", background: "transparent", color: BLUE + "66", border: `1px solid ${BLUE}22`, fontFamily: "var(--font-jetbrains)", fontSize: "0.58rem", letterSpacing: "0.1em", padding: "9px", cursor: "pointer", borderRadius: 4 }}>
           Not my level
         </button>
       </div>
@@ -234,32 +206,21 @@ function ManaContent({ onClose, onPledge }: { onClose: () => void; onPledge: () 
 function NaKoaContent({ onClose, onPledge }: { onClose: () => void; onPledge: () => void }) {
   return (
     <div>
-      <p style={{ color: GREEN, fontSize: "0.6rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 10px" }}>Nā Koa · Serve</p>
-      <h2 className="font-cormorant" style={{ fontStyle: "italic", color: GREEN, fontSize: "1.6rem", margin: "0 0 16px", lineHeight: 1.2 }}>
-        You are ready to build something worth belonging to.
-      </h2>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
-        <div>
-          <p style={{ color: GREEN + "88", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", textTransform: "uppercase", margin: "0 0 8px" }}>You bring</p>
-          {["Time and hustle", "Community presence", "Hunger to grow"].map((item) => (
-            <p key={item} style={{ color: GREEN, fontSize: "0.68rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 6px", lineHeight: 1.5 }}>· {item}</p>
-          ))}
-        </div>
-        <div>
-          <p style={{ color: GREEN + "88", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", textTransform: "uppercase", margin: "0 0 8px" }}>You get</p>
-          {["Free 4am elite training", "Ice and sauna per cluster", "808 911 and 411 peer channels", "Service route income — 80%"].map((item) => (
-            <p key={item} style={{ color: GREEN, fontSize: "0.68rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 6px", lineHeight: 1.5 }}>· {item}</p>
-          ))}
-        </div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+        <div style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: GREEN, fontFamily: "var(--font-jetbrains)" }}>Nā Koa · Serve · Peer 2 Peer</div>
+        <button onClick={onClose} style={{ background: "none", border: "none", color: "#4a4a4a", cursor: "pointer", fontSize: 14 }}>✕</button>
       </div>
-      <p style={{ color: "rgba(63,185,80,0.4)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", lineHeight: 1.7, margin: "0 0 18px" }}>
-        Nā Koa applicants must be 18+, in good community standing, with a record of hands-on volunteer service. Entry is open to all men of faith and good character. Service to all comes first.
-      </p>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <button onClick={onPledge} style={{ width: "100%", background: GREEN, color: "#000", border: "none", fontFamily: "var(--font-jetbrains)", fontSize: "0.7rem", letterSpacing: "0.2em", padding: "14px", cursor: "pointer", borderRadius: 6, textTransform: "uppercase", fontWeight: 700 }}>
-          PLEDGE MY SEAT — NĀ KOA
+      <div className="font-cormorant" style={{ fontStyle: "italic", fontWeight: 300, fontSize: "1.15rem", color: "#ede8e0", lineHeight: 1.5, marginBottom: 14 }}>
+        You are ready to earn your place.
+      </div>
+      <div style={{ fontSize: "0.62rem", color: "#6a7080", lineHeight: 2, whiteSpace: "pre-line", marginBottom: 16, fontFamily: "var(--font-jetbrains)" }}>
+        {"You bring your time, your community, and your willingness to show up at 4am when most men are still asleep.\nYou get the training, the service routes, the 808 network — and a clear path to Mana when the seat opens.\n\nEvery Aliʻi was once a Nā Koa.\nThe order watches who shows up."}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <button onClick={onPledge} style={{ width: "100%", background: GREEN, border: "none", color: "#000", padding: "11px", borderRadius: 4, fontFamily: "var(--font-jetbrains)", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer" }}>
+          This is my level
         </button>
-        <button onClick={onClose} style={{ width: "100%", background: "transparent", color: GREEN + "66", border: `1px solid ${GREEN}22`, fontFamily: "var(--font-jetbrains)", fontSize: "0.62rem", letterSpacing: "0.1em", padding: "10px", cursor: "pointer", borderRadius: 6 }}>
+        <button onClick={onClose} style={{ width: "100%", background: "transparent", color: GREEN + "66", border: `1px solid ${GREEN}22`, fontFamily: "var(--font-jetbrains)", fontSize: "0.58rem", letterSpacing: "0.1em", padding: "9px", cursor: "pointer", borderRadius: 4 }}>
           Not my level
         </button>
       </div>
@@ -274,26 +235,38 @@ function PledgePopup({ open, onClose, onConfirm }: { open: boolean; onClose: () 
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
         <button onClick={onClose} style={{ background: "none", border: "none", color: GOLD_DIM, cursor: "pointer", fontSize: "1.1rem" }}>✕</button>
       </div>
-      <p style={{ color: PURPLE, fontSize: "0.58rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 12px" }}>
+      <p style={{ color: PURPLE, fontSize: "0.5rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 10px" }}>
         The Pledge · Malu Trust
       </p>
-      <h2 className="font-cormorant" style={{ fontStyle: "italic", color: "#e8e0d0", fontSize: "1.5rem", margin: "0 0 16px", lineHeight: 1.25 }}>
+      <div className="font-cormorant" style={{ fontStyle: "italic", fontSize: "1.05rem", color: "#ede8e0", lineHeight: 1.5, marginBottom: 14 }}>
         Before you stand with the order — understand what you are pledging.
-      </h2>
-      <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.72rem", fontFamily: "var(--font-jetbrains)", lineHeight: 1.8, margin: "0 0 24px" }}>
-        Your $9.99 pledge secures your seat at the May 1 Mākoa 1st Roundup — War Room for Aliʻi, Mastermind for Mana, Elite Training for Nā Koa — or our first 4am Wednesday elite training on April 15. This pledge supports the Order and covers XI daily gate monitoring. Your tier benefits and annual dues unlock within 24 hours via Telegram. If you are not ready, that is honored.
-      </p>
-      <div style={{ background: "rgba(83,74,183,0.1)", border: "1px solid rgba(83,74,183,0.3)", borderRadius: 10, padding: "20px", textAlign: "center", marginBottom: 24 }}>
-        <p style={{ color: PURPLE, fontSize: "2rem", fontFamily: "var(--font-cormorant)", fontWeight: 600, margin: "0 0 6px" }}>$9.99</p>
-        <p style={{ color: "rgba(83,74,183,0.7)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 4px" }}>Processing pledge — no charge today</p>
-        <p style={{ color: "rgba(83,74,183,0.5)", fontSize: "0.58rem", fontFamily: "var(--font-jetbrains)", margin: 0 }}>Confirmed on platform within 24 hours</p>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <button onClick={onConfirm} style={{ width: "100%", background: GOLD, color: "#000", border: "none", fontFamily: "var(--font-jetbrains)", fontSize: "0.7rem", letterSpacing: "0.2em", padding: "14px", cursor: "pointer", borderRadius: 6, textTransform: "uppercase", fontWeight: 700 }}>
-          I AM CALLED
+      <div style={{ fontSize: "0.6rem", color: "#6a7080", lineHeight: 1.9, marginBottom: 16, fontFamily: "var(--font-jetbrains)" }}>
+        Your $9.99 pledge gets you into the May 1 Mākoa 1st Roundup — War Room for Aliʻi, Mastermind for Mana, Elite Training for Nā Koa — OR join our first 4am Wednesday elite training on April 15.
+        <br /><br />
+        This pledge supports the order and covers XI daily gate monitoring. Your full tier benefits and yearly dues unlock within 24 hours via Telegram.
+        <br /><br />
+        The order does not chase men.<br />
+        If you are not called — that is honored.<br />
+        Come back when you are ready.
+      </div>
+      <div style={{ background: "#0a0c14", border: "0.5px solid #21262d", borderRadius: 6, padding: "12px", textAlign: "center", marginBottom: 16 }}>
+        <div style={{ fontSize: "1.3rem", fontWeight: 700, color: PURPLE, fontFamily: "var(--font-cormorant)" }}>$9.99</div>
+        <div style={{ fontSize: "0.5rem", color: "#4a5060", lineHeight: 1.6, marginTop: 3, fontFamily: "var(--font-jetbrains)" }}>
+          Processing pledge — no charge today<br />Confirmed on platform in 24 hours
+        </div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+        <button onClick={onConfirm} style={{ background: GOLD, border: "none", color: "#000", padding: "11px", borderRadius: 4, fontFamily: "var(--font-jetbrains)", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", cursor: "pointer" }}>
+          I am called
         </button>
-        <button onClick={onClose} style={{ width: "100%", background: "transparent", color: GOLD_DIM, border: "1px solid rgba(176,142,80,0.25)", fontFamily: "var(--font-jetbrains)", fontSize: "0.7rem", letterSpacing: "0.15em", padding: "12px", cursor: "pointer", borderRadius: 6, textTransform: "uppercase" }}>
-          NOT TODAY
+        <button
+          onClick={onClose}
+          style={{ background: "transparent", border: "0.5px solid #21262d", color: "#4a5060", padding: "11px", borderRadius: 4, fontFamily: "var(--font-jetbrains)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer" }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#f8514940"; (e.currentTarget as HTMLButtonElement).style.color = "#f85149"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#21262d"; (e.currentTarget as HTMLButtonElement).style.color = "#4a5060"; }}
+        >
+          Not today
         </button>
       </div>
     </CenterOverlay>
@@ -306,15 +279,16 @@ function QOption({ label, selected, onClick }: { label: string; selected: boolea
     <button
       onClick={onClick}
       style={{
-        background: selected ? "rgba(176,142,80,0.08)" : CARD_BG,
-        border: `1px solid ${selected ? GOLD : "rgba(176,142,80,0.18)"}`,
-        color: selected ? GOLD : "rgba(176,142,80,0.45)",
-        fontFamily: "var(--font-jetbrains)", fontSize: "0.68rem", letterSpacing: "0.05em",
-        padding: "11px 14px", borderRadius: 8, cursor: "pointer", textAlign: "left",
-        width: "100%", transition: "all 0.15s",
+        background: selected ? "#0a0e14" : "#080c10",
+        border: `0.5px solid ${selected ? "#b08e5055" : "#141820"}`,
+        borderRadius: 4, padding: "8px 10px", fontSize: "0.58rem",
+        color: selected ? GOLD : "#4a5060",
+        fontFamily: "var(--font-jetbrains)", cursor: "pointer",
+        display: "block", width: "100%", textAlign: "left",
+        marginBottom: 4, transition: "all 0.15s",
       }}
     >
-      {selected && <span style={{ marginRight: 8 }}>✦</span>}{label}
+      → {label}
     </button>
   );
 }
@@ -463,6 +437,18 @@ function OathBlock({ onPledge }: { onPledge: () => void }) {
       >
         I TAKE THE OATH
       </button>
+    </div>
+  );
+}
+
+// ── Countdown Box ──────────────────────────────────────────
+function CountdownBox({ value, label }: { value: number; label: string }) {
+  return (
+    <div style={{ background: "#0a0a00", border: "0.5px solid #1e1a00", borderRadius: 6, padding: "8px 4px", textAlign: "center" }}>
+      <div style={{ fontSize: "1.6rem", fontWeight: 700, color: GOLD, lineHeight: 1, fontFamily: "var(--font-jetbrains)" }}>
+        {String(value).padStart(2, "0")}
+      </div>
+      <div style={{ fontSize: "0.45rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#4a3a10", marginTop: 4, fontFamily: "var(--font-jetbrains)" }}>{label}</div>
     </div>
   );
 }
@@ -674,6 +660,19 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
           </div>
         </div>
 
+        {/* DECLARATION */}
+        <div style={{ padding: "28px 24px 22px", textAlign: "center", borderBottom: "0.5px solid #0d1020" }}>
+          <div className="font-cormorant" style={{ fontStyle: "italic", fontWeight: 300, fontSize: "1rem", color: "rgba(237,232,224,0.52)", lineHeight: 2.2, letterSpacing: "0.02em" }}>
+            This is not a club.<br />
+            This is not a program.<br /><br />
+            This is an order — under the Malu Trust —<br />
+            building something that will outlast every man in it.<br /><br />
+            Entrance is earned. Not purchased.<br />
+            The 72 is where brothers are sworn in.<br />
+            The oath is the only authority here.
+          </div>
+        </div>
+
         <div style={{ padding: "0 16px", maxWidth: 480, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
           {/* TIER CARDS */}
@@ -691,66 +690,100 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
 
           {/* THE 72 BOX */}
           <div style={{
-            marginTop: 28, border: `1px solid ${GOLD_BORDER}`, borderRadius: 12,
-            background: "linear-gradient(135deg, #0a0c10 0%, #030508 100%)",
-            padding: "20px 18px 22px", position: "relative", overflow: "hidden",
+            marginTop: 14, margin: "14px 0 0", background: "linear-gradient(135deg, #0c0900, #06080a)",
+            border: "1px solid #BA7517", borderRadius: 10, padding: 14, position: "relative", overflow: "hidden",
           }}>
             <MoonGlow top={-40} opacity={0.07} />
+            {/* Founding badge */}
             <div style={{
-              position: "absolute", top: 14, right: 14, background: GOLD, color: "#000",
-              fontSize: "0.5rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em",
-              padding: "3px 8px", borderRadius: 3, textTransform: "uppercase", zIndex: 1,
+              position: "absolute", top: -1, right: -1, background: "#BA7517", color: "#000",
+              fontSize: "0.46rem", fontWeight: 700, letterSpacing: "0.14em",
+              padding: "3px 9px", borderRadius: "0 9px 0 6px", textTransform: "uppercase",
+              fontFamily: "var(--font-jetbrains)", zIndex: 1,
             }}>
-              FOUNDING EVENT
+              Founding Event
             </div>
             <div style={{ position: "relative", zIndex: 1 }}>
-              <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 8px" }}>
-                🌕 Flower Moon · May 2026
-              </p>
-              <h2 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.5rem", margin: "0 0 6px", lineHeight: 1.2 }}>
-                Mākoa 1st Roundup
-              </h2>
-              <p style={{ color: "rgba(176,142,80,0.55)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 10px", letterSpacing: "0.08em" }}>
-                May 1–4 · 2026 · Kapolei · West Oahu · Embassy Suites
-              </p>
-              <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.65rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 20px", lineHeight: 1.7 }}>
-                Aliʻi War Room · Mana Mastermind · Elite Reset Training · Founding Circle.<br />
-                The only event where new brothers are elevated and sworn in under the full moon.
-              </p>
-
-              {/* Countdown */}
-              <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: 20 }}>
-                {[{ label: "DAYS", val: days }, { label: "HOURS", val: hours }, { label: "MINUTES", val: minutes }].map(({ label, val }) => (
-                  <div key={label} style={{ flex: 1, background: "rgba(176,142,80,0.04)", border: `1px solid ${GOLD_BORDER}`, borderRadius: 8, padding: "14px 6px", textAlign: "center" }}>
-                    <div style={{ color: GOLD, fontSize: "1.8rem", fontFamily: "var(--font-cormorant)", fontWeight: 600, lineHeight: 1 }}>
-                      {String(val).padStart(2, "0")}
-                    </div>
-                    <div style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.5rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", marginTop: 4 }}>
-                      {label}
-                    </div>
-                  </div>
-                ))}
+              <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 3 }}>
+                <span style={{ fontSize: "0.85rem" }}>🌕</span>
+                <span style={{ fontSize: "0.5rem", color: "rgba(176,142,80,0.4)", letterSpacing: "0.14em", textTransform: "uppercase", fontFamily: "var(--font-jetbrains)" }}>Flower Moon · May 2026</span>
+              </div>
+              <div className="font-cormorant" style={{ fontStyle: "italic", fontSize: "1.15rem", color: GOLD, marginBottom: 2 }}>
+                The 72 — Mākoa 1st Roundup
+              </div>
+              <div style={{ fontSize: "0.52rem", color: "rgba(237,232,224,0.32)", fontFamily: "var(--font-jetbrains)", marginBottom: 12 }}>
+                May 1–4 · Kapolei · West Oahu · Embassy Suites
               </div>
 
-              {/* Seat Bars */}
-              <SeatBar label="Aliʻi" filled={0} total={12} color="#ef4444" />
-              <SeatBar label="Mana" filled={0} total={20} color="#f59e0b" />
-              <SeatBar label="Nā Koa" filled={20} total={20} color={GREEN + "55"} note="Day pass · FREE 4am training" />
+              {/* Left-border quote block */}
+              <div style={{ borderLeft: "2px solid rgba(186,117,23,0.38)", paddingLeft: 10, marginBottom: 14 }}>
+                <div className="font-cormorant" style={{ fontStyle: "italic", fontWeight: 300, fontSize: "0.95rem", color: "rgba(237,232,224,0.5)", lineHeight: 2.1 }}>
+                  4am ice bath under the full moon.<br />
+                  72 hours of war room and reset.<br />
+                  Brothers sworn in at the founding fire.<br />
+                  The only event where elevation happens.
+                </div>
+              </div>
+
+              {/* Three-column tier breakdown */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 5, marginBottom: 12 }}>
+                <div style={{ background: "#0a0800", border: "0.5px solid rgba(186,117,23,0.25)", borderRadius: 6, padding: "8px 6px" }}>
+                  <div style={{ fontSize: "0.52rem", fontWeight: 700, color: GOLD, letterSpacing: "0.08em", marginBottom: 4, textAlign: "center", fontFamily: "var(--font-jetbrains)" }}>👑 Aliʻi</div>
+                  <div style={{ fontSize: "0.46rem", color: "#6a5a30", lineHeight: 1.8, textAlign: "center", fontFamily: "var(--font-jetbrains)" }}>
+                    Boardroom<br />72hr War Room<br />Embassy Suites<br />Ice bath 4am<br />Founding gear<br />Council seat
+                  </div>
+                  <div style={{ marginTop: 6, textAlign: "center" }}>
+                    <span style={{ fontSize: "0.45rem", color: "#f85149", fontFamily: "var(--font-jetbrains)" }}>12 seats open</span>
+                  </div>
+                </div>
+                <div style={{ background: "#080c14", border: "0.5px solid rgba(88,166,255,0.18)", borderRadius: 6, padding: "8px 6px" }}>
+                  <div style={{ fontSize: "0.52rem", fontWeight: 700, color: BLUE, letterSpacing: "0.08em", marginBottom: 4, textAlign: "center", fontFamily: "var(--font-jetbrains)" }}>🌀 Mana</div>
+                  <div style={{ fontSize: "0.46rem", color: "#304a6a", lineHeight: 1.8, textAlign: "center", fontFamily: "var(--font-jetbrains)" }}>
+                    Mastermind<br />72hr reset<br />Hampton Inn<br />Ice bath 4am<br />Brotherhood<br />Sworn in
+                  </div>
+                  <div style={{ marginTop: 6, textAlign: "center" }}>
+                    <span style={{ fontSize: "0.45rem", color: "#f0a030", fontFamily: "var(--font-jetbrains)" }}>20 seats open</span>
+                  </div>
+                </div>
+                <div style={{ background: "#080e0a", border: "0.5px solid rgba(63,185,80,0.18)", borderRadius: 6, padding: "8px 6px" }}>
+                  <div style={{ fontSize: "0.52rem", fontWeight: 700, color: GREEN, letterSpacing: "0.08em", marginBottom: 4, textAlign: "center", fontFamily: "var(--font-jetbrains)" }}>⚔ Nā Koa</div>
+                  <div style={{ fontSize: "0.46rem", color: "#2a4a30", lineHeight: 1.8, textAlign: "center", fontFamily: "var(--font-jetbrains)" }}>
+                    2-day pass<br />4am Saturday<br />4am Sunday<br />Ice bath free<br />Beach training<br />Full moon
+                  </div>
+                  <div style={{ marginTop: 6, textAlign: "center" }}>
+                    <span style={{ fontSize: "0.45rem", color: GREEN, fontFamily: "var(--font-jetbrains)" }}>Open · $49.99</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Countdown */}
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: "0.46rem", letterSpacing: "0.16em", color: "#3a3020", textTransform: "uppercase", textAlign: "center", marginBottom: 6, fontFamily: "var(--font-jetbrains)" }}>
+                  Time until the founding
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+                  <CountdownBox value={days} label="days" />
+                  <CountdownBox value={hours} label="hours" />
+                  <CountdownBox value={minutes} label="minutes" />
+                </div>
+              </div>
 
               <button
                 onClick={openPledge}
                 style={{
-                  width: "100%", background: GOLD, color: "#000", border: "none",
-                  fontFamily: "var(--font-jetbrains)", fontSize: "0.72rem", letterSpacing: "0.2em",
-                  padding: "15px", cursor: "pointer", borderRadius: 8, textTransform: "uppercase",
-                  marginTop: 6, fontWeight: 700,
+                  width: "100%", background: "#BA7517", border: "none", color: "#000",
+                  padding: "11px", borderRadius: 4, fontFamily: "var(--font-jetbrains)",
+                  fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.2em",
+                  textTransform: "uppercase", cursor: "pointer", marginTop: 4, transition: "opacity 0.2s",
                 }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = "0.85"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = "1"; }}
               >
-                PLEDGE YOUR SEAT · MAY 1
+                Pledge Your Seat · May 1
               </button>
-              <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.58rem", fontFamily: "var(--font-jetbrains)", textAlign: "center", margin: "10px 0 0", lineHeight: 1.5 }}>
-                Or join our first 4am Wednesday elite training · April 15
-              </p>
+              <div style={{ fontSize: "0.46rem", color: "rgba(176,142,80,0.28)", textAlign: "center", marginTop: 8, lineHeight: 1.8, fontFamily: "var(--font-jetbrains)" }}>
+                Or join the first 4am Wednesday elite training<br />April 15 · your zip cluster · ice + sauna
+              </div>
             </div>
           </div>
 
