@@ -54,7 +54,7 @@ type House = {
   training_attendance_score: number;
 };
 
-const TABS = ["Members", "Pledges", "Houses", "Events", "Ranks", "Log", "Newsletter"] as const;
+const TABS = ["Members", "Pledges", "Houses", "Events", "Ranks", "Log", "Newsletter", "Compliance", "Revenue"] as const;
 type Tab = typeof TABS[number];
 
 const TIER_COLOR: Record<string, string> = { alii: GOLD, mana: BLUE, nakoa: STEEL };
@@ -396,6 +396,16 @@ export default function AdminPage({ onExit }: AdminPageProps) {
             {/* NEWSLETTER TAB */}
             {tab === "Newsletter" && (
               <NewsletterTab applicants={applicants} />
+            )}
+
+            {/* COMPLIANCE TAB */}
+            {tab === "Compliance" && (
+              <ComplianceTab />
+            )}
+
+            {/* REVENUE TAB */}
+            {tab === "Revenue" && (
+              <RevenueTab applicants={applicants} />
             )}
           </>
         )}
@@ -921,6 +931,564 @@ Wednesday training: Every Wednesday 4am — Ko Olina Beach`;
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+// ─── COMPLIANCE TAB ──────────────────────────────────────────────────────────
+
+type ComplianceStatus = "active" | "pending" | "uploaded" | "missing" | "current" | "expired" | "signed" | "published" | "draft" | "inactive" | "required";
+
+interface SOPItem {
+  id: string;
+  label: string;
+  description: string;
+  statusOptions: [ComplianceStatus, ComplianceStatus];
+  defaultStatus: ComplianceStatus;
+  positiveStatus: ComplianceStatus;
+  note?: string;
+}
+
+const SOP_ITEMS: SOPItem[] = [
+  {
+    id: "ein",
+    label: "EIN Status",
+    description: "Federal Employer Identification Number — required for all financial operations.",
+    statusOptions: ["active", "pending"],
+    defaultStatus: "pending",
+    positiveStatus: "active",
+  },
+  {
+    id: "ge_tax",
+    label: "GE Tax License",
+    description: "Hawaii General Excise Tax license — required before collecting any revenue.",
+    statusOptions: ["uploaded", "missing"],
+    defaultStatus: "missing",
+    positiveStatus: "uploaded",
+  },
+  {
+    id: "event_insurance",
+    label: "Event Insurance",
+    description: "Liability coverage for all gatherings including Ke Ala, Pō Māhina, and Ka Hoʻike.",
+    statusOptions: ["current", "expired"],
+    defaultStatus: "expired",
+    positiveStatus: "current",
+  },
+  {
+    id: "waiver_collection",
+    label: "Waiver Collection",
+    description: "Digital liability waivers collected from all members before participation.",
+    statusOptions: ["active", "inactive"],
+    defaultStatus: "inactive",
+    positiveStatus: "active",
+  },
+  {
+    id: "coop_agreements",
+    label: "Cooperative Membership Agreements",
+    description: "Signed cooperative membership agreements for all active members.",
+    statusOptions: ["signed", "pending"],
+    defaultStatus: "pending",
+    positiveStatus: "signed",
+  },
+  {
+    id: "house_rules",
+    label: "House Rules",
+    description: "Published house rules and code of conduct for all Mākoa members.",
+    statusOptions: ["published", "draft"],
+    defaultStatus: "draft",
+    positiveStatus: "published",
+  },
+  {
+    id: "ice_bath_waiver",
+    label: "Ice Bath Waiver",
+    description: "Required before first Pō Māhina. Digital collection via portal.",
+    statusOptions: ["active", "required"],
+    defaultStatus: "required",
+    positiveStatus: "active",
+    note: "Required before first Pō Māhina — digital collection via member portal",
+  },
+];
+
+const STATUS_DISPLAY: Record<ComplianceStatus, { label: string; color: string; icon: string }> = {
+  active:    { label: "Active",    color: "#3fb950", icon: "✓" },
+  pending:   { label: "Pending",   color: "#d29922", icon: "⏳" },
+  uploaded:  { label: "Uploaded",  color: "#3fb950", icon: "✓" },
+  missing:   { label: "Missing",   color: "#e05c5c", icon: "✗" },
+  current:   { label: "Current",   color: "#3fb950", icon: "✓" },
+  expired:   { label: "Expired",   color: "#e05c5c", icon: "✗" },
+  signed:    { label: "Signed",    color: "#3fb950", icon: "✓" },
+  published: { label: "Published", color: "#3fb950", icon: "✓" },
+  draft:     { label: "Draft",     color: "#d29922", icon: "⏳" },
+  inactive:  { label: "Inactive",  color: "#e05c5c", icon: "✗" },
+  required:  { label: "Required",  color: "#f0883e", icon: "!" },
+};
+
+function ComplianceTab() {
+  const [statuses, setStatuses] = useState<Record<string, ComplianceStatus>>(
+    Object.fromEntries(SOP_ITEMS.map(item => [item.id, item.defaultStatus])) as Record<string, ComplianceStatus>
+  );
+
+  // Mock revenue for GE tax calculation
+  const mockMonthlyRevenue = 24800;
+  const mockQuarterlyRevenue = mockMonthlyRevenue * 3;
+  const geTaxRate = 0.04;
+  const geTaxDue = Math.round(mockQuarterlyRevenue * geTaxRate);
+
+  function toggleStatus(item: SOPItem) {
+    setStatuses(prev => ({
+      ...prev,
+      [item.id]: prev[item.id] === item.positiveStatus ? item.statusOptions[1] : item.positiveStatus,
+    }));
+  }
+
+  const completeCount = SOP_ITEMS.filter(item => statuses[item.id] === item.positiveStatus).length;
+  const totalCount = SOP_ITEMS.length;
+  const compliancePct = Math.round((completeCount / totalCount) * 100);
+
+  return (
+    <div>
+      <style>{`@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+
+      {/* Header */}
+      <div style={{ marginBottom: "24px" }}>
+        <p style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.15em", marginBottom: "8px" }}>
+          LEGAL COMPLIANCE DASHBOARD
+        </p>
+        <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem", lineHeight: 1.7, marginBottom: "16px" }}>
+          Track SOP compliance status. Toggle items as they are completed. All items required before full operations.
+        </p>
+
+        {/* Compliance score */}
+        <div style={{
+          background: GOLD_FAINT,
+          border: `1px solid ${GOLD}20`,
+          borderRadius: "10px",
+          padding: "16px 20px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
+          <div>
+            <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem", letterSpacing: "0.15em", marginBottom: "4px" }}>COMPLIANCE SCORE</p>
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              color: compliancePct === 100 ? "#3fb950" : compliancePct >= 70 ? GOLD : "#e05c5c",
+              fontSize: "1.8rem",
+              lineHeight: 1,
+            }}>{compliancePct}%</p>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ color: "#e8e0d0", fontSize: "0.65rem" }}>{completeCount}/{totalCount}</p>
+            <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.42rem" }}>items complete</p>
+          </div>
+        </div>
+      </div>
+
+      {/* SOP Checklist */}
+      <div style={{
+        border: `1px solid ${GOLD}20`,
+        borderRadius: "10px",
+        overflow: "hidden",
+        marginBottom: "24px",
+      }}>
+        <div style={{ padding: "12px 16px", borderBottom: `1px solid ${GOLD}15`, background: GOLD_FAINT }}>
+          <p style={{ color: GOLD, fontSize: "0.45rem", letterSpacing: "0.2em" }}>SOP CHECKLIST</p>
+        </div>
+        {SOP_ITEMS.map((item, i) => {
+          const currentStatus = statuses[item.id] as ComplianceStatus;
+          const statusInfo = STATUS_DISPLAY[currentStatus];
+          const isPositive = currentStatus === item.positiveStatus;
+
+          return (
+            <div
+              key={item.id}
+              style={{
+                padding: "14px 16px",
+                borderBottom: i < SOP_ITEMS.length - 1 ? `1px solid rgba(176,142,80,0.06)` : "none",
+                background: isPositive ? "rgba(63,185,80,0.03)" : "transparent",
+                transition: "background 0.3s",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                    <div style={{
+                      width: "20px", height: "20px", borderRadius: "50%",
+                      border: `1px solid ${statusInfo.color}50`,
+                      background: `${statusInfo.color}10`,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      flexShrink: 0,
+                    }}>
+                      <span style={{ color: statusInfo.color, fontSize: "0.5rem" }}>{statusInfo.icon}</span>
+                    </div>
+                    <p style={{ color: "#e8e0d0", fontSize: "0.55rem" }}>{item.label}</p>
+                  </div>
+                  <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.45rem", lineHeight: 1.6, paddingLeft: "28px" }}>
+                    {item.description}
+                  </p>
+                  {item.note && (
+                    <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.42rem", paddingLeft: "28px", marginTop: "4px", fontStyle: "italic" }}>
+                      📋 {item.note}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={() => toggleStatus(item)}
+                  style={{
+                    background: isPositive ? `${statusInfo.color}15` : "transparent",
+                    border: `1px solid ${statusInfo.color}40`,
+                    color: statusInfo.color,
+                    fontSize: "0.42rem",
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    borderRadius: "4px",
+                    fontFamily: "'JetBrains Mono', monospace",
+                    letterSpacing: "0.08em",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {statusInfo.label}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* GE Tax Reminder */}
+      <div style={{
+        background: "rgba(176,142,80,0.05)",
+        border: `1px solid ${GOLD}25`,
+        borderRadius: "10px",
+        padding: "18px 20px",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "14px" }}>
+          <span style={{ color: GOLD, fontSize: "0.9rem" }}>📊</span>
+          <p style={{ color: GOLD, fontSize: "0.48rem", letterSpacing: "0.15em" }}>GE TAX REMINDER</p>
+        </div>
+        <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.48rem", lineHeight: 1.7, marginBottom: "16px" }}>
+          4% of all service revenue is flagged quarterly for Hawaii General Excise Tax. File with DOTAX by the 20th of the month following each quarter.
+        </p>
+        <div style={{ display: "grid", gap: "8px" }}>
+          {[
+            { label: "Mock Monthly Revenue", value: `$${mockMonthlyRevenue.toLocaleString()}`, color: "#e8e0d0" },
+            { label: "Quarterly Revenue (×3)", value: `$${mockQuarterlyRevenue.toLocaleString()}`, color: "#e8e0d0" },
+            { label: "GE Tax Rate", value: "4.00%", color: GOLD },
+            { label: "Quarterly GE Tax Due", value: `$${geTaxDue.toLocaleString()}`, color: "#f0883e" },
+          ].map(row => (
+            <div key={row.label} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid ${GOLD}08` }}>
+              <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem" }}>{row.label}</span>
+              <span style={{ color: row.color, fontSize: "0.52rem", fontFamily: "'JetBrains Mono', monospace" }}>{row.value}</span>
+            </div>
+          ))}
+        </div>
+        <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.42rem", marginTop: "12px", lineHeight: 1.6 }}>
+          ⚠ This is a mock estimate. Connect your actual revenue data for accurate calculations. Consult a Hawaii CPA for GE tax filing.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── REVENUE TAB ─────────────────────────────────────────────────────────────
+
+const PURPLE = "#534AB7";
+
+function RevenueTab({ applicants }: { applicants: Applicant[] }) {
+  // Mock plan data
+  const MOCK_PLANS = {
+    alii: { count: 2, mrr: 9999 * 2 },
+    kamaaina: { count: 5, mrr: 4999 * 5 },
+  };
+
+  const totalMRR = MOCK_PLANS.alii.mrr + MOCK_PLANS.kamaaina.mrr;
+  const totalPlans = MOCK_PLANS.alii.count + MOCK_PLANS.kamaaina.count;
+  const quarterlyRevenue = totalMRR * 3;
+  const geTaxQuarterly = Math.round(quarterlyRevenue * 0.04);
+
+  // Revenue split
+  const nakoa80 = Math.round(totalMRR * 0.80);
+  const mana10 = Math.round(totalMRR * 0.10);
+  const alii10 = Math.round(totalMRR * 0.10);
+
+  const activeMembers = applicants.filter(a => a.membership_status === "active" || a.membership_status === "invited");
+
+  return (
+    <div>
+      {/* Header */}
+      <p style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.15em", marginBottom: "8px" }}>
+        OHANA SERVICE PLANS — REVENUE DASHBOARD
+      </p>
+      <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem", lineHeight: 1.7, marginBottom: "24px" }}>
+        Service plan pricing, revenue splits, and B2B contract tiers. All revenue flows through the 80/10/10 cooperative model.
+      </p>
+
+      {/* MRR Summary */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, 1fr)",
+        gap: "10px",
+        marginBottom: "24px",
+      }}>
+        {[
+          { label: "Total MRR", value: `$${totalMRR.toLocaleString()}`, color: GOLD, sub: "monthly recurring" },
+          { label: "Active Plans", value: String(totalPlans), color: BLUE, sub: "service contracts" },
+          { label: "Quarterly Rev", value: `$${quarterlyRevenue.toLocaleString()}`, color: "#3fb950", sub: "3-month total" },
+          { label: "GE Tax Due", value: `$${geTaxQuarterly.toLocaleString()}`, color: "#f0883e", sub: "4% quarterly" },
+        ].map(s => (
+          <div key={s.label} style={{
+            background: "rgba(0,0,0,0.35)",
+            border: `1px solid ${s.color}20`,
+            borderRadius: "8px",
+            padding: "14px 16px",
+          }}>
+            <p style={{ color: s.color, fontSize: "1.1rem", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1, marginBottom: "4px" }}>{s.value}</p>
+            <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.42rem", letterSpacing: "0.08em" }}>{s.label}</p>
+            <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.38rem", marginTop: "2px" }}>{s.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Revenue Split Visualization */}
+      <div style={{
+        background: GOLD_FAINT,
+        border: `1px solid ${GOLD}20`,
+        borderRadius: "10px",
+        padding: "18px 20px",
+        marginBottom: "20px",
+      }}>
+        <p style={{ color: GOLD, fontSize: "0.45rem", letterSpacing: "0.2em", marginBottom: "16px" }}>
+          80/10/10 COOPERATIVE SPLIT
+        </p>
+        <div style={{ display: "grid", gap: "10px", marginBottom: "14px" }}>
+          {[
+            { label: "Nā Koa Workers", pct: 80, amount: nakoa80, color: "#3fb950" },
+            { label: "Mana Council", pct: 10, amount: mana10, color: BLUE },
+            { label: "Aliʻi Hale Fund", pct: 10, amount: alii10, color: GOLD },
+          ].map(split => (
+            <div key={split.label}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
+                <span style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.48rem" }}>{split.label}</span>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                  <span style={{ color: split.color, fontSize: "0.48rem", fontFamily: "'JetBrains Mono', monospace" }}>
+                    ${split.amount.toLocaleString()}/mo
+                  </span>
+                  <span style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.42rem" }}>{split.pct}%</span>
+                </div>
+              </div>
+              <div style={{ height: "5px", background: "rgba(255,255,255,0.05)", borderRadius: "3px" }}>
+                <div style={{
+                  height: "100%",
+                  width: `${split.pct}%`,
+                  background: split.color,
+                  borderRadius: "3px",
+                  transition: "width 1s ease",
+                }} />
+              </div>
+            </div>
+          ))}
+        </div>
+        <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", lineHeight: 1.6 }}>
+          Split applied to all service revenue after GE tax deduction. Nā Koa workers receive 80% of each job completed.
+        </p>
+      </div>
+
+      {/* Aliʻi Plan */}
+      <div style={{
+        background: "rgba(176,142,80,0.06)",
+        border: `1px solid ${GOLD}35`,
+        borderRadius: "12px",
+        padding: "20px",
+        marginBottom: "14px",
+      }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px" }}>
+          <div>
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              color: GOLD,
+              fontSize: "1.3rem",
+              lineHeight: 1.1,
+              marginBottom: "4px",
+            }}>Aliʻi Plan</p>
+            <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.12em" }}>PREMIUM RESIDENTIAL SERVICE</p>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ color: GOLD, fontSize: "1.2rem", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>$9,999</p>
+            <p style={{ color: GOLD_DIM, fontSize: "0.42rem" }}>/month</p>
+          </div>
+        </div>
+        <div style={{ display: "grid", gap: "6px", marginBottom: "14px" }}>
+          {[
+            { label: "Service visits", value: "4/month (1 per week)" },
+            { label: "Visit duration", value: "Full day service" },
+            { label: "Team size", value: "2–4 Nā Koa workers" },
+            { label: "Active contracts", value: String(MOCK_PLANS.alii.count) },
+            { label: "Monthly revenue", value: `$${MOCK_PLANS.alii.mrr.toLocaleString()}` },
+          ].map(row => (
+            <div key={row.label} style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderBottom: `1px solid ${GOLD}08` }}>
+              <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem" }}>{row.label}</span>
+              <span style={{ color: "#e8e0d0", fontSize: "0.5rem" }}>{row.value}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: "6px", padding: "10px 12px" }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.45rem", lineHeight: 1.6 }}>
+            Split: <span style={{ color: "#3fb950" }}>${Math.round(9999 * 0.8).toLocaleString()} Nā Koa</span> · <span style={{ color: BLUE }}>${Math.round(9999 * 0.1).toLocaleString()} Mana</span> · <span style={{ color: GOLD }}>${Math.round(9999 * 0.1).toLocaleString()} Hale</span>
+          </p>
+        </div>
+      </div>
+
+      {/* Kamaaina Plan */}
+      <div style={{
+        background: "rgba(88,166,255,0.05)",
+        border: `1px solid ${BLUE}30`,
+        borderRadius: "12px",
+        padding: "20px",
+        marginBottom: "24px",
+      }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px" }}>
+          <div>
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              color: BLUE,
+              fontSize: "1.3rem",
+              lineHeight: 1.1,
+              marginBottom: "4px",
+            }}>Kama&lsquo;āina Plan</p>
+            <p style={{ color: "rgba(88,166,255,0.5)", fontSize: "0.42rem", letterSpacing: "0.12em" }}>STANDARD RESIDENTIAL SERVICE</p>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ color: BLUE, fontSize: "1.2rem", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>$4,999</p>
+            <p style={{ color: "rgba(88,166,255,0.5)", fontSize: "0.42rem" }}>/month</p>
+          </div>
+        </div>
+        <div style={{ display: "grid", gap: "6px", marginBottom: "14px" }}>
+          {[
+            { label: "Service visits", value: "2/month (bi-weekly)" },
+            { label: "Visit duration", value: "Half day service" },
+            { label: "Team size", value: "2 Nā Koa workers" },
+            { label: "Active contracts", value: String(MOCK_PLANS.kamaaina.count) },
+            { label: "Monthly revenue", value: `$${MOCK_PLANS.kamaaina.mrr.toLocaleString()}` },
+          ].map(row => (
+            <div key={row.label} style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderBottom: `1px solid ${BLUE}08` }}>
+              <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem" }}>{row.label}</span>
+              <span style={{ color: "#e8e0d0", fontSize: "0.5rem" }}>{row.value}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: "6px", padding: "10px 12px" }}>
+          <p style={{ color: "rgba(88,166,255,0.5)", fontSize: "0.45rem", lineHeight: 1.6 }}>
+            Split: <span style={{ color: "#3fb950" }}>${Math.round(4999 * 0.8).toLocaleString()} Nā Koa</span> · <span style={{ color: BLUE }}>${Math.round(4999 * 0.1).toLocaleString()} Mana</span> · <span style={{ color: GOLD }}>${Math.round(4999 * 0.1).toLocaleString()} Hale</span>
+          </p>
+        </div>
+      </div>
+
+      {/* B2B Hawaii-Owned Contracts */}
+      <div style={{
+        background: `rgba(83,74,183,0.05)`,
+        border: `1px solid ${PURPLE}30`,
+        borderRadius: "12px",
+        padding: "20px",
+        marginBottom: "20px",
+      }}>
+        <p style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontStyle: "italic",
+          color: PURPLE,
+          fontSize: "1.1rem",
+          marginBottom: "4px",
+        }}>B2B Hawaii-Owned Contracts</p>
+        <p style={{ color: `rgba(83,74,183,0.6)`, fontSize: "0.42rem", letterSpacing: "0.12em", marginBottom: "16px" }}>
+          COMMERCIAL SERVICE AGREEMENTS
+        </p>
+
+        <div style={{ display: "grid", gap: "10px" }}>
+          {[
+            {
+              term: "Month-to-Month",
+              discount: "Full Rate",
+              discountPct: 0,
+              alii: 9999,
+              kamaaina: 4999,
+              color: "#e8e0d0",
+              note: "No commitment required",
+            },
+            {
+              term: "6-Month Contract",
+              discount: "20% Off",
+              discountPct: 20,
+              alii: Math.round(9999 * 0.8),
+              kamaaina: Math.round(4999 * 0.8),
+              color: "#3fb950",
+              note: "Paid monthly, 6-month minimum",
+            },
+            {
+              term: "12-Month Contract",
+              discount: "40% Off",
+              discountPct: 40,
+              alii: Math.round(9999 * 0.6),
+              kamaaina: Math.round(4999 * 0.6),
+              color: GOLD,
+              note: "Best value — annual commitment",
+            },
+          ].map((tier, i) => (
+            <div key={tier.term} style={{
+              background: i === 2 ? `rgba(176,142,80,0.05)` : "rgba(0,0,0,0.25)",
+              border: `1px solid ${tier.color}20`,
+              borderRadius: "8px",
+              padding: "14px 16px",
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                <div>
+                  <p style={{ color: "#e8e0d0", fontSize: "0.55rem", marginBottom: "2px" }}>{tier.term}</p>
+                  <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.42rem" }}>{tier.note}</p>
+                </div>
+                <span style={{
+                  background: `${tier.color}15`,
+                  border: `1px solid ${tier.color}40`,
+                  color: tier.color,
+                  fontSize: "0.42rem",
+                  padding: "3px 8px",
+                  borderRadius: "3px",
+                  letterSpacing: "0.1em",
+                }}>{tier.discount}</span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: "4px", padding: "8px 10px" }}>
+                  <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.38rem", letterSpacing: "0.1em", marginBottom: "3px" }}>ALIʻI PLAN</p>
+                  <p style={{ color: tier.color, fontSize: "0.65rem", fontFamily: "'JetBrains Mono', monospace" }}>${tier.alii.toLocaleString()}</p>
+                  <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.38rem" }}>/month</p>
+                </div>
+                <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: "4px", padding: "8px 10px" }}>
+                  <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.38rem", letterSpacing: "0.1em", marginBottom: "3px" }}>KAMAʻĀINA PLAN</p>
+                  <p style={{ color: tier.color, fontSize: "0.65rem", fontFamily: "'JetBrains Mono', monospace" }}>${tier.kamaaina.toLocaleString()}</p>
+                  <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.38rem" }}>/month</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Active member count note */}
+      <div style={{
+        background: "rgba(0,0,0,0.2)",
+        border: "1px solid rgba(255,255,255,0.05)",
+        borderRadius: "8px",
+        padding: "14px 16px",
+      }}>
+        <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.45rem", lineHeight: 1.7 }}>
+          Active members available for service routes: <span style={{ color: "#3fb950" }}>{activeMembers.length}</span><br />
+          Nā Koa on active route: <span style={{ color: "#3fb950" }}>{activeMembers.filter(a => a.tier === "nakoa").length}</span> ·
+          Mana supervisors: <span style={{ color: BLUE }}> {activeMembers.filter(a => a.tier === "mana").length}</span><br />
+          Revenue data is mock. Connect Stripe or payment processor for live MRR.
+        </p>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import GatheringsCalendar from "@/components/GatheringsCalendar";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -410,71 +411,76 @@ export default function MemberPortal({ applicationId, onExit }: MemberPortalProp
         {/* EVENTS TAB */}
         {tab === "Events" && (
           <div style={{ animation: "fadeUp 0.5s ease forwards" }}>
-            <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.5rem", lineHeight: 1.7, marginBottom: "16px" }}>
-              Advancement is earned through standing, service, and repetition.
-            </p>
-            <div style={{ display: "grid", gap: "10px" }}>
-              {events.map(ev => {
-                const isReserved = reservations.includes(ev.id);
-                const tierIncluded = ev.tier_access?.includes(member.tier);
-                const isQuarterly = ev.event_type === "quarterly_summit";
-                const quarterlyFull = isQuarterly && quarterlyRemaining <= 0;
-                const capacityFull = ev.capacity !== null && ev.seats_filled >= ev.capacity;
+            {/* Gatherings Calendar — 4 gathering types */}
+            <GatheringsCalendar memberTier={member.tier} />
 
-                let ctaLabel = "Reserve Spot";
-                let ctaColor = cfg.color;
-                let ctaDisabled = false;
+            {/* Supabase-scheduled events (if any) */}
+            {events.length > 0 && (
+              <div style={{ marginTop: "28px" }}>
+                <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>
+                  SCHEDULED EVENTS
+                </p>
+                <div style={{ display: "grid", gap: "10px" }}>
+                  {events.map(ev => {
+                    const isReserved = reservations.includes(ev.id);
+                    const tierIncluded = ev.tier_access?.includes(member.tier);
+                    const isQuarterly = ev.event_type === "quarterly_summit";
+                    const quarterlyFull = isQuarterly && quarterlyRemaining <= 0;
+                    const capacityFull = ev.capacity !== null && ev.seats_filled >= ev.capacity;
 
-                if (isReserved) { ctaLabel = "Reserved ✓"; ctaColor = "#3fb950"; ctaDisabled = true; }
-                else if (!tierIncluded) { ctaLabel = "Unlock Access"; ctaColor = GOLD_DIM; ctaDisabled = true; }
-                else if (quarterlyFull) { ctaLabel = "Upgrade Required"; ctaColor = "#f0883e"; ctaDisabled = true; }
-                else if (capacityFull) { ctaLabel = "At Capacity"; ctaColor = "#e05c5c"; ctaDisabled = true; }
+                    let ctaLabel = "Reserve Spot";
+                    let ctaColor = cfg.color;
+                    let ctaDisabled = false;
 
-                return (
-                  <div key={ev.id} style={{
-                    background: GOLD_FAINT,
-                    border: `1px solid ${isReserved ? cfg.colorDim : "rgba(176,142,80,0.1)"}`,
-                    borderRadius: "8px",
-                    padding: "16px",
-                  }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                      <p style={{ color: "#e8e0d0", fontSize: "0.62rem" }}>{ev.event_name}</p>
-                      <span style={{ color: cfg.color, fontSize: "0.42rem", letterSpacing: "0.08em" }}>
-                        {ev.event_type.replace(/_/g, " ").toUpperCase()}
-                      </span>
-                    </div>
-                    <p style={{ color: GOLD_DIM, fontSize: "0.5rem", marginBottom: "2px" }}>{ev.event_date}{ev.event_end_date ? ` – ${ev.event_end_date}` : ""}</p>
-                    <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem", marginBottom: "8px" }}>{ev.location}</p>
-                    {ev.capacity && (
-                      <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.45rem", marginBottom: "8px" }}>
-                        {ev.capacity - ev.seats_filled} of {ev.capacity} seats open
-                      </p>
-                    )}
-                    <button
-                      disabled={ctaDisabled}
-                      onClick={() => !ctaDisabled && reserveEvent(ev)}
-                      style={{
-                        width: "100%",
-                        padding: "9px",
-                        background: "transparent",
-                        border: `1px solid ${ctaColor}40`,
-                        color: ctaColor,
-                        fontSize: "0.48rem",
-                        letterSpacing: "0.15em",
-                        cursor: ctaDisabled ? "default" : "pointer",
-                        borderRadius: "4px",
-                        fontFamily: "'JetBrains Mono', monospace",
-                      }}
-                    >
-                      {ctaLabel}
-                    </button>
-                  </div>
-                );
-              })}
-              {events.length === 0 && (
-                <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.52rem" }}>No upcoming events scheduled.</p>
-              )}
-            </div>
+                    if (isReserved) { ctaLabel = "Reserved ✓"; ctaColor = "#3fb950"; ctaDisabled = true; }
+                    else if (!tierIncluded) { ctaLabel = "Unlock Access"; ctaColor = GOLD_DIM; ctaDisabled = true; }
+                    else if (quarterlyFull) { ctaLabel = "Upgrade Required"; ctaColor = "#f0883e"; ctaDisabled = true; }
+                    else if (capacityFull) { ctaLabel = "At Capacity"; ctaColor = "#e05c5c"; ctaDisabled = true; }
+
+                    return (
+                      <div key={ev.id} style={{
+                        background: GOLD_FAINT,
+                        border: `1px solid ${isReserved ? cfg.colorDim : "rgba(176,142,80,0.1)"}`,
+                        borderRadius: "8px",
+                        padding: "16px",
+                      }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                          <p style={{ color: "#e8e0d0", fontSize: "0.62rem" }}>{ev.event_name}</p>
+                          <span style={{ color: cfg.color, fontSize: "0.42rem", letterSpacing: "0.08em" }}>
+                            {ev.event_type.replace(/_/g, " ").toUpperCase()}
+                          </span>
+                        </div>
+                        <p style={{ color: GOLD_DIM, fontSize: "0.5rem", marginBottom: "2px" }}>{ev.event_date}{ev.event_end_date ? ` – ${ev.event_end_date}` : ""}</p>
+                        <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem", marginBottom: "8px" }}>{ev.location}</p>
+                        {ev.capacity && (
+                          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.45rem", marginBottom: "8px" }}>
+                            {ev.capacity - ev.seats_filled} of {ev.capacity} seats open
+                          </p>
+                        )}
+                        <button
+                          disabled={ctaDisabled}
+                          onClick={() => !ctaDisabled && reserveEvent(ev)}
+                          style={{
+                            width: "100%",
+                            padding: "9px",
+                            background: "transparent",
+                            border: `1px solid ${ctaColor}40`,
+                            color: ctaColor,
+                            fontSize: "0.48rem",
+                            letterSpacing: "0.15em",
+                            cursor: ctaDisabled ? "default" : "pointer",
+                            borderRadius: "4px",
+                            fontFamily: "'JetBrains Mono', monospace",
+                          }}
+                        >
+                          {ctaLabel}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
