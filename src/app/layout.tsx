@@ -2,20 +2,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MĀKOA — Private Order",
-  description: "The Mākoa Order. Private. Invitation only.",
+  title: "MĀKOA — Under the Malu",
+  description: "Mākoa Order · Malu Trust · West Oahu · 2026",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, padding: 0, background: "#050709" }}>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
