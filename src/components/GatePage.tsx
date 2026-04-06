@@ -228,6 +228,10 @@ function NaKoaContent({ onClose, onPledge }: { onClose: () => void; onPledge: ()
   );
 }
 
+// ── Seat counters (simulated live) ────────────────────────
+const SEAT_TOTALS = { alii: 12, mana: 20, nakoa: 40 };
+const SEAT_TAKEN = { alii: 7, mana: 13, nakoa: 22 };
+
 // ── Pledge Popup ───────────────────────────────────────────
 function PledgePopup({ open, onClose, onConfirm }: { open: boolean; onClose: () => void; onConfirm: () => void }) {
   return (
@@ -244,7 +248,7 @@ function PledgePopup({ open, onClose, onConfirm }: { open: boolean; onClose: () 
       <div style={{ fontSize: "0.6rem", color: "#6a7080", lineHeight: 1.9, marginBottom: 16, fontFamily: "var(--font-jetbrains)" }}>
         Your $9.99 pledge gets you into the May 1 Mākoa 1st Roundup — War Room for Aliʻi, Mastermind for Mana, Elite Training for Nā Koa — OR join our first 4am Wednesday elite training on April 15.
         <br /><br />
-        This pledge supports the order and covers XI daily gate monitoring. Your full tier benefits and yearly dues unlock within 24 hours via Telegram.
+        This pledge supports the order and covers XI daily gate monitoring. Your formation path and financial commitment are revealed after acceptance within 24 hours via Telegram.
         <br /><br />
         The order does not chase men.<br />
         If you are not called — that is honored.<br />
@@ -253,7 +257,7 @@ function PledgePopup({ open, onClose, onConfirm }: { open: boolean; onClose: () 
       <div style={{ background: "#0a0c14", border: "0.5px solid #21262d", borderRadius: 6, padding: "12px", textAlign: "center", marginBottom: 16 }}>
         <div style={{ fontSize: "1.3rem", fontWeight: 700, color: PURPLE, fontFamily: "var(--font-cormorant)" }}>$9.99</div>
         <div style={{ fontSize: "0.5rem", color: "#4a5060", lineHeight: 1.6, marginTop: 3, fontFamily: "var(--font-jetbrains)" }}>
-          Processing pledge — no charge today<br />Confirmed on platform in 24 hours
+          Processing pledge — no charge today<br />Formation path revealed after acceptance
         </div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -483,7 +487,7 @@ function StickyPledgeBar({ visible, onPledge }: { visible: boolean; onPledge: ()
             Founding seats are open
           </p>
           <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", margin: 0 }}>
-            May 1 · Kapolei · $9.99 pledge
+            May 1 · Kapolei · Formation path revealed after acceptance
           </p>
         </div>
         <button
@@ -712,7 +716,7 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
                 The 72 — Mākoa 1st Roundup
               </div>
               <div style={{ fontSize: "0.52rem", color: "rgba(237,232,224,0.32)", fontFamily: "var(--font-jetbrains)", marginBottom: 12 }}>
-                May 1–4 · Kapolei · West Oahu · Embassy Suites
+                May 1–4 · Kapolei · West Oahu · Hotel
               </div>
 
               {/* Left-border quote block */}
@@ -725,24 +729,47 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
                 </div>
               </div>
 
+              {/* April 15 Itinerary */}
+              <div style={{ background: "rgba(176,142,80,0.04)", border: "0.5px solid rgba(176,142,80,0.15)", borderRadius: 8, padding: "12px 12px", marginBottom: 14 }}>
+                <div style={{ fontSize: "0.48rem", letterSpacing: "0.2em", color: "rgba(176,142,80,0.4)", textTransform: "uppercase", fontFamily: "var(--font-jetbrains)", marginBottom: 8 }}>
+                  April 15 · First 4am Wednesday Training
+                </div>
+                {[
+                  ["04:00", "Arrive · Ice bath begins"],
+                  ["04:30", "Cold plunge + breathwork"],
+                  ["05:15", "Brotherhood circle · introductions"],
+                  ["06:00", "Sauna reset · debrief"],
+                  ["06:45", "Breakfast · zone assignments"],
+                  ["07:30", "Dismissed · Telegram onboarding"],
+                ].map(([time, desc]) => (
+                  <div key={time} style={{ display: "flex", gap: 10, marginBottom: 5, alignItems: "flex-start" }}>
+                    <span style={{ color: "#BA7517", fontSize: "0.48rem", fontFamily: "var(--font-jetbrains)", flexShrink: 0, minWidth: 36 }}>{time}</span>
+                    <span style={{ color: "rgba(237,232,224,0.4)", fontSize: "0.48rem", fontFamily: "var(--font-jetbrains)", lineHeight: 1.5 }}>{desc}</span>
+                  </div>
+                ))}
+                <div style={{ marginTop: 8, fontSize: "0.46rem", color: "rgba(176,142,80,0.25)", fontFamily: "var(--font-jetbrains)" }}>
+                  Location confirmed via Telegram after pledge · your zip cluster
+                </div>
+              </div>
+
               {/* Three-column tier breakdown */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 5, marginBottom: 12 }}>
                 <div style={{ background: "#0a0800", border: "0.5px solid rgba(186,117,23,0.25)", borderRadius: 6, padding: "8px 6px" }}>
                   <div style={{ fontSize: "0.52rem", fontWeight: 700, color: GOLD, letterSpacing: "0.08em", marginBottom: 4, textAlign: "center", fontFamily: "var(--font-jetbrains)" }}>👑 Aliʻi</div>
                   <div style={{ fontSize: "0.46rem", color: "#6a5a30", lineHeight: 1.8, textAlign: "center", fontFamily: "var(--font-jetbrains)" }}>
-                    Boardroom<br />72hr War Room<br />Embassy Suites<br />Ice bath 4am<br />Founding gear<br />Council seat
+                    Boardroom<br />72hr War Room<br />Hotel<br />Ice bath 4am<br />Founding gear<br />Council seat
                   </div>
                   <div style={{ marginTop: 6, textAlign: "center" }}>
-                    <span style={{ fontSize: "0.45rem", color: "#f85149", fontFamily: "var(--font-jetbrains)" }}>12 seats open</span>
+                    <span style={{ fontSize: "0.45rem", color: "#f85149", fontFamily: "var(--font-jetbrains)" }}>{SEAT_TOTALS.alii - SEAT_TAKEN.alii} of {SEAT_TOTALS.alii} open</span>
                   </div>
                 </div>
                 <div style={{ background: "#080c14", border: "0.5px solid rgba(88,166,255,0.18)", borderRadius: 6, padding: "8px 6px" }}>
                   <div style={{ fontSize: "0.52rem", fontWeight: 700, color: BLUE, letterSpacing: "0.08em", marginBottom: 4, textAlign: "center", fontFamily: "var(--font-jetbrains)" }}>🌀 Mana</div>
                   <div style={{ fontSize: "0.46rem", color: "#304a6a", lineHeight: 1.8, textAlign: "center", fontFamily: "var(--font-jetbrains)" }}>
-                    Mastermind<br />72hr reset<br />Hampton Inn<br />Ice bath 4am<br />Brotherhood<br />Sworn in
+                    Mastermind<br />72hr reset<br />Hotel<br />Ice bath 4am<br />Brotherhood<br />Sworn in
                   </div>
                   <div style={{ marginTop: 6, textAlign: "center" }}>
-                    <span style={{ fontSize: "0.45rem", color: "#f0a030", fontFamily: "var(--font-jetbrains)" }}>20 seats open</span>
+                    <span style={{ fontSize: "0.45rem", color: "#f0a030", fontFamily: "var(--font-jetbrains)" }}>{SEAT_TOTALS.mana - SEAT_TAKEN.mana} of {SEAT_TOTALS.mana} open</span>
                   </div>
                 </div>
                 <div style={{ background: "#080e0a", border: "0.5px solid rgba(63,185,80,0.18)", borderRadius: 6, padding: "8px 6px" }}>
@@ -751,7 +778,7 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
                     2-day pass<br />4am Saturday<br />4am Sunday<br />Ice bath free<br />Beach training<br />Full moon
                   </div>
                   <div style={{ marginTop: 6, textAlign: "center" }}>
-                    <span style={{ fontSize: "0.45rem", color: GREEN, fontFamily: "var(--font-jetbrains)" }}>Open · $49.99</span>
+                    <span style={{ fontSize: "0.45rem", color: GREEN, fontFamily: "var(--font-jetbrains)" }}>Limited intake</span>
                   </div>
                 </div>
               </div>
@@ -782,7 +809,7 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
                 Pledge Your Seat · May 1
               </button>
               <div style={{ fontSize: "0.46rem", color: "rgba(176,142,80,0.28)", textAlign: "center", marginTop: 8, lineHeight: 1.8, fontFamily: "var(--font-jetbrains)" }}>
-                Or join the first 4am Wednesday elite training<br />April 15 · your zip cluster · ice + sauna
+                Formation path and financial commitment<br />revealed after acceptance
               </div>
             </div>
           </div>
@@ -841,7 +868,7 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
                 The Pledge — $9.99 processing
               </p>
               <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", margin: 0 }}>
-                Understand what you are committing to →
+                Formation path revealed after acceptance →
               </p>
             </div>
             <span style={{ color: PURPLE, fontSize: "1.4rem", fontFamily: "var(--font-cormorant)" }}>›</span>
