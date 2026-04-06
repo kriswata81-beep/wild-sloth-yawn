@@ -33,6 +33,11 @@ const STANDING_COLOR: Record<string, string> = {
 const TABS = ["Home", "Events", "Path", "Referrals", "House", "Standing", "Profile"] as const;
 type Tab = typeof TABS[number];
 
+// DiceBear avatar URL from handle
+function dicebearUrl(seed: string) {
+  return `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(seed || "makoa")}`;
+}
+
 type Member = {
   id: string;
   application_id: string;
@@ -257,9 +262,16 @@ export default function MemberPortal({ applicationId, onExit }: MemberPortalProp
           </div>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <p style={{ color: "#e8e0d0", fontSize: "0.65rem" }}>{member.full_name}</p>
-            <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.45rem" }}>{member.current_rank} · {member.region}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <img
+              src={dicebearUrl(member.telegram_handle || member.full_name)}
+              alt="avatar"
+              style={{ width: "36px", height: "36px", borderRadius: "50%", border: `1px solid ${cfg.colorDim}`, background: "#0a0d12" }}
+            />
+            <div>
+              <p style={{ color: "#e8e0d0", fontSize: "0.65rem" }}>{member.telegram_handle || member.full_name.split(" ")[0]}</p>
+              <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.45rem" }}>{member.current_rank} · {member.region}</p>
+            </div>
           </div>
           <button onClick={onExit} style={{ background: "none", border: "none", color: "rgba(232,224,208,0.2)", cursor: "pointer", fontSize: "0.45rem" }}>Exit</button>
         </div>
@@ -708,6 +720,7 @@ export default function MemberPortal({ applicationId, onExit }: MemberPortalProp
               {leaderboard.slice(0, 10).map((m, i) => {
                 const isMe = m.application_id === applicationId;
                 const mCfg = TIER_CFG[m.tier as keyof typeof TIER_CFG] || TIER_CFG.nakoa;
+                const displayHandle = m.telegram_handle || m.full_name.split(" ")[0];
                 return (
                   <div key={m.id} style={{
                     display: "flex",
@@ -722,9 +735,14 @@ export default function MemberPortal({ applicationId, onExit }: MemberPortalProp
                     <span style={{ color: i < 3 ? GOLD : "rgba(232,224,208,0.25)", fontSize: "0.55rem", width: "20px", textAlign: "center" }}>
                       {i + 1}
                     </span>
+                    <img
+                      src={dicebearUrl(m.telegram_handle || m.full_name)}
+                      alt={displayHandle}
+                      style={{ width: "28px", height: "28px", borderRadius: "50%", border: `1px solid ${mCfg.colorDim}`, background: "#0a0d12", flexShrink: 0 }}
+                    />
                     <div style={{ flex: 1 }}>
                       <p style={{ color: isMe ? "#e8e0d0" : "rgba(232,224,208,0.6)", fontSize: "0.52rem" }}>
-                        {m.full_name.split(" ")[0]} {m.full_name.split(" ").slice(-1)[0]?.[0]}.
+                        {displayHandle}
                         {isMe && <span style={{ color: cfg.color, fontSize: "0.4rem", marginLeft: "6px" }}>YOU</span>}
                       </p>
                       <p style={{ color: mCfg.colorDim, fontSize: "0.42rem" }}>{m.current_rank}</p>
@@ -738,12 +756,18 @@ export default function MemberPortal({ applicationId, onExit }: MemberPortalProp
             <Panel title="Top Referrers" accent={cfg.color}>
               {[...leaderboard].sort((a, b) => b.successful_referrals_count - a.successful_referrals_count).slice(0, 5).map((m, i) => {
                 const isMe = m.application_id === applicationId;
+                const displayHandle = m.telegram_handle || m.full_name.split(" ")[0];
                 return (
                   <div key={m.id} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: i < 4 ? "1px solid rgba(176,142,80,0.06)" : "none" }}>
                     <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                       <span style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.5rem", width: "16px" }}>{i + 1}</span>
+                      <img
+                        src={dicebearUrl(m.telegram_handle || m.full_name)}
+                        alt={displayHandle}
+                        style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1px solid rgba(176,142,80,0.2)", background: "#0a0d12" }}
+                      />
                       <p style={{ color: isMe ? "#e8e0d0" : "rgba(232,224,208,0.55)", fontSize: "0.5rem" }}>
-                        {m.full_name.split(" ")[0]} {m.full_name.split(" ").slice(-1)[0]?.[0]}.
+                        {displayHandle}
                         {isMe && <span style={{ color: cfg.color, fontSize: "0.4rem", marginLeft: "6px" }}>YOU</span>}
                       </p>
                     </div>
@@ -758,9 +782,24 @@ export default function MemberPortal({ applicationId, onExit }: MemberPortalProp
         {/* PROFILE TAB */}
         {tab === "Profile" && (
           <div style={{ animation: "fadeUp 0.5s ease forwards" }}>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+              <img
+                src={dicebearUrl(member.telegram_handle || member.full_name)}
+                alt="Your avatar"
+                style={{
+                  width: "80px", height: "80px", borderRadius: "50%",
+                  border: `2px solid ${cfg.colorDim}`, background: "#0a0d12",
+                  margin: "0 auto 12px", display: "block",
+                }}
+              />
+              <p style={{ color: cfg.color, fontSize: "0.55rem", letterSpacing: "0.15em" }}>
+                {member.telegram_handle || member.full_name.split(" ")[0]}
+              </p>
+              <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.45rem", marginTop: "4px" }}>{member.current_rank}</p>
+            </div>
             <Panel title="Identity" accent={cfg.color}>
               {[
-                { label: "Full Name", value: member.full_name },
+                { label: "Handle", value: member.telegram_handle || member.full_name.split(" ")[0] },
                 { label: "Application ID", value: member.application_id },
                 { label: "Email", value: member.email },
                 { label: "Phone", value: member.phone },

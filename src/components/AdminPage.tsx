@@ -63,6 +63,11 @@ const STATUS_COLOR: Record<string, string> = {
   suspended: "#e05c5c", delinquent: "#f0883e", under_review: "#d29922",
 };
 
+// DiceBear avatar URL from handle/name
+function dicebearUrl(seed: string) {
+  return `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(seed || "makoa")}`;
+}
+
 const RANKS_BY_TIER: Record<string, string[]> = {
   nakoa: ["Nā Koa Candidate", "Nā Koa Active", "Nā Koa Sentinel", "Nā Koa Field Lead"],
   mana: ["Mana Builder", "Mana Operator", "Mana Strategist", "Mana Circle Lead"],
@@ -408,6 +413,7 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 function MemberRow({ app, onSelect }: { app: Applicant; onSelect: (a: Applicant) => void }) {
   const tierColor = TIER_COLOR[app.tier] || STEEL;
   const statusColor = STATUS_COLOR[app.membership_status] || GOLD_DIM;
+  const avatarSeed = app.telegram_handle || app.full_name;
   return (
     <div
       onClick={() => onSelect(app)}
@@ -423,9 +429,16 @@ function MemberRow({ app, onSelect }: { app: Applicant; onSelect: (a: Applicant)
         transition: "border-color 0.2s",
       }}
     >
-      <div>
-        <p style={{ color: "#e8e0d0", fontSize: "0.6rem", marginBottom: "2px" }}>{app.full_name}</p>
-        <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.45rem" }}>{app.application_id} · {app.region}</p>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <img
+          src={dicebearUrl(avatarSeed)}
+          alt={app.full_name}
+          style={{ width: "32px", height: "32px", borderRadius: "50%", border: `1px solid ${tierColor}40`, background: "#0a0d12", flexShrink: 0 }}
+        />
+        <div>
+          <p style={{ color: "#e8e0d0", fontSize: "0.6rem", marginBottom: "2px" }}>{app.full_name}</p>
+          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.45rem" }}>{app.application_id} · {app.region}</p>
+        </div>
       </div>
       <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
         <span style={{ color: tierColor, fontSize: "0.45rem", letterSpacing: "0.1em" }}>{app.tier?.toUpperCase()}</span>
@@ -467,6 +480,7 @@ function MemberModal({ app, saving, onClose, onUpdate, onAddPoints }: {
 }) {
   const tierColor = TIER_COLOR[app.tier] || STEEL;
   const tierRanks = RANKS_BY_TIER[app.tier] || RANKS_BY_TIER.nakoa;
+  const avatarSeed = app.telegram_handle || app.full_name;
 
   return (
     <div style={{
@@ -493,9 +507,16 @@ function MemberModal({ app, saving, onClose, onUpdate, onAddPoints }: {
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-          <div>
-            <p style={{ color: "#e8e0d0", fontSize: "0.75rem" }}>{app.full_name}</p>
-            <p style={{ color: tierColor, fontSize: "0.5rem", marginTop: "2px" }}>{app.current_rank}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <img
+              src={dicebearUrl(avatarSeed)}
+              alt={app.full_name}
+              style={{ width: "48px", height: "48px", borderRadius: "50%", border: `1px solid ${tierColor}40`, background: "#0a0d12" }}
+            />
+            <div>
+              <p style={{ color: "#e8e0d0", fontSize: "0.75rem" }}>{app.full_name}</p>
+              <p style={{ color: tierColor, fontSize: "0.5rem", marginTop: "2px" }}>{app.current_rank}</p>
+            </div>
           </div>
           <button onClick={onClose} style={{ background: "none", border: "none", color: GOLD_DIM, cursor: "pointer", fontSize: "0.8rem" }}>×</button>
         </div>
