@@ -31,6 +31,60 @@ function useCountdown() {
   return time;
 }
 
+// ── Scroll tracker ─────────────────────────────────────────
+function useScrolled(threshold = 400) {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > threshold);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, [threshold]);
+  return scrolled;
+}
+
+// ── Star field background ──────────────────────────────────
+function StarField() {
+  const stars = Array.from({ length: 60 }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 1.5 + 0.3,
+    opacity: Math.random() * 0.25 + 0.05,
+  }));
+  return (
+    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
+      {stars.map((s) => (
+        <div
+          key={s.id}
+          style={{
+            position: "absolute",
+            left: `${s.x}%`,
+            top: `${s.y}%`,
+            width: s.size,
+            height: s.size,
+            borderRadius: "50%",
+            background: GOLD,
+            opacity: s.opacity,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ── Moon glow orb ──────────────────────────────────────────
+function MoonGlow({ top, opacity = 0.06 }: { top: number | string; opacity?: number }) {
+  return (
+    <div style={{
+      position: "absolute", left: "50%", top,
+      transform: "translateX(-50%)",
+      width: 320, height: 320, borderRadius: "50%",
+      background: `radial-gradient(circle, rgba(176,142,80,${opacity}) 0%, transparent 70%)`,
+      pointerEvents: "none", zIndex: 0,
+    }} />
+  );
+}
+
 // ── Bottom Sheet ───────────────────────────────────────────
 function BottomSheet({ open, onClose, children }: { open: boolean; onClose: () => void; children: React.ReactNode }) {
   if (!open) return null;
@@ -89,11 +143,17 @@ function TierCard({ label, sub, color, onClick }: { label: string; sub: string; 
         display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
         transition: "border-color 0.2s, background 0.2s",
       }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = color + "88"; (e.currentTarget as HTMLButtonElement).style.background = color + "08"; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = color + "33"; (e.currentTarget as HTMLButtonElement).style.background = CARD_BG; }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.borderColor = color + "88";
+        (e.currentTarget as HTMLButtonElement).style.background = color + "08";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.borderColor = color + "33";
+        (e.currentTarget as HTMLButtonElement).style.background = CARD_BG;
+      }}
     >
       <span style={{ color, fontSize: "0.65rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", textTransform: "uppercase" }}>{label}</span>
-      <span style={{ color: color + "77", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", textAlign: "center", lineHeight: 1.4 }}>{sub}</span>
+      <span style={{ color: color + "77", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", textAlign: "center", lineHeight: 1.4, whiteSpace: "pre-line" }}>{sub}</span>
     </button>
   );
 }
@@ -280,9 +340,129 @@ function SeatBar({ label, filled, total, color, note }: { label: string; filled:
 // ── Criteria Row ───────────────────────────────────────────
 function CriteriaRow({ icon, text }: { icon: string; text: string }) {
   return (
-    <div style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 12 }}>
+    <div style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 14 }}>
       <span style={{ color: GOLD, fontSize: "0.75rem", marginTop: 1, flexShrink: 0 }}>{icon}</span>
-      <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.7rem", fontFamily: "var(--font-jetbrains)", lineHeight: 1.7, margin: 0 }}>{text}</p>
+      <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.7rem", fontFamily: "var(--font-jetbrains)", lineHeight: 1.75, margin: 0 }}>{text}</p>
+    </div>
+  );
+}
+
+// ── Why Now Block ──────────────────────────────────────────
+function WhyNowBlock({ onPledge }: { onPledge: () => void }) {
+  return (
+    <div style={{
+      position: "relative", overflow: "hidden",
+      background: "linear-gradient(135deg, #07090e 0%, #04060a 100%)",
+      border: `1px solid rgba(176,142,80,0.18)`,
+      borderRadius: 12, padding: "24px 18px", marginTop: 28,
+    }}>
+      <MoonGlow top={-60} opacity={0.08} />
+      <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.25em", textTransform: "uppercase", margin: "0 0 10px", position: "relative", zIndex: 1 }}>
+        Why now
+      </p>
+      <h3 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.4rem", margin: "0 0 16px", lineHeight: 1.25, position: "relative", zIndex: 1 }}>
+        The founding seat is the only seat that carries the full weight of the Order.
+      </h3>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20, position: "relative", zIndex: 1 }}>
+        {[
+          { icon: "🌕", text: "The Flower Moon rises May 12. The 72 begins May 1. There is no second founding." },
+          { icon: "⚔", text: "Aliʻi seats are capped at 12. Mana at 20. Once filled, the gate closes until the next moon cycle." },
+          { icon: "✦", text: "Founding brothers carry the Mākoa crest from the first 72. That mark cannot be earned later — only now." },
+          { icon: "🤝", text: "XI reviews every pledge within 24 hours. Your Formation Committee reaches out within 48. The process is already moving." },
+        ].map(({ icon, text }) => (
+          <div key={text} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+            <span style={{ fontSize: "0.8rem", flexShrink: 0, marginTop: 1 }}>{icon}</span>
+            <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.68rem", fontFamily: "var(--font-jetbrains)", lineHeight: 1.7, margin: 0 }}>{text}</p>
+          </div>
+        ))}
+      </div>
+      <button
+        onClick={onPledge}
+        style={{
+          width: "100%", background: "transparent", color: GOLD,
+          border: `1px solid ${GOLD_BORDER}`, fontFamily: "var(--font-jetbrains)",
+          fontSize: "0.68rem", letterSpacing: "0.2em", padding: "13px",
+          cursor: "pointer", borderRadius: 8, textTransform: "uppercase",
+          position: "relative", zIndex: 1,
+        }}
+      >
+        I UNDERSTAND — PLEDGE NOW →
+      </button>
+    </div>
+  );
+}
+
+// ── Brotherhood Signal Strip ───────────────────────────────
+function BrotherhoodSignal() {
+  const signals = [
+    { region: "West Oahu", action: "Aliʻi seat pledged", time: "2h ago", color: GOLD },
+    { region: "East Oahu", action: "Nā Koa entry", time: "5h ago", color: GREEN },
+    { region: "Maui Nui", action: "Mana seat pledged", time: "11h ago", color: BLUE },
+    { region: "Big Island", action: "Nā Koa entry", time: "1d ago", color: GREEN },
+  ];
+  return (
+    <div style={{ marginTop: 28 }}>
+      <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 12px", textAlign: "center" }}>
+        Brotherhood signal · live activity
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {signals.map(({ region, action, time, color }) => (
+          <div key={region + action} style={{
+            background: CARD_BG, border: `1px solid rgba(176,142,80,0.08)`,
+            borderRadius: 8, padding: "10px 14px",
+            display: "flex", alignItems: "center", gap: 10,
+          }}>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0, boxShadow: `0 0 6px ${color}88` }} />
+            <span style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.6rem", fontFamily: "var(--font-jetbrains)", flex: 1 }}>
+              <span style={{ color: GOLD }}>{region}</span> · {action}
+            </span>
+            <span style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", flexShrink: 0 }}>{time}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Oath Block ─────────────────────────────────────────────
+function OathBlock({ onPledge }: { onPledge: () => void }) {
+  return (
+    <div style={{
+      position: "relative", overflow: "hidden",
+      background: "#030508",
+      border: `1px solid rgba(176,142,80,0.15)`,
+      borderRadius: 12, padding: "28px 20px", marginTop: 28,
+      textAlign: "center",
+    }}>
+      <MoonGlow top={-80} opacity={0.07} />
+      <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.25em", textTransform: "uppercase", margin: "0 0 16px", position: "relative", zIndex: 1 }}>
+        The oath
+      </p>
+      <p className="font-cormorant" style={{
+        fontStyle: "italic", color: "rgba(176,142,80,0.7)", fontSize: "1.15rem",
+        lineHeight: 1.7, margin: "0 0 20px", position: "relative", zIndex: 1,
+      }}>
+        "I enter under the Malu.<br />
+        I serve before I am served.<br />
+        I build what lasts.<br />
+        I stand with my brothers<br />
+        under every full moon."
+      </p>
+      <div style={{ width: 40, height: 1, background: "rgba(176,142,80,0.2)", margin: "0 auto 16px", position: "relative", zIndex: 1 }} />
+      <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.58rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", margin: "0 0 22px", position: "relative", zIndex: 1 }}>
+        — The Mākoa Oath · Malu Trust
+      </p>
+      <button
+        onClick={onPledge}
+        style={{
+          background: GOLD, color: "#000", border: "none",
+          fontFamily: "var(--font-jetbrains)", fontSize: "0.7rem", letterSpacing: "0.2em",
+          padding: "14px 32px", cursor: "pointer", borderRadius: 6, textTransform: "uppercase",
+          fontWeight: 700, position: "relative", zIndex: 1,
+        }}
+      >
+        I TAKE THE OATH
+      </button>
     </div>
   );
 }
@@ -300,6 +480,42 @@ const MOONS = [
 // ── Nav ────────────────────────────────────────────────────
 const NAV_ITEMS = ["Home", "About", "Regions", "Publications"];
 
+// ── Sticky Bottom Bar ──────────────────────────────────────
+function StickyPledgeBar({ visible, onPledge }: { visible: boolean; onPledge: () => void }) {
+  return (
+    <div style={{
+      position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 45,
+      background: "rgba(4,6,10,0.97)", backdropFilter: "blur(16px)",
+      borderTop: `1px solid rgba(176,142,80,0.2)`,
+      padding: "12px 16px 16px",
+      transform: visible ? "translateY(0)" : "translateY(100%)",
+      transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1)",
+    }}>
+      <div style={{ maxWidth: 480, margin: "0 auto", display: "flex", gap: 10, alignItems: "center" }}>
+        <div style={{ flex: 1 }}>
+          <p style={{ color: GOLD, fontSize: "0.65rem", fontFamily: "var(--font-jetbrains)", fontWeight: 600, margin: "0 0 2px" }}>
+            Founding seats are open
+          </p>
+          <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", margin: 0 }}>
+            May 1 · Kapolei · $9.99 pledge
+          </p>
+        </div>
+        <button
+          onClick={onPledge}
+          style={{
+            background: GOLD, color: "#000", border: "none",
+            fontFamily: "var(--font-jetbrains)", fontSize: "0.62rem", letterSpacing: "0.15em",
+            padding: "11px 20px", cursor: "pointer", borderRadius: 6,
+            textTransform: "uppercase", fontWeight: 700, flexShrink: 0,
+          }}
+        >
+          PLEDGE NOW
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Gate Page ─────────────────────────────────────────
 interface GatePageProps {
   handle: string;
@@ -315,6 +531,7 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
   const [q1, setQ1] = useState("");
   const [q2, setQ2] = useState("");
   const [zip, setZip] = useState("");
+  const showStickyBar = useScrolled(500);
 
   const sectionRefs: Record<string, React.RefObject<HTMLDivElement | null>> = {
     Home: useRef<HTMLDivElement>(null),
@@ -341,12 +558,15 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
   };
 
   return (
-    <div style={{ background: BG, minHeight: "100dvh", color: GOLD, overflowX: "hidden" }}>
+    <div style={{ background: BG, minHeight: "100dvh", color: GOLD, overflowX: "hidden", paddingBottom: showStickyBar ? 72 : 0 }}>
+
+      {/* ── STAR FIELD ── */}
+      <StarField />
 
       {/* ── STICKY NAV ── */}
       <nav style={{
         position: "sticky", top: 0, zIndex: 40,
-        background: "rgba(4,6,10,0.95)", backdropFilter: "blur(12px)",
+        background: "rgba(4,6,10,0.96)", backdropFilter: "blur(14px)",
         borderBottom: "1px solid rgba(176,142,80,0.1)",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 16px", height: 48,
@@ -354,7 +574,7 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
         <span className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1rem", letterSpacing: "0.04em" }}>
           Mākoa
         </span>
-        <div style={{ display: "flex", gap: 4 }}>
+        <div style={{ display: "flex", gap: 2 }}>
           {NAV_ITEMS.map((item) => (
             <button
               key={item}
@@ -362,8 +582,8 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
               style={{
                 background: "none", border: "none", cursor: "pointer",
                 color: activeNav === item ? GOLD : "rgba(176,142,80,0.35)",
-                fontFamily: "var(--font-jetbrains)", fontSize: "0.55rem",
-                letterSpacing: "0.12em", textTransform: "uppercase", padding: "6px 8px",
+                fontFamily: "var(--font-jetbrains)", fontSize: "0.52rem",
+                letterSpacing: "0.1em", textTransform: "uppercase", padding: "6px 7px",
                 borderBottom: activeNav === item ? `1px solid ${GOLD}` : "1px solid transparent",
                 transition: "color 0.2s",
               }}
@@ -386,28 +606,39 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
       </nav>
 
       {/* ── HOME SECTION ── */}
-      <div ref={sectionRefs.Home as React.RefObject<HTMLDivElement>}>
+      <div ref={sectionRefs.Home as React.RefObject<HTMLDivElement>} style={{ position: "relative" }}>
 
         {/* HERO */}
-        <div style={{ position: "relative", width: "100%", height: 300, overflow: "hidden" }}>
+        <div style={{ position: "relative", width: "100%", height: 320, overflow: "hidden" }}>
           <img
             src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1600&q=80"
             alt="Mākoa Brotherhood"
             style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }}
           />
+          {/* Deep dark overlay */}
           <div style={{
             position: "absolute", inset: 0,
-            background: "linear-gradient(to bottom, rgba(4,6,10,0.45) 0%, rgba(4,6,10,0.92) 100%)",
+            background: "linear-gradient(to bottom, rgba(4,6,10,0.55) 0%, rgba(4,6,10,0.97) 100%)",
+          }} />
+          {/* Moon glow in hero */}
+          <div style={{
+            position: "absolute", top: "20%", left: "50%", transform: "translateX(-50%)",
+            width: 200, height: 200, borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(176,142,80,0.12) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }} />
+          <div style={{
+            position: "absolute", inset: 0,
             display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end",
-            padding: "0 24px 32px",
+            padding: "0 24px 36px",
           }}>
             <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.25em", textTransform: "uppercase", margin: "0 0 10px" }}>
               Founded Easter Sunday · 2026
             </p>
-            <h1 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "2rem", margin: "0 0 8px", textAlign: "center", lineHeight: 1.15 }}>
+            <h1 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "2.1rem", margin: "0 0 8px", textAlign: "center", lineHeight: 1.15 }}>
               For the men who build things
             </h1>
-            <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.6rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.18em", margin: "0 0 22px", textAlign: "center" }}>
+            <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.6rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.18em", margin: "0 0 24px", textAlign: "center" }}>
               Mākoa Order · Malu Trust · West Oahu
             </p>
             <button
@@ -424,28 +655,31 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
         </div>
 
         {/* CORE VALUES STRIP */}
-        <div style={{ background: SECTION_BG, borderBottom: "1px solid rgba(176,142,80,0.08)", padding: "16px 0" }}>
-          <div style={{ display: "flex", justifyContent: "center", gap: 0, maxWidth: 480, margin: "0 auto", flexWrap: "wrap" }}>
+        <div style={{ background: "#030508", borderBottom: "1px solid rgba(176,142,80,0.08)", padding: "14px 0" }}>
+          <div style={{ display: "flex", justifyContent: "center", maxWidth: 480, margin: "0 auto", flexWrap: "wrap" }}>
             {[
               { label: "All Faiths Welcome", icon: "✦" },
               { label: "Conservative Order", icon: "⚔" },
               { label: "Service to All First", icon: "🤝" },
               { label: "Community & Brotherhood", icon: "🌕" },
-            ].map(({ label, icon }) => (
-              <div key={label} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRight: "1px solid rgba(176,142,80,0.1)" }}>
-                <span style={{ fontSize: "0.7rem" }}>{icon}</span>
-                <span style={{ color: "rgba(176,142,80,0.45)", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.1em", textTransform: "uppercase" }}>{label}</span>
+            ].map(({ label, icon }, i) => (
+              <div key={label} style={{
+                display: "flex", alignItems: "center", gap: 6, padding: "5px 12px",
+                borderRight: i < 3 ? "1px solid rgba(176,142,80,0.08)" : "none",
+              }}>
+                <span style={{ fontSize: "0.65rem" }}>{icon}</span>
+                <span style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.5rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.1em", textTransform: "uppercase" }}>{label}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div style={{ padding: "0 16px", maxWidth: 480, margin: "0 auto" }}>
+        <div style={{ padding: "0 16px", maxWidth: 480, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
           {/* TIER CARDS */}
           <div style={{ marginTop: 32 }}>
             <SectionLabel>Where do you stand</SectionLabel>
-            <p className="font-cormorant" style={{ fontStyle: "italic", color: "rgba(176,142,80,0.6)", fontSize: "1.1rem", textAlign: "center", margin: "4px 0 16px" }}>
+            <p className="font-cormorant" style={{ fontStyle: "italic", color: "rgba(176,142,80,0.55)", fontSize: "1.1rem", textAlign: "center", margin: "4px 0 16px" }}>
               Every man enters at his level
             </p>
             <div style={{ display: "flex", gap: 10 }}>
@@ -458,64 +692,73 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
           {/* THE 72 BOX */}
           <div style={{
             marginTop: 28, border: `1px solid ${GOLD_BORDER}`, borderRadius: 12,
-            background: "linear-gradient(135deg, #0a0c10 0%, #060810 100%)",
-            padding: "20px 18px 22px", position: "relative",
+            background: "linear-gradient(135deg, #0a0c10 0%, #030508 100%)",
+            padding: "20px 18px 22px", position: "relative", overflow: "hidden",
           }}>
+            <MoonGlow top={-40} opacity={0.07} />
             <div style={{
               position: "absolute", top: 14, right: 14, background: GOLD, color: "#000",
               fontSize: "0.5rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em",
-              padding: "3px 8px", borderRadius: 3, textTransform: "uppercase",
+              padding: "3px 8px", borderRadius: 3, textTransform: "uppercase", zIndex: 1,
             }}>
               FOUNDING EVENT
             </div>
-            <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 8px" }}>
-              🌕 Flower Moon · May 2026
-            </p>
-            <h2 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.5rem", margin: "0 0 6px", lineHeight: 1.2 }}>
-              Mākoa 1st Roundup
-            </h2>
-            <p style={{ color: "rgba(176,142,80,0.55)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 10px", letterSpacing: "0.08em" }}>
-              May 1–4 · 2026 · Kapolei · West Oahu · Embassy Suites
-            </p>
-            <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.65rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 20px", lineHeight: 1.7 }}>
-              Aliʻi War Room · Mana Mastermind · Elite Reset Training · Founding Circle.<br />
-              The only event where new brothers are elevated and sworn in under the full moon.
-            </p>
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 8px" }}>
+                🌕 Flower Moon · May 2026
+              </p>
+              <h2 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.5rem", margin: "0 0 6px", lineHeight: 1.2 }}>
+                Mākoa 1st Roundup
+              </h2>
+              <p style={{ color: "rgba(176,142,80,0.55)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 10px", letterSpacing: "0.08em" }}>
+                May 1–4 · 2026 · Kapolei · West Oahu · Embassy Suites
+              </p>
+              <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.65rem", fontFamily: "var(--font-jetbrains)", margin: "0 0 20px", lineHeight: 1.7 }}>
+                Aliʻi War Room · Mana Mastermind · Elite Reset Training · Founding Circle.<br />
+                The only event where new brothers are elevated and sworn in under the full moon.
+              </p>
 
-            {/* Countdown */}
-            <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: 20 }}>
-              {[{ label: "DAYS", val: days }, { label: "HOURS", val: hours }, { label: "MINUTES", val: minutes }].map(({ label, val }) => (
-                <div key={label} style={{ flex: 1, background: "rgba(176,142,80,0.05)", border: `1px solid ${GOLD_BORDER}`, borderRadius: 8, padding: "14px 6px", textAlign: "center" }}>
-                  <div style={{ color: GOLD, fontSize: "1.8rem", fontFamily: "var(--font-cormorant)", fontWeight: 600, lineHeight: 1 }}>
-                    {String(val).padStart(2, "0")}
+              {/* Countdown */}
+              <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: 20 }}>
+                {[{ label: "DAYS", val: days }, { label: "HOURS", val: hours }, { label: "MINUTES", val: minutes }].map(({ label, val }) => (
+                  <div key={label} style={{ flex: 1, background: "rgba(176,142,80,0.04)", border: `1px solid ${GOLD_BORDER}`, borderRadius: 8, padding: "14px 6px", textAlign: "center" }}>
+                    <div style={{ color: GOLD, fontSize: "1.8rem", fontFamily: "var(--font-cormorant)", fontWeight: 600, lineHeight: 1 }}>
+                      {String(val).padStart(2, "0")}
+                    </div>
+                    <div style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.5rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", marginTop: 4 }}>
+                      {label}
+                    </div>
                   </div>
-                  <div style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.5rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.15em", marginTop: 4 }}>
-                    {label}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+
+              {/* Seat Bars */}
+              <SeatBar label="Aliʻi" filled={0} total={12} color="#ef4444" />
+              <SeatBar label="Mana" filled={0} total={20} color="#f59e0b" />
+              <SeatBar label="Nā Koa" filled={20} total={20} color={GREEN + "55"} note="Day pass · FREE 4am training" />
+
+              <button
+                onClick={openPledge}
+                style={{
+                  width: "100%", background: GOLD, color: "#000", border: "none",
+                  fontFamily: "var(--font-jetbrains)", fontSize: "0.72rem", letterSpacing: "0.2em",
+                  padding: "15px", cursor: "pointer", borderRadius: 8, textTransform: "uppercase",
+                  marginTop: 6, fontWeight: 700,
+                }}
+              >
+                PLEDGE YOUR SEAT · MAY 1
+              </button>
+              <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.58rem", fontFamily: "var(--font-jetbrains)", textAlign: "center", margin: "10px 0 0", lineHeight: 1.5 }}>
+                Or join our first 4am Wednesday elite training · April 15
+              </p>
             </div>
-
-            {/* Seat Bars */}
-            <SeatBar label="Aliʻi" filled={0} total={12} color="#ef4444" />
-            <SeatBar label="Mana" filled={0} total={20} color="#f59e0b" />
-            <SeatBar label="Nā Koa" filled={20} total={20} color={GREEN + "55"} note="Day pass · FREE 4am training" />
-
-            <button
-              onClick={openPledge}
-              style={{
-                width: "100%", background: GOLD, color: "#000", border: "none",
-                fontFamily: "var(--font-jetbrains)", fontSize: "0.72rem", letterSpacing: "0.2em",
-                padding: "15px", cursor: "pointer", borderRadius: 8, textTransform: "uppercase",
-                marginTop: 6, fontWeight: 700,
-              }}
-            >
-              PLEDGE YOUR SEAT · MAY 1
-            </button>
-            <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.58rem", fontFamily: "var(--font-jetbrains)", textAlign: "center", margin: "10px 0 0", lineHeight: 1.5 }}>
-              Or join our first 4am Wednesday elite training · April 15
-            </p>
           </div>
+
+          {/* WHY NOW BLOCK */}
+          <WhyNowBlock onPledge={openPledge} />
+
+          {/* BROTHERHOOD SIGNAL */}
+          <BrotherhoodSignal />
 
           {/* QUESTIONS */}
           <div style={{ marginTop: 32 }}>
@@ -547,6 +790,9 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
               <input className="gate-input" type="text" placeholder="ZIP CODE" value={zip} onChange={(e) => setZip(e.target.value)} maxLength={10} style={{ textAlign: "left", paddingLeft: 0 }} />
             </div>
           </div>
+
+          {/* OATH BLOCK */}
+          <OathBlock onPledge={openPledge} />
 
           {/* PLEDGE TAB */}
           <div
@@ -583,15 +829,15 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
 
           {/* TELEGRAM */}
           <div style={{
-            marginTop: 20, marginBottom: 8, background: "#060810",
-            border: `1px solid rgba(88,166,255,0.15)`, borderRadius: 10,
+            marginTop: 20, marginBottom: 8, background: "#030508",
+            border: `1px solid rgba(88,166,255,0.12)`, borderRadius: 10,
             padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between",
           }}>
             <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", margin: 0, lineHeight: 1.5 }}>
               Follow the 72<br />
-              <span style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.55rem" }}>updates drop on Telegram</span>
+              <span style={{ color: "rgba(176,142,80,0.22)", fontSize: "0.55rem" }}>updates drop on Telegram</span>
             </p>
-            <button style={{ background: "transparent", border: `1px solid ${BLUE}55`, color: BLUE, fontFamily: "var(--font-jetbrains)", fontSize: "0.62rem", letterSpacing: "0.12em", padding: "8px 14px", cursor: "pointer", borderRadius: 6, textTransform: "uppercase" }}>
+            <button style={{ background: "transparent", border: `1px solid ${BLUE}44`, color: BLUE, fontFamily: "var(--font-jetbrains)", fontSize: "0.62rem", letterSpacing: "0.12em", padding: "8px 14px", cursor: "pointer", borderRadius: 6, textTransform: "uppercase" }}>
               JOIN THE SIGNAL
             </button>
           </div>
@@ -599,9 +845,10 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
       </div>
 
       {/* ── ABOUT SECTION ── */}
-      <div ref={sectionRefs.About as React.RefObject<HTMLDivElement>} style={{ marginTop: 8 }}>
-        <div style={{ background: SECTION_BG, borderTop: "1px solid rgba(176,142,80,0.08)", borderBottom: "1px solid rgba(176,142,80,0.08)", padding: "40px 16px" }}>
-          <div style={{ maxWidth: 480, margin: "0 auto" }}>
+      <div ref={sectionRefs.About as React.RefObject<HTMLDivElement>} style={{ marginTop: 8, position: "relative" }}>
+        <div style={{ background: "#030508", borderTop: "1px solid rgba(176,142,80,0.08)", borderBottom: "1px solid rgba(176,142,80,0.08)", padding: "40px 16px", position: "relative", overflow: "hidden" }}>
+          <MoonGlow top={0} opacity={0.05} />
+          <div style={{ maxWidth: 480, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
             <SectionLabel>The Mākoa Order</SectionLabel>
             <h2 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.8rem", textAlign: "center", margin: "8px 0 24px", lineHeight: 1.2 }}>
@@ -615,8 +862,8 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
               Becoming a member of the Mākoa Order is an honor and a significant responsibility. The full formation process is thorough and takes 18–24 months. Every applicant is carefully reviewed by the XI Admissions Committee within 24 hours. If initially approved, the XI Formation Committee reaches out within 48 hours to connect each brother with others in his regional zone.
             </p>
 
-            {/* Conversion pull-quote */}
-            <div style={{ border: `1px solid ${GOLD_BORDER}`, borderRadius: 10, padding: "20px 18px", marginBottom: 28, background: "rgba(176,142,80,0.03)", textAlign: "center" }}>
+            {/* Pull-quote */}
+            <div style={{ border: `1px solid ${GOLD_BORDER}`, borderRadius: 10, padding: "20px 18px", marginBottom: 28, background: "rgba(176,142,80,0.02)", textAlign: "center" }}>
               <p className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.3rem", margin: "0 0 10px", lineHeight: 1.3 }}>
                 "The Order does not recruit. It recognizes."
               </p>
@@ -627,7 +874,6 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
 
             <GoldDivider />
 
-            {/* ADMISSIONS */}
             <SectionLabel>Admissions Criteria</SectionLabel>
             <h3 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.2rem", margin: "8px 0 18px" }}>
               Who is called to the Order
@@ -638,7 +884,6 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
 
             <GoldDivider />
 
-            {/* SPONSORSHIP */}
             <SectionLabel>Sponsorship</SectionLabel>
             <h3 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.2rem", margin: "8px 0 18px" }}>
               How you enter the gate
@@ -648,7 +893,6 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
 
             <GoldDivider />
 
-            {/* FINANCIAL */}
             <SectionLabel>Financial</SectionLabel>
             <h3 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.2rem", margin: "8px 0 18px" }}>
               Passage Fees & Annual Dues
@@ -656,7 +900,6 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
             <CriteriaRow icon="◇" text="Prior to Investiture, every candidate pays an initiation fee known as Passage Fees. After investiture, Annual Dues are required." />
             <CriteriaRow icon="◇" text="Members are encouraged to contribute to the Order's Annual Appeal, which supports the defense and advancement of our projects and community commitments." />
 
-            {/* Pledge CTA mid-page */}
             <button
               onClick={openPledge}
               style={{
@@ -671,7 +914,6 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
 
             <GoldDivider />
 
-            {/* FORMATION */}
             <SectionLabel>Formation</SectionLabel>
             <h3 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.2rem", margin: "8px 0 18px" }}>
               The path from candidate to brother
@@ -696,8 +938,8 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
       </div>
 
       {/* ── REGIONS SECTION ── */}
-      <div ref={sectionRefs.Regions as React.RefObject<HTMLDivElement>}>
-        <div style={{ padding: "40px 16px", maxWidth: 480, margin: "0 auto" }}>
+      <div ref={sectionRefs.Regions as React.RefObject<HTMLDivElement>} style={{ position: "relative" }}>
+        <div style={{ padding: "40px 16px", maxWidth: 480, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <SectionLabel>Regions</SectionLabel>
           <h2 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.8rem", textAlign: "center", margin: "8px 0 8px", lineHeight: 1.2 }}>
             Easter 2026 · The Call Goes Out
@@ -718,7 +960,7 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
               borderRadius: 10, padding: "16px 16px", marginBottom: 12,
               display: "flex", gap: 14, alignItems: "flex-start",
             }}>
-              <div style={{ flexShrink: 0, marginTop: 2 }}>
+              <div style={{ flexShrink: 0, marginTop: 6 }}>
                 <div style={{ width: 8, height: 8, borderRadius: "50%", background: color, boxShadow: `0 0 8px ${color}88` }} />
               </div>
               <div style={{ flex: 1 }}>
@@ -731,7 +973,7 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
             </div>
           ))}
 
-          <div style={{ marginTop: 20, background: "rgba(176,142,80,0.04)", border: `1px solid ${GOLD_BORDER}`, borderRadius: 10, padding: "18px 16px", textAlign: "center" }}>
+          <div style={{ marginTop: 20, background: "rgba(176,142,80,0.03)", border: `1px solid ${GOLD_BORDER}`, borderRadius: 10, padding: "18px 16px", textAlign: "center" }}>
             <p className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.1rem", margin: "0 0 8px" }}>
               Don't see your region?
             </p>
@@ -754,8 +996,9 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
 
       {/* ── PUBLICATIONS SECTION ── */}
       <div ref={sectionRefs.Publications as React.RefObject<HTMLDivElement>}>
-        <div style={{ background: SECTION_BG, borderTop: "1px solid rgba(176,142,80,0.08)", padding: "40px 16px 48px" }}>
-          <div style={{ maxWidth: 480, margin: "0 auto" }}>
+        <div style={{ background: "#030508", borderTop: "1px solid rgba(176,142,80,0.08)", padding: "40px 16px 48px", position: "relative", overflow: "hidden" }}>
+          <MoonGlow top={0} opacity={0.05} />
+          <div style={{ maxWidth: 480, margin: "0 auto", position: "relative", zIndex: 1 }}>
             <SectionLabel>Publications</SectionLabel>
             <h2 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "1.8rem", textAlign: "center", margin: "8px 0 6px", lineHeight: 1.2 }}>
               Full Moon Calendar · 2026
@@ -768,8 +1011,8 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
               <div
                 key={name}
                 style={{
-                  background: highlight ? "rgba(176,142,80,0.06)" : CARD_BG,
-                  border: `1px solid ${highlight ? GOLD_BORDER : "rgba(176,142,80,0.1)"}`,
+                  background: highlight ? "rgba(176,142,80,0.05)" : CARD_BG,
+                  border: `1px solid ${highlight ? GOLD_BORDER : "rgba(176,142,80,0.08)"}`,
                   borderRadius: 10, padding: "14px 16px", marginBottom: 10,
                   display: "flex", gap: 14, alignItems: "center",
                 }}
@@ -779,10 +1022,10 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                    <span style={{ color: highlight ? GOLD : "rgba(176,142,80,0.7)", fontSize: "0.72rem", fontFamily: "var(--font-jetbrains)", fontWeight: highlight ? 600 : 400 }}>{name}</span>
-                    <span style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.58rem", fontFamily: "var(--font-jetbrains)" }}>{date}</span>
+                    <span style={{ color: highlight ? GOLD : "rgba(176,142,80,0.65)", fontSize: "0.72rem", fontFamily: "var(--font-jetbrains)", fontWeight: highlight ? 600 : 400 }}>{name}</span>
+                    <span style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.58rem", fontFamily: "var(--font-jetbrains)" }}>{date}</span>
                   </div>
-                  <p style={{ color: highlight ? "rgba(176,142,80,0.7)" : "rgba(176,142,80,0.4)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", margin: 0, lineHeight: 1.5 }}>{event}</p>
+                  <p style={{ color: highlight ? "rgba(176,142,80,0.65)" : "rgba(176,142,80,0.35)", fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", margin: 0, lineHeight: 1.5 }}>{event}</p>
                   {highlight && (
                     <p style={{ color: GOLD, fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", margin: "6px 0 0", letterSpacing: "0.1em" }}>← FOUNDING EVENT · PLEDGE NOW</p>
                   )}
@@ -790,7 +1033,7 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
               </div>
             ))}
 
-            <div style={{ marginTop: 24, padding: "20px 16px", background: "rgba(176,142,80,0.03)", border: `1px solid ${GOLD_BORDER}`, borderRadius: 10 }}>
+            <div style={{ marginTop: 24, padding: "20px 16px", background: "rgba(176,142,80,0.02)", border: `1px solid ${GOLD_BORDER}`, borderRadius: 10 }}>
               <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.65rem", fontFamily: "var(--font-jetbrains)", lineHeight: 1.8, margin: "0 0 16px" }}>
                 Every chapter house hosts weekly elite Mākoa training — 4am, Wednesday mornings. The 72-hour full moon gathering is the heartbeat of the Order: we plant, reset, and rise together. Publications and event updates are distributed exclusively via Telegram to active members.
               </p>
@@ -808,10 +1051,10 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
 
             {/* Footer */}
             <div style={{ marginTop: 40, textAlign: "center" }}>
-              <p className="font-cormorant" style={{ fontStyle: "italic", color: "rgba(176,142,80,0.25)", fontSize: "1rem", margin: "0 0 6px" }}>
+              <p className="font-cormorant" style={{ fontStyle: "italic", color: "rgba(176,142,80,0.2)", fontSize: "1rem", margin: "0 0 6px" }}>
                 Hana · Pale · Ola
               </p>
-              <p style={{ color: "rgba(176,142,80,0.15)", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.18em", margin: 0 }}>
+              <p style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.18em", margin: 0 }}>
                 Malu Trust · West Oahu · 2026 · All Faiths · Service First
               </p>
             </div>
@@ -832,6 +1075,9 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
 
       {/* ── PLEDGE POPUP ── */}
       <PledgePopup open={pledgeOpen} onClose={() => setPledgeOpen(false)} onConfirm={handleConfirm} />
+
+      {/* ── STICKY BOTTOM PLEDGE BAR ── */}
+      <StickyPledgeBar visible={showStickyBar && !pledgeOpen && !sheet} onPledge={openPledge} />
     </div>
   );
 }
