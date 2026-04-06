@@ -53,23 +53,9 @@ const STEPS = [
   { label: "Seat secured", sub: "Deposit confirms your founding place", done: false, active: false },
 ];
 
-// Rotating activity feed
-const SIGNALS = [
-  { region: "West Oahu", action: "Aliʻi accepted", time: "18m ago", color: GOLD },
-  { region: "Maui", action: "Mana seat secured", time: "42m ago", color: "#58a6ff" },
-  { region: "Big Island", action: "Nā Koa accepted", time: "1h ago", color: "#3fb950" },
-  { region: "East Oahu", action: "Mana accepted", time: "2h ago", color: "#58a6ff" },
-];
-
 export default function UnderReviewPage({ name, onAccepted }: UnderReviewPageProps) {
   const { hours, mins, secs } = useReviewCountdown();
-  const [feedIdx, setFeedIdx] = useState(0);
   const displayName = name.trim() || "brother";
-
-  useEffect(() => {
-    const id = setInterval(() => setFeedIdx(i => (i + 1) % SIGNALS.length), 4000);
-    return () => clearInterval(id);
-  }, []);
 
   return (
     <div style={{ background: BG, minHeight: "100dvh", fontFamily: "var(--font-jetbrains)", overflowX: "hidden" }}>
@@ -146,38 +132,13 @@ export default function UnderReviewPage({ name, onAccepted }: UnderReviewPagePro
           ))}
         </div>
 
-        {/* Live feed */}
-        <div style={{ background: "#060810", border: "1px solid rgba(176,142,80,0.06)", borderRadius: 10, padding: "14px 16px", marginBottom: 20 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.5rem", letterSpacing: "0.18em", textTransform: "uppercase", margin: 0 }}>
-              Brotherhood Signal · Live
-            </p>
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#3fb950", boxShadow: "0 0 5px #3fb95088" }} />
-              <span style={{ color: "#3fb95066", fontSize: "0.46rem" }}>LIVE</span>
-            </div>
-          </div>
-          {[SIGNALS[feedIdx % SIGNALS.length], SIGNALS[(feedIdx + 1) % SIGNALS.length]].map(({ region, action, time, color }, i) => (
-            <div key={`${region}-${i}`} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: i === 0 ? 8 : 0, opacity: i === 0 ? 1 : 0.45 }}>
-              <div style={{ width: 5, height: 5, borderRadius: "50%", background: color, flexShrink: 0 }} />
-              <span style={{ color: "rgba(176,142,80,0.45)", fontSize: "0.58rem", flex: 1 }}>
-                <span style={{ color: GOLD }}>{region}</span> · {action}
-              </span>
-              <span style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.52rem" }}>{time}</span>
-            </div>
-          ))}
-          <p style={{ color: "rgba(176,142,80,0.18)", fontSize: "0.52rem", margin: "10px 0 0", textAlign: "center" }}>
-            Most seats secured within 48 hours of acceptance
-          </p>
-        </div>
-
         {/* Telegram preview channel */}
         <div style={{ background: "rgba(88,166,255,0.04)", border: "1px solid rgba(88,166,255,0.18)", borderRadius: 12, padding: "16px", marginBottom: 20 }}>
           <p style={{ color: "#58a6ff", fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 8px" }}>
             Mākoa Signal · Preview Channel
           </p>
           <p style={{ color: "rgba(176,142,80,0.45)", fontSize: "0.62rem", lineHeight: 1.7, margin: "0 0 12px" }}>
-            While you wait — join the Mākoa Signal preview channel. Announcements, event updates, and brotherhood activity. No commitment required.
+            While you wait — join the Mākoa Signal channel. Announcements, event updates, and brotherhood activity.
           </p>
           <a
             href="https://t.me/makoaorder"
@@ -193,7 +154,7 @@ export default function UnderReviewPage({ name, onAccepted }: UnderReviewPagePro
               boxSizing: "border-box",
             }}
           >
-            JOIN SIGNAL PREVIEW →
+            JOIN THE SIGNAL →
           </a>
         </div>
 

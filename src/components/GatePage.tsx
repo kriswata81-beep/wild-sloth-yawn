@@ -228,73 +228,9 @@ function NaKoaContent({ onClose, onPledge }: { onClose: () => void; onPledge: ()
   );
 }
 
-// ── Auto-rotating Live Feed ────────────────────────────────
-const ALL_SIGNALS = [
-  { region: "West Oahu", action: "Aliʻi seat pledged", time: "4m ago", color: "#b08e50" },
-  { region: "Maui", action: "Mana accepted", time: "12m ago", color: "#58a6ff" },
-  { region: "Big Island", action: "Nā Koa entry", time: "31m ago", color: "#3fb950" },
-  { region: "East Oahu", action: "Aliʻi seat pledged", time: "1h ago", color: "#b08e50" },
-  { region: "Maui Nui", action: "Mana seat pledged", time: "2h ago", color: "#58a6ff" },
-  { region: "West Oahu", action: "Nā Koa entry", time: "3h ago", color: "#3fb950" },
-  { region: "Kauai", action: "Mana accepted", time: "5h ago", color: "#58a6ff" },
-  { region: "Mainland West", action: "Nā Koa entry", time: "8h ago", color: "#3fb950" },
-];
-
-function BrotherhoodSignal() {
-  const [visibleIdx, setVisibleIdx] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setVisibleIdx((i) => (i + 1) % ALL_SIGNALS.length);
-    }, 3000);
-    return () => clearInterval(id);
-  }, []);
-
-  const visible = [
-    ALL_SIGNALS[visibleIdx % ALL_SIGNALS.length],
-    ALL_SIGNALS[(visibleIdx + 1) % ALL_SIGNALS.length],
-    ALL_SIGNALS[(visibleIdx + 2) % ALL_SIGNALS.length],
-    ALL_SIGNALS[(visibleIdx + 3) % ALL_SIGNALS.length],
-  ];
-
-  return (
-    <div style={{ marginTop: 28 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-        <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>
-          Brotherhood signal · live activity
-        </p>
-        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-          <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#3fb950", boxShadow: "0 0 6px #3fb95088", animation: "breatheGlow 2s ease-in-out infinite" }} />
-          <span style={{ color: "#3fb95066", fontSize: "0.48rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.1em" }}>LIVE</span>
-        </div>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        {visible.map(({ region, action, time, color }, i) => (
-          <div key={`${region}-${i}`} style={{
-            background: CARD_BG, border: `1px solid rgba(176,142,80,0.08)`,
-            borderRadius: 8, padding: "10px 14px",
-            display: "flex", alignItems: "center", gap: 10,
-            opacity: i === 0 ? 1 : i === 1 ? 0.8 : i === 2 ? 0.55 : 0.3,
-            transition: "opacity 0.5s",
-          }}>
-            <div style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0, boxShadow: `0 0 6px ${color}88` }} />
-            <span style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.6rem", fontFamily: "var(--font-jetbrains)", flex: 1 }}>
-              <span style={{ color: GOLD }}>{region}</span> · {action}
-            </span>
-            <span style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", flexShrink: 0 }}>{time}</span>
-          </div>
-        ))}
-      </div>
-      <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", textAlign: "center", margin: "10px 0 0", letterSpacing: "0.1em" }}>
-        Most seats are secured within 48 hours of acceptance
-      </p>
-    </div>
-  );
-}
-
-// ── Seat counters (simulated live) ────────────────────────
-const SEAT_TOTALS = { alii: 12, mana: 20, nakoa: 40 };
-const SEAT_TAKEN = { alii: 7, mana: 13, nakoa: 22 };
+// ── Seat counters ──────────────────────────────────────────
+const SEAT_TOTALS = { alii: 12, mana: 20, nakoa: 72 };
+const SEAT_TAKEN = { alii: 0, mana: 0, nakoa: 0 };
 
 // ── Pledge Popup ───────────────────────────────────────────
 function PledgePopup({ open, onClose, onConfirm }: { open: boolean; onClose: () => void; onConfirm: () => void }) {
@@ -407,7 +343,7 @@ function WhyNowBlock({ onPledge }: { onPledge: () => void }) {
       </h3>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20, position: "relative", zIndex: 1 }}>
         {[
-          { icon: "🌕", text: "The Flower Moon rises May 12. The 72 begins May 1. There is no second founding." },
+          { icon: "🌕", text: "The Flower Moon rises May 1. The 72 begins May 1. There is no second founding." },
           { icon: "⚔", text: "Aliʻi seats are capped at 12. Mana at 20. Once filled, the gate closes until the next moon cycle." },
           { icon: "✦", text: "Founding brothers carry the Mākoa crest from the first 72. That mark cannot be earned later — only now." },
           { icon: "🤝", text: "XI reviews every pledge within 24 hours. Your Formation Committee reaches out within 48. The process is already moving." },
@@ -491,7 +427,7 @@ function CountdownBox({ value, label }: { value: number; label: string }) {
 
 // ── Full Moon Calendar ─────────────────────────────────────
 const MOONS = [
-  { name: "Flower Moon", date: "May 12, 2026", event: "Mākoa 1st Roundup · 72hr War Room", highlight: true },
+  { name: "Flower Moon", date: "May 1, 2026", event: "Mākoa 1st Roundup · 72hr War Room", highlight: true },
   { name: "Strawberry Moon", date: "Jun 11, 2026", event: "Elite Reset Training · Chapter Houses" },
   { name: "Buck Moon", date: "Jul 10, 2026", event: "72hr Mastermind · Mana Strategy" },
   { name: "Sturgeon Moon", date: "Aug 9, 2026", event: "Service Projects · Regional Zones" },
@@ -520,7 +456,7 @@ function StickyPledgeBar({ visible, onPledge }: { visible: boolean; onPledge: ()
               Founding seats are closing
             </p>
             <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", margin: 0 }}>
-              Aliʻi: 5 remaining · Mana: 7 remaining · No second founding
+              Aliʻi: 12 seats · Mana: 20 seats · No second founding
             </p>
           </div>
           <button
@@ -762,7 +698,7 @@ export default function GatePage({ handle, phone, onConfirm, onLogoTap }: GatePa
             <div style={{ position: "relative", zIndex: 1 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 3 }}>
                 <span style={{ fontSize: "0.85rem" }}>🌕</span>
-                <span style={{ fontSize: "0.5rem", color: "rgba(176,142,80,0.4)", letterSpacing: "0.14em", textTransform: "uppercase", fontFamily: "var(--font-jetbrains)" }}>Flower Moon · May 2026</span>
+                <span style={{ fontSize: "0.5rem", color: "rgba(176,142,80,0.4)", letterSpacing: "0.14em", textTransform: "uppercase", fontFamily: "var(--font-jetbrains)" }}>Flower Moon · May 1, 2026</span>
               </div>
               <div className="font-cormorant" style={{ fontStyle: "italic", fontSize: "1.15rem", color: GOLD, marginBottom: 2 }}>
                 The 72 — Mākoa 1st Roundup
@@ -774,7 +710,7 @@ export default function GatePage({ handle, phone, onConfirm, onLogoTap }: GatePa
               {/* Left-border quote block */}
               <div style={{ borderLeft: "2px solid rgba(186,117,23,0.38)", paddingLeft: 10, marginBottom: 14 }}>
                 <div className="font-cormorant" style={{ fontStyle: "italic", fontWeight: 300, fontSize: "0.95rem", color: "rgba(237,232,224,0.5)", lineHeight: 2.1 }}>
-                  4am ice bath under the full moon.<br />
+                  4am ice bath as the Flower Moon sets over the Pacific.<br />
                   72 hours of war room and reset.<br />
                   Brothers sworn in at the founding fire.<br />
                   The only event where elevation happens.
@@ -869,9 +805,6 @@ export default function GatePage({ handle, phone, onConfirm, onLogoTap }: GatePa
           {/* WHY NOW BLOCK */}
           <WhyNowBlock onPledge={openPledge} />
 
-          {/* BROTHERHOOD SIGNAL */}
-          <BrotherhoodSignal />
-
           {/* QUESTIONS */}
           <div style={{ marginTop: 32 }}>
             <SectionLabel>Tell XI who you are</SectionLabel>
@@ -952,9 +885,9 @@ export default function GatePage({ handle, phone, onConfirm, onLogoTap }: GatePa
               Follow the 72<br />
               <span style={{ color: "rgba(176,142,80,0.22)", fontSize: "0.55rem" }}>updates drop on Telegram</span>
             </p>
-            <button style={{ background: "transparent", border: `1px solid ${BLUE}44`, color: BLUE, fontFamily: "var(--font-jetbrains)", fontSize: "0.62rem", letterSpacing: "0.12em", padding: "8px 14px", cursor: "pointer", borderRadius: 6, textTransform: "uppercase" }}>
+            <a href="https://t.me/makoaorder" target="_blank" rel="noopener noreferrer" style={{ background: "transparent", border: `1px solid ${BLUE}44`, color: BLUE, fontFamily: "var(--font-jetbrains)", fontSize: "0.62rem", letterSpacing: "0.12em", padding: "8px 14px", cursor: "pointer", borderRadius: 6, textTransform: "uppercase", textDecoration: "none", display: "inline-block" }}>
               JOIN THE SIGNAL
-            </button>
+            </a>
           </div>
         </div>
       </div>

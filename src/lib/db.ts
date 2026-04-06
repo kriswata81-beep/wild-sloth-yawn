@@ -410,8 +410,8 @@ const SEED_EVENTS: MakoaEvent[] = [
     event_id: "EVT-MOON-MAY",
     event_name: "Flower Moon Full Moon Gathering",
     event_type: "monthly_full_moon",
-    start_date: "2026-05-12",
-    end_date: "2026-05-12",
+    start_date: "2026-05-01",
+    end_date: "2026-05-01",
     location_name: "Mākoa House · West Oahu",
     island: "Oahu",
     host_chapter: "West Oahu",
@@ -787,8 +787,6 @@ function buildInitialDB(): MakoaDB {
     }
   }
 
-  const depositsByTier = (t: Tier) => payments.filter(p => p.payment_type === "deposit" && p.tier === t && p.payment_status === "paid").length;
-
   return {
     applicants,
     payments,
@@ -800,10 +798,11 @@ function buildInitialDB(): MakoaDB {
     admin_activity_log: [],
     houses: SEED_HOUSES,
     counterMode: "simulated",
+    // Start at full capacity — admin decrements manually as real deposits come in
     simulatedSeats: {
-      alii: SEAT_CAPS.alii - depositsByTier("alii"),
-      mana: SEAT_CAPS.mana - depositsByTier("mana"),
-      nakoa: SEAT_CAPS.nakoa - depositsByTier("nakoa"),
+      alii: SEAT_CAPS.alii,
+      mana: SEAT_CAPS.mana,
+      nakoa: SEAT_CAPS.nakoa,
     },
   };
 }

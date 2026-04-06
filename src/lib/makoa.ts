@@ -116,11 +116,11 @@ export const SEAT_CAPS: Record<Tier, number> = {
 };
 
 // ── SIMULATED SEAT STATE (admin-editable defaults) ────────────
-// In production, replace with API call to Stripe or your DB.
+// Starts at full capacity. Admin decrements manually as deposits come in.
 export const SIMULATED_SEATS: Record<Tier, number> = {
-  alii: 5,   // remaining
-  mana: 7,   // remaining
-  nakoa: 18, // remaining
+  alii: 12,  // remaining — full at launch
+  mana: 20,  // remaining — full at launch
+  nakoa: 72, // remaining — full at launch
 };
 
 // ── SEAT COUNTER LOGIC ────────────────────────────────────────

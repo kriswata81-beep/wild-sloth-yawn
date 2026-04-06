@@ -57,12 +57,6 @@ const inputStyle: React.CSSProperties = {
   letterSpacing: "0.05em",
 };
 
-// Live activity feed items
-const ACTIVITY = [
-  { region: "West Oahu", action: "Aliʻi pledged", time: "2h ago", color: GOLD },
-  { region: "Maui", action: "Mana accepted", time: "5h ago", color: "#58a6ff" },
-  { region: "East Oahu", action: "Nā Koa entry", time: "9h ago", color: "#3fb950" },
-];
 
 export default function PledgePage({ handle, phone, onSubmit, onBack }: PledgePageProps) {
   const [name, setName] = useState(handle || "");
@@ -161,20 +155,6 @@ export default function PledgePage({ handle, phone, onSubmit, onBack }: PledgePa
                 onChange={(e) => setZip(e.target.value.slice(0, 10))}
                 maxLength={10}
               />
-            </div>
-
-            {/* Live activity */}
-            <div style={{ marginTop: 8, background: "#060810", border: "0.5px solid rgba(176,142,80,0.08)", borderRadius: 8, padding: "12px 14px" }}>
-              <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.5rem", letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 10px" }}>Live · Brotherhood Signal</p>
-              {ACTIVITY.map(({ region, action, time, color }) => (
-                <div key={region} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
-                  <div style={{ width: 5, height: 5, borderRadius: "50%", background: color, flexShrink: 0, boxShadow: `0 0 5px ${color}88` }} />
-                  <span style={{ color: "rgba(176,142,80,0.45)", fontSize: "0.58rem", flex: 1 }}>
-                    <span style={{ color: GOLD }}>{region}</span> · {action}
-                  </span>
-                  <span style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.52rem" }}>{time}</span>
-                </div>
-              ))}
             </div>
 
             <button
