@@ -9,7 +9,9 @@ import AcceptancePage from "@/components/AcceptancePage";
 import PaymentPage from "@/components/PaymentPage";
 import SeatSecuredPage from "@/components/SeatSecuredPage";
 import AdminPage from "@/components/AdminPage";
+import MemberPortal from "@/components/MemberPortal";
 import { generateApplicationId, zipToRegion, type Tier } from "@/lib/makoa";
+import { useStore } from "@/lib/store";
 
 type Screen =
   | "key"
@@ -19,9 +21,10 @@ type Screen =
   | "acceptance"
   | "payment"
   | "secured"
-  | "admin";
+  | "admin"
+  | "portal";
 
-// Secret admin key sequence: tap nav logo 5 times
+// Secret admin key sequence: tap nav logo 5 times within 2 seconds
 function useAdminUnlock(onUnlock: () => void) {
   const [taps, setTaps] = useState(0);
   const [lastTap, setLastTap] = useState(0);
@@ -45,6 +48,8 @@ function useAdminUnlock(onUnlock: () => void) {
 }
 
 export default function Home() {
+  const { pledgePaid, depositPaid } = useStore();
+
   const [screen, setScreen] = useState<Screen>("key");
   const [handle, setHandle] = useState("");
   const [phone, setPhone] = useState("");
@@ -70,12 +75,27 @@ export default function Home() {
   const adminTap = useAdminUnlock(() => setScreen("admin"));
 
   const handlePledgeSubmit = (data: PledgeData) => {
-    console.log("🌕 Mākoa Pledge Submitted:", {
-      ...data,
+    // Write to the master store
+    pledgePaid({
+      full_name: data.name,
+      email: data.email,
+      phone: data.phone,
+      zip_code: data.zip,
+      tier_interest: (data.q3.includes("Aliʻi") ? "alii" : data.q3.includes("Mana") ? "mana" : "nakoa") as Tier,
+      q1: data.q1,
+      q2: data.q2,
+      q3: data.q3,
+      application_id: applicationId,
+    });
+
+    console.log("🌕 Mākoa Pledge Written to Store:", {
       applicationId,
+      name: data.name,
+      email: data.email,
       region: zipToRegion(data.zip),
       timestamp: new Date().toISOString(),
     });
+
     setPledgeData(data);
     setScreen("review");
   };
@@ -83,6 +103,12 @@ export default function Home() {
   const handleTierSelect = (tier: Tier) => {
     setSelectedTier(tier);
     setScreen("payment");
+  };
+
+  const handleDepositPaid = () => {
+    // Write deposit to store
+    depositPaid(applicationId, selectedTier);
+    setScreen("secured");
   };
 
   return (
@@ -136,7 +162,7 @@ export default function Home() {
           name={pledgeData?.name || handle}
           email={pledgeData?.email || ""}
           applicationId={applicationId}
-          onPaid={() => setScreen("secured")}
+          onPaid={handleDepositPaid}
           onBack={() => setScreen("acceptance")}
         />
       )}
@@ -152,6 +178,13 @@ export default function Home() {
 
       {screen === "admin" && (
         <AdminPage onExit={() => setScreen("gate")} />
+      )}
+
+      {screen === "portal" && (
+        <MemberPortal
+          applicationId={applicationId}
+          onBack={() => setScreen("secured")}
+        />
       )}
     </>
   );
