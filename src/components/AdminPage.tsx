@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store-context";
 import { TIER_CONFIG, SEAT_CAPS, getSeatInfo, STRIPE_LINKS, type Tier } from "@/lib/makoa";
-import { type Applicant, type ReviewStatus } from "@/lib/db";
+import { type Applicant, type ReviewStatus, type MemberRank } from "@/lib/db";
+import { RANK_ORDER } from "@/lib/db";
 import MemberTimeline from "./MemberTimeline";
 
 const GOLD = "#b08e50";
@@ -231,7 +232,7 @@ interface AdminPageProps {
   onExit: () => void;
 }
 
-type AdminTab = "funnel" | "tiers" | "seats" | "payments" | "telegram" | "regions" | "events" | "members";
+type AdminTab = "funnel" | "tiers" | "seats" | "payments" | "telegram" | "regions" | "events" | "members" | "houses" | "ranks";
 
 export default function AdminPage({ onExit }: AdminPageProps) {
   const { db, stats, seatsRemaining, setCounterMode, adjustSimulatedSeat } = useStore();
@@ -248,6 +249,8 @@ export default function AdminPage({ onExit }: AdminPageProps) {
     { key: "regions", label: "Regions" },
     { key: "events", label: "Events" },
     { key: "members", label: "Members" },
+    { key: "houses", label: "Houses" },
+    { key: "ranks", label: "Ranks" },
   ];
 
   const filteredMembers = db.applicants.filter(a =>
@@ -549,6 +552,120 @@ export default function AdminPage({ onExit }: AdminPageProps) {
                   <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.6rem", textAlign: "center", marginTop: 20 }}>No members found</p>
                 )}
               </>
+            )}
+          </div>
+        )}
+
+        {/* ── HOUSES TAB ── */}
+        {activeTab === "houses" && (
+          <div>
+            <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 14px" }}>Mākoa Houses · Revenue & Operations</p>
+            {db.houses.map(house => {
+              const healthColor = house.house_health_status === "strong" ? GREEN : house.house_health_status === "stable" ? GOLD : RED;
+              return (
+                <div key={house.house_id} style={{ background: "#060810", border: `1px solid ${healthColor}18`, borderRadius: 10, padding: "16px", marginBottom: 12 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+                    <div>
+                      <p style={{ color: GOLD, fontSize: "0.65rem", margin: "0 0 2px", fontWeight: 600 }}>{house.house_name}</p>
+                      <p style={{ color: GOLD_DIM, fontSize: "0.52rem", margin: "0 0 2px" }}>{house.region} · Anchor: {house.chapter_anchor_name}</p>
+                      <span style={{ color: healthColor, background: `${healthColor}15`, border: `1px solid ${healthColor}30`, fontSize: "0.44rem", letterSpacing: "0.1em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 3, fontFamily: "var(--font-jetbrains)", fontWeight: 700 }}>
+                        {house.house_health_status.replace("_", " ")}
+                      </span>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <p style={{ color: GOLD, fontSize: "0.8rem", fontWeight: 700, fontFamily: "var(--font-jetbrains)", margin: "0 0 2px" }}>${house.monthly_recurring_revenue.toLocaleString()}/mo</p>
+                      <p style={{ color: GOLD_DIM, fontSize: "0.5rem", margin: 0 }}>${house.total_revenue.toLocaleString()} lifetime</p>
+                    </div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 10 }}>
+                    {[
+                      { label: "Active", value: house.active_member_count, color: GREEN },
+                      { label: "Aliʻi", value: house.alii_count, color: GOLD },
+                      { label: "Mana", value: house.mana_count, color: BLUE },
+                      { label: "Nā Koa", value: house.nakoa_count, color: "#8b9aaa" },
+                    ].map(({ label, value, color }) => (
+                      <div key={label} style={{ background: "#030508", borderRadius: 5, padding: "7px 6px", textAlign: "center" }}>
+                        <p style={{ color, fontSize: "0.9rem", fontWeight: 700, margin: "0 0 1px", lineHeight: 1 }}>{value}</p>
+                        <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.44rem", margin: 0, textTransform: "uppercase" }}>{label}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.52rem" }}>Retention: {house.member_retention_rate}%</span>
+                    <span style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.52rem" }}>Payment health: {house.payment_health_score}%</span>
+                    <span style={{ color: GREEN, fontSize: "0.52rem" }}>{house.referral_count} referrals</span>
+                  </div>
+                </div>
+              );
+            })}
+            <div style={{ background: "#060810", border: "0.5px solid rgba(176,142,80,0.08)", borderRadius: 10, padding: "14px" }}>
+              <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 10px" }}>Total Revenue</p>
+              {[
+                { label: "Pledge revenue", value: `$${db.houses.reduce((s, h) => s + h.pledge_revenue_total, 0).toLocaleString()}` },
+                { label: "Deposit revenue", value: `$${db.houses.reduce((s, h) => s + h.deposits_collected_total, 0).toLocaleString()}` },
+                { label: "Monthly recurring", value: `$${db.houses.reduce((s, h) => s + h.monthly_recurring_revenue, 0).toLocaleString()}/mo` },
+                { label: "Total collected", value: `$${db.houses.reduce((s, h) => s + h.total_revenue, 0).toLocaleString()}` },
+              ].map(({ label, value }) => (
+                <div key={label} style={{ display: "flex", justifyContent: "space-between", marginBottom: 7 }}>
+                  <span style={{ color: "rgba(176,142,80,0.45)", fontSize: "0.6rem" }}>{label}</span>
+                  <span style={{ color: GOLD, fontSize: "0.6rem", fontWeight: 700 }}>{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── RANKS TAB ── */}
+        {activeTab === "ranks" && (
+          <div>
+            <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 14px" }}>Rank & Progression</p>
+            {db.memberships.filter(m => m.membership_status === "active").map(m => {
+              const cfg = TIER_CONFIG[m.tier];
+              const ranks = RANK_ORDER[m.tier];
+              const currentIdx = ranks.indexOf(m.current_rank as never);
+              const nextRank = ranks[currentIdx + 1];
+              const pct = m.rank_progress_percent;
+              return (
+                <div key={m.membership_id} style={{ background: "#060810", border: `1px solid ${cfg.color}18`, borderRadius: 10, padding: "14px", marginBottom: 10 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                    <div>
+                      <p style={{ color: GOLD, fontSize: "0.62rem", margin: "0 0 2px", fontWeight: 600 }}>{m.full_name}</p>
+                      <p style={{ color: cfg.color, fontSize: "0.55rem", margin: "0 0 2px" }}>{m.current_rank}</p>
+                      <p style={{ color: GOLD_DIM, fontSize: "0.5rem", margin: 0 }}>{m.region}</p>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <p style={{ color: cfg.color, fontSize: "0.9rem", fontWeight: 700, fontFamily: "var(--font-jetbrains)", margin: "0 0 2px" }}>{m.rank_points_total} pts</p>
+                      {nextRank && <p style={{ color: GOLD_DIM, fontSize: "0.48rem", margin: 0 }}>→ {nextRank}</p>}
+                    </div>
+                  </div>
+                  <div style={{ height: 4, background: "rgba(255,255,255,0.04)", borderRadius: 2, overflow: "hidden", marginBottom: 8 }}>
+                    <div style={{ height: "100%", width: `${pct}%`, background: cfg.color, borderRadius: 2, transition: "width 0.5s" }} />
+                  </div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    <span style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.5rem" }}>Training: {m.weekly_training_attendance_count}</span>
+                    <span style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.5rem" }}>Referrals: {m.successful_referrals_count}</span>
+                    <span style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.5rem" }}>Service: {m.service_actions_count}</span>
+                    {m.eligible_for_review && <span style={{ color: GREEN, fontSize: "0.5rem" }}>Eligible for review</span>}
+                  </div>
+                  <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
+                    {ranks.map((rank, i) => (
+                      <button
+                        key={rank}
+                        onClick={() => {
+                          // Admin promote action — logged in store
+                        }}
+                        disabled={i <= currentIdx}
+                        style={{ flex: 1, background: i === currentIdx + 1 ? `${cfg.color}10` : "rgba(176,142,80,0.03)", border: `1px solid ${i === currentIdx + 1 ? cfg.color : "rgba(176,142,80,0.08)"}`, color: i === currentIdx + 1 ? cfg.color : "rgba(176,142,80,0.2)", padding: "6px 4px", borderRadius: 5, cursor: i === currentIdx + 1 ? "pointer" : "default", fontFamily: "var(--font-jetbrains)", fontSize: "0.42rem", letterSpacing: "0.06em" }}
+                      >
+                        {rank.split(" ").slice(-1)[0]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+            {db.memberships.filter(m => m.membership_status === "active").length === 0 && (
+              <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.6rem", textAlign: "center", marginTop: 20 }}>No active members yet</p>
             )}
           </div>
         )}
