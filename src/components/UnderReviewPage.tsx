@@ -8,12 +8,10 @@ const BG = "#04060a";
 
 interface UnderReviewPageProps {
   name: string;
-  // For demo: simulate acceptance after a delay
   onAccepted: () => void;
 }
 
 function useReviewCountdown() {
-  // Next review window: 24 hours from now
   const [target] = useState(() => Date.now() + 24 * 60 * 60 * 1000);
   const calc = () => {
     const diff = target - Date.now();
@@ -49,15 +47,29 @@ function CountBox({ value, label }: { value: number; label: string }) {
 }
 
 const STEPS = [
-  { label: "Pledge received", done: true, active: false },
-  { label: "XI Admissions reviewing", done: false, active: true },
-  { label: "Formation Committee contact", done: false, active: false },
-  { label: "Seat secured", done: false, active: false },
+  { label: "Pledge received", sub: "Application logged · $9.99 processed", done: true, active: false },
+  { label: "XI Admissions reviewing", sub: "Within 24 hours · selection by alignment", done: false, active: true },
+  { label: "Formation Committee contact", sub: "Within 48 hours · zone placement", done: false, active: false },
+  { label: "Seat secured", sub: "Deposit confirms your founding place", done: false, active: false },
+];
+
+// Rotating activity feed
+const SIGNALS = [
+  { region: "West Oahu", action: "Aliʻi accepted", time: "18m ago", color: GOLD },
+  { region: "Maui", action: "Mana seat secured", time: "42m ago", color: "#58a6ff" },
+  { region: "Big Island", action: "Nā Koa accepted", time: "1h ago", color: "#3fb950" },
+  { region: "East Oahu", action: "Mana accepted", time: "2h ago", color: "#58a6ff" },
 ];
 
 export default function UnderReviewPage({ name, onAccepted }: UnderReviewPageProps) {
   const { hours, mins, secs } = useReviewCountdown();
+  const [feedIdx, setFeedIdx] = useState(0);
   const displayName = name.trim() || "brother";
+
+  useEffect(() => {
+    const id = setInterval(() => setFeedIdx(i => (i + 1) % SIGNALS.length), 4000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <div style={{ background: BG, minHeight: "100dvh", fontFamily: "var(--font-jetbrains)", overflowX: "hidden" }}>
@@ -70,23 +82,25 @@ export default function UnderReviewPage({ name, onAccepted }: UnderReviewPagePro
 
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "60px 20px 40px", position: "relative", zIndex: 1 }}>
 
-        {/* Moon */}
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
+        {/* Moon + header */}
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
           <div style={{ fontSize: "2.8rem", marginBottom: 16, opacity: 0.75 }}>🌕</div>
           <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.25em", textTransform: "uppercase", margin: "0 0 10px" }}>
-            Application Under Review
+            Application Received
           </p>
           <h1 className="font-cormorant" style={{ fontStyle: "italic", color: GOLD, fontSize: "2rem", margin: "0 0 10px", lineHeight: 1.2 }}>
             ʻAe, {displayName}.
           </h1>
-          <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.65rem", lineHeight: 1.8, margin: 0 }}>
-            Your pledge has been received.<br />
-            XI is reviewing your application.
+          <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.65rem", lineHeight: 1.8, margin: "0 0 6px" }}>
+            XI reviews all applications within 24 hours.
+          </p>
+          <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.6rem", lineHeight: 1.7, margin: 0 }}>
+            Selection is based on alignment, not payment.
           </p>
         </div>
 
         {/* Countdown to next review */}
-        <div style={{ background: "#060810", border: "1px solid rgba(176,142,80,0.12)", borderRadius: 12, padding: "20px 16px", marginBottom: 24 }}>
+        <div style={{ background: "#060810", border: "1px solid rgba(176,142,80,0.12)", borderRadius: 12, padding: "20px 16px", marginBottom: 20 }}>
           <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", textAlign: "center", margin: "0 0 14px" }}>
             Next review window closes in
           </p>
@@ -102,12 +116,12 @@ export default function UnderReviewPage({ name, onAccepted }: UnderReviewPagePro
         </div>
 
         {/* Progress steps */}
-        <div style={{ background: "#060810", border: "1px solid rgba(176,142,80,0.08)", borderRadius: 12, padding: "20px 16px", marginBottom: 24 }}>
+        <div style={{ background: "#060810", border: "1px solid rgba(176,142,80,0.08)", borderRadius: 12, padding: "20px 16px", marginBottom: 20 }}>
           <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 16px" }}>
             Your Formation Path
           </p>
-          {STEPS.map(({ label, done, active }, i) => (
-            <div key={label} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: i < STEPS.length - 1 ? 16 : 0 }}>
+          {STEPS.map(({ label, sub, done, active }, i) => (
+            <div key={label} style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: i < STEPS.length - 1 ? 18 : 0 }}>
               <div style={{
                 width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
                 background: done ? GOLD : active ? "rgba(176,142,80,0.1)" : "rgba(176,142,80,0.04)",
@@ -119,29 +133,78 @@ export default function UnderReviewPage({ name, onAccepted }: UnderReviewPagePro
               </div>
               <div style={{ flex: 1 }}>
                 <p style={{
-                  color: done ? GOLD : active ? "rgba(176,142,80,0.8)" : "rgba(176,142,80,0.3)",
-                  fontSize: "0.65rem", margin: 0, fontWeight: active ? 600 : 400,
+                  color: done ? GOLD : active ? "rgba(176,142,80,0.85)" : "rgba(176,142,80,0.3)",
+                  fontSize: "0.65rem", margin: "0 0 2px", fontWeight: active ? 600 : 400,
                 }}>
                   {label}
                 </p>
-                {active && (
-                  <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.55rem", margin: "2px 0 0" }}>
-                    In progress · within 24 hours
-                  </p>
-                )}
+                <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.55rem", margin: 0, lineHeight: 1.5 }}>
+                  {sub}
+                </p>
               </div>
             </div>
           ))}
         </div>
 
+        {/* Live feed */}
+        <div style={{ background: "#060810", border: "1px solid rgba(176,142,80,0.06)", borderRadius: 10, padding: "14px 16px", marginBottom: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+            <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.5rem", letterSpacing: "0.18em", textTransform: "uppercase", margin: 0 }}>
+              Brotherhood Signal · Live
+            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#3fb950", boxShadow: "0 0 5px #3fb95088" }} />
+              <span style={{ color: "#3fb95066", fontSize: "0.46rem" }}>LIVE</span>
+            </div>
+          </div>
+          {[SIGNALS[feedIdx % SIGNALS.length], SIGNALS[(feedIdx + 1) % SIGNALS.length]].map(({ region, action, time, color }, i) => (
+            <div key={`${region}-${i}`} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: i === 0 ? 8 : 0, opacity: i === 0 ? 1 : 0.45 }}>
+              <div style={{ width: 5, height: 5, borderRadius: "50%", background: color, flexShrink: 0 }} />
+              <span style={{ color: "rgba(176,142,80,0.45)", fontSize: "0.58rem", flex: 1 }}>
+                <span style={{ color: GOLD }}>{region}</span> · {action}
+              </span>
+              <span style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.52rem" }}>{time}</span>
+            </div>
+          ))}
+          <p style={{ color: "rgba(176,142,80,0.18)", fontSize: "0.52rem", margin: "10px 0 0", textAlign: "center" }}>
+            Most seats secured within 48 hours of acceptance
+          </p>
+        </div>
+
+        {/* Telegram preview channel */}
+        <div style={{ background: "rgba(88,166,255,0.04)", border: "1px solid rgba(88,166,255,0.18)", borderRadius: 12, padding: "16px", marginBottom: 20 }}>
+          <p style={{ color: "#58a6ff", fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 8px" }}>
+            Mākoa Signal · Preview Channel
+          </p>
+          <p style={{ color: "rgba(176,142,80,0.45)", fontSize: "0.62rem", lineHeight: 1.7, margin: "0 0 12px" }}>
+            While you wait — join the Mākoa Signal preview channel. Announcements, event updates, and brotherhood activity. No commitment required.
+          </p>
+          <a
+            href="https://t.me/makoaorder"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "block", width: "100%", background: "transparent",
+              color: "#58a6ff", border: "1px solid rgba(88,166,255,0.3)",
+              padding: "12px", borderRadius: 8,
+              fontFamily: "var(--font-jetbrains)", fontSize: "0.62rem",
+              fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase",
+              cursor: "pointer", textDecoration: "none", textAlign: "center",
+              boxSizing: "border-box",
+            }}
+          >
+            JOIN SIGNAL PREVIEW →
+          </a>
+        </div>
+
         {/* What to expect */}
-        <div style={{ background: "rgba(176,142,80,0.02)", border: "1px solid rgba(176,142,80,0.1)", borderRadius: 12, padding: "18px 16px", marginBottom: 24 }}>
+        <div style={{ background: "rgba(176,142,80,0.02)", border: "1px solid rgba(176,142,80,0.08)", borderRadius: 12, padding: "16px", marginBottom: 20 }}>
           <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 12px" }}>
             What happens next
           </p>
           {[
-            { icon: "📱", text: "XI will contact you via Telegram within 24 hours of your pledge." },
-            { icon: "🤝", text: "If accepted, the Formation Committee reaches out within 48 hours to connect you with brothers in your zone." },
+            { icon: "📱", text: "XI contacts you via Telegram within 24 hours of your pledge." },
+            { icon: "🤝", text: "If accepted, Formation Committee reaches out within 48 hours to connect you with brothers in your zone." },
             { icon: "🌕", text: "Your seat at the May 1 founding event is held pending acceptance." },
             { icon: "✦", text: "Keep your signal open. The order moves when it moves." },
           ].map(({ icon, text }) => (
@@ -152,7 +215,7 @@ export default function UnderReviewPage({ name, onAccepted }: UnderReviewPagePro
           ))}
         </div>
 
-        {/* Demo: simulate acceptance */}
+        {/* Simulate acceptance (demo) */}
         <button
           onClick={onAccepted}
           style={{
@@ -167,7 +230,7 @@ export default function UnderReviewPage({ name, onAccepted }: UnderReviewPagePro
           SIMULATE ACCEPTANCE →
         </button>
 
-        <p style={{ color: "rgba(176,142,80,0.15)", fontSize: "0.52rem", textAlign: "center", lineHeight: 1.6 }}>
+        <p style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.52rem", textAlign: "center", lineHeight: 1.6 }}>
           Mākoa Order · Malu Trust · West Oahu · 2026
         </p>
       </div>

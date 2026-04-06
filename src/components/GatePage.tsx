@@ -228,6 +228,70 @@ function NaKoaContent({ onClose, onPledge }: { onClose: () => void; onPledge: ()
   );
 }
 
+// ── Auto-rotating Live Feed ────────────────────────────────
+const ALL_SIGNALS = [
+  { region: "West Oahu", action: "Aliʻi seat pledged", time: "4m ago", color: "#b08e50" },
+  { region: "Maui", action: "Mana accepted", time: "12m ago", color: "#58a6ff" },
+  { region: "Big Island", action: "Nā Koa entry", time: "31m ago", color: "#3fb950" },
+  { region: "East Oahu", action: "Aliʻi seat pledged", time: "1h ago", color: "#b08e50" },
+  { region: "Maui Nui", action: "Mana seat pledged", time: "2h ago", color: "#58a6ff" },
+  { region: "West Oahu", action: "Nā Koa entry", time: "3h ago", color: "#3fb950" },
+  { region: "Kauai", action: "Mana accepted", time: "5h ago", color: "#58a6ff" },
+  { region: "Mainland West", action: "Nā Koa entry", time: "8h ago", color: "#3fb950" },
+];
+
+function BrotherhoodSignal() {
+  const [visibleIdx, setVisibleIdx] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setVisibleIdx((i) => (i + 1) % ALL_SIGNALS.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  const visible = [
+    ALL_SIGNALS[visibleIdx % ALL_SIGNALS.length],
+    ALL_SIGNALS[(visibleIdx + 1) % ALL_SIGNALS.length],
+    ALL_SIGNALS[(visibleIdx + 2) % ALL_SIGNALS.length],
+    ALL_SIGNALS[(visibleIdx + 3) % ALL_SIGNALS.length],
+  ];
+
+  return (
+    <div style={{ marginTop: 28 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+        <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>
+          Brotherhood signal · live activity
+        </p>
+        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#3fb950", boxShadow: "0 0 6px #3fb95088", animation: "breatheGlow 2s ease-in-out infinite" }} />
+          <span style={{ color: "#3fb95066", fontSize: "0.48rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.1em" }}>LIVE</span>
+        </div>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {visible.map(({ region, action, time, color }, i) => (
+          <div key={`${region}-${i}`} style={{
+            background: CARD_BG, border: `1px solid rgba(176,142,80,0.08)`,
+            borderRadius: 8, padding: "10px 14px",
+            display: "flex", alignItems: "center", gap: 10,
+            opacity: i === 0 ? 1 : i === 1 ? 0.8 : i === 2 ? 0.55 : 0.3,
+            transition: "opacity 0.5s",
+          }}>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0, boxShadow: `0 0 6px ${color}88` }} />
+            <span style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.6rem", fontFamily: "var(--font-jetbrains)", flex: 1 }}>
+              <span style={{ color: GOLD }}>{region}</span> · {action}
+            </span>
+            <span style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", flexShrink: 0 }}>{time}</span>
+          </div>
+        ))}
+      </div>
+      <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", textAlign: "center", margin: "10px 0 0", letterSpacing: "0.1em" }}>
+        Most seats are secured within 48 hours of acceptance
+      </p>
+    </div>
+  );
+}
+
 // ── Seat counters (simulated live) ────────────────────────
 const SEAT_TOTALS = { alii: 12, mana: 20, nakoa: 40 };
 const SEAT_TAKEN = { alii: 7, mana: 13, nakoa: 22 };
@@ -370,38 +434,6 @@ function WhyNowBlock({ onPledge }: { onPledge: () => void }) {
   );
 }
 
-// ── Brotherhood Signal Strip ───────────────────────────────
-function BrotherhoodSignal() {
-  const signals = [
-    { region: "West Oahu", action: "Aliʻi seat pledged", time: "2h ago", color: GOLD },
-    { region: "East Oahu", action: "Nā Koa entry", time: "5h ago", color: GREEN },
-    { region: "Maui Nui", action: "Mana seat pledged", time: "11h ago", color: BLUE },
-    { region: "Big Island", action: "Nā Koa entry", time: "1d ago", color: GREEN },
-  ];
-  return (
-    <div style={{ marginTop: 28 }}>
-      <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.52rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 12px", textAlign: "center" }}>
-        Brotherhood signal · live activity
-      </p>
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        {signals.map(({ region, action, time, color }) => (
-          <div key={region + action} style={{
-            background: CARD_BG, border: `1px solid rgba(176,142,80,0.08)`,
-            borderRadius: 8, padding: "10px 14px",
-            display: "flex", alignItems: "center", gap: 10,
-          }}>
-            <div style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0, boxShadow: `0 0 6px ${color}88` }} />
-            <span style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.6rem", fontFamily: "var(--font-jetbrains)", flex: 1 }}>
-              <span style={{ color: GOLD }}>{region}</span> · {action}
-            </span>
-            <span style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", flexShrink: 0 }}>{time}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // ── Oath Block ─────────────────────────────────────────────
 function OathBlock({ onPledge }: { onPledge: () => void }) {
   return (
@@ -481,26 +513,31 @@ function StickyPledgeBar({ visible, onPledge }: { visible: boolean; onPledge: ()
       transform: visible ? "translateY(0)" : "translateY(100%)",
       transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1)",
     }}>
-      <div style={{ maxWidth: 480, margin: "0 auto", display: "flex", gap: 10, alignItems: "center" }}>
-        <div style={{ flex: 1 }}>
-          <p style={{ color: GOLD, fontSize: "0.65rem", fontFamily: "var(--font-jetbrains)", fontWeight: 600, margin: "0 0 2px" }}>
-            Founding seats are open
-          </p>
-          <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", margin: 0 }}>
-            May 1 · Kapolei · Formation path revealed after acceptance
-          </p>
+      <div style={{ maxWidth: 480, margin: "0 auto" }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 6 }}>
+          <div style={{ flex: 1 }}>
+            <p style={{ color: GOLD, fontSize: "0.65rem", fontFamily: "var(--font-jetbrains)", fontWeight: 600, margin: "0 0 2px" }}>
+              Founding seats are closing
+            </p>
+            <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.55rem", fontFamily: "var(--font-jetbrains)", margin: 0 }}>
+              Aliʻi: 5 remaining · Mana: 7 remaining · No second founding
+            </p>
+          </div>
+          <button
+            onClick={onPledge}
+            style={{
+              background: GOLD, color: "#000", border: "none",
+              fontFamily: "var(--font-jetbrains)", fontSize: "0.62rem", letterSpacing: "0.15em",
+              padding: "11px 20px", cursor: "pointer", borderRadius: 6,
+              textTransform: "uppercase", fontWeight: 700, flexShrink: 0,
+            }}
+          >
+            PLEDGE $9.99
+          </button>
         </div>
-        <button
-          onClick={onPledge}
-          style={{
-            background: GOLD, color: "#000", border: "none",
-            fontFamily: "var(--font-jetbrains)", fontSize: "0.62rem", letterSpacing: "0.15em",
-            padding: "11px 20px", cursor: "pointer", borderRadius: 6,
-            textTransform: "uppercase", fontWeight: 700, flexShrink: 0,
-          }}
-        >
-          PLEDGE NOW
-        </button>
+        <p style={{ color: "rgba(176,142,80,0.18)", fontSize: "0.5rem", fontFamily: "var(--font-jetbrains)", margin: 0, textAlign: "center" }}>
+          Selection required before access · Seats close each moon cycle
+        </p>
       </div>
     </div>
   );
@@ -639,7 +676,7 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
                 padding: "13px 32px", cursor: "pointer", borderRadius: 6, textTransform: "uppercase", fontWeight: 700,
               }}
             >
-              PLEDGE YOUR SEAT
+              PLEDGE YOUR SEAT — $9.99
             </button>
           </div>
         </div>
@@ -689,6 +726,20 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
               <TierCard label="Aliʻi" sub={"Network\nto Network"} color={GOLD} onClick={() => setSheet("alii")} />
               <TierCard label="Mana" sub={"Build\nB2B"} color={BLUE} onClick={() => setSheet("mana")} />
               <TierCard label="Nā Koa" sub={"Serve\nthe Order"} color={GREEN} onClick={() => setSheet("nakoa")} />
+            </div>
+
+            {/* SCARCITY BLOCK */}
+            <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 6 }}>
+              {[
+                { icon: "⚠", text: "No second founding — this event happens once", color: "#f85149" },
+                { icon: "🌕", text: "Seats close each moon cycle — gate locks May 1", color: GOLD },
+                { icon: "✦", text: "Selection required before access — not open to all", color: "rgba(176,142,80,0.5)" },
+              ].map(({ icon, text, color }) => (
+                <div key={text} style={{ display: "flex", alignItems: "center", gap: 8, background: "#060810", border: "0.5px solid rgba(176,142,80,0.06)", borderRadius: 6, padding: "8px 10px" }}>
+                  <span style={{ fontSize: "0.65rem", flexShrink: 0 }}>{icon}</span>
+                  <span style={{ color, fontSize: "0.58rem", fontFamily: "var(--font-jetbrains)", lineHeight: 1.4 }}>{text}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -884,8 +935,11 @@ export default function GatePage({ handle, phone, onConfirm }: GatePageProps) {
               marginTop: 14, fontWeight: 700,
             }}
           >
-            I STAND WITH THE ORDER
+            BEGIN FORMATION — $9.99
           </button>
+          <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.52rem", textAlign: "center", marginTop: 8, fontFamily: "var(--font-jetbrains)" }}>
+            Most seats secured within 48 hours of acceptance
+          </p>
 
           {/* TELEGRAM */}
           <div style={{

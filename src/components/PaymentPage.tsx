@@ -4,13 +4,12 @@ import { useState } from "react";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.35)";
-const PURPLE = "#534AB7";
 const BG = "#04060a";
 
 const TIER_INFO = {
-  alii: { label: "Aliʻi", deposit: 750, color: GOLD, icon: "👑" },
-  mana: { label: "Mana", deposit: 250, color: "#58a6ff", icon: "🌀" },
-  nakoa: { label: "Nā Koa", deposit: 125, color: "#3fb950", icon: "⚔" },
+  alii: { label: "Aliʻi", deposit: 750, monthly: 125, months: 18, total: 2999, color: GOLD, icon: "👑", event: "72hr War Room · May 1–4" },
+  mana: { label: "Mana", deposit: 250, monthly: 42, months: 18, total: 999, color: "#58a6ff", icon: "🌀", event: "72hr Mastermind · May 1–4" },
+  nakoa: { label: "Nā Koa", deposit: 125, monthly: 20, months: 18, total: 499, color: "#3fb950", icon: "⚔", event: "Founding Pass · May 1–4" },
 };
 
 interface PaymentPageProps {
@@ -47,7 +46,6 @@ export default function PaymentPage({ tier, name, email, onPaid, onBack }: Payme
   const handlePay = () => {
     if (!canPay) return;
     setProcessing(true);
-    // Simulate payment processing
     setTimeout(() => {
       setProcessing(false);
       onPaid();
@@ -92,22 +90,22 @@ export default function PaymentPage({ tier, name, email, onPaid, onBack }: Payme
         <div style={{ width: 48 }} />
       </div>
 
-      <div style={{ maxWidth: 480, margin: "0 auto", padding: "28px 16px 40px", position: "relative", zIndex: 1 }}>
+      <div style={{ maxWidth: 480, margin: "0 auto", padding: "28px 16px 48px", position: "relative", zIndex: 1 }}>
 
         {/* Order summary */}
         <div style={{
           background: "#060810", border: `1px solid ${info.color}33`,
-          borderRadius: 12, padding: "18px 16px", marginBottom: 24,
+          borderRadius: 12, padding: "18px 16px", marginBottom: 20,
         }}>
           <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 12px" }}>
             Order Summary
           </p>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ fontSize: "1rem" }}>{info.icon}</span>
               <div>
                 <p className="font-cormorant" style={{ fontStyle: "italic", color: info.color, fontSize: "1.2rem", margin: 0 }}>{info.label}</p>
-                <p style={{ color: GOLD_DIM, fontSize: "0.55rem", margin: 0 }}>Founding seat · May 1–4 · Kapolei</p>
+                <p style={{ color: GOLD_DIM, fontSize: "0.55rem", margin: 0 }}>{info.event} · Kapolei</p>
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
@@ -115,32 +113,62 @@ export default function PaymentPage({ tier, name, email, onPaid, onBack }: Payme
               <p style={{ color: GOLD_DIM, fontSize: "0.5rem", margin: "2px 0 0" }}>deposit today</p>
             </div>
           </div>
-          <div style={{ height: 1, background: "rgba(176,142,80,0.08)", margin: "12px 0" }} />
-          <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.58rem", lineHeight: 1.7, margin: 0 }}>
-            Remaining balance completed over 18-month formation.<br />
+
+          {/* Subscription plan */}
+          <div style={{ background: "rgba(176,142,80,0.04)", border: "0.5px solid rgba(176,142,80,0.12)", borderRadius: 8, padding: "10px 12px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+              <span style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.58rem" }}>Formation subscription</span>
+              <span style={{ color: info.color, fontSize: "0.58rem", fontWeight: 600 }}>${info.monthly}/month</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+              <span style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.58rem" }}>Duration</span>
+              <span style={{ color: GOLD_DIM, fontSize: "0.58rem" }}>{info.months} months</span>
+            </div>
+            <div style={{ height: 1, background: "rgba(176,142,80,0.08)", margin: "8px 0" }} />
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.58rem" }}>Total formation cost</span>
+              <span style={{ color: GOLD, fontSize: "0.58rem", fontWeight: 700 }}>${info.total}</span>
+            </div>
+            <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.52rem", margin: "6px 0 0", lineHeight: 1.5 }}>
+              Subscription auto-activates after deposit · cancel anytime before month 2
+            </p>
+          </div>
+
+          <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.55rem", lineHeight: 1.7, margin: "10px 0 0" }}>
             Seat held for {name || "you"} · {email}
           </p>
         </div>
 
         {/* Payment method toggle */}
         <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-          {(["card", "xrp"] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => setMethod(m)}
-              style={{
-                flex: 1, padding: "11px", borderRadius: 8, cursor: "pointer",
-                background: method === m ? "rgba(176,142,80,0.08)" : "#060810",
-                border: `1px solid ${method === m ? "rgba(176,142,80,0.35)" : "rgba(176,142,80,0.08)"}`,
-                color: method === m ? GOLD : GOLD_DIM,
-                fontFamily: "var(--font-jetbrains)", fontSize: "0.6rem",
-                letterSpacing: "0.12em", textTransform: "uppercase",
-                transition: "all 0.2s",
-              }}
-            >
-              {m === "card" ? "💳 Card" : "◈ XRP"}
-            </button>
-          ))}
+          <button
+            onClick={() => setMethod("card")}
+            style={{
+              flex: 2, padding: "11px", borderRadius: 8, cursor: "pointer",
+              background: method === "card" ? "rgba(176,142,80,0.08)" : "#060810",
+              border: `1px solid ${method === "card" ? "rgba(176,142,80,0.35)" : "rgba(176,142,80,0.08)"}`,
+              color: method === "card" ? GOLD : GOLD_DIM,
+              fontFamily: "var(--font-jetbrains)", fontSize: "0.6rem",
+              letterSpacing: "0.12em", textTransform: "uppercase",
+              transition: "all 0.2s",
+            }}
+          >
+            💳 Card · Apple Pay · Google Pay
+          </button>
+          <button
+            onClick={() => setMethod("xrp")}
+            style={{
+              flex: 1, padding: "11px", borderRadius: 8, cursor: "pointer",
+              background: method === "xrp" ? "rgba(176,142,80,0.08)" : "#060810",
+              border: `1px solid ${method === "xrp" ? "rgba(176,142,80,0.35)" : "rgba(176,142,80,0.08)"}`,
+              color: method === "xrp" ? GOLD : GOLD_DIM,
+              fontFamily: "var(--font-jetbrains)", fontSize: "0.6rem",
+              letterSpacing: "0.12em", textTransform: "uppercase",
+              transition: "all 0.2s",
+            }}
+          >
+            ◈ XRP
+          </button>
         </div>
 
         {method === "card" && (
@@ -203,13 +231,22 @@ export default function PaymentPage({ tier, name, email, onPaid, onBack }: Payme
 
         {method === "xrp" && (
           <div style={{ marginBottom: 20 }}>
+            {/* Sovereign label */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+              <div style={{ flex: 1, height: 1, background: "rgba(176,142,80,0.1)" }} />
+              <span style={{ color: GOLD_DIM, fontSize: "0.5rem", fontFamily: "var(--font-jetbrains)", letterSpacing: "0.2em", textTransform: "uppercase" }}>
+                Advanced Sovereign Payment Option
+              </span>
+              <div style={{ flex: 1, height: 1, background: "rgba(176,142,80,0.1)" }} />
+            </div>
+
             <div style={{ background: "#060810", border: "1px solid rgba(176,142,80,0.12)", borderRadius: 12, padding: "20px 16px", textAlign: "center", marginBottom: 14 }}>
               <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 10px" }}>
-                XRP Payment · Manual Confirmation
+                XRP · Manual Confirmation
               </p>
               <div style={{ background: "#0a0c14", border: "1px solid rgba(176,142,80,0.15)", borderRadius: 8, padding: "14px", marginBottom: 12 }}>
                 <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.52rem", margin: "0 0 6px" }}>Send to wallet address</p>
-                <p style={{ color: GOLD, fontSize: "0.62rem", fontFamily: "var(--font-jetbrains)", wordBreak: "break-all", margin: 0, letterSpacing: "0.04em" }}>
+                <p style={{ color: GOLD, fontSize: "0.6rem", fontFamily: "var(--font-jetbrains)", wordBreak: "break-all", margin: 0, letterSpacing: "0.04em" }}>
                   rMakoa1stOrderXRPWalletAddress808
                 </p>
               </div>
@@ -222,7 +259,8 @@ export default function PaymentPage({ tier, name, email, onPaid, onBack }: Payme
                 <span style={{ color: GOLD, fontSize: "0.6rem", fontWeight: 700 }}>MAKOA-{tier.toUpperCase()}</span>
               </div>
               <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.55rem", lineHeight: 1.7, margin: 0 }}>
-                After sending, XI confirms your payment within 2 hours via Telegram. Your seat is held for 4 hours pending confirmation.
+                After sending, XI confirms your payment within 2 hours via Telegram.<br />
+                Your seat is held for 4 hours pending confirmation.
               </p>
             </div>
             <button
@@ -264,7 +302,7 @@ export default function PaymentPage({ tier, name, email, onPaid, onBack }: Payme
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginTop: 14 }}>
           <span style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.7rem" }}>🔒</span>
           <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.52rem", margin: 0, letterSpacing: "0.08em" }}>
-            Secured by Stripe · 256-bit encryption
+            Secured by Stripe · 256-bit encryption · Apple Pay · Google Pay
           </p>
         </div>
       </div>

@@ -226,11 +226,26 @@ export default function PledgePage({ handle, phone, onSubmit, onBack }: PledgePa
 
             {/* Pledge amount box */}
             <div style={{ background: "#0a0c14", border: `1px solid ${PURPLE}33`, borderRadius: 10, padding: "16px", textAlign: "center", marginBottom: 20 }}>
-              <p style={{ color: PURPLE, fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 6px" }}>Processing Pledge</p>
+              <p style={{ color: PURPLE, fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: "0 0 6px" }}>Processing Pledge · Stripe Secured</p>
               <div className="font-cormorant" style={{ fontStyle: "italic", fontSize: "2rem", color: GOLD, margin: "0 0 4px" }}>$9.99</div>
               <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.55rem", margin: 0, lineHeight: 1.6 }}>
-                Secures your application · No charge today<br />
-                Formation path revealed after acceptance
+                Secures your application · Processed via Stripe<br />
+                Formation path and financial commitment revealed after acceptance
+              </p>
+              <div style={{ display: "flex", justifyContent: "center", gap: 10, marginTop: 10 }}>
+                {["💳 Card", "🍎 Apple Pay", "G Pay"].map((label) => (
+                  <span key={label} style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.5rem", fontFamily: "var(--font-jetbrains)", background: "rgba(176,142,80,0.06)", border: "0.5px solid rgba(176,142,80,0.12)", borderRadius: 4, padding: "3px 8px" }}>
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Email automation note */}
+            <div style={{ background: "#060810", border: "0.5px solid rgba(176,142,80,0.08)", borderRadius: 8, padding: "10px 12px", marginBottom: 16 }}>
+              <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.55rem", lineHeight: 1.7, margin: 0 }}>
+                After submission, you will receive a confirmation email + SMS.<br />
+                XI reviews within 24 hours. Formation Committee contacts within 48.
               </p>
             </div>
 
