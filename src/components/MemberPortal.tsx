@@ -1,6 +1,6 @@
 "use client";
 
-import { useStore } from "@/lib/store";
+import { useStore } from "@/lib/store-context";
 import { TIER_CONFIG, TELEGRAM } from "@/lib/makoa";
 import MemberTimeline from "./MemberTimeline";
 import { type Membership } from "@/lib/db";

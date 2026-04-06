@@ -11,7 +11,7 @@ import SeatSecuredPage from "@/components/SeatSecuredPage";
 import AdminPage from "@/components/AdminPage";
 import MemberPortal from "@/components/MemberPortal";
 import { generateApplicationId, zipToRegion, type Tier } from "@/lib/makoa";
-import { useStore } from "@/lib/store";
+import { useStore } from "@/lib/store-context";
 
 type Screen =
   | "key"

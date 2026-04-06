@@ -1,11 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// MĀKOA ORDER — Global Store (React Context)
-// Provides the live MakoaDB to all components.
-// All funnel actions write through this store.
-// ─────────────────────────────────────────────────────────────
-
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 import {
   INITIAL_DB,
@@ -22,12 +16,11 @@ import {
 } from "./db";
 import { type Tier } from "./makoa";
 
-interface StoreContextValue {
+export interface StoreContextValue {
   db: MakoaDB;
   stats: FunnelStats;
   seatsRemaining: Record<Tier, number>;
 
-  // Funnel actions
   pledgePaid: (data: {
     full_name: string; email: string; phone: string; zip_code: string;
     tier_interest: Tier; q1: string; q2: string; q3: string; application_id: string;
@@ -36,18 +29,16 @@ interface StoreContextValue {
   depositPaid: (application_id: string, tier: Tier) => void;
   telegramVerified: (application_id: string, telegram_handle: string) => void;
 
-  // Admin actions
   setCounterMode: (mode: "real" | "simulated") => void;
   adjustSimulatedSeat: (tier: Tier, delta: number) => void;
   declineApplicant: (application_id: string) => void;
   waitlistApplicant: (application_id: string) => void;
 
-  // Queries
   getMemberTimeline: (application_id: string) => TimelineEvent[];
   getMemberByEmail: (email: string) => MakoaDB["applicants"][0] | undefined;
 }
 
-const StoreContext = createContext<StoreContextValue | null>(null);
+export const StoreContext = createContext<StoreContextValue | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [db, setDB] = useState<MakoaDB>(INITIAL_DB);

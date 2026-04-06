@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useStore } from "@/lib/store";
+import { useStore } from "@/lib/store-context";
 import { TIER_CONFIG, SEAT_CAPS, getSeatInfo, STRIPE_LINKS, type Tier } from "@/lib/makoa";
 import { type Applicant, type ReviewStatus } from "@/lib/db";
 import MemberTimeline from "./MemberTimeline";
