@@ -2,142 +2,152 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 @layer base {
   :root {
-    --gold: #b08e50;
-    --gold-dim: #4a3a20;
-    --gold-faint: rgba(176, 142, 80, 0.2);
-    --gold-border: rgba(176, 142, 80, 0.4);
-    --bg-gate: #04060a;
-    --blue-mana: #58a6ff;
-    --green-koa: #3fb950;
-    --purple-pledge: #534AB7;
-  }
+
+    --background: 0 0% 100%;
+
+    --foreground: 0 0% 3.9%;
+
+    --card: 0 0% 100%;
+
+    --card-foreground: 0 0% 3.9%;
+
+    --popover: 0 0% 100%;
+
+    --popover-foreground: 0 0% 3.9%;
+
+    --primary: 0 0% 9%;
+
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 96.1%;
+
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 96.1%;
+
+    --muted-foreground: 0 0% 45.1%;
+
+    --accent: 0 0% 96.1%;
+
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 84.2% 60.2%;
+
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 89.8%;
+
+    --input: 0 0% 89.8%;
+
+    --ring: 0 0% 3.9%;
+
+    --chart-1: 12 76% 61%;
+
+    --chart-2: 173 58% 39%;
+
+    --chart-3: 197 37% 24%;
+
+    --chart-4: 43 74% 66%;
+
+    --chart-5: 27 87% 67%;
+
+    --radius: 0.5rem
+  ;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%}
+  .dark {
+
+    --background: 0 0% 3.9%;
+
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 3.9%;
+
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3.9%;
+
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+
+    --primary-foreground: 0 0% 9%;
+
+    --secondary: 0 0% 14.9%;
+
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 14.9%;
+
+    --muted-foreground: 0 0% 63.9%;
+
+    --accent: 0 0% 14.9%;
+
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+
+    --input: 0 0% 14.9%;
+
+    --ring: 0 0% 83.1%;
+
+    --chart-1: 220 70% 50%;
+
+    --chart-2: 160 60% 45%;
+
+    --chart-3: 30 80% 55%;
+
+    --chart-4: 280 65% 60%;
+
+    --chart-5: 340 75% 55%
+  ;
+
+    --sidebar-background: 240 5.9% 10%;
+
+    --sidebar-foreground: 240 4.8% 95.9%;
+
+    --sidebar-primary: 224.3 76.3% 48%;
+
+    --sidebar-primary-foreground: 0 0% 100%;
+
+    --sidebar-accent: 240 3.7% 15.9%;
+
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+
+    --sidebar-border: 240 3.7% 15.9%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%}
 }
+
+
 
 @layer base {
   * {
     @apply border-border;
-    box-sizing: border-box;
   }
   body {
-    margin: 0;
-    padding: 0;
-    background: #000;
-    color: #b08e50;
-    font-family: var(--font-jetbrains), monospace;
-    -webkit-font-smoothing: antialiased;
+    @apply bg-background text-foreground;
   }
-}
-
-/* ── Keyframe Animations ── */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes breatheGlow {
-  0%, 100% { box-shadow: 0 0 18px 4px rgba(176,142,80,0.18), 0 0 40px 8px rgba(176,142,80,0.07); }
-  50%       { box-shadow: 0 0 32px 10px rgba(176,142,80,0.32), 0 0 70px 18px rgba(176,142,80,0.13); }
-}
-
-@keyframes breatheGlowSvg {
-  0%, 100% { filter: drop-shadow(0 0 6px rgba(176,142,80,0.25)); }
-  50%       { filter: drop-shadow(0 0 18px rgba(176,142,80,0.55)); }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(100%); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
-}
-
-@keyframes fadeInScale {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-/* ── Utility Classes ── */
-.font-cormorant { font-family: var(--font-cormorant), serif; }
-.font-jetbrains  { font-family: var(--font-jetbrains), monospace; }
-
-.anim-fade-in        { animation: fadeIn 2.5s ease forwards; }
-.anim-breathe-svg    { animation: breatheGlowSvg 3.5s ease-in-out infinite; }
-.anim-breathe-ring   { animation: breatheGlow 3.5s ease-in-out infinite; }
-
-.anim-fade-up-1  { animation: fadeUp 0.7s ease forwards; animation-delay: 2.6s; opacity: 0; }
-.anim-fade-up-2  { animation: fadeUp 0.7s ease forwards; animation-delay: 3.0s; opacity: 0; }
-.anim-fade-up-3  { animation: fadeUp 0.7s ease forwards; animation-delay: 3.4s; opacity: 0; }
-.anim-fade-up-4  { animation: fadeUp 0.7s ease forwards; animation-delay: 3.8s; opacity: 0; }
-.anim-fade-up-5  { animation: fadeUp 0.7s ease forwards; animation-delay: 4.2s; opacity: 0; }
-.anim-fade-up-6  { animation: fadeUp 0.7s ease forwards; animation-delay: 4.6s; opacity: 0; }
-
-.anim-slide-up   { animation: slideUp 0.45s cubic-bezier(0.16,1,0.3,1) forwards; }
-.anim-fade-in-scale { animation: fadeInScale 0.5s ease forwards; }
-
-/* ── Input Styles ── */
-.gate-input {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(176,142,80,0.2);
-  color: #b08e50;
-  text-align: center;
-  font-family: var(--font-jetbrains), monospace;
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
-  padding: 8px 4px;
-  outline: none;
-  width: 100%;
-}
-.gate-input::placeholder { color: rgba(176,142,80,0.35); }
-.gate-input:focus { border-bottom-color: rgba(176,142,80,0.6); }
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #04060a; }
-::-webkit-scrollbar-thumb { background: rgba(176,142,80,0.25); border-radius: 2px; }
-
-/* ── Bottom Sheet Overlay ── */
-.bottom-sheet-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.75);
-  z-index: 50;
-  display: flex;
-  align-items: flex-end;
-}
-.bottom-sheet-panel {
-  width: 100%;
-  max-height: 85vh;
-  overflow-y: auto;
-  background: #0a0c10;
-  border-top: 1px solid rgba(176,142,80,0.25);
-  border-radius: 16px 16px 0 0;
-  padding: 28px 20px 40px;
-}
-
-/* ── Centered Overlay ── */
-.center-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.center-panel {
-  width: 100%;
-  max-width: 420px;
-  max-height: 90vh;
-  overflow-y: auto;
-  background: #0a0c10;
-  border: 1px solid rgba(83,74,183,0.4);
-  border-radius: 14px;
-  padding: 32px 24px 36px;
 }
