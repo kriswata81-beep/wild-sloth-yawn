@@ -46,7 +46,7 @@ const BENEFITS = [
   "Full moon gathering — monthly",
   "808-911 emergency peer response",
   "808-411 knowledge peer channel",
-  "Service route income — 80% to you",
+  "Service route income — 80% to you (10% Mana · 10% Hale)",
   "Formation rank progression",
 ];
 
@@ -156,6 +156,38 @@ export default function NakoaPortal() {
               <span style={{ color: GREEN_DIM }}>Complete your first job to waive dues.</span>
             </p>
           )}
+        </div>
+
+        {/* Worker Earnings Card */}
+        <div style={{
+          background: GREEN_FAINT,
+          border: `1px solid ${GREEN_20}`,
+          borderRadius: "10px",
+          padding: "16px 18px",
+          marginBottom: "24px",
+          animation: "fadeUp 0.6s ease 0.15s both",
+        }}>
+          <p style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "12px" }}>YOUR EARNINGS PER JOB (80% SPLIT)</p>
+          <div style={{ display: "grid", gap: "6px" }}>
+            {[
+              { plan: "Aliʻi Plan (weekly)", rate: "$1,497/mo", earn: "$1,197.60/mo", color: "#b08e50" },
+              { plan: "Kamaʻāina Plan (bi-weekly)", rate: "$749/mo", earn: "$599.20/mo", color: "#58a6ff" },
+              { plan: "B2B Small (2×/mo)", rate: "$1,299/mo", earn: "$1,039.20/mo", color: "#534AB7" },
+              { plan: "B2B Mid (4×/mo)", rate: "$2,499/mo", earn: "$1,999.20/mo", color: "#534AB7" },
+              { plan: "B2B Large (weekly+)", rate: "$3,999/mo", earn: "$3,199.20/mo", color: "#534AB7" },
+            ].map(row => (
+              <div key={row.plan} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderBottom: `1px solid ${GREEN_20}` }}>
+                <div>
+                  <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.44rem" }}>{row.plan}</p>
+                  <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.38rem" }}>Client pays {row.rate}</p>
+                </div>
+                <p style={{ color: GREEN, fontSize: "0.52rem", fontFamily: "'JetBrains Mono', monospace" }}>{row.earn}</p>
+              </div>
+            ))}
+          </div>
+          <p style={{ color: GREEN_DIM, fontSize: "0.4rem", marginTop: "10px", lineHeight: 1.6 }}>
+            Dues waived when active on route. Score 60+ on waitlist to unlock assignment.
+          </p>
         </div>
 
         {/* 808 Emergency Channels */}

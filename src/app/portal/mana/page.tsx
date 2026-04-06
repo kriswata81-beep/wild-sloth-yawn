@@ -272,7 +272,7 @@ export default function ManaPortal() {
             </div>
           </div>
           <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.45rem", lineHeight: 1.7 }}>
-            Service route income: 80% to you · 20% to the order. XI assigns jobs based on your region and category.
+            Service route income: 80% to you · 10% Mana council · 10% Hale fund. Aliʻi Plan jobs pay $1,197/visit crew share. Kamaʻāina jobs pay $599/visit crew share. XI assigns based on region and category.
           </p>
         </Section>
 
