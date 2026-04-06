@@ -2,14 +2,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/integrations/supabase/client";
+import EmergencyChannel from "@/components/EmergencyChannel";
 
 const GREEN = "#3fb950";
 const GREEN_DIM = "rgba(63,185,80,0.5)";
 const GREEN_FAINT = "rgba(63,185,80,0.07)";
 const GREEN_20 = "rgba(63,185,80,0.2)";
 const GREEN_40 = "rgba(63,185,80,0.4)";
-const RED = "#e05c5c";
-const BLUE = "#58a6ff";
 const BG = "#04060a";
 
 function dicebearUrl(seed: string) {
@@ -55,8 +54,6 @@ export default function NakoaPortal() {
   const router = useRouter();
   const [member, setMember] = useState<Member | null>(null);
   const [loading, setLoading] = useState(true);
-  const [channel911Active, setChannel911Active] = useState(false);
-  const [channel411Active, setChannel411Active] = useState(false);
   const [waitlistScore, setWaitlistScore] = useState(0);
 
   const loadData = useCallback(async (appId: string) => {
@@ -99,15 +96,6 @@ export default function NakoaPortal() {
       <style>{`
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        @keyframes redPulse {
-          0%, 100% { box-shadow: 0 0 0px 0px rgba(224,92,92,0); }
-          50% { box-shadow: 0 0 16px 4px rgba(224,92,92,0.25); }
-        }
-        @keyframes greenPulse {
-          0%, 100% { box-shadow: 0 0 0px 0px rgba(63,185,80,0); }
-          50% { box-shadow: 0 0 16px 4px rgba(63,185,80,0.2); }
-        }
       `}</style>
 
       {/* Header */}
@@ -171,128 +159,13 @@ export default function NakoaPortal() {
         </div>
 
         {/* 808 Emergency Channels */}
-        <Section title="808 Channels" accent={GREEN}>
-          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem", marginBottom: "16px", lineHeight: 1.7 }}>
-            Your peer network is always on. Two channels — one for emergencies, one for knowledge.
-          </p>
-
-          {/* 808-911 */}
-          <div style={{
-            background: channel911Active ? "rgba(224,92,92,0.08)" : "rgba(0,0,0,0.3)",
-            border: `1px solid ${channel911Active ? "rgba(224,92,92,0.5)" : "rgba(224,92,92,0.2)"}`,
-            borderRadius: "10px",
-            padding: "18px",
-            marginBottom: "12px",
-            animation: channel911Active ? "redPulse 2s ease-in-out infinite" : "none",
-            transition: "all 0.3s",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
-              <div style={{
-                width: "44px", height: "44px", borderRadius: "50%",
-                background: "rgba(224,92,92,0.1)",
-                border: `1px solid rgba(224,92,92,0.4)`,
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <span style={{ fontSize: "1.2rem" }}>🚨</span>
-              </div>
-              <div>
-                <p style={{ color: RED, fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.1em" }}>808-911</p>
-                <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.45rem" }}>Emergency peer response</p>
-              </div>
-              {channel911Active && (
-                <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "5px" }}>
-                  <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: RED, animation: "pulse 1s ease-in-out infinite" }} />
-                  <span style={{ color: RED, fontSize: "0.4rem" }}>LIVE</span>
-                </div>
-              )}
-            </div>
-            <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.5rem", lineHeight: 1.7, marginBottom: "14px" }}>
-              Brother in need? Car broke down, medical, safety concern — activate 911 and the nearest Nā Koa responds within minutes.
-            </p>
-            <button
-              onClick={() => setChannel911Active(!channel911Active)}
-              style={{
-                width: "100%",
-                background: channel911Active ? RED : "transparent",
-                border: `1px solid ${RED}`,
-                color: channel911Active ? "#fff" : RED,
-                fontSize: "0.52rem",
-                letterSpacing: "0.2em",
-                padding: "12px",
-                cursor: "pointer",
-                borderRadius: "6px",
-                fontFamily: "'JetBrains Mono', monospace",
-                fontWeight: channel911Active ? 700 : 400,
-                transition: "all 0.2s",
-              }}
-            >
-              {channel911Active ? "🚨 911 ACTIVATED — HELP IS COMING" : "ACTIVATE 911"}
-            </button>
-            {channel911Active && (
-              <p style={{ color: "rgba(224,92,92,0.6)", fontSize: "0.42rem", textAlign: "center", marginTop: "8px" }}>
-                XI and nearest brothers have been notified. Stay put.
-              </p>
-            )}
-          </div>
-
-          {/* 808-411 */}
-          <div style={{
-            background: channel411Active ? "rgba(88,166,255,0.06)" : "rgba(0,0,0,0.3)",
-            border: `1px solid ${channel411Active ? "rgba(88,166,255,0.4)" : "rgba(88,166,255,0.15)"}`,
-            borderRadius: "10px",
-            padding: "18px",
-            animation: channel411Active ? "greenPulse 2s ease-in-out infinite" : "none",
-            transition: "all 0.3s",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
-              <div style={{
-                width: "44px", height: "44px", borderRadius: "50%",
-                background: "rgba(88,166,255,0.08)",
-                border: `1px solid rgba(88,166,255,0.3)`,
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <span style={{ fontSize: "1.2rem" }}>📚</span>
-              </div>
-              <div>
-                <p style={{ color: BLUE, fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.1em" }}>808-411</p>
-                <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.45rem" }}>Knowledge peer channel</p>
-              </div>
-              {channel411Active && (
-                <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "5px" }}>
-                  <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: BLUE, animation: "pulse 1.5s ease-in-out infinite" }} />
-                  <span style={{ color: BLUE, fontSize: "0.4rem" }}>OPEN</span>
-                </div>
-              )}
-            </div>
-            <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.5rem", lineHeight: 1.7, marginBottom: "14px" }}>
-              Need advice, a referral, or a second opinion? Post to 411 and the order answers. Trade knowledge, business questions, life decisions.
-            </p>
-            <button
-              onClick={() => setChannel411Active(!channel411Active)}
-              style={{
-                width: "100%",
-                background: channel411Active ? BLUE : "transparent",
-                border: `1px solid ${BLUE}`,
-                color: channel411Active ? "#000" : BLUE,
-                fontSize: "0.52rem",
-                letterSpacing: "0.2em",
-                padding: "12px",
-                cursor: "pointer",
-                borderRadius: "6px",
-                fontFamily: "'JetBrains Mono', monospace",
-                fontWeight: channel411Active ? 700 : 400,
-                transition: "all 0.2s",
-              }}
-            >
-              {channel411Active ? "✦ CHANNEL OPEN — ASK AWAY" : "ASK THE ORDER"}
-            </button>
-            {channel411Active && (
-              <p style={{ color: "rgba(88,166,255,0.5)", fontSize: "0.42rem", textAlign: "center", marginTop: "8px" }}>
-                Your question goes to all active Nā Koa in your region.
-              </p>
-            )}
-          </div>
-        </Section>
+        <div style={{ marginBottom: "24px" }}>
+          <p style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "14px", opacity: 0.7 }}>808 Channels</p>
+          <EmergencyChannel
+            memberHandle={handle}
+            memberZip={member?.region ? "96707" : "96707"}
+          />
+        </div>
 
         {/* Elite Training Schedule */}
         <Section title="4am Elite Training" accent={GREEN}>

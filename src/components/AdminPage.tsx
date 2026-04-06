@@ -54,7 +54,7 @@ type House = {
   training_attendance_score: number;
 };
 
-const TABS = ["Members", "Pledges", "Houses", "Events", "Ranks", "Log"] as const;
+const TABS = ["Members", "Pledges", "Houses", "Events", "Ranks", "Log", "Newsletter"] as const;
 type Tab = typeof TABS[number];
 
 const TIER_COLOR: Record<string, string> = { alii: GOLD, mana: BLUE, nakoa: STEEL };
@@ -392,6 +392,11 @@ export default function AdminPage({ onExit }: AdminPageProps) {
             {tab === "Log" && (
               <ActivityLog />
             )}
+
+            {/* NEWSLETTER TAB */}
+            {tab === "Newsletter" && (
+              <NewsletterTab applicants={applicants} />
+            )}
           </>
         )}
       </div>
@@ -657,6 +662,265 @@ function ActivityLog() {
         {logs.length === 0 && (
           <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.52rem", padding: "20px 0" }}>No activity logged yet.</p>
         )}
+      </div>
+    </div>
+  );
+}
+
+type BriefTier = "alii" | "mana" | "nakoa";
+
+const BRIEF_CONFIG: Record<BriefTier, { label: string; color: string; colorFaint: string; emoji: string }> = {
+  alii: { label: "Aliʻi Brief", color: GOLD, colorFaint: GOLD_FAINT, emoji: "👑" },
+  mana: { label: "Mana Brief", color: BLUE, colorFaint: "rgba(88,166,255,0.06)", emoji: "🌀" },
+  nakoa: { label: "Nā Koa Alert", color: "#3fb950", colorFaint: "rgba(63,185,80,0.06)", emoji: "⚔" },
+};
+
+function NewsletterTab({ applicants }: { applicants: Applicant[] }) {
+  const [generating, setGenerating] = useState<BriefTier | null>(null);
+  const [briefs, setBriefs] = useState<Partial<Record<BriefTier, string>>>({});
+  const [toastMsg, setToastMsg] = useState("");
+
+  function showToast(msg: string) {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(""), 3000);
+  }
+
+  async function generateBrief(tier: BriefTier) {
+    const apiKey = process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY;
+    setGenerating(tier);
+
+    const tierMembers = applicants.filter(a => a.tier === tier && (a.membership_status === "active" || a.membership_status === "invited"));
+    const newPledges = applicants.filter(a => a.tier === tier && a.membership_status === "pending");
+    const tierLabels: Record<BriefTier, string> = { alii: "Aliʻi", mana: "Mana", nakoa: "Nā Koa" };
+
+    const contextData = `Tier: ${tierLabels[tier]}
+Active members: ${tierMembers.length}
+New pledges this week: ${newPledges.length}
+Total deposits paid: ${tierMembers.filter(a => a.deposit_paid).length}
+Upcoming event: Mākoa 1st Roundup — May 1–4, 2026 · Kapolei · West Oahu
+Service route updates: Route assignments reviewed every full moon
+Wednesday training: Every Wednesday 4am — Ko Olina Beach`;
+
+    if (!apiKey) {
+      // Fallback brief
+      const fallback = `# ${tierLabels[tier]} Weekly Brief — XI\n\n## Standing\n${tierMembers.length} brothers active. ${newPledges.length} new pledges under review.\n\n## Events\nMākoa 1st Roundup — May 1–4, 2026. Kapolei, West Oahu. All ${tierLabels[tier]} brothers confirmed.\n\n## Service Route\nRoute assignments reviewed every full moon. Brothers on active routes — maintain your standing.\n\n## Wednesday Training\nEvery Wednesday 4am — Ko Olina Beach. Show up. Ice bath is free.\n\n## Closing\nThe order holds because you hold. Stand firm. — XI`;
+      setBriefs(prev => ({ ...prev, [tier]: fallback }));
+      setGenerating(null);
+      return;
+    }
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 512,
+          system: `You are XI generating the weekly brief for ${tierLabels[tier]} brothers. Include: upcoming events, member count, new pledges this week, service route updates, and one motivational closing line in the voice of the Makoa Order. Keep it under 200 words. Format with sections using markdown headers (##). Write in the voice of the order — direct, purposeful, no fluff.`,
+          messages: [{ role: "user", content: `Generate the weekly brief using this data:\n\n${contextData}` }],
+        }),
+      });
+
+      if (!response.ok) throw new Error(`API error ${response.status}`);
+      const data = await response.json();
+      const text = data?.content?.[0]?.text || "";
+      setBriefs(prev => ({ ...prev, [tier]: text }));
+    } catch (err) {
+      console.error("[newsletter] Brief generation error:", err);
+      setBriefs(prev => ({ ...prev, [tier]: `Error generating brief. Check API key and try again.` }));
+    }
+
+    setGenerating(null);
+  }
+
+  function copyBrief(tier: BriefTier) {
+    const text = briefs[tier];
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      showToast("Brief copied to clipboard ✓");
+    }).catch(() => {
+      showToast("Copy failed — select text manually");
+    });
+  }
+
+  function sendToTelegram(tier: BriefTier) {
+    const cfg = BRIEF_CONFIG[tier];
+    showToast(`${cfg.emoji} Sending ${cfg.label} to Telegram channel...`);
+  }
+
+  return (
+    <div>
+      {/* Toast */}
+      {toastMsg && (
+        <div style={{
+          position: "fixed", bottom: "24px", left: "50%", transform: "translateX(-50%)",
+          background: "#0a0d12", border: `1px solid ${GOLD}40`,
+          color: GOLD, fontSize: "0.5rem", padding: "10px 20px",
+          borderRadius: "6px", zIndex: 200, letterSpacing: "0.1em",
+          animation: "fadeUp 0.3s ease forwards",
+          whiteSpace: "nowrap",
+        }}>
+          {toastMsg}
+        </div>
+      )}
+
+      <p style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.15em", marginBottom: "20px" }}>
+        XI NEWSLETTER GENERATOR — Weekly briefs for each tier
+      </p>
+
+      <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.48rem", lineHeight: 1.7, marginBottom: "24px" }}>
+        Generate weekly briefs powered by XI. Each brief pulls live member data and formats a message ready to send to your Telegram channels.
+        {!process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY && (
+          <span style={{ color: "#f0883e", display: "block", marginTop: "8px" }}>
+            ⚠ NEXT_PUBLIC_ANTHROPIC_API_KEY not set — fallback briefs will be used.
+          </span>
+        )}
+      </p>
+
+      {/* Generate buttons */}
+      <div style={{ display: "grid", gap: "10px", marginBottom: "28px" }}>
+        {(["alii", "mana", "nakoa"] as BriefTier[]).map(tier => {
+          const cfg = BRIEF_CONFIG[tier];
+          const isGenerating = generating === tier;
+          return (
+            <button
+              key={tier}
+              onClick={() => generateBrief(tier)}
+              disabled={!!generating}
+              style={{
+                background: "transparent",
+                border: `1px solid ${cfg.color}40`,
+                color: cfg.color,
+                fontSize: "0.5rem",
+                letterSpacing: "0.2em",
+                padding: "13px 20px",
+                cursor: generating ? "not-allowed" : "pointer",
+                borderRadius: "6px",
+                fontFamily: "'JetBrains Mono', monospace",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                opacity: generating && generating !== tier ? 0.4 : 1,
+                transition: "all 0.2s",
+              }}
+            >
+              {isGenerating ? (
+                <>
+                  <div style={{ width: "12px", height: "12px", border: `1px solid ${cfg.color}`, borderTop: "1px solid transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
+                  Generating {cfg.label}...
+                </>
+              ) : (
+                <>
+                  <span>{cfg.emoji}</span>
+                  Generate {cfg.label}
+                </>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Generated briefs */}
+      <div style={{ display: "grid", gap: "20px" }}>
+        {(["alii", "mana", "nakoa"] as BriefTier[]).map(tier => {
+          const brief = briefs[tier];
+          if (!brief) return null;
+          const cfg = BRIEF_CONFIG[tier];
+
+          // Render markdown-ish headers
+          const lines = brief.split("\n");
+          return (
+            <div key={tier} style={{
+              background: cfg.colorFaint,
+              border: `1px solid ${cfg.color}30`,
+              borderRadius: "10px",
+              padding: "20px",
+              animation: "fadeUp 0.5s ease forwards",
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span style={{ fontSize: "1rem" }}>{cfg.emoji}</span>
+                  <p style={{ color: cfg.color, fontSize: "0.52rem", letterSpacing: "0.15em" }}>{cfg.label.toUpperCase()}</p>
+                </div>
+                <span style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem" }}>
+                  {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                </span>
+              </div>
+
+              {/* Brief content */}
+              <div style={{ marginBottom: "16px" }}>
+                {lines.map((line, i) => {
+                  if (line.startsWith("## ")) {
+                    return <p key={i} style={{ color: cfg.color, fontSize: "0.48rem", letterSpacing: "0.15em", textTransform: "uppercase", marginTop: "14px", marginBottom: "6px", opacity: 0.8 }}>{line.replace("## ", "")}</p>;
+                  }
+                  if (line.startsWith("# ")) {
+                    return <p key={i} style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1rem", marginBottom: "10px" }}>{line.replace("# ", "")}</p>;
+                  }
+                  if (line.trim() === "") return <div key={i} style={{ height: "6px" }} />;
+                  return <p key={i} style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.5rem", lineHeight: 1.8 }}>{line}</p>;
+                })}
+              </div>
+
+              {/* Actions */}
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                <button
+                  onClick={() => copyBrief(tier)}
+                  style={{
+                    background: cfg.color,
+                    border: "none",
+                    color: "#000",
+                    fontSize: "0.45rem",
+                    letterSpacing: "0.15em",
+                    padding: "9px 16px",
+                    cursor: "pointer",
+                    borderRadius: "4px",
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontWeight: 700,
+                  }}
+                >
+                  APPROVE + COPY
+                </button>
+                <button
+                  onClick={() => sendToTelegram(tier)}
+                  style={{
+                    background: "transparent",
+                    border: `1px solid rgba(88,166,255,0.4)`,
+                    color: "#58a6ff",
+                    fontSize: "0.45rem",
+                    letterSpacing: "0.15em",
+                    padding: "9px 16px",
+                    cursor: "pointer",
+                    borderRadius: "4px",
+                    fontFamily: "'JetBrains Mono', monospace",
+                  }}
+                >
+                  SEND TO TELEGRAM
+                </button>
+                <button
+                  onClick={() => generateBrief(tier)}
+                  style={{
+                    background: "transparent",
+                    border: `1px solid rgba(255,255,255,0.1)`,
+                    color: "rgba(232,224,208,0.3)",
+                    fontSize: "0.45rem",
+                    letterSpacing: "0.1em",
+                    padding: "9px 16px",
+                    cursor: "pointer",
+                    borderRadius: "4px",
+                    fontFamily: "'JetBrains Mono', monospace",
+                  }}
+                >
+                  REGENERATE
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

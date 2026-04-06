@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/integrations/supabase/client";
+import { callXIAgent } from "@/lib/xi-agent";
 
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
@@ -121,7 +122,7 @@ function TierSheet({ eyebrow, eyebrowColor, headline, bring, get, btnLabel, btnC
   );
 }
 
-function PledgePopup({ onConfirm, onClose }: { onConfirm: () => void; onClose: () => void }) {
+function PledgePopup({ onConfirm, onClose, submitting }: { onConfirm: () => void; onClose: () => void; submitting?: boolean }) {
   return (
     <div>
       <p style={{ color: PURPLE, fontSize: "0.45rem", letterSpacing: "0.2em", marginBottom: 10 }}>The Pledge · Malu Trust</p>
@@ -139,19 +140,30 @@ function PledgePopup({ onConfirm, onClose }: { onConfirm: () => void; onClose: (
         <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem", marginTop: 4 }}>Processing pledge — no charge today</p>
         <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.45rem", marginTop: 2 }}>Confirmed on platform in 24 hours</p>
       </div>
-      <div style={{ display: "grid", gap: 10 }}>
-        <button onClick={onConfirm} style={{
-          background: GOLD, color: "#000", border: "none",
-          padding: "13px", fontSize: "0.55rem", letterSpacing: "0.2em",
-          cursor: "pointer", borderRadius: 6, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-        }}>I AM CALLED</button>
-        <button onClick={onClose} style={{
-          background: "transparent", border: `1px solid rgba(255,255,255,0.12)`,
-          color: "rgba(232,224,208,0.4)", padding: "12px", fontSize: "0.52rem",
-          letterSpacing: "0.15em", cursor: "pointer", borderRadius: 6,
-          fontFamily: "'JetBrains Mono', monospace",
-        }}>NOT TODAY</button>
-      </div>
+      {submitting ? (
+        <div style={{ textAlign: "center", padding: "16px 0" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "8px" }}>
+            <div style={{ width: "16px", height: "16px", border: `1px solid ${GOLD}`, borderTop: "1px solid transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+            <p style={{ color: GOLD, fontSize: "0.5rem", letterSpacing: "0.15em" }}>XI is reviewing your submission...</p>
+          </div>
+          <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.42rem" }}>This takes a moment. Stand by.</p>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      ) : (
+        <div style={{ display: "grid", gap: 10 }}>
+          <button onClick={onConfirm} style={{
+            background: GOLD, color: "#000", border: "none",
+            padding: "13px", fontSize: "0.55rem", letterSpacing: "0.2em",
+            cursor: "pointer", borderRadius: 6, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
+          }}>I AM CALLED</button>
+          <button onClick={onClose} style={{
+            background: "transparent", border: `1px solid rgba(255,255,255,0.12)`,
+            color: "rgba(232,224,208,0.4)", padding: "12px", fontSize: "0.52rem",
+            letterSpacing: "0.15em", cursor: "pointer", borderRadius: 6,
+            fontFamily: "'JetBrains Mono', monospace",
+          }}>NOT TODAY</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -166,6 +178,7 @@ export default function GatePageRoute() {
   const [zip, setZip] = useState("");
   const [handle, setHandle] = useState("");
   const [phone, setPhone] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -175,6 +188,9 @@ export default function GatePageRoute() {
   }, []);
 
   async function handleConfirm() {
+    setSubmitting(true);
+    const tier_flag = q1 === "Leadership and vision" ? "alii" : q1 === "Skills and service" ? "mana" : "nakoa";
+
     const submissionData = {
       handle,
       phone,
@@ -183,11 +199,24 @@ export default function GatePageRoute() {
       zip,
       pledge_amount: 9.99,
       timestamp: new Date().toISOString(),
-      tier_flag: q1 === "Leadership and vision" ? "alii" : q1 === "Skills and service" ? "mana" : "nakoa",
+      tier_flag,
     };
 
     console.log("[GatePage] Pledge confirmed — saving gate submission:", submissionData);
 
+    // Call XI Agent
+    let xiMessage = "";
+    let xiTier = tier_flag;
+    try {
+      const xiResponse = await callXIAgent({ handle, q1, q2, zip, tier_flag });
+      xiMessage = xiResponse.message;
+      xiTier = xiResponse.tier;
+      console.log("[GatePage] XI Agent response:", xiResponse);
+    } catch (err) {
+      console.error("[GatePage] XI Agent error:", err);
+    }
+
+    // Save to Supabase with XI-assigned tier
     try {
       const { data, error } = await supabase.from("gate_submissions").insert({
         handle: submissionData.handle,
@@ -196,7 +225,7 @@ export default function GatePageRoute() {
         q2: submissionData.q2,
         zip: submissionData.zip,
         pledge_amount: submissionData.pledge_amount,
-        tier_flag: submissionData.tier_flag,
+        tier_flag: xiTier || submissionData.tier_flag,
       });
       if (error) {
         console.error("[GatePage] Supabase insert error:", error);
@@ -212,8 +241,11 @@ export default function GatePageRoute() {
       sessionStorage.setItem("makoa_q1", q1);
       sessionStorage.setItem("makoa_q2", q2);
       sessionStorage.setItem("makoa_zip", zip);
+      sessionStorage.setItem("makoa_xi_message", xiMessage);
+      sessionStorage.setItem("makoa_xi_tier", xiTier);
     }
 
+    setSubmitting(false);
     setPledgeOpen(false);
     router.push("/confirm");
   }
@@ -549,10 +581,11 @@ export default function GatePageRoute() {
       </BottomSheet>
 
       {/* Pledge popup */}
-      <Overlay open={pledgeOpen} onClose={() => setPledgeOpen(false)}>
+      <Overlay open={pledgeOpen} onClose={() => !submitting && setPledgeOpen(false)}>
         <PledgePopup
           onConfirm={handleConfirm}
           onClose={() => setPledgeOpen(false)}
+          submitting={submitting}
         />
       </Overlay>
     </div>
