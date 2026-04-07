@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AdminPage from "@/components/AdminPage";
+import CommandCenter from "@/components/CommandCenter";
 
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
@@ -11,6 +12,8 @@ const GOLD_DIM = "rgba(176,142,80,0.5)";
 const STEWARD_PASSWORD = "makoa0001";
 const SESSION_KEY = "makoa_steward_auth";
 
+type Mode = "command" | "admin";
+
 export default function StewardPage() {
   const router = useRouter();
   const [authed, setAuthed] = useState(false);
@@ -18,6 +21,7 @@ export default function StewardPage() {
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
   const [shake, setShake] = useState(false);
+  const [mode, setMode] = useState<Mode>("command");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -53,7 +57,83 @@ export default function StewardPage() {
   }
 
   if (authed) {
-    return <AdminPage onExit={handleExit} />;
+    return (
+      <div style={{ minHeight: "100vh", background: "#020406", fontFamily: "'JetBrains Mono', monospace" }}>
+        {/* Mode switcher — sticky top bar */}
+        <div style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          background: "rgba(2,4,6,0.97)",
+          borderTop: "1px solid rgba(176,142,80,0.12)",
+          display: "flex",
+          justifyContent: "center",
+          gap: "0",
+          padding: "0",
+        }}>
+          <button
+            onClick={() => setMode("command")}
+            style={{
+              flex: 1,
+              background: mode === "command" ? "rgba(176,142,80,0.08)" : "transparent",
+              border: "none",
+              borderTop: `2px solid ${mode === "command" ? GOLD : "transparent"}`,
+              color: mode === "command" ? GOLD : "rgba(176,142,80,0.3)",
+              fontSize: "0.42rem",
+              letterSpacing: "0.15em",
+              padding: "12px 8px",
+              cursor: "pointer",
+              fontFamily: "'JetBrains Mono', monospace",
+              transition: "all 0.2s",
+            }}
+          >
+            ⚔ COMMAND CENTER
+          </button>
+          <button
+            onClick={() => setMode("admin")}
+            style={{
+              flex: 1,
+              background: mode === "admin" ? "rgba(176,142,80,0.08)" : "transparent",
+              border: "none",
+              borderTop: `2px solid ${mode === "admin" ? GOLD : "transparent"}`,
+              color: mode === "admin" ? GOLD : "rgba(176,142,80,0.3)",
+              fontSize: "0.42rem",
+              letterSpacing: "0.15em",
+              padding: "12px 8px",
+              cursor: "pointer",
+              fontFamily: "'JetBrains Mono', monospace",
+              transition: "all 0.2s",
+            }}
+          >
+            ◈ ADMIN PANEL
+          </button>
+          <button
+            onClick={handleExit}
+            style={{
+              background: "transparent",
+              border: "none",
+              borderTop: "2px solid transparent",
+              color: "rgba(176,142,80,0.15)",
+              fontSize: "0.38rem",
+              letterSpacing: "0.1em",
+              padding: "12px 16px",
+              cursor: "pointer",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          >
+            EXIT
+          </button>
+        </div>
+
+        {/* Content */}
+        <div style={{ paddingBottom: "52px" }}>
+          {mode === "command" && <CommandCenter onExit={handleExit} />}
+          {mode === "admin" && <AdminPage onExit={handleExit} />}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -92,18 +172,15 @@ export default function StewardPage() {
       {/* Ambient glow */}
       <div style={{
         position: "absolute",
-        top: "50%",
-        left: "50%",
+        top: "50%", left: "50%",
         transform: "translate(-50%, -50%)",
-        width: "400px",
-        height: "400px",
+        width: "400px", height: "400px",
         background: "radial-gradient(circle, rgba(176,142,80,0.04) 0%, transparent 70%)",
         pointerEvents: "none",
       }} />
 
       <div style={{
-        width: "100%",
-        maxWidth: "360px",
+        width: "100%", maxWidth: "360px",
         opacity: ready ? 1 : 0,
         transform: ready ? "translateY(0)" : "translateY(20px)",
         transition: "opacity 0.8s ease, transform 0.8s ease",
@@ -111,13 +188,10 @@ export default function StewardPage() {
         {/* Crest mark */}
         <div style={{ textAlign: "center", marginBottom: "40px" }}>
           <div style={{
-            width: "64px",
-            height: "64px",
+            width: "64px", height: "64px",
             border: `1px solid ${GOLD_20}`,
             borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            display: "flex", alignItems: "center", justifyContent: "center",
             margin: "0 auto 20px",
             animation: "breatheGlow 4s ease-in-out infinite",
           }}>
@@ -132,7 +206,7 @@ export default function StewardPage() {
             margin: "0 0 8px",
             letterSpacing: "0.05em",
           }}>
-            Steward Command Center
+            Steward 0001
           </p>
 
           <p style={{
@@ -141,16 +215,11 @@ export default function StewardPage() {
             letterSpacing: "0.3em",
             textTransform: "uppercase",
           }}>
-            Restricted Access · Malu Trust
+            Command Center · Malu Trust
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            animation: shake ? "shake 0.5s ease" : "none",
-          }}
-        >
+        <form onSubmit={handleSubmit} style={{ animation: shake ? "shake 0.5s ease" : "none" }}>
           <div style={{ marginBottom: "24px" }}>
             <p style={{
               color: "rgba(176,142,80,0.35)",
@@ -220,17 +289,11 @@ export default function StewardPage() {
         <button
           onClick={() => router.push("/")}
           style={{
-            display: "block",
-            width: "100%",
-            marginTop: "16px",
-            background: "transparent",
-            border: "none",
-            color: "rgba(176,142,80,0.15)",
-            fontSize: "0.42rem",
-            cursor: "pointer",
-            fontFamily: "'JetBrains Mono', monospace",
-            letterSpacing: "0.15em",
-            padding: "8px",
+            display: "block", width: "100%", marginTop: "16px",
+            background: "transparent", border: "none",
+            color: "rgba(176,142,80,0.15)", fontSize: "0.42rem",
+            cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
+            letterSpacing: "0.15em", padding: "8px",
           }}
         >
           ← Return
@@ -238,11 +301,8 @@ export default function StewardPage() {
       </div>
 
       <p style={{
-        position: "absolute",
-        bottom: "20px",
-        color: "rgba(176,142,80,0.1)",
-        fontSize: "0.38rem",
-        letterSpacing: "0.2em",
+        position: "absolute", bottom: "20px",
+        color: "rgba(176,142,80,0.1)", fontSize: "0.38rem", letterSpacing: "0.2em",
       }}>
         Mākoa Order · Steward Access Only
       </p>

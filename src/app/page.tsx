@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 const GOLD = "#b08e50";
@@ -49,11 +49,31 @@ export default function Home() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [ready, setReady] = useState(false);
+  const [tapCount, setTapCount] = useState(0);
+  const [tapFlash, setTapFlash] = useState(false);
+  const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 2600);
     return () => clearTimeout(t);
   }, []);
+
+  function handleCrestTap() {
+    const next = tapCount + 1;
+    setTapCount(next);
+    setTapFlash(true);
+    setTimeout(() => setTapFlash(false), 120);
+
+    if (tapTimer.current) clearTimeout(tapTimer.current);
+
+    if (next >= 5) {
+      setTapCount(0);
+      router.push("/steward");
+      return;
+    }
+
+    tapTimer.current = setTimeout(() => setTapCount(0), 2000);
+  }
 
   function handleEnter() {
     if (typeof window !== "undefined") {
@@ -103,10 +123,29 @@ export default function Home() {
         input::placeholder { color: rgba(176,142,80,0.3); }
       `}</style>
 
-      <div style={{ marginBottom: "32px", animation: "crestFadeIn 2.5s cubic-bezier(0.16,1,0.3,1) forwards" }}>
-        <div style={{ borderRadius: "50%", animation: "breatheGlow 4s ease-in-out 2.5s infinite" }}>
+      <div
+        style={{ marginBottom: "32px", animation: "crestFadeIn 2.5s cubic-bezier(0.16,1,0.3,1) forwards", cursor: "pointer", userSelect: "none" }}
+        onClick={handleCrestTap}
+      >
+        <div style={{
+          borderRadius: "50%",
+          animation: "breatheGlow 4s ease-in-out 2.5s infinite",
+          opacity: tapFlash ? 0.7 : 1,
+          transition: "opacity 0.1s",
+        }}>
           <MakoaCrest />
         </div>
+        {tapCount > 0 && tapCount < 5 && (
+          <div style={{ display: "flex", justifyContent: "center", gap: "5px", marginTop: "10px" }}>
+            {[1,2,3,4,5].map(i => (
+              <div key={i} style={{
+                width: "5px", height: "5px", borderRadius: "50%",
+                background: i <= tapCount ? GOLD : "rgba(176,142,80,0.15)",
+                transition: "background 0.15s",
+              }} />
+            ))}
+          </div>
+        )}
       </div>
 
       <div style={{ textAlign: "center", width: "100%", maxWidth: 340 }}>
