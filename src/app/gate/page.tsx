@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/integrations/supabase/client";
 import { callXIAgent } from "@/lib/xi-agent";
@@ -11,9 +11,9 @@ const GOLD_10 = "rgba(176,142,80,0.1)";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
 const BLUE = "#58a6ff";
 const GREEN = "#3fb950";
-const PURPLE = "#534AB7";
-const BG_GATE = "#04060a";
+const BG = "#04060a";
 
+// ─── Countdown ───────────────────────────────────────────────────────────────
 function useCountdown() {
   const target = new Date("2026-05-01T18:00:00-10:00").getTime();
   const calc = () => {
@@ -33,45 +33,42 @@ function useCountdown() {
   return time;
 }
 
+// ─── Bottom Sheet ─────────────────────────────────────────────────────────────
 function BottomSheet({ open, onClose, children }: { open: boolean; onClose: () => void; children: React.ReactNode }) {
   if (!open) return null;
   return (
     <div
       onClick={onClose}
-      style={{
-        position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", zIndex: 200,
-        display: "flex", alignItems: "flex-end", justifyContent: "center",
-      }}
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.82)", zIndex: 200, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
     >
       <div
         onClick={e => e.stopPropagation()}
         style={{
           background: "#0a0d12", border: `1px solid ${GOLD_20}`, borderRadius: "16px 16px 0 0",
-          padding: "28px 24px 40px", width: "100%", maxWidth: 480,
+          padding: "28px 24px 48px", width: "100%", maxWidth: 480,
           animation: "slideUp 0.3s ease forwards",
         }}
       >
+        <button onClick={onClose} style={{ position: "absolute", top: 16, right: 20, background: "none", border: "none", color: GOLD_DIM, fontSize: "1.2rem", cursor: "pointer" }}>×</button>
         {children}
       </div>
     </div>
   );
 }
 
+// ─── Overlay ──────────────────────────────────────────────────────────────────
 function Overlay({ open, onClose, children }: { open: boolean; onClose: () => void; children: React.ReactNode }) {
   if (!open) return null;
   return (
     <div
       onClick={onClose}
-      style={{
-        position: "fixed", inset: 0, background: "rgba(0,0,0,0.88)", zIndex: 300,
-        display: "flex", alignItems: "center", justifyContent: "center", padding: "24px",
-      }}
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.92)", zIndex: 300, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}
     >
       <div
         onClick={e => e.stopPropagation()}
         style={{
           background: "#0a0d12", border: `1px solid ${GOLD_20}`, borderRadius: 12,
-          padding: "28px 24px", width: "100%", maxWidth: 420,
+          padding: "32px 24px", width: "100%", maxWidth: 420,
           animation: "fadeIn 0.3s ease forwards",
         }}
       >
@@ -81,69 +78,51 @@ function Overlay({ open, onClose, children }: { open: boolean; onClose: () => vo
   );
 }
 
-function SeatBar({ label, filled, total, color, openLabel }: { label: string; filled: number; total: number; color: string; openLabel: string }) {
-  const pct = (filled / total) * 100;
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-      <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.5rem", width: 40, flexShrink: 0 }}>{label}</span>
-      <div style={{ flex: 1, height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2 }}>
-        <div style={{ width: `${pct}%`, height: "100%", background: color, borderRadius: 2 }} />
-      </div>
-      <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.45rem", whiteSpace: "nowrap" }}>{openLabel}</span>
-    </div>
-  );
-}
-
-function TierSheet({ eyebrow, eyebrowColor, headline, bring, get, btnLabel, btnColor, onSelect }: {
+// ─── Class Sheet ──────────────────────────────────────────────────────────────
+function ClassSheet({ eyebrow, eyebrowColor, headline, identity, bring, receive }: {
   eyebrow: string; eyebrowColor: string; headline: string;
-  bring: string[]; get: string[]; btnLabel: string; btnColor: string; onSelect: () => void;
+  identity: string; bring: string[]; receive: string[];
 }) {
   return (
     <div>
-      <p style={{ color: eyebrowColor, fontSize: "0.48rem", letterSpacing: "0.2em", marginBottom: 10 }}>{eyebrow}</p>
-      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.15rem", lineHeight: 1.4, marginBottom: 18 }}>{headline}</p>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+      <p style={{ color: eyebrowColor, fontSize: "0.46rem", letterSpacing: "0.22em", marginBottom: 10 }}>{eyebrow}</p>
+      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.2rem", lineHeight: 1.4, marginBottom: 12 }}>{headline}</p>
+      <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.5rem", lineHeight: 1.8, marginBottom: 18, borderLeft: `2px solid ${eyebrowColor}40`, paddingLeft: 12 }}>{identity}</p>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 8 }}>
         <div>
-          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem", letterSpacing: "0.15em", marginBottom: 8 }}>YOU BRING</p>
-          {bring.map(b => <p key={b} style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.5rem", marginBottom: 5, lineHeight: 1.5 }}>— {b}</p>)}
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem", letterSpacing: "0.15em", marginBottom: 8 }}>YOU BRING</p>
+          {bring.map(b => <p key={b} style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.48rem", marginBottom: 5, lineHeight: 1.5 }}>— {b}</p>)}
         </div>
         <div>
-          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem", letterSpacing: "0.15em", marginBottom: 8 }}>YOU GET</p>
-          {get.map(g => <p key={g} style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.5rem", marginBottom: 5, lineHeight: 1.5 }}>— {g}</p>)}
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem", letterSpacing: "0.15em", marginBottom: 8 }}>YOU RECEIVE</p>
+          {receive.map(r => <p key={r} style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.48rem", marginBottom: 5, lineHeight: 1.5 }}>— {r}</p>)}
         </div>
       </div>
-      <button onClick={onSelect} style={{
-        width: "100%", background: "transparent", border: `1px solid ${btnColor}`,
-        color: btnColor, fontSize: "0.52rem", letterSpacing: "0.2em",
-        padding: "12px", cursor: "pointer", borderRadius: 6,
-        fontFamily: "'JetBrains Mono', monospace",
-      }}>{btnLabel}</button>
     </div>
   );
 }
 
+// ─── Pledge Popup ─────────────────────────────────────────────────────────────
 function PledgePopup({ onConfirm, onClose, submitting }: { onConfirm: () => void; onClose: () => void; submitting?: boolean }) {
   return (
     <div>
-      <p style={{ color: PURPLE, fontSize: "0.45rem", letterSpacing: "0.2em", marginBottom: 10 }}>The Pledge · Malu Trust</p>
-      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.2rem", lineHeight: 1.4, marginBottom: 14 }}>
-        Before you stand with the order — understand what you are pledging.
+      <p style={{ color: GOLD_DIM, fontSize: "0.44rem", letterSpacing: "0.22em", marginBottom: 10 }}>THE PLEDGE · MALU TRUST</p>
+      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.25rem", lineHeight: 1.4, marginBottom: 14 }}>
+        This is not a payment. This is a signal.
       </p>
-      <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.52rem", lineHeight: 1.8, marginBottom: 18 }}>
-        Your $297 Founding Fee gets you into the May 1–4 Mākoa Founding 72 and starts your $97/mo membership. 25% down today ($74.25) — 3 payments of $74.25. Every brother. Same door. Same oath. Same fire.
-      </p>
-      <div style={{
-        background: "rgba(176,142,80,0.08)", border: `1px solid rgba(176,142,80,0.25)`,
-        borderRadius: 8, padding: "14px", textAlign: "center", marginBottom: 20,
-      }}>
-        <p style={{ color: GOLD, fontSize: "1.6rem", fontWeight: 700, lineHeight: 1 }}>$297</p>
-        <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem", marginTop: 4 }}>Founding Fee · $74.25 due today (25% down)</p>
-        <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.45rem", marginTop: 2 }}>3 payments of $74.25 · Includes May 1–4 event + $97/mo membership</p>
+      <div style={{ background: GOLD_10, border: `1px solid ${GOLD_20}`, borderRadius: 8, padding: "18px", marginBottom: 18, textAlign: "center" }}>
+        <p style={{ color: GOLD, fontSize: "2rem", fontWeight: 700, lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>$9.99</p>
+        <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.46rem", marginTop: 6, lineHeight: 1.7 }}>
+          Your pledge signals to the order that you are serious.<br />
+          No charge is taken today.<br />
+          XI will review your 12 answers and contact you<br />
+          within 24 hours on the Makoa 808.
+        </p>
       </div>
       {submitting ? (
         <div style={{ textAlign: "center", padding: "16px 0" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "8px" }}>
-            <div style={{ width: "16px", height: "16px", border: `1px solid ${GOLD}`, borderTop: "1px solid transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 8 }}>
+            <div style={{ width: 16, height: 16, border: `1px solid ${GOLD}`, borderTop: "1px solid transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
             <p style={{ color: GOLD, fontSize: "0.5rem", letterSpacing: "0.15em" }}>XI is reviewing your submission...</p>
           </div>
           <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.42rem" }}>This takes a moment. Stand by.</p>
@@ -153,12 +132,12 @@ function PledgePopup({ onConfirm, onClose, submitting }: { onConfirm: () => void
         <div style={{ display: "grid", gap: 10 }}>
           <button onClick={onConfirm} style={{
             background: GOLD, color: "#000", border: "none",
-            padding: "13px", fontSize: "0.55rem", letterSpacing: "0.2em",
+            padding: "14px", fontSize: "0.56rem", letterSpacing: "0.22em",
             cursor: "pointer", borderRadius: 6, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-          }}>I AM CALLED</button>
+          }}>I PLEDGE</button>
           <button onClick={onClose} style={{
-            background: "transparent", border: `1px solid rgba(255,255,255,0.12)`,
-            color: "rgba(232,224,208,0.4)", padding: "12px", fontSize: "0.52rem",
+            background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
+            color: "rgba(232,224,208,0.35)", padding: "12px", fontSize: "0.5rem",
             letterSpacing: "0.15em", cursor: "pointer", borderRadius: 6,
             fontFamily: "'JetBrains Mono', monospace",
           }}>NOT TODAY</button>
@@ -168,17 +147,83 @@ function PledgePopup({ onConfirm, onClose, submitting }: { onConfirm: () => void
   );
 }
 
+// ─── Option Button ────────────────────────────────────────────────────────────
+function OptBtn({ val, cur, onSelect, color = GOLD }: { val: string; cur: string; onSelect: (v: string) => void; color?: string }) {
+  const active = cur === val;
+  return (
+    <button
+      onClick={() => onSelect(val)}
+      style={{
+        background: active ? `${color}12` : "transparent",
+        border: `1px solid ${active ? color : "rgba(255,255,255,0.08)"}`,
+        color: active ? color : "rgba(232,224,208,0.45)",
+        fontSize: "0.5rem", padding: "10px 14px", borderRadius: 6,
+        cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
+        width: "100%", textAlign: "left", transition: "all 0.15s",
+        marginBottom: 6,
+      }}
+    >{val}</button>
+  );
+}
+
+// ─── Text Input ───────────────────────────────────────────────────────────────
+function TextQ({ placeholder, value, onChange }: { placeholder: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <input
+      type="text"
+      placeholder={placeholder}
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      style={{
+        background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
+        color: "#e8e0d0", fontSize: "0.55rem", padding: "11px 14px",
+        borderRadius: 6, width: "100%", outline: "none",
+        fontFamily: "'JetBrains Mono', monospace",
+      }}
+    />
+  );
+}
+
+// ─── Question Block ───────────────────────────────────────────────────────────
+function QBlock({ num, label, children }: { num: number; label: string; children: React.ReactNode }) {
+  return (
+    <div style={{ marginBottom: 24 }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 10 }}>
+        <span style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.15em", flexShrink: 0 }}>Q{num}</span>
+        <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.52rem", lineHeight: 1.5 }}>{label}</p>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
 export default function GatePageRoute() {
   const router = useRouter();
   const { days, hours, minutes } = useCountdown();
-  const [sheet, setSheet] = useState<null | "alii" | "mana" | "nakoa">(null);
+  const questionsRef = useRef<HTMLDivElement>(null);
+
+  const [sheet, setSheet] = useState<null | "network" | "build" | "serve">(null);
   const [pledgeOpen, setPledgeOpen] = useState(false);
-  const [q1, setQ1] = useState("");
-  const [q2, setQ2] = useState("");
-  const [zip, setZip] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  // Session data
   const [handle, setHandle] = useState("");
   const [phone, setPhone] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+
+  // 12 Questions
+  const [q1, setQ1] = useState("");
+  const [q2, setQ2] = useState("");
+  const [q3, setQ3] = useState("");
+  const [q4, setQ4] = useState("");
+  const [q5, setQ5] = useState("");
+  const [q6, setQ6] = useState("");
+  const [q7, setQ7] = useState("");
+  const [q8, setQ8] = useState("");
+  const [q9, setQ9] = useState("");
+  const [q10, setQ10] = useState("");
+  const [q11, setQ11] = useState("");
+  const [q12, setQ12] = useState("");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -187,60 +232,41 @@ export default function GatePageRoute() {
     }
   }, []);
 
+  function scrollToQuestions() {
+    questionsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   async function handleConfirm() {
     setSubmitting(true);
     const tier_flag = q1 === "Leadership and vision" ? "alii" : q1 === "Skills and service" ? "mana" : "nakoa";
 
-    const submissionData = {
-      handle,
-      phone,
-      q1,
-      q2,
-      zip,
-      pledge_amount: 74.25,
-      timestamp: new Date().toISOString(),
-      tier_flag,
-    };
-
-    console.log("[GatePage] Pledge confirmed — saving gate submission:", submissionData);
-
-    // Call XI Agent
     let xiMessage = "";
     let xiTier = tier_flag;
     try {
-      const xiResponse = await callXIAgent({ handle, q1, q2, zip, tier_flag });
+      const xiResponse = await callXIAgent({ handle, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, tier_flag });
       xiMessage = xiResponse.message;
       xiTier = xiResponse.tier;
-      console.log("[GatePage] XI Agent response:", xiResponse);
     } catch (err) {
       console.error("[GatePage] XI Agent error:", err);
     }
 
-    // Save to Supabase with XI-assigned tier
     try {
-      const { data, error } = await supabase.from("gate_submissions").insert({
-        handle: submissionData.handle,
-        phone: submissionData.phone,
-        q1: submissionData.q1,
-        q2: submissionData.q2,
-        zip: submissionData.zip,
-        pledge_amount: submissionData.pledge_amount,
-        tier_flag: xiTier || submissionData.tier_flag,
+      const { error } = await supabase.from("gate_submissions").insert({
+        handle,
+        phone,
+        q1, q2, q3, q4, q5, q6, q7, q8, q9,
+        q10, q11, q12,
+        zip: q10,
+        referral_code: q11,
+        pledge_amount: 9.99,
+        tier_flag: xiTier || tier_flag,
       });
-      if (error) {
-        console.error("[GatePage] Supabase insert error:", error);
-      } else {
-        console.log("[GatePage] Gate submission saved successfully:", data);
-      }
+      if (error) console.error("[GatePage] Supabase insert error:", error);
     } catch (err) {
       console.error("[GatePage] Unexpected error saving gate submission:", err);
     }
 
-    // Store for confirm page
     if (typeof window !== "undefined") {
-      sessionStorage.setItem("makoa_q1", q1);
-      sessionStorage.setItem("makoa_q2", q2);
-      sessionStorage.setItem("makoa_zip", zip);
       sessionStorage.setItem("makoa_xi_message", xiMessage);
       sessionStorage.setItem("makoa_xi_tier", xiTier);
     }
@@ -250,334 +276,325 @@ export default function GatePageRoute() {
     router.push("/confirm");
   }
 
-  const cardStyle = (border: string): React.CSSProperties => ({
-    flex: 1, background: "#0a0d12", border: `1px solid ${border}22`,
-    borderRadius: 10, padding: "14px 10px", cursor: "pointer",
+  const cardStyle = (color: string): React.CSSProperties => ({
+    flex: 1, background: "#0a0d12", border: `1px solid ${color}22`,
+    borderRadius: 10, padding: "16px 10px", cursor: "pointer",
     display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
     transition: "border-color 0.2s",
   });
 
-  const optBtn = (val: string, cur: string, set: (v: string) => void, color = GOLD): React.CSSProperties => ({
-    background: "transparent",
-    border: `1px solid ${cur === val ? color : "rgba(255,255,255,0.08)"}`,
-    color: cur === val ? color : "rgba(232,224,208,0.45)",
-    fontSize: "0.52rem", padding: "9px 12px", borderRadius: 6,
-    cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
-    width: "100%", textAlign: "left", transition: "all 0.15s",
-  });
-
   return (
-    <div style={{ background: BG_GATE, minHeight: "100vh", color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80 }}>
+    <div style={{ background: BG, minHeight: "100vh", color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80 }}>
       <style>{`
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes dotPulse { 0%,100% { opacity:0.85; transform:scale(1); } 50% { opacity:1; transform:scale(1.35); } }
+        @keyframes ringExpand { 0% { opacity:0.5; transform:scale(1); } 100% { opacity:0; transform:scale(2.8); } }
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,600&display=swap');
       `}</style>
 
-      {/* Hero image */}
-      <div style={{ position: "relative", height: 340, overflow: "hidden" }}>
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      <div style={{ position: "relative", height: 380, overflow: "hidden" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/assets/hero-waianae-moon.png"
-          alt="Waiʻanae Mountains under the Flower Moon"
+          alt="Hawaiian moonrise over the mountains"
           style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" }}
         />
-        {/* Dark vignette overlay — heavier at top and bottom */}
         <div style={{
           position: "absolute", inset: 0,
-          background: "linear-gradient(to bottom, rgba(4,6,10,0.55) 0%, rgba(4,6,10,0.1) 40%, rgba(4,6,10,0.1) 60%, rgba(4,6,10,0.92) 100%)",
+          background: "linear-gradient(to bottom, rgba(4,6,10,0.5) 0%, rgba(4,6,10,0.05) 40%, rgba(4,6,10,0.05) 55%, rgba(4,6,10,0.96) 100%)",
         }} />
-        {/* Gold shimmer line at bottom */}
-        <div style={{
-          position: "absolute", bottom: 0, left: 0, right: 0,
-          height: "1px",
-          background: "linear-gradient(to right, transparent, rgba(176,142,80,0.3), transparent)",
-        }} />
-        <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, textAlign: "center" }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: GOLD, fontSize: "1.6rem", margin: "0 0 6px", textShadow: "0 2px 20px rgba(0,0,0,0.8)" }}>
-            For the men who build things
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 1, background: "linear-gradient(to right, transparent, rgba(176,142,80,0.3), transparent)" }} />
+        <div style={{ position: "absolute", bottom: 32, left: 0, right: 0, textAlign: "center", padding: "0 24px" }}>
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
+            color: GOLD, fontSize: "1.55rem", lineHeight: 1.35,
+            margin: "0 0 8px", textShadow: "0 2px 24px rgba(0,0,0,0.9)",
+          }}>
+            For the men who build things —<br />and the men rebuilding themselves
           </p>
-          <p style={{ fontSize: "0.45rem", color: "rgba(232,224,208,0.5)", letterSpacing: "0.25em", textShadow: "0 1px 8px rgba(0,0,0,0.9)" }}>
-            Mākoa Order · Malu Trust · West Oahu
+          <p style={{ fontSize: "0.42rem", color: "rgba(232,224,208,0.4)", letterSpacing: "0.28em", textShadow: "0 1px 8px rgba(0,0,0,0.9)" }}>
+            MĀKOA ORDER · MALU TRUST · WEST OAHU
           </p>
         </div>
       </div>
 
-      {/* Declaration */}
-      <div style={{
-        padding: "28px 24px",
-        textAlign: "center",
-        borderBottom: "1px solid rgba(255,255,255,0.05)",
-      }}>
-        <p style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontStyle: "italic",
-          fontSize: "1rem",
-          color: "rgba(232,224,208,0.75)",
-          lineHeight: 2.2,
-          margin: 0,
+      <div style={{ maxWidth: 480, margin: "0 auto", padding: "0 20px" }}>
+
+        {/* ── THE MISSION ──────────────────────────────────────────────────── */}
+        <div style={{ padding: "40px 0 36px", textAlign: "center", borderBottom: `1px solid rgba(255,255,255,0.04)` }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.28em", marginBottom: 20 }}>THE MISSION</p>
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
+            color: "rgba(232,224,208,0.65)", fontSize: "1.05rem", lineHeight: 2.1,
+          }}>
+            Makoa exists because men are dying in silence.<br />
+            Not from bullets — from isolation.<br />
+            From carrying weight no one sees.<br />
+            From performing strength while breaking inside.<br /><br />
+            This order was built so no man carries alone.<br />
+            Brotherhood is not a luxury. It is medicine.<br />
+            The 808 is how brothers find each other.<br />
+            The oath is how they stay.
+          </p>
+        </div>
+
+        {/* ── BROTHER HOTSPOT MAP ───────────────────────────────────────────── */}
+        <div style={{ padding: "36px 0 32px" }}>
+          <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.4rem", letterSpacing: "0.3em", textAlign: "center", marginBottom: 12 }}>
+            BROTHERS ACTIVE · WEST OAHU
+          </p>
+          <HotspotMapInline />
+        </div>
+
+        {/* ── THE OATH ─────────────────────────────────────────────────────── */}
+        <div style={{
+          borderLeft: `3px solid ${GOLD_40}`, background: "rgba(176,142,80,0.04)",
+          borderRadius: "0 8px 8px 0", padding: "24px 20px", marginBottom: 36,
         }}>
-          This is not a club. This is not a program. This is an order — under the Malu Trust — building something that will outlast every man in it. Entrance is earned. Not purchased. The 72 is where brothers are sworn in. The oath is the only authority here.
-        </p>
-      </div>
+          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 16 }}>THE OATH</p>
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
+            color: "rgba(232,224,208,0.7)", fontSize: "1rem", lineHeight: 2.2,
+          }}>
+            I stand with the order.<br />
+            I carry my brother's weight as my own.<br />
+            I show up at 4am when no one is watching.<br />
+            I serve before I lead.<br />
+            I build what will outlast me.<br />
+            Under the Malu — I am Makoa.
+          </p>
+        </div>
 
-      <div style={{ maxWidth: 480, margin: "0 auto", padding: "0 16px" }}>
-
-        {/* Three cards */}
-        <div style={{ marginTop: 28, marginBottom: 28 }}>
-          <p style={{ textAlign: "center", color: "rgba(232,224,208,0.3)", fontSize: "0.48rem", letterSpacing: "0.2em", marginBottom: 14 }}>
-            WHERE DO YOU STAND
+        {/* ── THE THREE CLASSES ─────────────────────────────────────────────── */}
+        <div style={{ marginBottom: 36 }}>
+          <p style={{ textAlign: "center", color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", letterSpacing: "0.22em", marginBottom: 16 }}>
+            THE THREE CLASSES
           </p>
           <div style={{ display: "flex", gap: 10 }}>
             {[
-              { key: "alii", label: "Network", sub: "Aliʻi", color: GOLD },
-              { key: "mana", label: "Build", sub: "Mana", color: BLUE },
-              { key: "nakoa", label: "Serve", sub: "Nā Koa", color: GREEN },
+              { key: "network" as const, label: "Network", sub: "Aliʻi", color: GOLD },
+              { key: "build" as const, label: "Build", sub: "Mana", color: BLUE },
+              { key: "serve" as const, label: "Serve", sub: "Nā Koa", color: GREEN },
             ].map(c => (
-              <div key={c.key} style={cardStyle(c.color)} onClick={() => setSheet(c.key as "alii" | "mana" | "nakoa")}>
+              <div key={c.key} style={cardStyle(c.color)} onClick={() => setSheet(c.key)}>
                 <p style={{ color: c.color, fontSize: "0.65rem", fontWeight: 600 }}>{c.label}</p>
                 <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem", letterSpacing: "0.1em" }}>{c.sub}</p>
+                <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.38rem", marginTop: 2 }}>tap to learn →</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* The 72 Box */}
+        {/* ── THE 48 TEASE ─────────────────────────────────────────────────── */}
         <div style={{
           border: `1px solid ${GOLD_40}`, borderRadius: 10,
           background: "linear-gradient(135deg, #0a0d12 0%, #060810 100%)",
-          padding: "20px 18px", marginBottom: 28, position: "relative",
+          padding: "22px 20px", marginBottom: 36, position: "relative",
         }}>
           <div style={{
             position: "absolute", top: 14, right: 14,
-            background: GOLD, color: "#000", fontSize: "0.4rem",
+            background: GOLD, color: "#000", fontSize: "0.38rem",
             letterSpacing: "0.15em", padding: "3px 8px", borderRadius: 3,
           }}>FOUNDING EVENT</div>
 
-          <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem", marginBottom: 6 }}>🌕 Flower Moon · May 2026</p>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: GOLD, fontSize: "1.5rem", margin: "0 0 4px" }}>
-            Mākoa 1st Roundup
+          <p style={{ color: GOLD_DIM, fontSize: "0.44rem", letterSpacing: "0.2em", marginBottom: 8 }}>THE MAKOA 48</p>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: GOLD, fontSize: "1.4rem", margin: "0 0 4px" }}>
+            May 1st · Kapolei · A Hotel
           </p>
-          <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.52rem", marginBottom: 8 }}>
-            May 1–4 · 2026 · Kapolei · West Oahu · Embassy Suites
-          </p>
-          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.5rem", lineHeight: 1.7, marginBottom: 18 }}>
-            War Room · Mastermind · Elite Training · Founding Circle.<br />
-            The only event where new brothers are elevated and sworn in.
+          <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.5rem", marginBottom: 16 }}>
+            48 brothers. 48 hours. Friday dusk to Sunday dusk.
           </p>
 
-          <div style={{
-            borderLeft: "2px solid rgba(176,142,80,0.5)",
-            paddingLeft: 14,
-            marginBottom: 18,
-          }}>
+          <div style={{ borderLeft: `2px solid ${GOLD_20}`, paddingLeft: 14, marginBottom: 20 }}>
             {[
-              "4am ice bath as the Flower Moon sets over the Pacific.",
-              "72 hours of war room and reset.",
-              "Brothers sworn in at the founding fire.",
-              "The only event where elevation happens.",
+              "War Room. Mastermind. 4am ice bath.",
+              "Founding fire. Brothers sworn in.",
+              "The only event where brothers are elevated.",
             ].map(line => (
               <p key={line} style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontStyle: "italic",
-                color: "rgba(232,224,208,0.7)",
-                fontSize: "0.95rem",
-                lineHeight: 2.2,
-                margin: 0,
+                fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
+                color: "rgba(232,224,208,0.6)", fontSize: "0.9rem", lineHeight: 2.1, margin: 0,
               }}>{line}</p>
             ))}
           </div>
 
-          {/* ONE unified founding card */}
-          <div style={{ border: `1px solid ${GOLD_40}`, borderRadius: 8, padding: "18px", background: "rgba(176,142,80,0.06)", marginBottom: 20 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-              <div>
-                <p style={{ color: GOLD, fontSize: "0.75rem", fontWeight: 700, marginBottom: 4 }}>The Founding 72</p>
-                <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.42rem", letterSpacing: "0.12em" }}>72 FOUNDING SEATS · ONE OATH</p>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <p style={{ color: GOLD, fontSize: "1.2rem", fontWeight: 700, lineHeight: 1 }}>$297</p>
-                <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.38rem", marginTop: 2 }}>founding fee</p>
-              </div>
-            </div>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "rgba(232,224,208,0.7)", fontSize: "0.9rem", lineHeight: 1.8, marginBottom: 14, textAlign: "center" }}>
-              Every brother. Same door.<br />Same oath. Same fire.
-            </p>
-            {["Ice bath 4am — Flower Moon", "72 hours of formation", "Brothers sworn in at founding fire", "Starts your $97/mo membership", "$74.25 today · 3 payments of $74.25"].map(item => (
-              <div key={item} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                <span style={{ color: GOLD, fontSize: "0.45rem", flexShrink: 0 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.44rem" }}>{item}</p>
-              </div>
-            ))}
-          </div>
-
           {/* Countdown */}
-          <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
-            {[{ label: "DAYS", val: days }, { label: "HOURS", val: hours }, { label: "MINUTES", val: minutes }].map(t => (
+          <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
+            {[{ label: "DAYS", val: days }, { label: "HRS", val: hours }, { label: "MIN", val: minutes }].map(t => (
               <div key={t.label} style={{
                 flex: 1, background: "rgba(0,0,0,0.4)", border: `1px solid ${GOLD_10}`,
                 borderRadius: 6, padding: "10px 4px", textAlign: "center",
               }}>
-                <p style={{ color: GOLD, fontSize: "1.3rem", fontWeight: 600, lineHeight: 1 }}>{t.val}</p>
-                <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.4rem", letterSpacing: "0.15em", marginTop: 4 }}>{t.label}</p>
+                <p style={{ color: GOLD, fontSize: "1.3rem", fontWeight: 600, lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>{t.val}</p>
+                <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.38rem", letterSpacing: "0.15em", marginTop: 4 }}>{t.label}</p>
               </div>
             ))}
           </div>
 
-          {/* Seat bar — unified */}
-          <div style={{ marginBottom: 20 }}>
-            <SeatBar label="Founding 72" filled={0} total={72} color={GOLD} openLabel="72 of 72 open" />
-          </div>
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.46rem", fontStyle: "italic", textAlign: "center" }}>
+            Seats announced after your pledge.
+          </p>
+        </div>
 
+        {/* ── CTA → SCROLL TO QUESTIONS ─────────────────────────────────────── */}
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <button
+            onClick={scrollToQuestions}
+            style={{
+              background: GOLD, color: "#000", border: "none",
+              padding: "16px 32px", fontSize: "0.56rem", letterSpacing: "0.22em",
+              cursor: "pointer", borderRadius: 6, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
+              width: "100%",
+            }}
+          >
+            TELL XI WHO YOU ARE
+          </button>
+          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>12 questions · takes 3 minutes</p>
+        </div>
+
+        {/* ── THE 12 QUESTIONS ─────────────────────────────────────────────── */}
+        <div ref={questionsRef} style={{ paddingTop: 8 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.44rem", letterSpacing: "0.25em", marginBottom: 28 }}>THE 12 QUESTIONS</p>
+
+          <QBlock num={1} label="What do you bring to a room of men?">
+            <OptBtn val="Leadership and vision" cur={q1} onSelect={setQ1} />
+            <OptBtn val="Skills and service" cur={q1} onSelect={setQ1} />
+            <OptBtn val="Energy and hustle" cur={q1} onSelect={setQ1} />
+          </QBlock>
+
+          <QBlock num={2} label="What's the hardest thing you've built?">
+            <TextQ placeholder="Tell XI..." value={q2} onChange={setQ2} />
+          </QBlock>
+
+          <QBlock num={3} label="Can you commit to 4am–6am, 5–6 days a month for Makoa elite reset training with Makoa meetup hotspots in your community?">
+            <OptBtn val="Yes I'm ready" cur={q3} onSelect={setQ3} />
+            <OptBtn val="Working toward it" cur={q3} onSelect={setQ3} />
+            <OptBtn val="Not yet" cur={q3} onSelect={setQ3} />
+          </QBlock>
+
+          <QBlock num={4} label="Do you have a trade or professional skill?">
+            <TextQ placeholder="e.g. electrician, contractor, nurse, developer..." value={q4} onChange={setQ4} />
+          </QBlock>
+
+          <QBlock num={5} label="How many men can you call at 2am?">
+            <OptBtn val="0" cur={q5} onSelect={setQ5} />
+            <OptBtn val="1–3" cur={q5} onSelect={setQ5} />
+            <OptBtn val="4+" cur={q5} onSelect={setQ5} />
+          </QBlock>
+
+          <QBlock num={6} label="What are you willing to give 5 days a month to?">
+            <OptBtn val="Service" cur={q6} onSelect={setQ6} />
+            <OptBtn val="Training" cur={q6} onSelect={setQ6} />
+            <OptBtn val="Both" cur={q6} onSelect={setQ6} />
+          </QBlock>
+
+          <QBlock num={7} label="Do you have a vehicle?">
+            <OptBtn val="Own truck/van" cur={q7} onSelect={setQ7} />
+            <OptBtn val="Car" cur={q7} onSelect={setQ7} />
+            <OptBtn val="No vehicle" cur={q7} onSelect={setQ7} />
+            <OptBtn val="Special license — CDL / forklift / warehouse" cur={q7} onSelect={setQ7} />
+          </QBlock>
+
+          <QBlock num={8} label="What challenge keeps you up at night?">
+            <TextQ placeholder="Be honest with XI..." value={q8} onChange={setQ8} />
+          </QBlock>
+
+          <QBlock num={9} label="Would you open your home to a brother for 30 days?">
+            <OptBtn val="Yes" cur={q9} onSelect={setQ9} />
+            <OptBtn val="Maybe" cur={q9} onSelect={setQ9} />
+            <OptBtn val="Not now" cur={q9} onSelect={setQ9} />
+          </QBlock>
+
+          <QBlock num={10} label="Where are you?">
+            <TextQ placeholder="ZIP code" value={q10} onChange={setQ10} />
+          </QBlock>
+
+          <QBlock num={11} label="Who sent you?">
+            <TextQ placeholder="Referral code — or type: I found the mark" value={q11} onChange={setQ11} />
+          </QBlock>
+
+          <QBlock num={12} label="One word that describes why you're here.">
+            <TextQ placeholder="One word." value={q12} onChange={setQ12} />
+          </QBlock>
+
+          {/* ── PLEDGE CTA ─────────────────────────────────────────────────── */}
           <button
             onClick={() => setPledgeOpen(true)}
             style={{
               width: "100%", background: GOLD, color: "#000",
-              border: "none", padding: "13px", fontSize: "0.55rem",
-              letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
+              border: "none", padding: "16px", fontSize: "0.58rem",
+              letterSpacing: "0.22em", cursor: "pointer", borderRadius: 6,
               fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginBottom: 8,
+              marginTop: 8, marginBottom: 32,
             }}
           >
-            PLEDGE YOUR SEAT · MAY 1
+            SEND MY ANSWERS TO XI
           </button>
-          <p style={{ textAlign: "center", color: "rgba(232,224,208,0.25)", fontSize: "0.45rem" }}>
-            $297 founding fee · $74.25 today · 3 payments · starts $97/mo membership
-          </p>
         </div>
 
-        {/* Three questions */}
-        <div style={{ marginBottom: 28 }}>
-          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.48rem", letterSpacing: "0.2em", marginBottom: 18 }}>
-            TELL XI WHO YOU ARE
-          </p>
-
-          <div style={{ marginBottom: 18 }}>
-            <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.52rem", marginBottom: 10 }}>What do you bring to a room?</p>
-            {["Leadership and vision", "Skills and service", "Energy and hustle"].map(o => (
-              <button key={o} style={{ ...optBtn(o, q1, setQ1), marginBottom: 6 }} onClick={() => setQ1(o)}>{o}</button>
-            ))}
-          </div>
-
-          <div style={{ marginBottom: 18 }}>
-            <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.52rem", marginBottom: 10 }}>What challenge are you facing?</p>
-            {["Scaling what I built", "Getting the right clients", "Building my foundation"].map(o => (
-              <button key={o} style={{ ...optBtn(o, q2, setQ2), marginBottom: 6 }} onClick={() => setQ2(o)}>{o}</button>
-            ))}
-          </div>
-
-          <div>
-            <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.52rem", marginBottom: 10 }}>Where are you?</p>
-            <input
-              type="text"
-              placeholder="ZIP code"
-              value={zip}
-              onChange={e => setZip(e.target.value)}
-              style={{
-                background: "transparent", border: `1px solid rgba(255,255,255,0.1)`,
-                color: "#e8e0d0", fontSize: "0.6rem", padding: "10px 14px",
-                borderRadius: 6, width: "100%", outline: "none",
-                fontFamily: "'JetBrains Mono', monospace",
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Pledge tab */}
-        <div
-          onClick={() => setPledgeOpen(true)}
-          style={{
-            background: "#0a0d12", border: `1px solid rgba(83,74,183,0.3)`,
-            borderRadius: 10, padding: "16px 18px", display: "flex",
-            justifyContent: "space-between", alignItems: "center",
-            cursor: "pointer", marginBottom: 20,
-          }}
-        >
-          <div>
-            <p style={{ color: "#e8e0d0", fontSize: "0.62rem", fontWeight: 700, marginBottom: 3 }}>The Founding Fee — $297 · $74.25 today</p>
-            <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.48rem" }}>Understand what you are committing to →</p>
-          </div>
-          <span style={{ color: PURPLE, fontSize: "1.2rem" }}>›</span>
-        </div>
-
-        {/* Main CTA */}
-        <button
-          onClick={() => setPledgeOpen(true)}
-          style={{
-            width: "100%", background: GOLD, color: "#000",
-            border: "none", padding: "15px", fontSize: "0.58rem",
-            letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
-            fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-            marginBottom: 28,
-          }}
-        >
-          I STAND WITH THE ORDER
-        </button>
-
-        {/* Telegram strip */}
+        {/* ── TELEGRAM STRIP ───────────────────────────────────────────────── */}
         <div style={{
-          background: "#080b10", borderTop: `1px solid rgba(255,255,255,0.05)`,
+          background: "#080b10", border: "1px solid rgba(255,255,255,0.05)",
           borderRadius: 8, padding: "14px 16px",
           display: "flex", justifyContent: "space-between", alignItems: "center",
+          marginBottom: 20,
         }}>
-          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.5rem" }}>
-            Follow the 72 — updates drop on Telegram
+          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem", lineHeight: 1.5 }}>
+            Follow the signal —<br />updates drop on Telegram
           </p>
           <a
             href="https://t.me/+dsS4Mz0p5wM4OGYx"
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              border: `1px solid ${BLUE}`, color: BLUE, fontSize: "0.45rem",
-              padding: "6px 12px", borderRadius: 4, textDecoration: "none",
-              letterSpacing: "0.1em", whiteSpace: "nowrap",
+              border: `1px solid ${BLUE}`, color: BLUE, fontSize: "0.44rem",
+              padding: "8px 14px", borderRadius: 4, textDecoration: "none",
+              letterSpacing: "0.1em", whiteSpace: "nowrap", flexShrink: 0,
             }}
           >
             JOIN THE SIGNAL
           </a>
         </div>
+
       </div>
 
-      {/* Bottom sheets */}
-      <BottomSheet open={sheet === "alii"} onClose={() => setSheet(null)}>
-        <TierSheet
-          eyebrow="Aliʻi · Network to Network"
+      {/* ── CLASS BOTTOM SHEETS ───────────────────────────────────────────── */}
+      <BottomSheet open={sheet === "network"} onClose={() => setSheet(null)}>
+        <ClassSheet
+          eyebrow="ALIʻI · NETWORK"
           eyebrowColor={GOLD}
           headline="You already lead. This is the room that matches you."
-          bring={["Leadership and vision", "Your B2B access and referrals", "Your presence at the founding council"]}
-          get={["12-man founding council seat", "Zello 808 Command access", "Net-to-net B2B referral pool", "Aliʻi gear at every 72"]}
-          btnLabel="THIS IS MY LEVEL"
-          btnColor={GOLD}
-          onSelect={() => { setSheet(null); setPledgeOpen(true); }}
+          identity="The Aliʻi class is for men who move rooms. You carry vision, access, and the weight of others. You don't need to be told what to do — you need brothers who can keep up."
+          bring={["Leadership and vision", "B2B access and referrals", "Presence at the founding council"]}
+          receive={["12-man founding council seat", "808 Command access", "Net-to-net referral pool", "Brotherhood at every 48"]}
         />
       </BottomSheet>
 
-      <BottomSheet open={sheet === "mana"} onClose={() => setSheet(null)}>
-        <TierSheet
-          eyebrow="Mana · Build · B2B"
+      <BottomSheet open={sheet === "build"} onClose={() => setSheet(null)}>
+        <ClassSheet
+          eyebrow="MANA · BUILD"
           eyebrowColor={BLUE}
           headline="You have the skills. This is the network that needs them."
+          identity="The Mana class is for men who build with their hands and their minds. Tradesmen, craftsmen, professionals. You teach. You create. You are the backbone of what the order builds."
           bring={["Trade and craft", "Ability to teach", "B2B services"]}
-          get={["Brotherhood council seat", "Wednesday school and job queue", "Aliʻi War Room with 5k stone", "72 Mastermind"]}
-          btnLabel="THIS IS MY LEVEL"
-          btnColor={BLUE}
-          onSelect={() => { setSheet(null); setPledgeOpen(true); }}
+          receive={["Brotherhood council seat", "Wednesday school and job queue", "War Room access", "48 Mastermind"]}
         />
       </BottomSheet>
 
-      <BottomSheet open={sheet === "nakoa"} onClose={() => setSheet(null)}>
-        <TierSheet
-          eyebrow="Nā Koa · Serve"
+      <BottomSheet open={sheet === "serve"} onClose={() => setSheet(null)}>
+        <ClassSheet
+          eyebrow="NĀ KOA · SERVE"
           eyebrowColor={GREEN}
           headline="You are ready to build something worth belonging to."
+          identity="The Nā Koa class is for men who show up. You may not have the network yet — but you have the hunger. You serve first. You train first. You earn your place in the order through action."
           bring={["Time and hustle", "Community presence", "Hunger to grow"]}
-          get={["Free 4am elite training", "Ice and sauna per cluster", "808 911 and 411 peer channels", "Service route income 80%"]}
-          btnLabel="THIS IS MY LEVEL"
-          btnColor={GREEN}
-          onSelect={() => { setSheet(null); setPledgeOpen(true); }}
+          receive={["Free 4am elite training", "Ice and sauna per cluster", "808 peer channels", "Service route income 80%"]}
         />
       </BottomSheet>
 
-      {/* Pledge popup */}
+      {/* ── PLEDGE POPUP ─────────────────────────────────────────────────── */}
       <Overlay open={pledgeOpen} onClose={() => !submitting && setPledgeOpen(false)}>
         <PledgePopup
           onConfirm={handleConfirm}
@@ -585,6 +602,98 @@ export default function GatePageRoute() {
           submitting={submitting}
         />
       </Overlay>
+    </div>
+  );
+}
+
+// ─── Inline Hotspot Map ───────────────────────────────────────────────────────
+const PRESENCE_DOTS = [
+  { x: 98,  y: 188, tier: "nakoa" as const, delay: 0 },
+  { x: 108, y: 195, tier: "mana"  as const, delay: 0.4 },
+  { x: 92,  y: 200, tier: "nakoa" as const, delay: 0.8 },
+  { x: 115, y: 185, tier: "nakoa" as const, delay: 1.2 },
+  { x: 103, y: 208, tier: "alii"  as const, delay: 0.6 },
+  { x: 128, y: 205, tier: "nakoa" as const, delay: 0.3 },
+  { x: 138, y: 212, tier: "nakoa" as const, delay: 0.9 },
+  { x: 122, y: 215, tier: "mana"  as const, delay: 1.5 },
+  { x: 118, y: 175, tier: "nakoa" as const, delay: 0.2 },
+  { x: 128, y: 168, tier: "mana"  as const, delay: 0.7 },
+  { x: 112, y: 162, tier: "nakoa" as const, delay: 1.1 },
+  { x: 58,  y: 158, tier: "nakoa" as const, delay: 0.5 },
+  { x: 68,  y: 165, tier: "nakoa" as const, delay: 1.0 },
+  { x: 52,  y: 170, tier: "alii"  as const, delay: 1.4 },
+  { x: 62,  y: 148, tier: "nakoa" as const, delay: 0.1 },
+  { x: 82,  y: 198, tier: "mana"  as const, delay: 0.8 },
+  { x: 75,  y: 190, tier: "nakoa" as const, delay: 1.3 },
+  { x: 45,  y: 178, tier: "nakoa" as const, delay: 0.6 },
+  { x: 38,  y: 185, tier: "nakoa" as const, delay: 1.1 },
+];
+const TIER_COLOR = { alii: GOLD, mana: BLUE, nakoa: GREEN };
+
+function HotspotMapInline() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setMounted(true), 200); return () => clearTimeout(t); }, []);
+  const total = PRESENCE_DOTS.length;
+
+  return (
+    <div style={{ opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(12px)", transition: "opacity 0.8s ease, transform 0.8s ease" }}>
+      <div style={{ background: "rgba(4,6,10,0.9)", border: "1px solid rgba(176,142,80,0.1)", borderRadius: 12, overflow: "hidden", position: "relative" }}>
+        <svg viewBox="0 0 380 240" style={{ width: "100%", height: "auto", display: "block" }} xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="mapBg2" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="rgba(10,15,20,0.9)" />
+              <stop offset="100%" stopColor="rgba(4,6,10,0.95)" />
+            </radialGradient>
+            <filter id="dotGlow2" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+          <rect width="380" height="240" fill="url(#mapBg2)" />
+          {[60, 120, 180, 240, 300].map(x => <line key={`gx${x}`} x1={x} y1="0" x2={x} y2="240" stroke="rgba(176,142,80,0.03)" strokeWidth="0.5" />)}
+          {[60, 120, 180].map(y => <line key={`gy${y}`} x1="0" y1={y} x2="380" y2={y} stroke="rgba(176,142,80,0.03)" strokeWidth="0.5" />)}
+          <path
+            d="M 20 200 L 28 175 L 35 155 L 45 138 L 58 120 L 75 105 L 95 92 L 118 82 L 145 75 L 172 72 L 200 74 L 228 80 L 255 92 L 278 108 L 295 128 L 305 150 L 308 172 L 302 192 L 288 208 L 268 218 L 245 224 L 218 228 L 190 228 L 162 224 L 135 216 L 110 206 L 88 200 L 65 198 L 42 200 Z"
+            fill="rgba(15,22,15,0.7)" stroke="rgba(63,185,80,0.08)" strokeWidth="1"
+          />
+          <ellipse cx="90" cy="185" rx="75" ry="45" fill="rgba(176,142,80,0.03)" stroke="rgba(176,142,80,0.06)" strokeWidth="0.5" strokeDasharray="4,4" />
+          <text x="90" y="235" textAnchor="middle" fill="rgba(176,142,80,0.15)" fontSize="7" fontFamily="JetBrains Mono, monospace" letterSpacing="2">WEST OAHU</text>
+          {PRESENCE_DOTS.map((dot, i) => {
+            const color = TIER_COLOR[dot.tier];
+            const pulseDuration = 2.5 + (dot.delay % 1.5);
+            const ringDuration = 3 + (dot.delay % 1);
+            return (
+              <g key={i}>
+                <circle cx={dot.x} cy={dot.y} r="5" fill="none" stroke={color} strokeWidth="0.8" opacity="0"
+                  style={{ animation: `ringExpand ${ringDuration}s ease-out ${dot.delay}s infinite`, transformOrigin: `${dot.x}px ${dot.y}px` }} />
+                <circle cx={dot.x} cy={dot.y} r="3.5" fill={color} filter="url(#dotGlow2)"
+                  style={{ animation: `dotPulse ${pulseDuration}s ease-in-out ${dot.delay}s infinite`, transformOrigin: `${dot.x}px ${dot.y}px` }} />
+                <circle cx={dot.x} cy={dot.y} r="1.5" fill="white" opacity="0.6" />
+              </g>
+            );
+          })}
+          <text x="358" y="22" textAnchor="middle" fill="rgba(176,142,80,0.2)" fontSize="8" fontFamily="JetBrains Mono, monospace">N</text>
+          <line x1="358" y1="10" x2="358" y2="24" stroke="rgba(176,142,80,0.15)" strokeWidth="0.5" />
+        </svg>
+        <div style={{ position: "absolute", top: 10, left: 12, display: "flex", flexDirection: "column", gap: 4 }}>
+          {[{ label: "Aliʻi", color: GOLD }, { label: "Mana", color: BLUE }, { label: "Nā Koa", color: GREEN }].map(l => (
+            <div key={l.label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: l.color, boxShadow: `0 0 4px ${l.color}`, flexShrink: 0 }} />
+              <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.34rem", fontFamily: "'JetBrains Mono', monospace" }}>{l.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <div style={{ width: 5, height: 5, borderRadius: "50%", background: GREEN, animation: "dotPulse 2s ease-in-out infinite" }} />
+          <span style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.42rem", fontFamily: "'JetBrains Mono', monospace" }}>{total} brothers</span>
+        </div>
+        <span style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.42rem" }}>·</span>
+        <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem", fontFamily: "'JetBrains Mono', monospace" }}>8 ZIP clusters</span>
+        <span style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.42rem" }}>·</span>
+        <span style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.42rem", fontFamily: "'JetBrains Mono', monospace" }}>West Oahu</span>
+      </div>
     </div>
   );
 }

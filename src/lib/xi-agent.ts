@@ -1,8 +1,17 @@
 export type XISubmission = {
   handle: string;
-  q1: string;
-  q2: string;
-  zip: string;
+  q1: string;  // What do you bring to a room
+  q2: string;  // Hardest thing you've built
+  q3: string;  // 4am training commitment
+  q4: string;  // Trade or professional skill
+  q5: string;  // How many men can you call at 2am
+  q6: string;  // What are you willing to give 5 days a month to
+  q7: string;  // Vehicle
+  q8: string;  // Challenge that keeps you up at night
+  q9: string;  // Open home to a brother for 30 days
+  q10: string; // ZIP code
+  q11: string; // Referral code
+  q12: string; // One word
   tier_flag: string;
 };
 
@@ -19,12 +28,34 @@ export async function callXIAgent(submission: XISubmission): Promise<XIResponse>
     return buildFallback(submission);
   }
 
-  const systemPrompt = `You are Chief Makoa XI. You are the intelligence of the Makoa Order. You speak for the order not as a person. Review the submission and assign Alii Mana or Na Koa class based on answers. Q1 Leadership = Alii. Q1 Skills = Mana. Q1 Energy = Na Koa. Respond with JSON only, no markdown, no explanation: {"tier": string, "message": string}. The message should be: Ae [handle]. XI has reviewed your submission. You are called to the [Tier] class. Your portal opens in 24 hours. Keep your signal open. — XI`;
+  const systemPrompt = `You are Chief Makoa XI. You are the intelligence of the Makoa Order. You speak for the order — not as a person, but as the order itself. Review the 12 gate answers and assign a class: Alii, Mana, or Na Koa. 
+
+Assignment logic:
+- Q1 "Leadership and vision" → lean Alii
+- Q1 "Skills and service" → lean Mana  
+- Q1 "Energy and hustle" → lean Na Koa
+- Q3 "Yes I'm ready" + Q6 "Both" → stronger commitment signal
+- Q9 "Yes" → brotherhood depth signal
+- Q5 "4+" → strong network signal → lean Alii
+
+Respond with JSON only, no markdown, no explanation:
+{"tier": string, "message": string}
+
+The message should be 2-3 sentences max. Speak directly to the brother. Reference one specific answer they gave. End with: "Keep your signal open. — XI"`;
 
   const userContent = `Handle: ${submission.handle || "Brother"}
 Q1 (What do you bring to a room?): ${submission.q1 || "Not answered"}
-Q2 (What challenge are you facing?): ${submission.q2 || "Not answered"}
-ZIP: ${submission.zip || "Not provided"}
+Q2 (Hardest thing you've built): ${submission.q2 || "Not answered"}
+Q3 (4am training commitment): ${submission.q3 || "Not answered"}
+Q4 (Trade or professional skill): ${submission.q4 || "Not answered"}
+Q5 (Men you can call at 2am): ${submission.q5 || "Not answered"}
+Q6 (5 days a month for): ${submission.q6 || "Not answered"}
+Q7 (Vehicle): ${submission.q7 || "Not answered"}
+Q8 (Challenge keeping you up): ${submission.q8 || "Not answered"}
+Q9 (Open home to a brother): ${submission.q9 || "Not answered"}
+Q10 (ZIP): ${submission.q10 || "Not answered"}
+Q11 (Referral): ${submission.q11 || "Not answered"}
+Q12 (One word): ${submission.q12 || "Not answered"}
 Initial tier flag: ${submission.tier_flag}`;
 
   try {
@@ -38,7 +69,7 @@ Initial tier flag: ${submission.tier_flag}`;
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 256,
+        max_tokens: 300,
         system: systemPrompt,
         messages: [{ role: "user", content: userContent }],
       }),
@@ -54,7 +85,6 @@ Initial tier flag: ${submission.tier_flag}`;
     const rawText = data?.content?.[0]?.text || "";
     console.log("[xi-agent] Raw Claude response:", rawText);
 
-    // Strip markdown code fences if present
     const cleaned = rawText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
     const parsed: XIResponse = JSON.parse(cleaned);
 
@@ -78,6 +108,6 @@ function buildFallback(submission: XISubmission): XIResponse {
   const handle = submission.handle || "Brother";
   return {
     tier: submission.tier_flag || "nakoa",
-    message: `ʻAe ${handle}. XI has reviewed your submission. You are called to the ${tierLabel} class. Your portal opens in 24 hours. Keep your signal open. — XI`,
+    message: `ʻAe ${handle}. XI has reviewed your 12 answers. You are called to the ${tierLabel} class. Your portal opens in 24 hours. Keep your signal open. — XI`,
   };
 }
