@@ -1,12 +1,20 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import CommandHomeTab from "./admin/CommandHomeTab";
+import ChannelsTab from "./admin/ChannelsTab";
+import SocialSchedulerTab from "./admin/SocialSchedulerTab";
+import MentorBoardTab from "./admin/MentorBoardTab";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
 const GOLD_FAINT = "rgba(176,142,80,0.08)";
 const BLUE = "#58a6ff";
 const STEEL = "#8b9aaa";
+const GREEN = "#3fb950";
+const RED = "#e05c5c";
+const AMBER = "#f0883e";
+const PURPLE = "#534AB7";
 
 type Applicant = {
   id: string;
@@ -54,8 +62,22 @@ type House = {
   training_attendance_score: number;
 };
 
-const TABS = ["Members", "Pledges", "Houses", "Events", "Ranks", "Log", "Newsletter", "Compliance", "Revenue"] as const;
-type Tab = typeof TABS[number];
+const ALL_TABS = [
+  "Command",
+  "808 Channels",
+  "Social",
+  "Mentors",
+  "Members",
+  "Pledges",
+  "Houses",
+  "Events",
+  "Ranks",
+  "Log",
+  "Newsletter",
+  "Compliance",
+  "Revenue",
+] as const;
+type Tab = typeof ALL_TABS[number];
 
 const TIER_COLOR: Record<string, string> = { alii: GOLD, mana: BLUE, nakoa: STEEL };
 const STATUS_COLOR: Record<string, string> = {
@@ -63,7 +85,6 @@ const STATUS_COLOR: Record<string, string> = {
   suspended: "#e05c5c", delinquent: "#f0883e", under_review: "#d29922",
 };
 
-// DiceBear avatar URL from handle/name
 function dicebearUrl(seed: string) {
   return `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(seed || "makoa")}`;
 }
@@ -79,7 +100,7 @@ interface AdminPageProps {
 }
 
 export default function AdminPage({ onExit }: AdminPageProps) {
-  const [tab, setTab] = useState<Tab>("Members");
+  const [tab, setTab] = useState<Tab>("Command");
   const [applicants, setApplicants] = useState<Applicant[]>([]);
   const [houses, setHouses] = useState<House[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,11 +123,11 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
   async function logAction(action: string, targetId: string, details: Record<string, unknown>) {
     await supabase.from("admin_activity_log").insert({
-      action,
-      target_application_id: targetId,
-      target_type: "applicant",
+      action_type: action,
+      application_id: targetId,
+      target_table: "applicants",
       details,
-      performed_by: "admin",
+      performed_by: "steward",
     });
   }
 
@@ -133,93 +154,164 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
   const activeMembers = applicants.filter(a => a.membership_status === "active" || a.membership_status === "invited");
   const pendingPledges = applicants.filter(a => a.membership_status === "pending");
-  const totalRevenue = applicants.filter(a => a.deposit_paid).length;
-
-  const tierCount = (t: string) => activeMembers.filter(a => a.tier === t).length;
+  const totalRevenueMTD = applicants.filter(a => a.deposit_paid).length * 97;
 
   return (
     <div style={{
       minHeight: "100vh",
-      background: "#050709",
+      background: "#04060a",
       color: "#e8e0d0",
       fontFamily: "'JetBrains Mono', monospace",
     }}>
+      <style>{`
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        @keyframes goldGlow { 0%, 100% { box-shadow: 0 0 0px 0px rgba(176,142,80,0); } 50% { box-shadow: 0 0 20px 4px rgba(176,142,80,0.12); } }
+        input, textarea, select { background: rgba(0,0,0,0.4); border: 1px solid rgba(176,142,80,0.15); color: #e8e0d0; padding: 8px 12px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.5rem; outline: none; width: 100%; box-sizing: border-box; }
+        input::placeholder, textarea::placeholder { color: rgba(232,224,208,0.2); }
+        input:focus, textarea:focus { border-color: rgba(176,142,80,0.4); }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(176,142,80,0.2); border-radius: 2px; }
+      `}</style>
+
+      {/* Scanline overlay */}
+      <div style={{
+        position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
+        background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px)",
+      }} />
+
       {/* Header */}
       <div style={{
         borderBottom: "1px solid rgba(176,142,80,0.12)",
-        padding: "14px 20px",
+        padding: "12px 20px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         position: "sticky",
         top: 0,
-        background: "#050709",
-        zIndex: 10,
+        background: "rgba(4,6,10,0.98)",
+        zIndex: 20,
+        backdropFilter: "blur(8px)",
       }}>
         <div>
-          <p className="font-cormorant" style={{ color: GOLD, fontSize: "1rem", letterSpacing: "0.15em" }}>MĀKOA · COMMAND</p>
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.2em" }}>ADMIN ACCESS · RESTRICTED</p>
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: GOLD,
+            fontSize: "1.1rem",
+            lineHeight: 1,
+            letterSpacing: "0.05em",
+          }}>
+            STEWARD 0001 · COMMAND CENTER
+          </p>
+          <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.25em", marginTop: "2px" }}>
+            MĀKOA ORDER · RESTRICTED ACCESS
+          </p>
         </div>
-        <button onClick={onExit} style={{ background: "none", border: "1px solid rgba(176,142,80,0.2)", color: GOLD_DIM, cursor: "pointer", fontSize: "0.45rem", padding: "6px 12px", borderRadius: "4px", letterSpacing: "0.1em" }}>
+        <button
+          onClick={onExit}
+          style={{
+            background: "none",
+            border: "1px solid rgba(176,142,80,0.15)",
+            color: GOLD_DIM,
+            cursor: "pointer",
+            fontSize: "0.4rem",
+            padding: "6px 12px",
+            borderRadius: "4px",
+            letterSpacing: "0.1em",
+            fontFamily: "'JetBrains Mono', monospace",
+          }}
+        >
           EXIT
         </button>
       </div>
 
-      {/* Stats bar */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(4, 1fr)",
-        borderBottom: "1px solid rgba(176,142,80,0.08)",
-        padding: "0",
-      }}>
-        {[
-          { label: "Active", value: activeMembers.length, color: "#3fb950" },
-          { label: "Pending", value: pendingPledges.length, color: GOLD },
-          { label: "Deposits", value: totalRevenue, color: BLUE },
-          { label: "Total", value: applicants.length, color: STEEL },
-        ].map(s => (
-          <div key={s.label} style={{ padding: "12px 16px", borderRight: "1px solid rgba(176,142,80,0.06)" }}>
-            <p style={{ color: s.color, fontSize: "1.1rem", fontWeight: 500, lineHeight: 1 }}>{s.value}</p>
-            <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.42rem", letterSpacing: "0.1em", marginTop: "3px" }}>{s.label}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Tabs */}
+      {/* Tab navigation */}
       <div style={{
         display: "flex",
         borderBottom: "1px solid rgba(176,142,80,0.08)",
         overflowX: "auto",
-        padding: "0 16px",
+        padding: "0 12px",
+        background: "rgba(0,0,0,0.4)",
+        position: "sticky",
+        top: "52px",
+        zIndex: 19,
+        scrollbarWidth: "none",
       }}>
-        {TABS.map(t => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            style={{
-              background: "none",
-              border: "none",
-              borderBottom: `2px solid ${tab === t ? GOLD : "transparent"}`,
-              color: tab === t ? GOLD : "rgba(232,224,208,0.35)",
-              cursor: "pointer",
-              fontSize: "0.48rem",
-              letterSpacing: "0.15em",
-              padding: "12px 14px",
-              whiteSpace: "nowrap",
-              fontFamily: "'JetBrains Mono', monospace",
-              transition: "color 0.2s",
-            }}
-          >
-            {t.toUpperCase()}
-          </button>
-        ))}
+        {ALL_TABS.map(t => {
+          const isActive = tab === t;
+          const isNew = ["Command", "808 Channels", "Social", "Mentors"].includes(t);
+          return (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              style={{
+                background: "none",
+                border: "none",
+                borderBottom: `2px solid ${isActive ? GOLD : "transparent"}`,
+                color: isActive ? GOLD : "rgba(232,224,208,0.3)",
+                cursor: "pointer",
+                fontSize: "0.4rem",
+                letterSpacing: "0.12em",
+                padding: "10px 10px",
+                whiteSpace: "nowrap",
+                fontFamily: "'JetBrains Mono', monospace",
+                transition: "color 0.2s",
+                position: "relative",
+              }}
+            >
+              {t.toUpperCase()}
+              {isNew && !isActive && (
+                <span style={{
+                  position: "absolute",
+                  top: "6px",
+                  right: "4px",
+                  width: "4px",
+                  height: "4px",
+                  borderRadius: "50%",
+                  background: GOLD,
+                  opacity: 0.6,
+                }} />
+              )}
+            </button>
+          );
+        })}
       </div>
 
-      <div style={{ padding: "20px", maxWidth: "900px", margin: "0 auto" }}>
-        {loading ? (
-          <p style={{ color: GOLD_DIM, fontSize: "0.52rem", textAlign: "center", padding: "40px" }}>Loading...</p>
+      {/* Content */}
+      <div style={{ padding: "20px 16px", maxWidth: "960px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+        {loading && tab !== "Command" && tab !== "808 Channels" && tab !== "Social" && tab !== "Mentors" ? (
+          <p style={{ color: GOLD_DIM, fontSize: "0.52rem", textAlign: "center", padding: "40px" }}>
+            Loading...
+          </p>
         ) : (
           <>
+            {/* COMMAND HOME */}
+            {tab === "Command" && (
+              <CommandHomeTab
+                activeBrothers={activeMembers.length}
+                pendingPledges={pendingPledges.length}
+                revenueMTD={totalRevenueMTD}
+                alertCount={0}
+              />
+            )}
+
+            {/* 808 CHANNELS */}
+            {tab === "808 Channels" && <ChannelsTab />}
+
+            {/* SOCIAL SCHEDULER */}
+            {tab === "Social" && (
+              <SocialSchedulerTab
+                activeBrothers={activeMembers.length}
+                pendingPledges={pendingPledges.length}
+              />
+            )}
+
+            {/* MENTOR BOARD */}
+            {tab === "Mentors" && <MentorBoardTab />}
+
             {/* MEMBERS TAB */}
             {tab === "Members" && (
               <div>
@@ -384,29 +476,19 @@ export default function AdminPage({ onExit }: AdminPageProps) {
             )}
 
             {/* EVENTS TAB */}
-            {tab === "Events" && (
-              <EventsTab />
-            )}
+            {tab === "Events" && <EventsTab />}
 
             {/* LOG TAB */}
-            {tab === "Log" && (
-              <ActivityLog />
-            )}
+            {tab === "Log" && <ActivityLog />}
 
             {/* NEWSLETTER TAB */}
-            {tab === "Newsletter" && (
-              <NewsletterTab applicants={applicants} />
-            )}
+            {tab === "Newsletter" && <NewsletterTab applicants={applicants} />}
 
             {/* COMPLIANCE TAB */}
-            {tab === "Compliance" && (
-              <ComplianceTab />
-            )}
+            {tab === "Compliance" && <ComplianceTab />}
 
             {/* REVENUE TAB */}
-            {tab === "Revenue" && (
-              <RevenueTab applicants={applicants} />
-            )}
+            {tab === "Revenue" && <RevenueTab applicants={applicants} />}
           </>
         )}
       </div>
@@ -629,6 +711,9 @@ function EventsTab() {
             </div>
           </div>
         ))}
+        {events.length === 0 && (
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.52rem", padding: "20px 0" }}>No events scheduled.</p>
+        )}
       </div>
     </div>
   );
@@ -636,7 +721,7 @@ function EventsTab() {
 
 function ActivityLog() {
   const [logs, setLogs] = useState<Array<{
-    id: string; action: string; target_application_id: string; details: Record<string, unknown>; performed_by: string; created_at: string;
+    id: string; action_type: string; application_id: string; details: Record<string, unknown>; performed_by: string; created_at: string;
   }>>([]);
 
   useEffect(() => {
@@ -659,13 +744,13 @@ function ActivityLog() {
             padding: "10px 14px",
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
-              <span style={{ color: GOLD, fontSize: "0.5rem" }}>{log.action}</span>
+              <span style={{ color: GOLD, fontSize: "0.5rem" }}>{log.action_type}</span>
               <span style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.42rem" }}>
                 {new Date(log.created_at).toLocaleString()}
               </span>
             </div>
             <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.45rem" }}>
-              {log.target_application_id} · {log.performed_by}
+              {log.application_id} · {log.performed_by}
             </p>
           </div>
         ))}
@@ -703,16 +788,9 @@ function NewsletterTab({ applicants }: { applicants: Applicant[] }) {
     const newPledges = applicants.filter(a => a.tier === tier && a.membership_status === "pending");
     const tierLabels: Record<BriefTier, string> = { alii: "Aliʻi", mana: "Mana", nakoa: "Nā Koa" };
 
-    const contextData = `Tier: ${tierLabels[tier]}
-Active members: ${tierMembers.length}
-New pledges this week: ${newPledges.length}
-Total deposits paid: ${tierMembers.filter(a => a.deposit_paid).length}
-Upcoming event: Mākoa 1st Roundup — May 1–4, 2026 · Kapolei · West Oahu
-Service route updates: Route assignments reviewed every full moon
-Wednesday training: Every Wednesday 4am — Ko Olina Beach`;
+    const contextData = `Tier: ${tierLabels[tier]}\nActive members: ${tierMembers.length}\nNew pledges this week: ${newPledges.length}\nTotal deposits paid: ${tierMembers.filter(a => a.deposit_paid).length}\nUpcoming event: Mākoa 1st Roundup — May 1–4, 2026 · Kapolei · West Oahu\nService route updates: Route assignments reviewed every full moon\nWednesday training: Every Wednesday 4am — Ko Olina Beach`;
 
     if (!apiKey) {
-      // Fallback brief
       const fallback = `# ${tierLabels[tier]} Weekly Brief — XI\n\n## Standing\n${tierMembers.length} brothers active. ${newPledges.length} new pledges under review.\n\n## Events\nMākoa 1st Roundup — May 1–4, 2026. Kapolei, West Oahu. All ${tierLabels[tier]} brothers confirmed.\n\n## Service Route\nRoute assignments reviewed every full moon. Brothers on active routes — maintain your standing.\n\n## Wednesday Training\nEvery Wednesday 4am — Ko Olina Beach. Show up. Ice bath is free.\n\n## Closing\nThe order holds because you hold. Stand firm. — XI`;
       setBriefs(prev => ({ ...prev, [tier]: fallback }));
       setGenerating(null);
@@ -765,7 +843,6 @@ Wednesday training: Every Wednesday 4am — Ko Olina Beach`;
 
   return (
     <div>
-      {/* Toast */}
       {toastMsg && (
         <div style={{
           position: "fixed", bottom: "24px", left: "50%", transform: "translateX(-50%)",
@@ -783,16 +860,6 @@ Wednesday training: Every Wednesday 4am — Ko Olina Beach`;
         XI NEWSLETTER GENERATOR — Weekly briefs for each tier
       </p>
 
-      <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.48rem", lineHeight: 1.7, marginBottom: "24px" }}>
-        Generate weekly briefs powered by XI. Each brief pulls live member data and formats a message ready to send to your Telegram channels.
-        {!process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY && (
-          <span style={{ color: "#f0883e", display: "block", marginTop: "8px" }}>
-            ⚠ NEXT_PUBLIC_ANTHROPIC_API_KEY not set — fallback briefs will be used.
-          </span>
-        )}
-      </p>
-
-      {/* Generate buttons */}
       <div style={{ display: "grid", gap: "10px", marginBottom: "28px" }}>
         {(["alii", "mana", "nakoa"] as BriefTier[]).map(tier => {
           const cfg = BRIEF_CONFIG[tier];
@@ -835,14 +902,11 @@ Wednesday training: Every Wednesday 4am — Ko Olina Beach`;
         })}
       </div>
 
-      {/* Generated briefs */}
       <div style={{ display: "grid", gap: "20px" }}>
         {(["alii", "mana", "nakoa"] as BriefTier[]).map(tier => {
           const brief = briefs[tier];
           if (!brief) return null;
           const cfg = BRIEF_CONFIG[tier];
-
-          // Render markdown-ish headers
           const lines = brief.split("\n");
           return (
             <div key={tier} style={{
@@ -862,7 +926,6 @@ Wednesday training: Every Wednesday 4am — Ko Olina Beach`;
                 </span>
               </div>
 
-              {/* Brief content */}
               <div style={{ marginBottom: "16px" }}>
                 {lines.map((line, i) => {
                   if (line.startsWith("## ")) {
@@ -876,21 +939,14 @@ Wednesday training: Every Wednesday 4am — Ko Olina Beach`;
                 })}
               </div>
 
-              {/* Actions */}
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                 <button
                   onClick={() => copyBrief(tier)}
                   style={{
-                    background: cfg.color,
-                    border: "none",
-                    color: "#000",
-                    fontSize: "0.45rem",
-                    letterSpacing: "0.15em",
-                    padding: "9px 16px",
-                    cursor: "pointer",
-                    borderRadius: "4px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontWeight: 700,
+                    background: cfg.color, border: "none", color: "#000",
+                    fontSize: "0.45rem", letterSpacing: "0.15em", padding: "9px 16px",
+                    cursor: "pointer", borderRadius: "4px",
+                    fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
                   }}
                 >
                   APPROVE + COPY
@@ -898,14 +954,9 @@ Wednesday training: Every Wednesday 4am — Ko Olina Beach`;
                 <button
                   onClick={() => sendToTelegram(tier)}
                   style={{
-                    background: "transparent",
-                    border: `1px solid rgba(88,166,255,0.4)`,
-                    color: "#58a6ff",
-                    fontSize: "0.45rem",
-                    letterSpacing: "0.15em",
-                    padding: "9px 16px",
-                    cursor: "pointer",
-                    borderRadius: "4px",
+                    background: "transparent", border: `1px solid rgba(88,166,255,0.4)`,
+                    color: "#58a6ff", fontSize: "0.45rem", letterSpacing: "0.15em",
+                    padding: "9px 16px", cursor: "pointer", borderRadius: "4px",
                     fontFamily: "'JetBrains Mono', monospace",
                   }}
                 >
@@ -914,14 +965,9 @@ Wednesday training: Every Wednesday 4am — Ko Olina Beach`;
                 <button
                   onClick={() => generateBrief(tier)}
                   style={{
-                    background: "transparent",
-                    border: `1px solid rgba(255,255,255,0.1)`,
-                    color: "rgba(232,224,208,0.3)",
-                    fontSize: "0.45rem",
-                    letterSpacing: "0.1em",
-                    padding: "9px 16px",
-                    cursor: "pointer",
-                    borderRadius: "4px",
+                    background: "transparent", border: `1px solid rgba(255,255,255,0.1)`,
+                    color: "rgba(232,224,208,0.3)", fontSize: "0.45rem", letterSpacing: "0.1em",
+                    padding: "9px 16px", cursor: "pointer", borderRadius: "4px",
                     fontFamily: "'JetBrains Mono', monospace",
                   }}
                 >
@@ -951,77 +997,27 @@ interface SOPItem {
 }
 
 const SOP_ITEMS: SOPItem[] = [
-  {
-    id: "ein",
-    label: "EIN Status",
-    description: "Federal Employer Identification Number — required for all financial operations.",
-    statusOptions: ["active", "pending"],
-    defaultStatus: "pending",
-    positiveStatus: "active",
-  },
-  {
-    id: "ge_tax",
-    label: "GE Tax License",
-    description: "Hawaii General Excise Tax license — required before collecting any revenue.",
-    statusOptions: ["uploaded", "missing"],
-    defaultStatus: "missing",
-    positiveStatus: "uploaded",
-  },
-  {
-    id: "event_insurance",
-    label: "Event Insurance",
-    description: "Liability coverage for all gatherings including Ke Ala, Pō Māhina, and Ka Hoʻike.",
-    statusOptions: ["current", "expired"],
-    defaultStatus: "expired",
-    positiveStatus: "current",
-  },
-  {
-    id: "waiver_collection",
-    label: "Waiver Collection",
-    description: "Digital liability waivers collected from all members before participation.",
-    statusOptions: ["active", "inactive"],
-    defaultStatus: "inactive",
-    positiveStatus: "active",
-  },
-  {
-    id: "coop_agreements",
-    label: "Cooperative Membership Agreements",
-    description: "Signed cooperative membership agreements for all active members.",
-    statusOptions: ["signed", "pending"],
-    defaultStatus: "pending",
-    positiveStatus: "signed",
-  },
-  {
-    id: "house_rules",
-    label: "House Rules",
-    description: "Published house rules and code of conduct for all Mākoa members.",
-    statusOptions: ["published", "draft"],
-    defaultStatus: "draft",
-    positiveStatus: "published",
-  },
-  {
-    id: "ice_bath_waiver",
-    label: "Ice Bath Waiver",
-    description: "Required before first Pō Māhina. Digital collection via portal.",
-    statusOptions: ["active", "required"],
-    defaultStatus: "required",
-    positiveStatus: "active",
-    note: "Required before first Pō Māhina — digital collection via member portal",
-  },
+  { id: "ein", label: "EIN Status", description: "Federal Employer Identification Number — required for all financial operations.", statusOptions: ["active", "pending"], defaultStatus: "pending", positiveStatus: "active" },
+  { id: "ge_tax", label: "GE Tax License", description: "Hawaii General Excise Tax license — required before collecting any revenue.", statusOptions: ["uploaded", "missing"], defaultStatus: "missing", positiveStatus: "uploaded" },
+  { id: "event_insurance", label: "Event Insurance", description: "Liability coverage for all gatherings including Ke Ala, Pō Māhina, and Ka Hoʻike.", statusOptions: ["current", "expired"], defaultStatus: "expired", positiveStatus: "current" },
+  { id: "waiver_collection", label: "Waiver Collection", description: "Digital liability waivers collected from all members before participation.", statusOptions: ["active", "inactive"], defaultStatus: "inactive", positiveStatus: "active" },
+  { id: "coop_agreements", label: "Cooperative Membership Agreements", description: "Signed cooperative membership agreements for all active members.", statusOptions: ["signed", "pending"], defaultStatus: "pending", positiveStatus: "signed" },
+  { id: "house_rules", label: "House Rules", description: "Published house rules and code of conduct for all Mākoa members.", statusOptions: ["published", "draft"], defaultStatus: "draft", positiveStatus: "published" },
+  { id: "ice_bath_waiver", label: "Ice Bath Waiver", description: "Required before first Pō Māhina. Digital collection via portal.", statusOptions: ["active", "required"], defaultStatus: "required", positiveStatus: "active", note: "Required before first Pō Māhina — digital collection via member portal" },
 ];
 
 const STATUS_DISPLAY: Record<ComplianceStatus, { label: string; color: string; icon: string }> = {
-  active:    { label: "Active",    color: "#3fb950", icon: "✓" },
-  pending:   { label: "Pending",   color: "#d29922", icon: "⏳" },
-  uploaded:  { label: "Uploaded",  color: "#3fb950", icon: "✓" },
-  missing:   { label: "Missing",   color: "#e05c5c", icon: "✗" },
-  current:   { label: "Current",   color: "#3fb950", icon: "✓" },
-  expired:   { label: "Expired",   color: "#e05c5c", icon: "✗" },
-  signed:    { label: "Signed",    color: "#3fb950", icon: "✓" },
+  active: { label: "Active", color: "#3fb950", icon: "✓" },
+  pending: { label: "Pending", color: "#d29922", icon: "⏳" },
+  uploaded: { label: "Uploaded", color: "#3fb950", icon: "✓" },
+  missing: { label: "Missing", color: "#e05c5c", icon: "✗" },
+  current: { label: "Current", color: "#3fb950", icon: "✓" },
+  expired: { label: "Expired", color: "#e05c5c", icon: "✗" },
+  signed: { label: "Signed", color: "#3fb950", icon: "✓" },
   published: { label: "Published", color: "#3fb950", icon: "✓" },
-  draft:     { label: "Draft",     color: "#d29922", icon: "⏳" },
-  inactive:  { label: "Inactive",  color: "#e05c5c", icon: "✗" },
-  required:  { label: "Required",  color: "#f0883e", icon: "!" },
+  draft: { label: "Draft", color: "#d29922", icon: "⏳" },
+  inactive: { label: "Inactive", color: "#e05c5c", icon: "✗" },
+  required: { label: "Required", color: "#f0883e", icon: "!" },
 };
 
 function ComplianceTab() {
@@ -1029,7 +1025,6 @@ function ComplianceTab() {
     Object.fromEntries(SOP_ITEMS.map(item => [item.id, item.defaultStatus])) as Record<string, ComplianceStatus>
   );
 
-  // Mock revenue for GE tax calculation
   const mockMonthlyRevenue = 24800;
   const mockQuarterlyRevenue = mockMonthlyRevenue * 3;
   const geTaxRate = 0.04;
@@ -1048,18 +1043,10 @@ function ComplianceTab() {
 
   return (
     <div>
-      <style>{`@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
-
-      {/* Header */}
       <div style={{ marginBottom: "24px" }}>
         <p style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.15em", marginBottom: "8px" }}>
           LEGAL COMPLIANCE DASHBOARD
         </p>
-        <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem", lineHeight: 1.7, marginBottom: "16px" }}>
-          Track SOP compliance status. Toggle items as they are completed. All items required before full operations.
-        </p>
-
-        {/* Compliance score */}
         <div style={{
           background: GOLD_FAINT,
           border: `1px solid ${GOLD}20`,
@@ -1086,13 +1073,7 @@ function ComplianceTab() {
         </div>
       </div>
 
-      {/* SOP Checklist */}
-      <div style={{
-        border: `1px solid ${GOLD}20`,
-        borderRadius: "10px",
-        overflow: "hidden",
-        marginBottom: "24px",
-      }}>
+      <div style={{ border: `1px solid ${GOLD}20`, borderRadius: "10px", overflow: "hidden", marginBottom: "24px" }}>
         <div style={{ padding: "12px 16px", borderBottom: `1px solid ${GOLD}15`, background: GOLD_FAINT }}>
           <p style={{ color: GOLD, fontSize: "0.45rem", letterSpacing: "0.2em" }}>SOP CHECKLIST</p>
         </div>
@@ -1100,17 +1081,13 @@ function ComplianceTab() {
           const currentStatus = statuses[item.id] as ComplianceStatus;
           const statusInfo = STATUS_DISPLAY[currentStatus];
           const isPositive = currentStatus === item.positiveStatus;
-
           return (
-            <div
-              key={item.id}
-              style={{
-                padding: "14px 16px",
-                borderBottom: i < SOP_ITEMS.length - 1 ? `1px solid rgba(176,142,80,0.06)` : "none",
-                background: isPositive ? "rgba(63,185,80,0.03)" : "transparent",
-                transition: "background 0.3s",
-              }}
-            >
+            <div key={item.id} style={{
+              padding: "14px 16px",
+              borderBottom: i < SOP_ITEMS.length - 1 ? `1px solid rgba(176,142,80,0.06)` : "none",
+              background: isPositive ? "rgba(63,185,80,0.03)" : "transparent",
+              transition: "background 0.3s",
+            }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
@@ -1159,20 +1136,11 @@ function ComplianceTab() {
         })}
       </div>
 
-      {/* GE Tax Reminder */}
-      <div style={{
-        background: "rgba(176,142,80,0.05)",
-        border: `1px solid ${GOLD}25`,
-        borderRadius: "10px",
-        padding: "18px 20px",
-      }}>
+      <div style={{ background: "rgba(176,142,80,0.05)", border: `1px solid ${GOLD}25`, borderRadius: "10px", padding: "18px 20px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "14px" }}>
           <span style={{ color: GOLD, fontSize: "0.9rem" }}>📊</span>
           <p style={{ color: GOLD, fontSize: "0.48rem", letterSpacing: "0.15em" }}>GE TAX REMINDER</p>
         </div>
-        <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.48rem", lineHeight: 1.7, marginBottom: "16px" }}>
-          4% of all service revenue is flagged quarterly for Hawaii General Excise Tax. File with DOTAX by the 20th of the month following each quarter.
-        </p>
         <div style={{ display: "grid", gap: "8px" }}>
           {[
             { label: "Mock Monthly Revenue", value: `$${mockMonthlyRevenue.toLocaleString()}`, color: "#e8e0d0" },
@@ -1186,9 +1154,6 @@ function ComplianceTab() {
             </div>
           ))}
         </div>
-        <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.42rem", marginTop: "12px", lineHeight: 1.6 }}>
-          ⚠ This is a mock estimate. Connect your actual revenue data for accurate calculations. Consult a Hawaii CPA for GE tax filing.
-        </p>
       </div>
     </div>
   );
@@ -1196,53 +1161,34 @@ function ComplianceTab() {
 
 // ─── REVENUE TAB ─────────────────────────────────────────────────────────────
 
-const PURPLE = "#534AB7";
-const GREEN = "#3fb950";
-
-// ── Pricing constants ──
 const ALII_BASE = 1497;
 const KAMAAINA_BASE = 749;
 const B2B_SMALL_BASE = 1299;
 const B2B_MID_BASE = 2499;
 const B2B_LARGE_BASE = 3999;
-
-// ── Membership dues ──
 const MEMBERSHIP_DUES = 97;
 const MEMBERSHIP_BROTHERS = 100;
-const MEMBERSHIP_MRR = MEMBERSHIP_DUES * MEMBERSHIP_BROTHERS; // $9,700
-
-// ── One Mākoa House at capacity: 80 Ohana + 20 B2B ──
+const MEMBERSHIP_MRR = MEMBERSHIP_DUES * MEMBERSHIP_BROTHERS;
 const HOUSE_ALII_COUNT = 30;
 const HOUSE_KAMAAINA_COUNT = 50;
 const HOUSE_B2B_SMALL_COUNT = 12;
 const HOUSE_B2B_MID_COUNT = 5;
 const HOUSE_B2B_LARGE_COUNT = 3;
-
-const SERVICE_MRR =
-  HOUSE_ALII_COUNT * ALII_BASE +
-  HOUSE_KAMAAINA_COUNT * KAMAAINA_BASE +
-  HOUSE_B2B_SMALL_COUNT * B2B_SMALL_BASE +
-  HOUSE_B2B_MID_COUNT * B2B_MID_BASE +
-  HOUSE_B2B_LARGE_COUNT * B2B_LARGE_BASE;
-// = 44,910 + 37,450 + 15,588 + 12,495 + 11,997 = 122,440
-
-const HOUSE_MRR = SERVICE_MRR + MEMBERSHIP_MRR; // $132,140
+const SERVICE_MRR = HOUSE_ALII_COUNT * ALII_BASE + HOUSE_KAMAAINA_COUNT * KAMAAINA_BASE + HOUSE_B2B_SMALL_COUNT * B2B_SMALL_BASE + HOUSE_B2B_MID_COUNT * B2B_MID_BASE + HOUSE_B2B_LARGE_COUNT * B2B_LARGE_BASE;
+const HOUSE_MRR = SERVICE_MRR + MEMBERSHIP_MRR;
 
 function PlanContractTiers({ base, color }: { base: number; color: string }) {
   const tiers = [
     { label: "Month-to-Month", rate: base, badge: "FULL RATE", badgeColor: "rgba(232,224,208,0.4)" },
     { label: "6-Month", rate: Math.round(base * 0.8), badge: "20% OFF", badgeColor: GREEN },
-    { label: "12-Month", rate: Math.round(base * 0.6), badge: "40% OFF", badgeColor: "#f0883e" },
+    { label: "12-Month", rate: Math.round(base * 0.6), badge: "40% OFF", badgeColor: AMBER },
   ];
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "6px" }}>
       {tiers.map(t => (
         <div key={t.label} style={{
-          background: "rgba(0,0,0,0.3)",
-          borderRadius: "6px",
-          padding: "10px 8px",
-          textAlign: "center",
-          border: `1px solid ${color}15`,
+          background: "rgba(0,0,0,0.3)", borderRadius: "6px", padding: "10px 8px",
+          textAlign: "center", border: `1px solid ${color}15`,
         }}>
           <p style={{ color: t.badgeColor, fontSize: "0.36rem", letterSpacing: "0.1em", marginBottom: "5px" }}>{t.badge}</p>
           <p style={{ color: color, fontSize: "0.7rem", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>${t.rate.toLocaleString()}</p>
@@ -1255,47 +1201,22 @@ function PlanContractTiers({ base, color }: { base: number; color: string }) {
 }
 
 function RevenueTab({ applicants }: { applicants: Applicant[] }) {
-  const totalMRR = HOUSE_MRR; // $132,140
+  const totalMRR = HOUSE_MRR;
   const totalPlans = HOUSE_ALII_COUNT + HOUSE_KAMAAINA_COUNT + HOUSE_B2B_SMALL_COUNT + HOUSE_B2B_MID_COUNT + HOUSE_B2B_LARGE_COUNT;
   const quarterlyRevenue = totalMRR * 3;
   const geTaxQuarterly = Math.round(quarterlyRevenue * 0.04);
   const nakoa80 = Math.round(totalMRR * 0.80);
   const mana10 = Math.round(totalMRR * 0.10);
   const alii10 = Math.round(totalMRR * 0.10);
-
   const activeMembers = applicants.filter(a => a.membership_status === "active" || a.membership_status === "invited");
 
   return (
     <div>
-      {/* Header */}
       <p style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.15em", marginBottom: "6px" }}>
         OHANA SERVICE PLANS — REVENUE DASHBOARD
       </p>
-      <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.45rem", lineHeight: 1.7, marginBottom: "6px" }}>
-        Below-market competitive pricing. One Mākoa House handles 100 accounts: 80 Ohana + 20 B2B.
-      </p>
-      <p style={{ color: "rgba(176,142,80,0.45)", fontSize: "0.42rem", lineHeight: 1.6, marginBottom: "6px" }}>
-        Market rate: Aliʻi $1,500–$3,000/mo · Kamaʻāina $750–$1,500/mo · B2B $1,300–$4,500/mo
-      </p>
-      <div style={{ background: "rgba(176,142,80,0.06)", border: "1px solid rgba(176,142,80,0.15)", borderRadius: "6px", padding: "10px 14px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.4rem", letterSpacing: "0.15em", marginBottom: "2px" }}>MEMBERSHIP MODEL</p>
-          <p style={{ color: GOLD, fontSize: "0.48rem" }}>$97/mo base · a la carte events · waived on active route</p>
-        </div>
-        <div style={{ textAlign: "right", flexShrink: 0, marginLeft: "12px" }}>
-          <p style={{ color: GOLD, fontSize: "0.65rem", fontFamily: "'JetBrains Mono', monospace" }}>$97/mo</p>
-          <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.36rem" }}>per brother</p>
-        </div>
-      </div>
 
-      {/* MRR Summary — 1 House at capacity */}
-      <div style={{
-        background: GOLD_FAINT,
-        border: `1px solid ${GOLD}25`,
-        borderRadius: "10px",
-        padding: "16px 18px",
-        marginBottom: "20px",
-      }}>
+      <div style={{ background: GOLD_FAINT, border: `1px solid ${GOLD}25`, borderRadius: "10px", padding: "16px 18px", marginBottom: "20px" }}>
         <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>
           ONE HOUSE AT CAPACITY — 100 ACCOUNTS + 100 BROTHERS
         </p>
@@ -1304,64 +1225,22 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
             { label: "Total House MRR", value: `$${totalMRR.toLocaleString()}`, color: GOLD, sub: "service + membership" },
             { label: "Active Plans", value: String(totalPlans), color: BLUE, sub: "80 Ohana · 20 B2B" },
             { label: "Quarterly Rev", value: `$${quarterlyRevenue.toLocaleString()}`, color: GREEN, sub: "3-month total" },
-            { label: "GE Tax Due", value: `$${geTaxQuarterly.toLocaleString()}`, color: "#f0883e", sub: "4% quarterly" },
+            { label: "GE Tax Due", value: `$${geTaxQuarterly.toLocaleString()}`, color: AMBER, sub: "4% quarterly" },
           ].map(s => (
-            <div key={s.label} style={{
-              background: "rgba(0,0,0,0.35)",
-              border: `1px solid ${s.color}18`,
-              borderRadius: "8px",
-              padding: "12px 14px",
-            }}>
+            <div key={s.label} style={{ background: "rgba(0,0,0,0.35)", border: `1px solid ${s.color}18`, borderRadius: "8px", padding: "12px 14px" }}>
               <p style={{ color: s.color, fontSize: "1rem", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1, marginBottom: "4px" }}>{s.value}</p>
               <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem", letterSpacing: "0.08em" }}>{s.label}</p>
               <p style={{ color: "rgba(232,224,208,0.18)", fontSize: "0.36rem", marginTop: "2px" }}>{s.sub}</p>
             </div>
           ))}
         </div>
-        {/* Revenue breakdown */}
-        <div style={{ display: "grid", gap: "5px" }}>
-          {[
-            { label: `${HOUSE_ALII_COUNT}× Aliʻi Plan`, value: `$${(HOUSE_ALII_COUNT * ALII_BASE).toLocaleString()}/mo`, color: GOLD },
-            { label: `${HOUSE_KAMAAINA_COUNT}× Kamaʻāina Plan`, value: `$${(HOUSE_KAMAAINA_COUNT * KAMAAINA_BASE).toLocaleString()}/mo`, color: BLUE },
-            { label: `${HOUSE_B2B_SMALL_COUNT}× B2B Small`, value: `$${(HOUSE_B2B_SMALL_COUNT * B2B_SMALL_BASE).toLocaleString()}/mo`, color: PURPLE },
-            { label: `${HOUSE_B2B_MID_COUNT}× B2B Mid`, value: `$${(HOUSE_B2B_MID_COUNT * B2B_MID_BASE).toLocaleString()}/mo`, color: PURPLE },
-            { label: `${HOUSE_B2B_LARGE_COUNT}× B2B Large`, value: `$${(HOUSE_B2B_LARGE_COUNT * B2B_LARGE_BASE).toLocaleString()}/mo`, color: PURPLE },
-          ].map(row => (
-            <div key={row.label} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", borderBottom: `1px solid ${GOLD}06` }}>
-              <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem" }}>{row.label}</span>
-              <span style={{ color: row.color, fontSize: "0.45rem", fontFamily: "'JetBrains Mono', monospace" }}>{row.value}</span>
-            </div>
-          ))}
-          {/* Membership MRR line */}
-          <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderTop: `1px solid ${GOLD}15`, marginTop: "4px" }}>
-            <span style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.42rem" }}>
-              {MEMBERSHIP_BROTHERS}× Brothers × ${MEMBERSHIP_DUES}/mo membership
-            </span>
-            <span style={{ color: GOLD, fontSize: "0.48rem", fontFamily: "'JetBrains Mono', monospace" }}>
-              ${MEMBERSHIP_MRR.toLocaleString()}/mo
-            </span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderTop: `2px solid ${GOLD}30` }}>
-            <span style={{ color: GOLD, fontSize: "0.46rem", letterSpacing: "0.1em" }}>TOTAL HOUSE MRR</span>
-            <span style={{ color: GOLD, fontSize: "0.6rem", fontFamily: "'JetBrains Mono', monospace", fontWeight: 600 }}>
-              ${HOUSE_MRR.toLocaleString()}/mo
-            </span>
-          </div>
-        </div>
       </div>
 
-      {/* Revenue Split */}
-      <div style={{
-        background: "rgba(0,0,0,0.3)",
-        border: `1px solid ${GOLD}18`,
-        borderRadius: "10px",
-        padding: "16px 18px",
-        marginBottom: "20px",
-      }}>
+      <div style={{ background: "rgba(0,0,0,0.3)", border: `1px solid ${GOLD}18`, borderRadius: "10px", padding: "16px 18px", marginBottom: "20px" }}>
         <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>
           80/10/10 COOPERATIVE SPLIT — PER MONTH
         </p>
-        <div style={{ display: "grid", gap: "10px", marginBottom: "12px" }}>
+        <div style={{ display: "grid", gap: "10px" }}>
           {[
             { label: "Nā Koa Workers (80%)", amount: nakoa80, color: GREEN, pct: 80 },
             { label: "Mana Council (10%)", amount: mana10, color: BLUE, pct: 10 },
@@ -1375,29 +1254,15 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
                 </span>
               </div>
               <div style={{ height: "5px", background: "rgba(255,255,255,0.05)", borderRadius: "3px" }}>
-                <div style={{ height: "100%", width: `${split.pct}%`, background: split.color, borderRadius: "3px", transition: "width 1s ease" }} />
+                <div style={{ height: "100%", width: `${split.pct}%`, background: split.color, borderRadius: "3px" }} />
               </div>
             </div>
           ))}
         </div>
-        <p style={{ color: "rgba(232,224,208,0.22)", fontSize: "0.4rem", lineHeight: 1.6 }}>
-          Split applied to total house MRR ($132,140 = $122,440 service + $9,700 membership). Each Nā Koa worker earns 80% of every job they complete. Membership dues waived when active on route.
-        </p>
       </div>
 
-      {/* ── OHANA PLANS ── */}
-      <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "12px", opacity: 0.7 }}>
-        OHANA SERVICE PLANS — RESIDENTIAL
-      </p>
-
       {/* Aliʻi Plan */}
-      <div style={{
-        background: "rgba(176,142,80,0.06)",
-        border: `1px solid ${GOLD}35`,
-        borderRadius: "12px",
-        padding: "18px",
-        marginBottom: "12px",
-      }}>
+      <div style={{ background: "rgba(176,142,80,0.06)", border: `1px solid ${GOLD}35`, borderRadius: "12px", padding: "18px", marginBottom: "12px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
           <div>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: GOLD, fontSize: "1.25rem", lineHeight: 1.1, marginBottom: "3px" }}>Aliʻi Plan</p>
@@ -1408,56 +1273,11 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
             <p style={{ color: GOLD_DIM, fontSize: "0.38rem" }}>/month</p>
           </div>
         </div>
-
-        {/* Setup fee */}
-        <div style={{
-          background: "rgba(176,142,80,0.1)",
-          border: `1px solid ${GOLD}30`,
-          borderRadius: "6px",
-          padding: "8px 12px",
-          marginBottom: "12px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}>
-          <div>
-            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.1em" }}>SETUP FEE</p>
-            <p style={{ color: GOLD_DIM, fontSize: "0.38rem" }}>25% down · due at signing</p>
-          </div>
-          <p style={{ color: GOLD, fontSize: "0.85rem", fontFamily: "'JetBrains Mono', monospace" }}>$374.25</p>
-        </div>
-
-        <div style={{ display: "grid", gap: "5px", marginBottom: "12px" }}>
-          {[
-            { label: "Visits", value: "4/month (weekly)" },
-            { label: "Crew", value: "2–4 Nā Koa workers" },
-            { label: "Services", value: "Landscaping, repairs, cleaning, inspections" },
-            { label: "Market rate", value: "$1,500–$3,000/mo" },
-          ].map(row => (
-            <div key={row.label} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", borderBottom: `1px solid ${GOLD}08` }}>
-              <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.44rem" }}>{row.label}</span>
-              <span style={{ color: "#e8e0d0", fontSize: "0.46rem" }}>{row.value}</span>
-            </div>
-          ))}
-        </div>
-
         <PlanContractTiers base={ALII_BASE} color={GOLD} />
-
-        <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: "6px", padding: "8px 12px", marginTop: "10px" }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", lineHeight: 1.6 }}>
-            Split: <span style={{ color: GREEN }}>${Math.round(ALII_BASE * 0.8).toLocaleString()} Nā Koa</span> · <span style={{ color: BLUE }}>${Math.round(ALII_BASE * 0.1).toLocaleString()} Mana</span> · <span style={{ color: GOLD }}>${Math.round(ALII_BASE * 0.1).toLocaleString()} Hale</span>
-          </p>
-        </div>
       </div>
 
       {/* Kamaaina Plan */}
-      <div style={{
-        background: "rgba(88,166,255,0.05)",
-        border: `1px solid ${BLUE}30`,
-        borderRadius: "12px",
-        padding: "18px",
-        marginBottom: "24px",
-      }}>
+      <div style={{ background: "rgba(88,166,255,0.05)", border: `1px solid ${BLUE}30`, borderRadius: "12px", padding: "18px", marginBottom: "12px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
           <div>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: BLUE, fontSize: "1.25rem", lineHeight: 1.1, marginBottom: "3px" }}>Kamaʻāina Plan</p>
@@ -1468,86 +1288,16 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
             <p style={{ color: "rgba(88,166,255,0.5)", fontSize: "0.38rem" }}>/month</p>
           </div>
         </div>
-
-        {/* Setup fee */}
-        <div style={{
-          background: "rgba(88,166,255,0.08)",
-          border: `1px solid ${BLUE}25`,
-          borderRadius: "6px",
-          padding: "8px 12px",
-          marginBottom: "12px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}>
-          <div>
-            <p style={{ color: BLUE, fontSize: "0.42rem", letterSpacing: "0.1em" }}>SETUP FEE</p>
-            <p style={{ color: "rgba(88,166,255,0.5)", fontSize: "0.38rem" }}>25% down · due at signing</p>
-          </div>
-          <p style={{ color: BLUE, fontSize: "0.85rem", fontFamily: "'JetBrains Mono', monospace" }}>$187.25</p>
-        </div>
-
-        <div style={{ display: "grid", gap: "5px", marginBottom: "12px" }}>
-          {[
-            { label: "Visits", value: "2/month (bi-weekly)" },
-            { label: "Crew", value: "2 Nā Koa workers" },
-            { label: "Services", value: "Landscaping, cleaning, light repairs" },
-            { label: "Market rate", value: "$750–$1,500/mo" },
-          ].map(row => (
-            <div key={row.label} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", borderBottom: `1px solid ${BLUE}08` }}>
-              <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.44rem" }}>{row.label}</span>
-              <span style={{ color: "#e8e0d0", fontSize: "0.46rem" }}>{row.value}</span>
-            </div>
-          ))}
-        </div>
-
         <PlanContractTiers base={KAMAAINA_BASE} color={BLUE} />
-
-        <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: "6px", padding: "8px 12px", marginTop: "10px" }}>
-          <p style={{ color: "rgba(88,166,255,0.5)", fontSize: "0.42rem", lineHeight: 1.6 }}>
-            Split: <span style={{ color: GREEN }}>${Math.round(KAMAAINA_BASE * 0.8).toLocaleString()} Nā Koa</span> · <span style={{ color: BLUE }}>${Math.round(KAMAAINA_BASE * 0.1).toLocaleString()} Mana</span> · <span style={{ color: GOLD }}>${Math.round(KAMAAINA_BASE * 0.1).toLocaleString()} Hale</span>
-          </p>
-        </div>
       </div>
 
-      {/* ── B2B PLANS ── */}
-      <p style={{ color: PURPLE, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "12px", opacity: 0.8 }}>
-        B2B HAWAII-OWNED CONTRACTS — COMMERCIAL
-      </p>
-
+      {/* B2B Plans */}
       {[
-        {
-          name: "Small Business",
-          base: B2B_SMALL_BASE,
-          setup: 324.75,
-          visits: "2 visits/month",
-          sqft: "Up to 3,000 sq ft",
-          count: HOUSE_B2B_SMALL_COUNT,
-        },
-        {
-          name: "Mid Business",
-          base: B2B_MID_BASE,
-          setup: 624.75,
-          visits: "4 visits/month",
-          sqft: "Up to 8,000 sq ft",
-          count: HOUSE_B2B_MID_COUNT,
-        },
-        {
-          name: "Large Business",
-          base: B2B_LARGE_BASE,
-          setup: 999.75,
-          visits: "Weekly + on-call",
-          sqft: "Up to 15,000 sq ft",
-          count: HOUSE_B2B_LARGE_COUNT,
-        },
+        { name: "Small Business", base: B2B_SMALL_BASE, sqft: "Up to 3,000 sq ft", visits: "2 visits/month" },
+        { name: "Mid Business", base: B2B_MID_BASE, sqft: "Up to 8,000 sq ft", visits: "4 visits/month" },
+        { name: "Large Business", base: B2B_LARGE_BASE, sqft: "Up to 15,000 sq ft", visits: "Weekly + on-call" },
       ].map(plan => (
-        <div key={plan.name} style={{
-          background: `rgba(83,74,183,0.05)`,
-          border: `1px solid ${PURPLE}28`,
-          borderRadius: "12px",
-          padding: "18px",
-          marginBottom: "12px",
-        }}>
+        <div key={plan.name} style={{ background: `rgba(83,74,183,0.05)`, border: `1px solid ${PURPLE}28`, borderRadius: "12px", padding: "18px", marginBottom: "12px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
             <div>
               <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: PURPLE, fontSize: "1.1rem", lineHeight: 1.1, marginBottom: "3px" }}>{plan.name}</p>
@@ -1558,42 +1308,11 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
               <p style={{ color: `rgba(83,74,183,0.5)`, fontSize: "0.38rem" }}>/month</p>
             </div>
           </div>
-
-          {/* Setup fee */}
-          <div style={{
-            background: `rgba(83,74,183,0.08)`,
-            border: `1px solid ${PURPLE}22`,
-            borderRadius: "6px",
-            padding: "8px 12px",
-            marginBottom: "12px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}>
-            <div>
-              <p style={{ color: PURPLE, fontSize: "0.42rem", letterSpacing: "0.1em" }}>SETUP FEE</p>
-              <p style={{ color: `rgba(83,74,183,0.5)`, fontSize: "0.38rem" }}>25% down · due at signing</p>
-            </div>
-            <p style={{ color: PURPLE, fontSize: "0.85rem", fontFamily: "'JetBrains Mono', monospace" }}>${plan.setup.toFixed(2)}</p>
-          </div>
-
           <PlanContractTiers base={plan.base} color={PURPLE} />
-
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px", padding: "6px 0" }}>
-            <span style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem" }}>Active contracts (this house)</span>
-            <span style={{ color: PURPLE, fontSize: "0.45rem", fontFamily: "'JetBrains Mono', monospace" }}>{plan.count} × ${plan.base.toLocaleString()} = ${(plan.count * plan.base).toLocaleString()}/mo</span>
-          </div>
         </div>
       ))}
 
-      {/* Footer note */}
-      <div style={{
-        background: "rgba(0,0,0,0.2)",
-        border: "1px solid rgba(255,255,255,0.05)",
-        borderRadius: "8px",
-        padding: "14px 16px",
-        marginTop: "8px",
-      }}>
+      <div style={{ background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "8px", padding: "14px 16px", marginTop: "8px" }}>
         <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.43rem", lineHeight: 1.8 }}>
           Active members available for routes: <span style={{ color: GREEN }}>{activeMembers.length}</span><br />
           Nā Koa workers: <span style={{ color: GREEN }}>{activeMembers.filter(a => a.tier === "nakoa").length}</span> ·

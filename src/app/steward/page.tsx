@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AdminPage from "@/components/AdminPage";
-import CommandCenter from "@/components/CommandCenter";
 
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
@@ -12,8 +11,6 @@ const GOLD_DIM = "rgba(176,142,80,0.5)";
 const STEWARD_PASSWORD = "makoa0001";
 const SESSION_KEY = "makoa_steward_auth";
 
-type Mode = "command" | "admin";
-
 export default function StewardPage() {
   const router = useRouter();
   const [authed, setAuthed] = useState(false);
@@ -21,7 +18,6 @@ export default function StewardPage() {
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
   const [shake, setShake] = useState(false);
-  const [mode, setMode] = useState<Mode>("command");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -57,89 +53,13 @@ export default function StewardPage() {
   }
 
   if (authed) {
-    return (
-      <div style={{ minHeight: "100vh", background: "#020406", fontFamily: "'JetBrains Mono', monospace" }}>
-        {/* Mode switcher — sticky top bar */}
-        <div style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          background: "rgba(2,4,6,0.97)",
-          borderTop: "1px solid rgba(176,142,80,0.12)",
-          display: "flex",
-          justifyContent: "center",
-          gap: "0",
-          padding: "0",
-        }}>
-          <button
-            onClick={() => setMode("command")}
-            style={{
-              flex: 1,
-              background: mode === "command" ? "rgba(176,142,80,0.08)" : "transparent",
-              border: "none",
-              borderTop: `2px solid ${mode === "command" ? GOLD : "transparent"}`,
-              color: mode === "command" ? GOLD : "rgba(176,142,80,0.3)",
-              fontSize: "0.42rem",
-              letterSpacing: "0.15em",
-              padding: "12px 8px",
-              cursor: "pointer",
-              fontFamily: "'JetBrains Mono', monospace",
-              transition: "all 0.2s",
-            }}
-          >
-            ⚔ COMMAND CENTER
-          </button>
-          <button
-            onClick={() => setMode("admin")}
-            style={{
-              flex: 1,
-              background: mode === "admin" ? "rgba(176,142,80,0.08)" : "transparent",
-              border: "none",
-              borderTop: `2px solid ${mode === "admin" ? GOLD : "transparent"}`,
-              color: mode === "admin" ? GOLD : "rgba(176,142,80,0.3)",
-              fontSize: "0.42rem",
-              letterSpacing: "0.15em",
-              padding: "12px 8px",
-              cursor: "pointer",
-              fontFamily: "'JetBrains Mono', monospace",
-              transition: "all 0.2s",
-            }}
-          >
-            ◈ ADMIN PANEL
-          </button>
-          <button
-            onClick={handleExit}
-            style={{
-              background: "transparent",
-              border: "none",
-              borderTop: "2px solid transparent",
-              color: "rgba(176,142,80,0.15)",
-              fontSize: "0.38rem",
-              letterSpacing: "0.1em",
-              padding: "12px 16px",
-              cursor: "pointer",
-              fontFamily: "'JetBrains Mono', monospace",
-            }}
-          >
-            EXIT
-          </button>
-        </div>
-
-        {/* Content */}
-        <div style={{ paddingBottom: "52px" }}>
-          {mode === "command" && <CommandCenter onExit={handleExit} />}
-          {mode === "admin" && <AdminPage onExit={handleExit} />}
-        </div>
-      </div>
-    );
+    return <AdminPage onExit={handleExit} />;
   }
 
   return (
     <div style={{
       minHeight: "100vh",
-      background: "#000",
+      background: "#04060a",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -165,16 +85,27 @@ export default function StewardPage() {
           0%, 100% { box-shadow: 0 0 0px 0px rgba(176,142,80,0); }
           50% { box-shadow: 0 0 30px 8px rgba(176,142,80,0.08); }
         }
+        @keyframes scanPulse {
+          0% { opacity: 0; transform: translateY(-100%); }
+          50% { opacity: 1; }
+          100% { opacity: 0; transform: translateY(100vh); }
+        }
         .steward-input::placeholder { color: rgba(176,142,80,0.2); }
         .steward-input:focus { border-bottom-color: rgba(176,142,80,0.6) !important; }
       `}</style>
+
+      {/* Scanline */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px)",
+      }} />
 
       {/* Ambient glow */}
       <div style={{
         position: "absolute",
         top: "50%", left: "50%",
         transform: "translate(-50%, -50%)",
-        width: "400px", height: "400px",
+        width: "500px", height: "500px",
         background: "radial-gradient(circle, rgba(176,142,80,0.04) 0%, transparent 70%)",
         pointerEvents: "none",
       }} />
@@ -184,49 +115,69 @@ export default function StewardPage() {
         opacity: ready ? 1 : 0,
         transform: ready ? "translateY(0)" : "translateY(20px)",
         transition: "opacity 0.8s ease, transform 0.8s ease",
+        position: "relative", zIndex: 1,
       }}>
         {/* Crest mark */}
-        <div style={{ textAlign: "center", marginBottom: "40px" }}>
+        <div style={{ textAlign: "center", marginBottom: "48px" }}>
           <div style={{
-            width: "64px", height: "64px",
+            width: "72px", height: "72px",
             border: `1px solid ${GOLD_20}`,
             borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
-            margin: "0 auto 20px",
+            margin: "0 auto 24px",
             animation: "breatheGlow 4s ease-in-out infinite",
+            position: "relative",
           }}>
-            <span style={{ color: GOLD_DIM, fontSize: "1.4rem" }}>⚔</span>
+            {/* Inner ring */}
+            <div style={{
+              position: "absolute",
+              width: "58px", height: "58px",
+              border: `1px solid rgba(176,142,80,0.08)`,
+              borderRadius: "50%",
+            }} />
+            <span style={{ color: GOLD_DIM, fontSize: "1.6rem" }}>⚔</span>
           </div>
 
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
-            fontSize: "1.8rem",
+            fontSize: "2rem",
             color: GOLD,
             margin: "0 0 8px",
             letterSpacing: "0.05em",
+            lineHeight: 1,
           }}>
             Steward 0001
           </p>
 
           <p style={{
             color: "rgba(176,142,80,0.25)",
-            fontSize: "0.42rem",
+            fontSize: "0.4rem",
             letterSpacing: "0.3em",
             textTransform: "uppercase",
+            marginBottom: "4px",
           }}>
             Command Center · Malu Trust
+          </p>
+
+          <p style={{
+            color: "rgba(176,142,80,0.12)",
+            fontSize: "0.36rem",
+            letterSpacing: "0.2em",
+          }}>
+            10-DEPARTMENT OPERATIONS
           </p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ animation: shake ? "shake 0.5s ease" : "none" }}>
-          <div style={{ marginBottom: "24px" }}>
+          <div style={{ marginBottom: "28px" }}>
             <p style={{
               color: "rgba(176,142,80,0.35)",
-              fontSize: "0.42rem",
+              fontSize: "0.4rem",
               letterSpacing: "0.25em",
               textTransform: "uppercase",
-              marginBottom: "10px",
+              marginBottom: "12px",
+              textAlign: "center",
             }}>
               Steward Key
             </p>
@@ -242,14 +193,15 @@ export default function StewardPage() {
                 border: "none",
                 borderBottom: `1px solid ${GOLD_20}`,
                 color: GOLD,
-                fontSize: "1rem",
+                fontSize: "1.2rem",
                 fontFamily: "'JetBrains Mono', monospace",
                 textAlign: "center",
                 padding: "12px 0",
                 width: "100%",
                 outline: "none",
-                letterSpacing: "0.3em",
+                letterSpacing: "0.4em",
                 transition: "border-bottom-color 0.2s",
+                borderRadius: 0,
               }}
             />
           </div>
@@ -273,16 +225,17 @@ export default function StewardPage() {
               background: "transparent",
               border: `1px solid ${GOLD_40}`,
               color: GOLD,
-              fontSize: "0.52rem",
+              fontSize: "0.5rem",
               letterSpacing: "0.3em",
-              padding: "13px 40px",
+              padding: "14px 40px",
               cursor: "pointer",
               fontFamily: "'JetBrains Mono', monospace",
               textTransform: "uppercase",
-              transition: "border-color 0.2s, color 0.2s",
+              transition: "border-color 0.2s, background 0.2s",
+              borderRadius: "4px",
             }}
           >
-            Enter
+            Enter Command Center
           </button>
         </form>
 
@@ -291,7 +244,7 @@ export default function StewardPage() {
           style={{
             display: "block", width: "100%", marginTop: "16px",
             background: "transparent", border: "none",
-            color: "rgba(176,142,80,0.15)", fontSize: "0.42rem",
+            color: "rgba(176,142,80,0.15)", fontSize: "0.4rem",
             cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
             letterSpacing: "0.15em", padding: "8px",
           }}
@@ -302,9 +255,9 @@ export default function StewardPage() {
 
       <p style={{
         position: "absolute", bottom: "20px",
-        color: "rgba(176,142,80,0.1)", fontSize: "0.38rem", letterSpacing: "0.2em",
+        color: "rgba(176,142,80,0.08)", fontSize: "0.36rem", letterSpacing: "0.2em",
       }}>
-        Mākoa Order · Steward Access Only
+        Mākoa Order · Steward Access Only · 10 Departments
       </p>
     </div>
   );
