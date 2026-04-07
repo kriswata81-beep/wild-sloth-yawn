@@ -274,22 +274,29 @@ export default function GatePageRoute() {
       `}</style>
 
       {/* Hero image */}
-      <div style={{ position: "relative", height: 260, overflow: "hidden" }}>
+      <div style={{ position: "relative", height: 340, overflow: "hidden" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://images.unsplash.com/photo-1598135753053-bc345e4e93e7?w=1600&q=80"
-          alt="Mākoa"
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          src="/assets/hero-waianae-moon.png"
+          alt="Waiʻanae Mountains under the Flower Moon"
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" }}
         />
+        {/* Dark vignette overlay — heavier at top and bottom */}
         <div style={{
           position: "absolute", inset: 0,
-          background: "linear-gradient(to bottom, rgba(4,6,10,0.3) 0%, rgba(4,6,10,0.85) 100%)",
+          background: "linear-gradient(to bottom, rgba(4,6,10,0.55) 0%, rgba(4,6,10,0.1) 40%, rgba(4,6,10,0.1) 60%, rgba(4,6,10,0.92) 100%)",
         }} />
-        <div style={{ position: "absolute", bottom: 24, left: 0, right: 0, textAlign: "center" }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: GOLD, fontSize: "1.5rem", margin: "0 0 4px" }}>
+        {/* Gold shimmer line at bottom */}
+        <div style={{
+          position: "absolute", bottom: 0, left: 0, right: 0,
+          height: "1px",
+          background: "linear-gradient(to right, transparent, rgba(176,142,80,0.3), transparent)",
+        }} />
+        <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, textAlign: "center" }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: GOLD, fontSize: "1.6rem", margin: "0 0 6px", textShadow: "0 2px 20px rgba(0,0,0,0.8)" }}>
             For the men who build things
           </p>
-          <p style={{ fontSize: "0.45rem", color: "rgba(232,224,208,0.4)", letterSpacing: "0.2em" }}>
+          <p style={{ fontSize: "0.45rem", color: "rgba(232,224,208,0.5)", letterSpacing: "0.25em", textShadow: "0 1px 8px rgba(0,0,0,0.9)" }}>
             Mākoa Order · Malu Trust · West Oahu
           </p>
         </div>

@@ -66,23 +66,45 @@ export default function GatePage({ visitorName, onPledge }: GatePageProps) {
         </div>
       </div>
 
-      <div style={{ maxWidth: "480px", margin: "0 auto", padding: "24px 20px 60px" }}>
-
-        {/* Hero */}
-        <div style={{ textAlign: "center", marginBottom: "36px", animation: "fadeUp 0.7s ease forwards" }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: "12px" }}>
+      {/* Hero image — full bleed */}
+      <div style={{ position: "relative", height: "320px", overflow: "hidden" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/assets/hero-waianae-moon.png"
+          alt="Waiʻanae Mountains under the Flower Moon"
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" }}
+        />
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(to bottom, rgba(5,7,9,0.5) 0%, rgba(5,7,9,0.05) 40%, rgba(5,7,9,0.05) 55%, rgba(5,7,9,0.95) 100%)",
+        }} />
+        <div style={{
+          position: "absolute", bottom: 0, left: 0, right: 0,
+          height: "1px",
+          background: "linear-gradient(to right, transparent, rgba(176,142,80,0.25), transparent)",
+        }} />
+        <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, textAlign: "center" }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.45rem", letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: "8px", textShadow: "0 1px 8px rgba(0,0,0,0.9)" }}>
             Founding 72 · May 1–4, 2025
           </p>
           <h1 className="font-cormorant" style={{
-            fontSize: "2.4rem",
+            fontSize: "2.6rem",
             fontWeight: 300,
             color: "#e8e0d0",
-            lineHeight: 1.15,
-            marginBottom: "16px",
+            lineHeight: 1.1,
+            margin: 0,
+            textShadow: "0 2px 24px rgba(0,0,0,0.8)",
           }}>
             The Gate<br />
             <span style={{ color: GOLD }}>Is Open.</span>
           </h1>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: "480px", margin: "0 auto", padding: "24px 20px 60px" }}>
+
+        {/* Hero subtext */}
+        <div style={{ textAlign: "center", marginBottom: "32px", animation: "fadeUp 0.7s ease forwards" }}>
           <p style={{
             color: "rgba(232,224,208,0.45)",
             fontSize: "0.6rem",
