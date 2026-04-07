@@ -281,9 +281,16 @@ export default function AliiPortal() {
 
         {/* House Revenue Overview */}
         <Section title="House Revenue Model" accent={GOLD}>
-          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem", lineHeight: 1.7, marginBottom: "14px" }}>
+          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem", lineHeight: 1.7, marginBottom: "8px" }}>
             One Mākoa House at capacity — 100 accounts. Below-market pricing drives volume.
           </p>
+          <div style={{ background: "rgba(176,142,80,0.06)", border: "1px solid rgba(176,142,80,0.15)", borderRadius: "6px", padding: "10px 14px", marginBottom: "14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.4rem", letterSpacing: "0.15em", marginBottom: "2px" }}>MEMBERSHIP DUES</p>
+              <p style={{ color: GOLD, fontSize: "0.52rem" }}>$97/mo per brother — waived when active on service route</p>
+            </div>
+            <p style={{ color: GOLD, fontSize: "0.75rem", fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginLeft: "12px" }}>$97</p>
+          </div>
           <div style={{ display: "grid", gap: "6px", marginBottom: "14px" }}>
             {[
               { label: "30× Aliʻi Plan ($1,497/mo)", value: "$44,910/mo", color: GOLD },
@@ -299,25 +306,33 @@ export default function AliiPortal() {
             ))}
           </div>
           <div style={{ background: "rgba(0,0,0,0.3)", borderRadius: "8px", padding: "12px 14px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+              <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.42rem" }}>Service revenue MRR</span>
+              <span style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.45rem", fontFamily: "'JetBrains Mono', monospace" }}>$122,440/mo</span>
+            </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+              <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.42rem" }}>Membership MRR (100 × $97)</span>
+              <span style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.45rem", fontFamily: "'JetBrains Mono', monospace" }}>$9,700/mo</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", paddingTop: "8px", borderTop: `1px solid ${GOLD}15` }}>
               <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.45rem" }}>Total House MRR</span>
-              <span style={{ color: GOLD, fontSize: "0.75rem", fontFamily: "'JetBrains Mono', monospace" }}>$122,440/mo</span>
+              <span style={{ color: GOLD, fontSize: "0.75rem", fontFamily: "'JetBrains Mono', monospace" }}>$132,140/mo</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
               <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem" }}>Nā Koa workers (80%)</span>
-              <span style={{ color: "#3fb950", fontSize: "0.48rem", fontFamily: "'JetBrains Mono', monospace" }}>$97,952/mo</span>
+              <span style={{ color: "#3fb950", fontSize: "0.48rem", fontFamily: "'JetBrains Mono', monospace" }}>$105,712/mo</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
               <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem" }}>Mana council (10%)</span>
-              <span style={{ color: "#58a6ff", fontSize: "0.48rem", fontFamily: "'JetBrains Mono', monospace" }}>$12,244/mo</span>
+              <span style={{ color: "#58a6ff", fontSize: "0.48rem", fontFamily: "'JetBrains Mono', monospace" }}>$13,214/mo</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
               <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem" }}>Aliʻi Hale fund (10%)</span>
-              <span style={{ color: GOLD, fontSize: "0.48rem", fontFamily: "'JetBrains Mono', monospace" }}>$12,244/mo</span>
+              <span style={{ color: GOLD, fontSize: "0.48rem", fontFamily: "'JetBrains Mono', monospace" }}>$13,214/mo</span>
             </div>
             <div style={{ borderTop: `1px solid ${GOLD}15`, paddingTop: "8px", display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem" }}>GE Tax (4% quarterly)</span>
-              <span style={{ color: "#f0883e", fontSize: "0.42rem", fontFamily: "'JetBrains Mono', monospace" }}>$14,693/qtr</span>
+              <span style={{ color: "#f0883e", fontSize: "0.42rem", fontFamily: "'JetBrains Mono', monospace" }}>$15,857/qtr</span>
             </div>
           </div>
         </Section>

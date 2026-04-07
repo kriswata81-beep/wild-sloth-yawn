@@ -106,7 +106,7 @@ const GATHERINGS_72 = [
     color: GREEN,
     colorFaint: "rgba(63,185,80,0.07)",
     freq: "Monthly · Full Moon",
-    price: "Included in $19.99 dues",
+    price: "Included in $97/mo dues",
     details: [
       "Fire ceremony opening night",
       "4am training all 3 mornings",
@@ -124,7 +124,7 @@ const GATHERINGS_72 = [
     color: BLUE,
     colorFaint: "rgba(88,166,255,0.06)",
     freq: "Quarterly · Ka Hoʻike",
-    price: "+$399 upgrade",
+    price: "+$199/event · a la carte",
     details: [
       "War Room sessions — B2B pipeline review",
       "Wednesday school intensive (full day)",
@@ -142,7 +142,7 @@ const GATHERINGS_72 = [
     color: GOLD,
     colorFaint: GOLD_FAINT,
     freq: "Annual · Makahiki Mākoa",
-    price: "+$799 or covered by $5k Stone",
+    price: "+$399/event · a la carte",
     details: [
       "Full council seated — 12 seats",
       "Malu Trust financial review",
@@ -746,7 +746,7 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                   "4 gathering rhythms: weekly, monthly, quarterly, annual",
                   "80/10/10 cooperative revenue split",
                   "100 accounts per house: 80 Ohana + 20 B2B",
-                  "One house at capacity: $122,440 MRR",
+                  "One house at capacity: $132,140 MRR (service $122,440 + membership $9,700)",
                   "18-month formation track for all members",
                 ],
               },

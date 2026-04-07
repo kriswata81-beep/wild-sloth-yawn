@@ -7,9 +7,9 @@ const GOLD_DIM = "rgba(176,142,80,0.5)";
 const GOLD_FAINT = "rgba(176,142,80,0.12)";
 
 const TIER_CONFIG = {
-  alii: { label: "Aliʻi", color: GOLD, colorDim: GOLD_DIM, price: "$297/mo", deposit: "$500", pledgeFee: "$9.99" },
-  mana: { label: "Mana", color: "#58a6ff", colorDim: "rgba(88,166,255,0.5)", price: "$147/mo", deposit: "$250", pledgeFee: "$9.99" },
-  nakoa: { label: "Nā Koa", color: "#8b9aaa", colorDim: "rgba(139,154,170,0.5)", price: "$47/mo", deposit: "$97", pledgeFee: "$9.99" },
+  alii: { label: "Aliʻi", color: GOLD, colorDim: GOLD_DIM, price: "$97/mo", deposit: "$297 founding fee", pledgeFee: "$74.25 today" },
+  mana: { label: "Mana", color: "#58a6ff", colorDim: "rgba(88,166,255,0.5)", price: "$97/mo", deposit: "$297 founding fee", pledgeFee: "$74.25 today" },
+  nakoa: { label: "Nā Koa", color: "#8b9aaa", colorDim: "rgba(139,154,170,0.5)", price: "$97/mo", deposit: "$297 founding fee", pledgeFee: "$74.25 today" },
 };
 
 const REGIONS = [
@@ -242,7 +242,7 @@ export default function PledgePage({ tier, prefillName = "", prefillPhone = "", 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <p className="font-cormorant" style={{ color: cfg.color, fontSize: "1.3rem", fontStyle: "italic" }}>{cfg.label}</p>
-              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem" }}>Pledge fee: {cfg.pledgeFee} · Deposit: {cfg.deposit} upon acceptance</p>
+              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem" }}>{cfg.deposit} · {cfg.pledgeFee} · 3 payments of $74.25</p>
             </div>
             <p style={{ color: cfg.color, fontSize: "0.8rem", fontWeight: 500 }}>{cfg.price}</p>
           </div>
@@ -400,7 +400,7 @@ export default function PledgePage({ tier, prefillName = "", prefillPhone = "", 
                 marginBottom: "10px",
               }}
             >
-              Submit Pledge — {cfg.pledgeFee}
+              Submit Pledge — {cfg.pledgeFee} (25% down)
             </button>
 
             <button

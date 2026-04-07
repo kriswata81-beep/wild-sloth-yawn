@@ -1206,6 +1206,11 @@ const B2B_SMALL_BASE = 1299;
 const B2B_MID_BASE = 2499;
 const B2B_LARGE_BASE = 3999;
 
+// ── Membership dues ──
+const MEMBERSHIP_DUES = 97;
+const MEMBERSHIP_BROTHERS = 100;
+const MEMBERSHIP_MRR = MEMBERSHIP_DUES * MEMBERSHIP_BROTHERS; // $9,700
+
 // ── One Mākoa House at capacity: 80 Ohana + 20 B2B ──
 const HOUSE_ALII_COUNT = 30;
 const HOUSE_KAMAAINA_COUNT = 50;
@@ -1213,13 +1218,15 @@ const HOUSE_B2B_SMALL_COUNT = 12;
 const HOUSE_B2B_MID_COUNT = 5;
 const HOUSE_B2B_LARGE_COUNT = 3;
 
-const HOUSE_MRR =
+const SERVICE_MRR =
   HOUSE_ALII_COUNT * ALII_BASE +
   HOUSE_KAMAAINA_COUNT * KAMAAINA_BASE +
   HOUSE_B2B_SMALL_COUNT * B2B_SMALL_BASE +
   HOUSE_B2B_MID_COUNT * B2B_MID_BASE +
   HOUSE_B2B_LARGE_COUNT * B2B_LARGE_BASE;
 // = 44,910 + 37,450 + 15,588 + 12,495 + 11,997 = 122,440
+
+const HOUSE_MRR = SERVICE_MRR + MEMBERSHIP_MRR; // $132,140
 
 function PlanContractTiers({ base, color }: { base: number; color: string }) {
   const tiers = [
@@ -1248,7 +1255,7 @@ function PlanContractTiers({ base, color }: { base: number; color: string }) {
 }
 
 function RevenueTab({ applicants }: { applicants: Applicant[] }) {
-  const totalMRR = HOUSE_MRR;
+  const totalMRR = HOUSE_MRR; // $132,140
   const totalPlans = HOUSE_ALII_COUNT + HOUSE_KAMAAINA_COUNT + HOUSE_B2B_SMALL_COUNT + HOUSE_B2B_MID_COUNT + HOUSE_B2B_LARGE_COUNT;
   const quarterlyRevenue = totalMRR * 3;
   const geTaxQuarterly = Math.round(quarterlyRevenue * 0.04);
@@ -1267,9 +1274,19 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
       <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.45rem", lineHeight: 1.7, marginBottom: "6px" }}>
         Below-market competitive pricing. One Mākoa House handles 100 accounts: 80 Ohana + 20 B2B.
       </p>
-      <p style={{ color: "rgba(176,142,80,0.45)", fontSize: "0.42rem", lineHeight: 1.6, marginBottom: "20px" }}>
+      <p style={{ color: "rgba(176,142,80,0.45)", fontSize: "0.42rem", lineHeight: 1.6, marginBottom: "6px" }}>
         Market rate: Aliʻi $1,500–$3,000/mo · Kamaʻāina $750–$1,500/mo · B2B $1,300–$4,500/mo
       </p>
+      <div style={{ background: "rgba(176,142,80,0.06)", border: "1px solid rgba(176,142,80,0.15)", borderRadius: "6px", padding: "10px 14px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.4rem", letterSpacing: "0.15em", marginBottom: "2px" }}>MEMBERSHIP MODEL</p>
+          <p style={{ color: GOLD, fontSize: "0.48rem" }}>$97/mo base · a la carte events · waived on active route</p>
+        </div>
+        <div style={{ textAlign: "right", flexShrink: 0, marginLeft: "12px" }}>
+          <p style={{ color: GOLD, fontSize: "0.65rem", fontFamily: "'JetBrains Mono', monospace" }}>$97/mo</p>
+          <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.36rem" }}>per brother</p>
+        </div>
+      </div>
 
       {/* MRR Summary — 1 House at capacity */}
       <div style={{
@@ -1280,11 +1297,11 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
         marginBottom: "20px",
       }}>
         <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>
-          ONE HOUSE AT CAPACITY — 100 ACCOUNTS
+          ONE HOUSE AT CAPACITY — 100 ACCOUNTS + 100 BROTHERS
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px", marginBottom: "14px" }}>
           {[
-            { label: "Total MRR", value: `$${totalMRR.toLocaleString()}`, color: GOLD, sub: "monthly recurring" },
+            { label: "Total House MRR", value: `$${totalMRR.toLocaleString()}`, color: GOLD, sub: "service + membership" },
             { label: "Active Plans", value: String(totalPlans), color: BLUE, sub: "80 Ohana · 20 B2B" },
             { label: "Quarterly Rev", value: `$${quarterlyRevenue.toLocaleString()}`, color: GREEN, sub: "3-month total" },
             { label: "GE Tax Due", value: `$${geTaxQuarterly.toLocaleString()}`, color: "#f0883e", sub: "4% quarterly" },
@@ -1301,7 +1318,7 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
             </div>
           ))}
         </div>
-        {/* Account breakdown */}
+        {/* Revenue breakdown */}
         <div style={{ display: "grid", gap: "5px" }}>
           {[
             { label: `${HOUSE_ALII_COUNT}× Aliʻi Plan`, value: `$${(HOUSE_ALII_COUNT * ALII_BASE).toLocaleString()}/mo`, color: GOLD },
@@ -1315,6 +1332,21 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
               <span style={{ color: row.color, fontSize: "0.45rem", fontFamily: "'JetBrains Mono', monospace" }}>{row.value}</span>
             </div>
           ))}
+          {/* Membership MRR line */}
+          <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderTop: `1px solid ${GOLD}15`, marginTop: "4px" }}>
+            <span style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.42rem" }}>
+              {MEMBERSHIP_BROTHERS}× Brothers × ${MEMBERSHIP_DUES}/mo membership
+            </span>
+            <span style={{ color: GOLD, fontSize: "0.48rem", fontFamily: "'JetBrains Mono', monospace" }}>
+              ${MEMBERSHIP_MRR.toLocaleString()}/mo
+            </span>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderTop: `2px solid ${GOLD}30` }}>
+            <span style={{ color: GOLD, fontSize: "0.46rem", letterSpacing: "0.1em" }}>TOTAL HOUSE MRR</span>
+            <span style={{ color: GOLD, fontSize: "0.6rem", fontFamily: "'JetBrains Mono', monospace", fontWeight: 600 }}>
+              ${HOUSE_MRR.toLocaleString()}/mo
+            </span>
+          </div>
         </div>
       </div>
 
@@ -1349,7 +1381,7 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
           ))}
         </div>
         <p style={{ color: "rgba(232,224,208,0.22)", fontSize: "0.4rem", lineHeight: 1.6 }}>
-          Split applied after GE tax deduction. Each Nā Koa worker earns 80% of every job they complete.
+          Split applied to total house MRR ($132,140 = $122,440 service + $9,700 membership). Each Nā Koa worker earns 80% of every job they complete. Membership dues waived when active on route.
         </p>
       </div>
 

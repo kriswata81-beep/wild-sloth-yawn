@@ -268,8 +268,8 @@ export default function GatheringsCalendar({ memberTier = "nakoa" }: GatheringsC
       frequency: "WEEKLY",
       description:
         "Every Wednesday at 4am. 90 minutes of elite warrior conditioning — strength circuit, ocean run, ice bath, sauna, and closing circle. This is the heartbeat of the order. Show up 3 consecutive weeks and your rank advances automatically. Free for all Nā Koa. Ko Olina Beach and Kapolei Community Park alternate.",
-      price: "FREE",
-      priceNote: "Included in dues",
+      price: "INCLUDED",
+      priceNote: "In $97/mo dues",
       nextDates: wednesdays,
       accent: GREEN,
       accentFaint: "rgba(63,185,80,0.07)",
@@ -283,9 +283,9 @@ export default function GatheringsCalendar({ memberTier = "nakoa" }: GatheringsC
       subtitle: "FULL MOON · MONTHLY 72HR GATHERING",
       frequency: "MONTHLY",
       description:
-        "Every full moon, brothers gather at Mākoa House for a 72-hour immersion. Deep work, brotherhood, fire ceremony, and formation review. Included in your $19.99 monthly dues. Ice bath waiver required before your first Pō Māhina. XI reviews all standing at this gathering.",
+        "Every full moon, brothers gather at Mākoa House for a 72-hour immersion. Deep work, brotherhood, fire ceremony, and formation review. Included in your $97/mo membership dues. Ice bath waiver required before your first Pō Māhina. XI reviews all standing at this gathering.",
       price: "INCLUDED",
-      priceNote: "In $19.99 dues",
+      priceNote: "In $97/mo dues",
       nextDates: [fullMoon, "Following full moon — ~29 days later", "Third cycle — ~58 days out"],
       accent: GOLD,
       accentFaint: GOLD_FAINT,
@@ -299,9 +299,9 @@ export default function GatheringsCalendar({ memberTier = "nakoa" }: GatheringsC
       subtitle: "THE SHOWCASE · QUARTERLY REGIONAL SUMMIT",
       frequency: "QUARTERLY",
       description:
-        "72-hour hotel gathering for the full regional order. War Room sessions, service route reviews, rank ceremonies, and brotherhood. Nā Koa upgrade: +$299. Mana upgrade: +$399. Aliʻi included. This is where the order makes decisions and advances its mission. Attendance earns 25 formation score points.",
-      price: "+$299",
-      priceNote: "Nā Koa / +$399 Mana",
+        "72-hour hotel gathering for the full regional order. War Room sessions, service route reviews, rank ceremonies, and brotherhood. A la carte add-on for all brothers — $199/event. This is where the order makes decisions and advances its mission. Attendance earns 25 formation score points.",
+      price: "+$199",
+      priceNote: "Per event · a la carte",
       nextDates: [quarterDate, "Next quarter — 3 months out", "Third quarter — 6 months out"],
       accent: PURPLE,
       accentFaint: "rgba(83,74,183,0.07)",
@@ -315,9 +315,9 @@ export default function GatheringsCalendar({ memberTier = "nakoa" }: GatheringsC
       subtitle: "ANNUAL RESORT GATHERING",
       frequency: "ANNUAL",
       description:
-        "The full order convenes once a year at a resort for 72 hours. This is the highest gathering of the Mākoa Order — rank ceremonies, new chapter announcements, and the annual oath renewal. +$799 for active members, or fully covered by the $5,000 Mākoa Stone commitment. Date announced by XI.",
-      price: "+$799",
-      priceNote: "Covered by $5k Stone",
+        "The full order convenes once a year at a resort for 72 hours. This is the highest gathering of the Mākoa Order — rank ceremonies, new chapter announcements, and the annual oath renewal. A la carte add-on: +$399 for active members. Date announced by XI.",
+      price: "+$399",
+      priceNote: "Per event · a la carte",
       nextDates: ["Date TBD — XI will announce", "Watch your Telegram channel", "All active members eligible"],
       accent: EVENT_GOLD,
       accentFaint: "rgba(186,117,23,0.07)",
@@ -370,7 +370,8 @@ export default function GatheringsCalendar({ memberTier = "nakoa" }: GatheringsC
         textAlign: "center",
       }}>
         <p style={{ color: GOLD_DIM, fontSize: "0.45rem", lineHeight: 1.8 }}>
-          All gatherings require active standing. Dues must be current.<br />
+          Weekly, monthly & academy gatherings included in $97/mo dues.<br />
+          Ka Hoʻike +$199 · Makahiki +$399 · a la carte per event.<br />
           Ice bath waiver required before first Pō Māhina. Contact XI to register.
         </p>
       </div>

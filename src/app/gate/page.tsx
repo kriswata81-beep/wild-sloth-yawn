@@ -130,15 +130,15 @@ function PledgePopup({ onConfirm, onClose, submitting }: { onConfirm: () => void
         Before you stand with the order — understand what you are pledging.
       </p>
       <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.52rem", lineHeight: 1.8, marginBottom: 18 }}>
-        Your $9.99 pledge gets you into the May 1 Mākoa 1st Roundup — War Room for Aliʻi, Mastermind for Mana, Elite Training for Nā Koa — OR join our first 4am Wednesday elite training April 15. This pledge supports the order and covers XI daily gate monitoring. Your tier benefits and yearly dues unlock within 24 hours via Telegram. If you are not ready that is honored.
+        Your $297 Founding Fee gets you into the May 1–4 Mākoa Founding 72 and starts your $97/mo membership. 25% down today ($74.25) — 3 payments of $74.25. Every brother. Same door. Same oath. Same fire.
       </p>
       <div style={{
-        background: "rgba(83,74,183,0.08)", border: `1px solid rgba(83,74,183,0.25)`,
+        background: "rgba(176,142,80,0.08)", border: `1px solid rgba(176,142,80,0.25)`,
         borderRadius: 8, padding: "14px", textAlign: "center", marginBottom: 20,
       }}>
-        <p style={{ color: PURPLE, fontSize: "1.6rem", fontWeight: 700, lineHeight: 1 }}>$9.99</p>
-        <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem", marginTop: 4 }}>Processing pledge — no charge today</p>
-        <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.45rem", marginTop: 2 }}>Confirmed on platform in 24 hours</p>
+        <p style={{ color: GOLD, fontSize: "1.6rem", fontWeight: 700, lineHeight: 1 }}>$297</p>
+        <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem", marginTop: 4 }}>Founding Fee · $74.25 due today (25% down)</p>
+        <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.45rem", marginTop: 2 }}>3 payments of $74.25 · Includes May 1–4 event + $97/mo membership</p>
       </div>
       {submitting ? (
         <div style={{ textAlign: "center", padding: "16px 0" }}>
@@ -197,7 +197,7 @@ export default function GatePageRoute() {
       q1,
       q2,
       zip,
-      pledge_amount: 9.99,
+      pledge_amount: 74.25,
       timestamp: new Date().toISOString(),
       tier_flag,
     };
@@ -380,29 +380,27 @@ export default function GatePageRoute() {
             ))}
           </div>
 
-          {/* Three pack cards */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 20 }}>
-            <div style={{ border: "1px solid rgba(176,142,80,0.4)", borderRadius: 8, padding: "12px 8px", background: "rgba(176,142,80,0.04)" }}>
-              <p style={{ color: GOLD, fontSize: "0.6rem", marginBottom: 8, textAlign: "center" }}>👑 Aliʻi</p>
-              {["Boardroom", "72hr War Room", "Embassy Suites", "Ice bath 4am", "Founding gear", "Council seat"].map(i => (
-                <p key={i} style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.4rem", lineHeight: 1.8, textAlign: "center" }}>{i}</p>
-              ))}
-              <p style={{ color: "#e05c5c", fontSize: "0.4rem", textAlign: "center", marginTop: 6, fontWeight: 600 }}>12 seats open</p>
+          {/* ONE unified founding card */}
+          <div style={{ border: `1px solid ${GOLD_40}`, borderRadius: 8, padding: "18px", background: "rgba(176,142,80,0.06)", marginBottom: 20 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+              <div>
+                <p style={{ color: GOLD, fontSize: "0.75rem", fontWeight: 700, marginBottom: 4 }}>The Founding 72</p>
+                <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.42rem", letterSpacing: "0.12em" }}>72 FOUNDING SEATS · ONE OATH</p>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <p style={{ color: GOLD, fontSize: "1.2rem", fontWeight: 700, lineHeight: 1 }}>$297</p>
+                <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.38rem", marginTop: 2 }}>founding fee</p>
+              </div>
             </div>
-            <div style={{ border: "1px solid rgba(88,166,255,0.3)", borderRadius: 8, padding: "12px 8px", background: "rgba(88,166,255,0.03)" }}>
-              <p style={{ color: BLUE, fontSize: "0.6rem", marginBottom: 8, textAlign: "center" }}>🌀 Mana</p>
-              {["Mastermind", "72hr reset", "Hampton Inn", "Ice bath 4am", "Brotherhood", "Sworn in"].map(i => (
-                <p key={i} style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.4rem", lineHeight: 1.8, textAlign: "center" }}>{i}</p>
-              ))}
-              <p style={{ color: "#f0883e", fontSize: "0.4rem", textAlign: "center", marginTop: 6, fontWeight: 600 }}>20 seats open</p>
-            </div>
-            <div style={{ border: "1px solid rgba(63,185,80,0.3)", borderRadius: 8, padding: "12px 8px", background: "rgba(63,185,80,0.03)" }}>
-              <p style={{ color: GREEN, fontSize: "0.6rem", marginBottom: 8, textAlign: "center" }}>⚔ Nā Koa</p>
-              {["2-day pass", "4am Sat+Sun", "Ice bath free", "Beach training", "Full moon"].map(i => (
-                <p key={i} style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.4rem", lineHeight: 1.8, textAlign: "center" }}>{i}</p>
-              ))}
-              <p style={{ color: GREEN, fontSize: "0.4rem", textAlign: "center", marginTop: 6, fontWeight: 600 }}>Open · $49.99</p>
-            </div>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "rgba(232,224,208,0.7)", fontSize: "0.9rem", lineHeight: 1.8, marginBottom: 14, textAlign: "center" }}>
+              Every brother. Same door.<br />Same oath. Same fire.
+            </p>
+            {["Ice bath 4am — Flower Moon", "72 hours of formation", "Brothers sworn in at founding fire", "Starts your $97/mo membership", "$74.25 today · 3 payments of $74.25"].map(item => (
+              <div key={item} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                <span style={{ color: GOLD, fontSize: "0.45rem", flexShrink: 0 }}>—</span>
+                <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.44rem" }}>{item}</p>
+              </div>
+            ))}
           </div>
 
           {/* Countdown */}
@@ -418,17 +416,9 @@ export default function GatePageRoute() {
             ))}
           </div>
 
-          {/* Seat bars */}
-          <div style={{ display: "grid", gap: 10, marginBottom: 20 }}>
-            <SeatBar label="Aliʻi" filled={0} total={12} color="#e05c5c" openLabel="12 of 12 open" />
-            <SeatBar label="Mana" filled={0} total={20} color="#f0883e" openLabel="20 of 20 open" />
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.5rem" }}>Nā Koa</span>
-              <div style={{ flex: 1, height: 4, background: "rgba(63,185,80,0.2)", borderRadius: 2, margin: "0 10px" }}>
-                <div style={{ width: "100%", height: "100%", background: "rgba(63,185,80,0.4)", borderRadius: 2 }} />
-              </div>
-              <span style={{ color: GREEN, fontSize: "0.45rem" }}>Day pass · FREE 4am</span>
-            </div>
+          {/* Seat bar — unified */}
+          <div style={{ marginBottom: 20 }}>
+            <SeatBar label="Founding 72" filled={0} total={72} color={GOLD} openLabel="72 of 72 open" />
           </div>
 
           <button
@@ -444,7 +434,7 @@ export default function GatePageRoute() {
             PLEDGE YOUR SEAT · MAY 1
           </button>
           <p style={{ textAlign: "center", color: "rgba(232,224,208,0.25)", fontSize: "0.45rem" }}>
-            Or join our first 4am Wednesday elite training · April 15
+            $297 founding fee · $74.25 today · 3 payments · starts $97/mo membership
           </p>
         </div>
 
@@ -496,7 +486,7 @@ export default function GatePageRoute() {
           }}
         >
           <div>
-            <p style={{ color: "#e8e0d0", fontSize: "0.62rem", fontWeight: 700, marginBottom: 3 }}>The Pledge — $9.99 processing</p>
+            <p style={{ color: "#e8e0d0", fontSize: "0.62rem", fontWeight: 700, marginBottom: 3 }}>The Founding Fee — $297 · $74.25 today</p>
             <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.48rem" }}>Understand what you are committing to →</p>
           </div>
           <span style={{ color: PURPLE, fontSize: "1.2rem" }}>›</span>

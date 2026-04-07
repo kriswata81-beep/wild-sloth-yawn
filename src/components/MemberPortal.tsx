@@ -325,10 +325,17 @@ export default function MemberPortal({ applicationId, onExit }: MemberPortalProp
 
             {/* Payment status */}
             <Panel title="Payment Status" accent={cfg.color}>
+              <Row label="Founding Fee" value="$297 (3 × $74.25)" valueColor={member.deposit_paid ? "#3fb950" : GOLD_DIM} />
               <Row label="Deposit" value={member.deposit_paid ? "Paid" : "Not Paid"} valueColor={member.deposit_paid ? "#3fb950" : "#e05c5c"} />
-              <Row label="Monthly Plan" value={member.monthly_plan_status || "—"} valueColor={member.monthly_plan_status === "active" ? "#3fb950" : member.monthly_plan_status === "failed" ? "#e05c5c" : GOLD_DIM} />
+              <Row label="Monthly Dues" value="$97/mo" valueColor={cfg.color} />
+              <Row label="Dues Status" value={member.monthly_plan_status === "active" ? "Active" : member.monthly_plan_status === "failed" ? "Failed" : "Waived on active route"} valueColor={member.monthly_plan_status === "active" ? "#3fb950" : member.monthly_plan_status === "failed" ? "#e05c5c" : GOLD_DIM} />
               {member.last_payment_date && <Row label="Last Payment" value={member.last_payment_date} />}
               {member.next_due_date && <Row label="Next Due" value={member.next_due_date} />}
+              <div style={{ marginTop: "8px", padding: "8px 10px", background: "rgba(0,0,0,0.2)", borderRadius: "4px" }}>
+                <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.43rem", lineHeight: 1.6 }}>
+                  $97/mo dues waived when active on service route.
+                </p>
+              </div>
             </Panel>
 
             {/* Event access */}

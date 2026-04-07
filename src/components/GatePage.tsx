@@ -5,78 +5,13 @@ const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
 const GOLD_FAINT = "rgba(176,142,80,0.12)";
 
-// Tier seat caps — real numbers, start at 0 filled
-const TIER_CAPS = {
-  alii: 12,
-  mana: 20,
-  nakoa: 72,
-};
+// Founding 72 — 72 seats, one tier, one price
+const FOUNDING_72_SEATS = 72;
 
 interface GatePageProps {
   visitorName: string;
   onPledge: (tier: "nakoa" | "mana" | "alii") => void;
 }
-
-const TIERS = [
-  {
-    id: "alii" as const,
-    name: "Aliʻi",
-    subtitle: "The Sovereign Seat",
-    color: GOLD,
-    colorDim: GOLD_DIM,
-    colorFaint: GOLD_FAINT,
-    cap: TIER_CAPS.alii,
-    price: "$297/mo",
-    deposit: "$500 deposit",
-    description: "Reserved for those who lead. Full access. Quarterly summits. Chapter authority.",
-    access: [
-      "All monthly full moon gatherings",
-      "All quarterly hotel summits (4 included)",
-      "Weekly Wednesday training",
-      "Founding 72 — May 1",
-      "Chapter leadership track",
-      "Priority event access",
-    ],
-  },
-  {
-    id: "mana" as const,
-    name: "Mana",
-    subtitle: "The Builder's Path",
-    color: "#58a6ff",
-    colorDim: "rgba(88,166,255,0.5)",
-    colorFaint: "rgba(88,166,255,0.08)",
-    cap: TIER_CAPS.mana,
-    price: "$147/mo",
-    deposit: "$250 deposit",
-    description: "For men building something. Quarterly access. Full formation track.",
-    access: [
-      "All monthly full moon gatherings",
-      "2 quarterly hotel summits included",
-      "Weekly Wednesday training",
-      "Founding 72 — May 1",
-      "Formation advancement track",
-    ],
-  },
-  {
-    id: "nakoa" as const,
-    name: "Nā Koa",
-    subtitle: "The Warrior's Entry",
-    color: "#8b9aaa",
-    colorDim: "rgba(139,154,170,0.5)",
-    colorFaint: "rgba(139,154,170,0.08)",
-    cap: TIER_CAPS.nakoa,
-    price: "$47/mo",
-    deposit: "$97 deposit",
-    description: "The entry formation. Prove your standing. Advance through the ranks.",
-    access: [
-      "All monthly full moon gatherings",
-      "Weekly Wednesday training",
-      "Founding 72 — May 1",
-      "Formation rank progression",
-      "Quarterly summits — upgrade required",
-    ],
-  },
-];
 
 // Schedule items for April 15 preview
 const SCHEDULE = [
@@ -93,12 +28,12 @@ const REGIONS = [
 ];
 
 export default function GatePage({ visitorName, onPledge }: GatePageProps) {
-  const [selectedTier, setSelectedTier] = useState<"nakoa" | "mana" | "alii" | null>(null);
+  const [showPledgePopup, setShowPledgePopup] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
 
   // Seats filled — starts at 0 (real launch state)
-  // In production, fetch from Supabase applicants count
-  const seatsFilled = { alii: 0, mana: 0, nakoa: 0 };
+  const seatsFilled = 0;
+  const seatsOpen = FOUNDING_72_SEATS - seatsFilled;
 
   useEffect(() => {
     const t = setTimeout(() => setShowSchedule(true), 400);
@@ -161,7 +96,7 @@ export default function GatePage({ visitorName, onPledge }: GatePageProps) {
           </p>
         </div>
 
-        {/* Seat availability — REAL numbers only */}
+        {/* Seat availability */}
         <div style={{
           background: "rgba(176,142,80,0.04)",
           border: "1px solid rgba(176,142,80,0.12)",
@@ -173,121 +108,113 @@ export default function GatePage({ visitorName, onPledge }: GatePageProps) {
           <p style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "12px" }}>
             Seat Availability
           </p>
-          {TIERS.map(t => {
-            const filled = seatsFilled[t.id];
-            const open = t.cap - filled;
-            const pct = (filled / t.cap) * 100;
-            return (
-              <div key={t.id} style={{ marginBottom: "10px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                  <span style={{ color: t.color, fontSize: "0.52rem", letterSpacing: "0.1em" }}>{t.name}</span>
-                  <span style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.5rem" }}>
-                    {open} of {t.cap} open
-                  </span>
-                </div>
-                <div style={{ height: "2px", background: "rgba(255,255,255,0.06)", borderRadius: "1px" }}>
-                  <div style={{
-                    height: "100%",
-                    width: `${pct}%`,
-                    background: t.color,
-                    borderRadius: "1px",
-                    transition: "width 1s ease",
-                  }} />
-                </div>
-              </div>
-            );
-          })}
+          <div style={{ marginBottom: "6px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+              <span style={{ color: GOLD, fontSize: "0.52rem", letterSpacing: "0.1em" }}>The Founding 72</span>
+              <span style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.5rem" }}>
+                {seatsOpen} of {FOUNDING_72_SEATS} open
+              </span>
+            </div>
+            <div style={{ height: "2px", background: "rgba(255,255,255,0.06)", borderRadius: "1px" }}>
+              <div style={{
+                height: "100%",
+                width: `${(seatsFilled / FOUNDING_72_SEATS) * 100}%`,
+                background: GOLD,
+                borderRadius: "1px",
+                transition: "width 1s ease",
+              }} />
+            </div>
+          </div>
         </div>
 
-        {/* Tier cards */}
+        {/* THE FOUNDING 72 — Single unified card */}
         <p style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "14px", animation: "fadeUp 0.7s ease 0.15s both" }}>
-          Choose Your Path
+          The Founding 72
         </p>
 
-        {TIERS.map((tier, i) => (
-          <div
-            key={tier.id}
-            onClick={() => setSelectedTier(tier.id)}
-            style={{
-              border: `1px solid ${selectedTier === tier.id ? tier.color : "rgba(255,255,255,0.07)"}`,
-              borderRadius: "8px",
-              padding: "18px",
-              marginBottom: "12px",
-              cursor: "pointer",
-              background: selectedTier === tier.id ? tier.colorFaint : "rgba(13,17,23,0.6)",
-              transition: "all 0.2s ease",
-              animation: `fadeUp 0.7s ease ${0.2 + i * 0.08}s both`,
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "2px" }}>
-                  <span style={{
-                    color: tier.color,
-                    fontSize: "0.75rem",
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontStyle: "italic",
-                  }}>{tier.name}</span>
-                  <span style={{
-                    background: tier.colorFaint,
-                    border: `1px solid ${tier.colorDim}`,
-                    color: tier.color,
-                    fontSize: "0.4rem",
-                    padding: "2px 6px",
-                    borderRadius: "3px",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                  }}>{tier.subtitle}</span>
-                </div>
-                <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem" }}>{tier.description}</p>
-              </div>
-              <div style={{ textAlign: "right", flexShrink: 0, marginLeft: "12px" }}>
-                <p style={{ color: tier.color, fontSize: "0.7rem", fontWeight: 500 }}>{tier.price}</p>
-                <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.45rem" }}>{tier.deposit}</p>
-              </div>
+        <div style={{
+          border: `1px solid ${GOLD}`,
+          borderRadius: "12px",
+          padding: "24px",
+          marginBottom: "20px",
+          background: GOLD_FAINT,
+          animation: "fadeUp 0.7s ease 0.2s both",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          {/* Subtle shimmer overlay */}
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(135deg, rgba(176,142,80,0.06) 0%, transparent 60%)",
+            pointerEvents: "none",
+          }} />
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+            <div>
+              <p className="font-cormorant" style={{ color: GOLD, fontSize: "1.6rem", fontStyle: "italic", lineHeight: 1.1, marginBottom: "4px" }}>
+                The Founding 72
+              </p>
+              <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.15em" }}>MAY 1–4 · WAIʻANAE COAST</p>
             </div>
-
-            {selectedTier === tier.id && (
-              <div style={{ marginTop: "12px", borderTop: `1px solid ${tier.colorFaint}`, paddingTop: "12px" }}>
-                {tier.access.map((item, j) => (
-                  <div key={j} style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "5px" }}>
-                    <span style={{ color: tier.color, fontSize: "0.5rem" }}>—</span>
-                    <span style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.52rem" }}>{item}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div style={{ textAlign: "right", flexShrink: 0, marginLeft: "12px" }}>
+              <p style={{ color: GOLD, fontSize: "1.1rem", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>$297</p>
+              <p style={{ color: GOLD_DIM, fontSize: "0.38rem", marginTop: "2px" }}>founding fee</p>
+            </div>
           </div>
-        ))}
 
-        {/* CTA */}
-        {selectedTier && (
-          <div style={{ animation: "fadeUp 0.5s ease forwards", marginTop: "8px" }}>
-            <button
-              onClick={() => onPledge(selectedTier)}
-              style={{
-                width: "100%",
-                padding: "15px",
-                background: "transparent",
-                border: `1px solid ${TIERS.find(t => t.id === selectedTier)?.color || GOLD}`,
-                color: TIERS.find(t => t.id === selectedTier)?.color || GOLD,
-                fontSize: "0.55rem",
-                letterSpacing: "0.25em",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                borderRadius: "6px",
-                fontFamily: "'JetBrains Mono', monospace",
-                transition: "all 0.2s",
-                marginBottom: "8px",
-              }}
-            >
-              Pledge Your Seat — {TIERS.find(t => t.id === selectedTier)?.name}
-            </button>
-            <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.45rem", textAlign: "center" }}>
-              Pledge is $9.99 · Deposit due upon acceptance
+          {/* The oath line */}
+          <div style={{
+            borderTop: "1px solid rgba(176,142,80,0.2)",
+            borderBottom: "1px solid rgba(176,142,80,0.2)",
+            padding: "14px 0",
+            marginBottom: "16px",
+            textAlign: "center",
+          }}>
+            <p className="font-cormorant" style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.95rem", fontStyle: "italic", lineHeight: 1.8 }}>
+              Every brother. Same door.<br />Same oath. Same fire.
             </p>
           </div>
-        )}
+
+          {/* Details */}
+          <div style={{ display: "grid", gap: "8px", marginBottom: "20px" }}>
+            {[
+              { label: "Seats", value: "72 Founding Seats" },
+              { label: "Duration", value: "72 hours — May 1–4" },
+              { label: "Includes", value: "Starts your $97/mo membership" },
+              { label: "Payment", value: "$74.25 today · 3 payments of $74.25" },
+              { label: "Access", value: "All brothers — one tier, one oath" },
+            ].map(row => (
+              <div key={row.label} style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderBottom: "1px solid rgba(176,142,80,0.08)" }}>
+                <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.44rem" }}>{row.label}</span>
+                <span style={{ color: "#e8e0d0", fontSize: "0.48rem" }}>{row.value}</span>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setShowPledgePopup(true)}
+            style={{
+              width: "100%",
+              padding: "15px",
+              background: "transparent",
+              border: `1px solid ${GOLD}`,
+              color: GOLD,
+              fontSize: "0.55rem",
+              letterSpacing: "0.25em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              borderRadius: "6px",
+              fontFamily: "'JetBrains Mono', monospace",
+              transition: "all 0.2s",
+            }}
+          >
+            Claim Your Founding Seat
+          </button>
+          <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", textAlign: "center", marginTop: "8px" }}>
+            {seatsOpen} of {FOUNDING_72_SEATS} seats remaining
+          </p>
+        </div>
 
         {/* Schedule */}
         {showSchedule && (
@@ -378,6 +305,114 @@ export default function GatePage({ visitorName, onPledge }: GatePageProps) {
           MĀKOA ORDER · PRIVATE · INVITATION ONLY
         </p>
       </div>
+
+      {/* Pledge Popup */}
+      {showPledgePopup && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.88)",
+            zIndex: 100,
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+          }}
+          onClick={() => setShowPledgePopup(false)}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: "#080b0f",
+              border: "1px solid rgba(176,142,80,0.2)",
+              borderRadius: "12px 12px 0 0",
+              padding: "28px 24px 36px",
+              width: "100%",
+              maxWidth: "480px",
+              animation: "fadeUp 0.35s ease forwards",
+            }}
+          >
+            {/* Close */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <p className="font-cormorant" style={{ color: GOLD, fontSize: "1.3rem", fontStyle: "italic" }}>
+                Founding Fee
+              </p>
+              <button
+                onClick={() => setShowPledgePopup(false)}
+                style={{ background: "none", border: "none", color: GOLD_DIM, cursor: "pointer", fontSize: "1rem" }}
+              >×</button>
+            </div>
+
+            {/* Price breakdown */}
+            <div style={{
+              background: "rgba(176,142,80,0.06)",
+              border: "1px solid rgba(176,142,80,0.15)",
+              borderRadius: "10px",
+              padding: "20px",
+              marginBottom: "20px",
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.45rem", letterSpacing: "0.15em" }}>$297 FOUNDING FEE</p>
+                <p style={{ color: GOLD, fontSize: "1.2rem", fontFamily: "'JetBrains Mono', monospace" }}>$297</p>
+              </div>
+
+              <div style={{ display: "grid", gap: "8px" }}>
+                {[
+                  { label: "Due today (25% down)", value: "$74.25", highlight: true },
+                  { label: "Payment 2", value: "$74.25" },
+                  { label: "Payment 3", value: "$74.25" },
+                  { label: "Includes", value: "May 1–4 event" },
+                  { label: "Starts", value: "$97/mo membership" },
+                ].map(row => (
+                  <div key={row.label} style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "6px 0",
+                    borderBottom: "1px solid rgba(176,142,80,0.08)",
+                  }}>
+                    <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.46rem" }}>{row.label}</span>
+                    <span style={{
+                      color: row.highlight ? GOLD : "#e8e0d0",
+                      fontSize: row.highlight ? "0.6rem" : "0.48rem",
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontWeight: row.highlight ? 600 : 400,
+                    }}>{row.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem", lineHeight: 1.7, marginBottom: "20px", textAlign: "center" }}>
+              Every brother. Same door. Same oath. Same fire.<br />
+              <span style={{ color: GOLD_DIM }}>72 founding seats. No tiers. No exceptions.</span>
+            </p>
+
+            <button
+              onClick={() => { setShowPledgePopup(false); onPledge("nakoa"); }}
+              style={{
+                width: "100%",
+                padding: "16px",
+                background: "transparent",
+                border: `1px solid ${GOLD}`,
+                color: GOLD,
+                fontSize: "0.55rem",
+                letterSpacing: "0.25em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                borderRadius: "6px",
+                fontFamily: "'JetBrains Mono', monospace",
+                transition: "all 0.2s",
+                marginBottom: "10px",
+              }}
+            >
+              Pledge — $74.25 Today
+            </button>
+            <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", textAlign: "center" }}>
+              3 payments of $74.25 · $97/mo membership begins after founding event
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

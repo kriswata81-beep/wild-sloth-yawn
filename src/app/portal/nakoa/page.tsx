@@ -142,7 +142,7 @@ export default function NakoaPortal() {
         }}>
           <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "8px" }}>MONTHLY DUES</p>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: duesWaived ? GREEN : "#e8e0d0", fontSize: "2.4rem", lineHeight: 1, marginBottom: "6px" }}>
-            $19.99
+            $97
             <span style={{ fontSize: "0.9rem", color: duesWaived ? GREEN_DIM : "rgba(232,224,208,0.4)", marginLeft: "8px" }}>/mo</span>
           </p>
           {duesWaived ? (
@@ -186,7 +186,7 @@ export default function NakoaPortal() {
             ))}
           </div>
           <p style={{ color: GREEN_DIM, fontSize: "0.4rem", marginTop: "10px", lineHeight: 1.6 }}>
-            Dues waived when active on route. Score 60+ on waitlist to unlock assignment.
+            $97/mo dues waived when active on route. Score 60+ on waitlist to unlock assignment.
           </p>
         </div>
 
