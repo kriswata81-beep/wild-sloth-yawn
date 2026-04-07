@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import BrotherhoodHotspotMap from "./BrotherhoodHotspotMap";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -116,6 +117,11 @@ export default function GatePage({ visitorName, onPledge }: GatePageProps) {
             Ice bath at 4am as the moon sets over the Pacific.<br />
             Brotherhood sealed in formation.
           </p>
+        </div>
+
+        {/* Brotherhood Hotspot Map */}
+        <div style={{ marginBottom: "32px", animation: "fadeUp 0.7s ease 0.08s both" }}>
+          <BrotherhoodHotspotMap />
         </div>
 
         {/* Seat availability */}

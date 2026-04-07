@@ -1161,27 +1161,39 @@ function ComplianceTab() {
 
 // ─── REVENUE TAB ─────────────────────────────────────────────────────────────
 
-const ALII_BASE = 1497;
-const KAMAAINA_BASE = 749;
-const B2B_SMALL_BASE = 1299;
-const B2B_MID_BASE = 2499;
-const B2B_LARGE_BASE = 3999;
+// Updated competitive pricing — June 2025
+const ALII_BASE = 997;        // 4 weekly visits, crew 2-3
+const KAMAAINA_BASE = 497;    // 2 bi-weekly visits, crew 2
+const B2B_SMALL_BASE = 697;   // under 3000sqft, 2 visits
+const B2B_MID_BASE = 1497;    // 3000-8000sqft, weekly
+const B2B_LARGE_BASE = 2497;  // 8000-15000sqft, weekly+on-call
 const MEMBERSHIP_DUES = 97;
-const MEMBERSHIP_BROTHERS = 100;
-const MEMBERSHIP_MRR = MEMBERSHIP_DUES * MEMBERSHIP_BROTHERS;
-const HOUSE_ALII_COUNT = 30;
-const HOUSE_KAMAAINA_COUNT = 50;
-const HOUSE_B2B_SMALL_COUNT = 12;
-const HOUSE_B2B_MID_COUNT = 5;
-const HOUSE_B2B_LARGE_COUNT = 3;
+const MEMBERSHIP_BROTHERS = 72;
+const MEMBERSHIP_MRR = MEMBERSHIP_DUES * MEMBERSHIP_BROTHERS; // $6,984
+const HOUSE_ALII_COUNT = 20;
+const HOUSE_KAMAAINA_COUNT = 35;
+const HOUSE_B2B_SMALL_COUNT = 8;
+const HOUSE_B2B_MID_COUNT = 4;
+const HOUSE_B2B_LARGE_COUNT = 2;
+// Service MRR: 20×$997 + 35×$497 + 8×$697 + 4×$1,497 + 2×$2,497 = $53,893
 const SERVICE_MRR = HOUSE_ALII_COUNT * ALII_BASE + HOUSE_KAMAAINA_COUNT * KAMAAINA_BASE + HOUSE_B2B_SMALL_COUNT * B2B_SMALL_BASE + HOUSE_B2B_MID_COUNT * B2B_MID_BASE + HOUSE_B2B_LARGE_COUNT * B2B_LARGE_BASE;
-const HOUSE_MRR = SERVICE_MRR + MEMBERSHIP_MRR;
+const HOUSE_MRR = SERVICE_MRR + MEMBERSHIP_MRR; // $60,877
+
+// Exact contract rates per plan
+const CONTRACT_RATES: Record<number, { six: number; twelve: number }> = {
+  997:  { six: 797,   twelve: 598  },
+  497:  { six: 397,   twelve: 298  },
+  697:  { six: 557,   twelve: 418  },
+  1497: { six: 1197,  twelve: 898  },
+  2497: { six: 1997,  twelve: 1498 },
+};
 
 function PlanContractTiers({ base, color }: { base: number; color: string }) {
+  const rates = CONTRACT_RATES[base] || { six: Math.round(base * 0.8), twelve: Math.round(base * 0.6) };
   const tiers = [
     { label: "Month-to-Month", rate: base, badge: "FULL RATE", badgeColor: "rgba(232,224,208,0.4)" },
-    { label: "6-Month", rate: Math.round(base * 0.8), badge: "20% OFF", badgeColor: GREEN },
-    { label: "12-Month", rate: Math.round(base * 0.6), badge: "40% OFF", badgeColor: AMBER },
+    { label: "6-Month", rate: rates.six, badge: "SAVE 20%", badgeColor: GREEN },
+    { label: "12-Month", rate: rates.twelve, badge: "SAVE 40%", badgeColor: AMBER },
   ];
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "6px" }}>
@@ -1218,12 +1230,12 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
 
       <div style={{ background: GOLD_FAINT, border: `1px solid ${GOLD}25`, borderRadius: "10px", padding: "16px 18px", marginBottom: "20px" }}>
         <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>
-          ONE HOUSE AT CAPACITY — 100 ACCOUNTS + 100 BROTHERS
+          FOUNDING HOUSE — {HOUSE_ALII_COUNT + HOUSE_KAMAAINA_COUNT + HOUSE_B2B_SMALL_COUNT + HOUSE_B2B_MID_COUNT + HOUSE_B2B_LARGE_COUNT} ACCOUNTS + {MEMBERSHIP_BROTHERS} BROTHERS
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px", marginBottom: "14px" }}>
           {[
             { label: "Total House MRR", value: `$${totalMRR.toLocaleString()}`, color: GOLD, sub: "service + membership" },
-            { label: "Active Plans", value: String(totalPlans), color: BLUE, sub: "80 Ohana · 20 B2B" },
+            { label: "Active Plans", value: String(totalPlans), color: BLUE, sub: `${HOUSE_ALII_COUNT + HOUSE_KAMAAINA_COUNT} Ohana · ${HOUSE_B2B_SMALL_COUNT + HOUSE_B2B_MID_COUNT + HOUSE_B2B_LARGE_COUNT} B2B` },
             { label: "Quarterly Rev", value: `$${quarterlyRevenue.toLocaleString()}`, color: GREEN, sub: "3-month total" },
             { label: "GE Tax Due", value: `$${geTaxQuarterly.toLocaleString()}`, color: AMBER, sub: "4% quarterly" },
           ].map(s => (
@@ -1263,42 +1275,44 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
 
       {/* Aliʻi Plan */}
       <div style={{ background: "rgba(176,142,80,0.06)", border: `1px solid ${GOLD}35`, borderRadius: "12px", padding: "18px", marginBottom: "12px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
           <div>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: GOLD, fontSize: "1.25rem", lineHeight: 1.1, marginBottom: "3px" }}>Aliʻi Plan</p>
-            <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.12em" }}>PREMIUM RESIDENTIAL · 4 VISITS/MO</p>
+            <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.12em" }}>PREMIUM RESIDENTIAL · 4 WEEKLY VISITS · CREW 2–3</p>
           </div>
           <div style={{ textAlign: "right" }}>
-            <p style={{ color: GOLD, fontSize: "1.1rem", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>$1,497</p>
+            <p style={{ color: GOLD, fontSize: "1.1rem", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>$997</p>
             <p style={{ color: GOLD_DIM, fontSize: "0.38rem" }}>/month</p>
           </div>
         </div>
+        <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.38rem", marginBottom: "10px" }}>Setup: $249.25 (25% down)</p>
         <PlanContractTiers base={ALII_BASE} color={GOLD} />
       </div>
 
       {/* Kamaaina Plan */}
       <div style={{ background: "rgba(88,166,255,0.05)", border: `1px solid ${BLUE}30`, borderRadius: "12px", padding: "18px", marginBottom: "12px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
           <div>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: BLUE, fontSize: "1.25rem", lineHeight: 1.1, marginBottom: "3px" }}>Kamaʻāina Plan</p>
-            <p style={{ color: "rgba(88,166,255,0.5)", fontSize: "0.4rem", letterSpacing: "0.12em" }}>STANDARD RESIDENTIAL · 2 VISITS/MO</p>
+            <p style={{ color: "rgba(88,166,255,0.5)", fontSize: "0.4rem", letterSpacing: "0.12em" }}>STANDARD RESIDENTIAL · 2 BI-WEEKLY VISITS · CREW 2</p>
           </div>
           <div style={{ textAlign: "right" }}>
-            <p style={{ color: BLUE, fontSize: "1.1rem", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>$749</p>
+            <p style={{ color: BLUE, fontSize: "1.1rem", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>$497</p>
             <p style={{ color: "rgba(88,166,255,0.5)", fontSize: "0.38rem" }}>/month</p>
           </div>
         </div>
+        <p style={{ color: "rgba(88,166,255,0.4)", fontSize: "0.38rem", marginBottom: "10px" }}>Setup: $124.25 (25% down)</p>
         <PlanContractTiers base={KAMAAINA_BASE} color={BLUE} />
       </div>
 
       {/* B2B Plans */}
       {[
-        { name: "Small Business", base: B2B_SMALL_BASE, sqft: "Up to 3,000 sq ft", visits: "2 visits/month" },
-        { name: "Mid Business", base: B2B_MID_BASE, sqft: "Up to 8,000 sq ft", visits: "4 visits/month" },
-        { name: "Large Business", base: B2B_LARGE_BASE, sqft: "Up to 15,000 sq ft", visits: "Weekly + on-call" },
+        { name: "B2B Small", base: B2B_SMALL_BASE, sqft: "Under 3,000 sq ft", visits: "2 visits/month", setup: "$174.25" },
+        { name: "B2B Mid", base: B2B_MID_BASE, sqft: "3,000–8,000 sq ft", visits: "Weekly", setup: "$374.25" },
+        { name: "B2B Large", base: B2B_LARGE_BASE, sqft: "8,000–15,000 sq ft", visits: "Weekly + on-call", setup: "$624.25" },
       ].map(plan => (
         <div key={plan.name} style={{ background: `rgba(83,74,183,0.05)`, border: `1px solid ${PURPLE}28`, borderRadius: "12px", padding: "18px", marginBottom: "12px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
             <div>
               <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: PURPLE, fontSize: "1.1rem", lineHeight: 1.1, marginBottom: "3px" }}>{plan.name}</p>
               <p style={{ color: `rgba(83,74,183,0.55)`, fontSize: "0.4rem", letterSpacing: "0.1em" }}>{plan.sqft} · {plan.visits}</p>
@@ -1308,6 +1322,7 @@ function RevenueTab({ applicants }: { applicants: Applicant[] }) {
               <p style={{ color: `rgba(83,74,183,0.5)`, fontSize: "0.38rem" }}>/month</p>
             </div>
           </div>
+          <p style={{ color: "rgba(83,74,183,0.45)", fontSize: "0.38rem", marginBottom: "10px" }}>Setup: {plan.setup} (25% down)</p>
           <PlanContractTiers base={plan.base} color={PURPLE} />
         </div>
       ))}

@@ -170,11 +170,11 @@ export default function NakoaPortal() {
           <p style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "12px" }}>YOUR EARNINGS PER JOB (80% SPLIT)</p>
           <div style={{ display: "grid", gap: "6px" }}>
             {[
-              { plan: "Aliʻi Plan (weekly)", rate: "$1,497/mo", earn: "$1,197.60/mo", color: "#b08e50" },
-              { plan: "Kamaʻāina Plan (bi-weekly)", rate: "$749/mo", earn: "$599.20/mo", color: "#58a6ff" },
-              { plan: "B2B Small (2×/mo)", rate: "$1,299/mo", earn: "$1,039.20/mo", color: "#534AB7" },
-              { plan: "B2B Mid (4×/mo)", rate: "$2,499/mo", earn: "$1,999.20/mo", color: "#534AB7" },
-              { plan: "B2B Large (weekly+)", rate: "$3,999/mo", earn: "$3,199.20/mo", color: "#534AB7" },
+              { plan: "Aliʻi Plan (4 weekly visits)", rate: "$997/mo", earn: "$797.60/mo", color: "#b08e50" },
+              { plan: "Kamaʻāina Plan (bi-weekly)", rate: "$497/mo", earn: "$397.60/mo", color: "#58a6ff" },
+              { plan: "B2B Small (2×/mo)", rate: "$697/mo", earn: "$557.60/mo", color: "#534AB7" },
+              { plan: "B2B Mid (weekly)", rate: "$1,497/mo", earn: "$1,197.60/mo", color: "#534AB7" },
+              { plan: "B2B Large (weekly+on-call)", rate: "$2,497/mo", earn: "$1,997.60/mo", color: "#534AB7" },
             ].map(row => (
               <div key={row.plan} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderBottom: `1px solid ${GREEN_20}` }}>
                 <div>
