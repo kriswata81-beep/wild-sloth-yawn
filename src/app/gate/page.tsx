@@ -277,7 +277,7 @@ export default function GatePageRoute() {
       <div style={{ position: "relative", height: 260, overflow: "hidden" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1600&q=80"
+          src="https://images.unsplash.com/photo-1598135753053-bc345e4e93e7?w=1600&q=80"
           alt="Mākoa"
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />
