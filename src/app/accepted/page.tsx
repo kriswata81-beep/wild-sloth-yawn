@@ -355,7 +355,7 @@ function AcceptedContent() {
             }}>FOUNDING EVENT</div>
 
             <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 8 }}>
-              THE MAKOA 48
+              MAYDAY MAKOA 2026
             </p>
             <p style={{
               fontFamily: "'Cormorant Garamond', serif",
@@ -364,11 +364,11 @@ function AcceptedContent() {
               fontSize: "1.5rem",
               margin: "0 0 6px",
             }}>
-              May 1–3 · A Hotel in Kapolei
+              May 1–3 · Kapolei, Hawaii
             </p>
             <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.5rem", marginBottom: 18, lineHeight: 1.7 }}>
-              48 brothers. 48 hours.<br />
-              Friday dusk to Sunday dusk.
+              Your first gathering is 17 days away.<br />
+              24 founding seats.
             </p>
 
             <div style={{ borderLeft: `2px solid ${GOLD_20}`, paddingLeft: 14, marginBottom: 20 }}>
@@ -422,11 +422,8 @@ function AcceptedContent() {
               textAlign: "center",
             }}>
               <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem", lineHeight: 1.7 }}>
-                Seats for the founding 48 are announced below.<br />
-                Your dues commitment unlocks access.
-              </p>
-              <p style={{ color: GOLD_DIM, fontSize: "0.44rem", marginTop: 8, fontStyle: "italic" }}>
-                Full details drop tomorrow at 4am.
+                Full details drop tomorrow at 4am.<br />
+                Your commitment unlocks access.
               </p>
             </div>
           </div>

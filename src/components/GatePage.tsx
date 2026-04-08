@@ -5,9 +5,12 @@ import BrotherhoodHotspotMap from "./BrotherhoodHotspotMap";
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
 const GOLD_FAINT = "rgba(176,142,80,0.12)";
+const RED = "#f85149";
 
 // Founding 72 — 72 seats, one tier, one price
 const FOUNDING_72_SEATS = 72;
+
+const APRIL_15 = new Date("2026-04-15T04:00:00-10:00");
 
 interface GatePageProps {
   visitorName: string;
@@ -28,9 +31,29 @@ const REGIONS = [
   "Big Island", "Kauaʻi", "Mainland West", "Mainland East",
 ];
 
+function useCountdown(target: Date) {
+  const calc = () => {
+    const diff = target.getTime() - Date.now();
+    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    return {
+      days: Math.floor(diff / 86400000),
+      hours: Math.floor((diff % 86400000) / 3600000),
+      minutes: Math.floor((diff % 3600000) / 60000),
+      seconds: Math.floor((diff % 60000) / 1000),
+    };
+  };
+  const [time, setTime] = useState(calc);
+  useEffect(() => {
+    const id = setInterval(() => setTime(calc()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return time;
+}
+
 export default function GatePage({ visitorName, onPledge }: GatePageProps) {
   const [showPledgePopup, setShowPledgePopup] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
+  const apr15 = useCountdown(APRIL_15);
 
   // Seats filled — starts at 0 (real launch state)
   const seatsFilled = 0;
@@ -49,6 +72,11 @@ export default function GatePage({ visitorName, onPledge }: GatePageProps) {
       fontFamily: "'JetBrains Mono', monospace",
       overflowX: "hidden",
     }}>
+      <style>{`
+        @keyframes urgencyPulse { 0%,100% { opacity:0.6; transform:scale(1); } 50% { opacity:1; transform:scale(1.4); } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+      `}</style>
+
       {/* Header */}
       <div style={{
         borderBottom: "1px solid rgba(176,142,80,0.1)",
@@ -270,6 +298,108 @@ export default function GatePage({ visitorName, onPledge }: GatePageProps) {
           </div>
         )}
 
+        {/* ── APRIL 15 · FIRST WORLDWIDE 4AM ──────────────────────────────── */}
+        <div style={{
+          marginTop: "40px",
+          background: "linear-gradient(135deg, #0a0d14 0%, #060810 100%)",
+          border: `1px solid rgba(248,81,73,0.3)`,
+          borderRadius: "12px",
+          padding: "26px 22px",
+          position: "relative",
+          overflow: "hidden",
+          animation: "fadeUp 0.7s ease 0.25s both",
+        }}>
+          {/* Red glow */}
+          <div style={{
+            position: "absolute", inset: 0,
+            background: "radial-gradient(ellipse at 50% 0%, rgba(248,81,73,0.06) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }} />
+
+          {/* Pulsing dot badge */}
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: 7,
+            background: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.3)",
+            borderRadius: 4, padding: "5px 11px", marginBottom: 16,
+          }}>
+            <div style={{ width: 7, height: 7, borderRadius: "50%", background: RED, animation: "urgencyPulse 1.5s ease-in-out infinite" }} />
+            <span style={{ color: RED, fontSize: "0.42rem", letterSpacing: "0.15em" }}>WORLDWIDE EVENT · APRIL 15</span>
+          </div>
+
+          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.25em", marginBottom: 10 }}>
+            FIRST WORLDWIDE MAKOA ELITE RESET TRAINING
+          </p>
+
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: GOLD,
+            fontSize: "1.5rem",
+            lineHeight: 1.3,
+            marginBottom: 16,
+          }}>
+            April 15 · 4am<br />Every Brother. Every City.
+          </p>
+
+          <div style={{
+            borderLeft: `2px solid rgba(248,81,73,0.4)`,
+            paddingLeft: 14,
+            marginBottom: 20,
+          }}>
+            {[
+              "3:33 wake up",
+              "4am ice bath",
+              "Every brother. Every city. At the same time.",
+            ].map(line => (
+              <p key={line} style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontStyle: "italic",
+                color: "rgba(232,224,208,0.65)",
+                fontSize: "0.95rem",
+                lineHeight: 2.0,
+                margin: 0,
+              }}>{line}</p>
+            ))}
+          </div>
+
+          {/* Countdown to April 15 */}
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem", letterSpacing: "0.2em", textAlign: "center", marginBottom: 10 }}>
+            APRIL 15 · 4AM IN
+          </p>
+          <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+            {[
+              { label: "DAYS", val: apr15.days },
+              { label: "HRS", val: apr15.hours },
+              { label: "MIN", val: apr15.minutes },
+              { label: "SEC", val: apr15.seconds },
+            ].map(t => (
+              <div key={t.label} style={{
+                flex: 1, background: "rgba(0,0,0,0.5)",
+                border: `1px solid rgba(248,81,73,0.15)`,
+                borderRadius: 6, padding: "12px 4px", textAlign: "center",
+              }}>
+                <p style={{
+                  color: RED, fontSize: "1.4rem", fontWeight: 700, lineHeight: 1,
+                  fontFamily: "'JetBrains Mono', monospace",
+                }}>{String(t.val).padStart(2, "0")}</p>
+                <p style={{ color: "rgba(248,81,73,0.4)", fontSize: "0.36rem", letterSpacing: "0.15em", marginTop: 4 }}>{t.label}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{
+            background: "rgba(176,142,80,0.06)",
+            border: `1px solid rgba(176,142,80,0.15)`,
+            borderRadius: 6,
+            padding: "12px 16px",
+            textAlign: "center",
+          }}>
+            <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.48rem", lineHeight: 1.7 }}>
+              Your pledge unlocks your 3:33 alarm from XI.
+            </p>
+          </div>
+        </div>
+
         {/* Regions */}
         <div style={{ marginTop: "32px", animation: "fadeUp 0.7s ease 0.3s both" }}>
           <p style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "12px" }}>
@@ -323,15 +453,32 @@ export default function GatePage({ visitorName, onPledge }: GatePageProps) {
         </div>
 
         {/* Footer */}
-        <p style={{
-          color: "rgba(176,142,80,0.2)",
-          fontSize: "0.45rem",
-          textAlign: "center",
-          marginTop: "40px",
-          letterSpacing: "0.15em",
-        }}>
-          MĀKOA ORDER · PRIVATE · INVITATION ONLY
-        </p>
+        <div style={{ textAlign: "center", marginTop: "40px", paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: GOLD_DIM,
+            fontSize: "0.95rem",
+            marginBottom: 12,
+          }}>
+            Hana · Pale · Ola
+          </p>
+          <p style={{
+            color: "rgba(176,142,80,0.2)",
+            fontSize: "0.45rem",
+            marginBottom: 8,
+            letterSpacing: "0.15em",
+          }}>
+            Questions: wakachief@gmail.com
+          </p>
+          <p style={{
+            color: "rgba(176,142,80,0.2)",
+            fontSize: "0.45rem",
+            letterSpacing: "0.15em",
+          }}>
+            MĀKOA ORDER · PRIVATE · INVITATION ONLY
+          </p>
+        </div>
       </div>
 
       {/* Pledge Popup */}
