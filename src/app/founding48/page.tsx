@@ -17,15 +17,35 @@ const GREEN_10 = "rgba(63,185,80,0.1)";
 const RED = "#f85149";
 const BG = "#04060a";
 
-// ─── Seat counts ──────────────────────────────────────────────────────────────
-const WAR_PARTY_TOTAL = 5;   // 5 war parties of 2–4 makoa each
-const WAR_ROOM_TOTAL = 24;   // 48HR Aliʻi War Room
-const MASTERMIND_TOTAL = 24; // 24HR Mana Mastermind
-const DAYPASS_TOTAL = 12;    // 12HR Nā Koa Day Pass
-const WAR_PARTY_FILLED = 0;
-const WAR_ROOM_FILLED = 0;
-const MASTERMIND_FILLED = 0;
-const DAYPASS_FILLED = 0;
+// ─── Seat defaults (overridden by live Supabase data) ────────────────────────
+const WAR_PARTY_TOTAL = 5;
+const WAR_ROOM_TOTAL = 24;
+const MASTERMIND_TOTAL = 24;
+const DAYPASS_TOTAL = 12;
+
+type SeatCounts = {
+  warPartyFilled: number;
+  warRoomFilled: number;
+  mastermindFilled: number;
+  daypassFilled: number;
+};
+
+async function fetchLiveSeats(): Promise<SeatCounts> {
+  try {
+    const res = await fetch("/api/checkout", { method: "GET" });
+    if (!res.ok) throw new Error("seat fetch failed");
+    const data = await res.json();
+    const s = data.seats || {};
+    return {
+      warPartyFilled: s["MAYDAY War Party VIP"]?.filled ?? 0,
+      warRoomFilled: s["MAYDAY Aliʻi War Room"]?.filled ?? 0,
+      mastermindFilled: s["MAYDAY Mana Mastermind"]?.filled ?? 0,
+      daypassFilled: s["MAYDAY Nā Koa Day Pass"]?.filled ?? 0,
+    };
+  } catch {
+    return { warPartyFilled: 0, warRoomFilled: 0, mastermindFilled: 0, daypassFilled: 0 };
+  }
+}
 
 const EARLY_BIRD_CUTOFF = new Date("2026-04-15T23:59:59-10:00");
 const MAY_1 = new Date("2026-05-01T17:00:00-10:00");
@@ -231,9 +251,14 @@ function Founding48Content() {
   const [showTimeline, setShowTimeline] = useState(false);
   const [loadingProduct, setLoadingProduct] = useState<ProductId | null>(null);
   const [isEarlyBird, setIsEarlyBird] = useState(false);
+  const [seats, setSeats] = useState<SeatCounts>({
+    warPartyFilled: 0, warRoomFilled: 0, mastermindFilled: 0, daypassFilled: 0,
+  });
 
   useEffect(() => {
     setIsEarlyBird(Date.now() < EARLY_BIRD_CUTOFF.getTime());
+    // Fetch live seat counts from Supabase via API
+    fetchLiveSeats().then(setSeats);
   }, []);
 
   useEffect(() => {
@@ -661,7 +686,7 @@ function Founding48Content() {
               Warrior Level
             </p>
           </div>
-          <SeatBadge remaining={DAYPASS_TOTAL - DAYPASS_FILLED} total={DAYPASS_TOTAL} />
+          <SeatBadge remaining={DAYPASS_TOTAL - seats.daypassFilled} total={DAYPASS_TOTAL} />
           <div style={{ marginBottom: 20 }}>
             {[
               "Saturday OR Sunday — your choice",
@@ -688,7 +713,7 @@ function Founding48Content() {
             bg={GREEN_10}
             border={GREEN_20}
           />
-          <SeatBar filled={DAYPASS_FILLED} total={DAYPASS_TOTAL} color={GREEN} />
+          <SeatBar filled={seats.daypassFilled} total={DAYPASS_TOTAL} color={GREEN} />
           <button
             onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_DAY_PASS_EARLY" : "MAYDAY_DAY_PASS_LAST")}
             disabled={isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")}
@@ -738,7 +763,7 @@ function Founding48Content() {
               Skills Level
             </p>
           </div>
-          <SeatBadge remaining={MASTERMIND_TOTAL - MASTERMIND_FILLED} total={MASTERMIND_TOTAL} />
+          <SeatBadge remaining={MASTERMIND_TOTAL - seats.mastermindFilled} total={MASTERMIND_TOTAL} />
           <div style={{ marginBottom: 20 }}>
             {[
               "Book your own hotel",
@@ -766,7 +791,7 @@ function Founding48Content() {
             bg={BLUE_10}
             border={BLUE_20}
           />
-          <SeatBar filled={MASTERMIND_FILLED} total={MASTERMIND_TOTAL} color={BLUE} />
+          <SeatBar filled={seats.mastermindFilled} total={MASTERMIND_TOTAL} color={BLUE} />
           <button
             onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_MASTERMIND_EARLY" : "MAYDAY_MASTERMIND_LAST")}
             disabled={isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")}
@@ -816,7 +841,7 @@ function Founding48Content() {
               Council Level
             </p>
           </div>
-          <SeatBadge remaining={WAR_ROOM_TOTAL - WAR_ROOM_FILLED} total={WAR_ROOM_TOTAL} />
+          <SeatBadge remaining={WAR_ROOM_TOTAL - seats.warRoomFilled} total={WAR_ROOM_TOTAL} />
           <div style={{ marginBottom: 20 }}>
             {[
               "Drive yourself to the hotel",
@@ -845,7 +870,7 @@ function Founding48Content() {
             bg={GOLD_10}
             border={GOLD_40}
           />
-          <SeatBar filled={WAR_ROOM_FILLED} total={WAR_ROOM_TOTAL} color={GOLD} />
+          <SeatBar filled={seats.warRoomFilled} total={WAR_ROOM_TOTAL} color={GOLD} />
           <button
             onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_ROOM_EARLY" : "MAYDAY_WAR_ROOM_LAST")}
             disabled={isLoading("MAYDAY_WAR_ROOM_EARLY") || isLoading("MAYDAY_WAR_ROOM_LAST")}
@@ -909,7 +934,7 @@ function Founding48Content() {
           }}>
             <PulsingDot />
             <span style={{ color: RED, fontSize: "0.42rem", letterSpacing: "0.15em" }}>
-              {WAR_PARTY_TOTAL - WAR_PARTY_FILLED} OF {WAR_PARTY_TOTAL} WAR PARTIES REMAINING
+              {WAR_PARTY_TOTAL - seats.warPartyFilled} OF {WAR_PARTY_TOTAL} WAR PARTIES REMAINING
             </span>
           </div>
 
@@ -958,7 +983,7 @@ function Founding48Content() {
             border={GOLD_40}
           />
 
-          <SeatBar filled={WAR_PARTY_FILLED} total={WAR_PARTY_TOTAL} color={GOLD} />
+          <SeatBar filled={seats.warPartyFilled} total={WAR_PARTY_TOTAL} color={GOLD} />
 
           <button
             onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_VAN_EARLY" : "MAYDAY_WAR_VAN_LAST")}
