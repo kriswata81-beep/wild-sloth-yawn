@@ -32,9 +32,10 @@ const EARLY_BIRD_CUTOFF = new Date("2026-04-15T23:59:59-10:00");
 const MAY_1 = new Date("2026-05-01T17:00:00-10:00");
 
 function useCountdown(target: Date) {
+  const zero = { days: 0, hours: 0, minutes: 0, seconds: 0 };
   const calc = () => {
     const diff = target.getTime() - Date.now();
-    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    if (diff <= 0) return zero;
     return {
       days: Math.floor(diff / 86400000),
       hours: Math.floor((diff % 86400000) / 3600000),
@@ -42,8 +43,10 @@ function useCountdown(target: Date) {
       seconds: Math.floor((diff % 60000) / 1000),
     };
   };
-  const [time, setTime] = useState(calc);
+  // Start with zeros to match SSR, then hydrate on client
+  const [time, setTime] = useState(zero);
   useEffect(() => {
+    setTime(calc());
     const id = setInterval(() => setTime(calc()), 1000);
     return () => clearInterval(id);
   }, []);
@@ -227,7 +230,10 @@ function Founding48Content() {
   const [showTimeline, setShowTimeline] = useState(false);
   const [loadingProduct, setLoadingProduct] = useState<ProductId | null>(null);
 
-  const isEarlyBird = Date.now() < EARLY_BIRD_CUTOFF.getTime();
+  const [isEarlyBird, setIsEarlyBird] = useState(false);
+  useEffect(() => {
+    setIsEarlyBird(Date.now() < EARLY_BIRD_CUTOFF.getTime());
+  }, []);
 
   useEffect(() => {
     const urlHandle = searchParams.get("h") || searchParams.get("handle") || "";
