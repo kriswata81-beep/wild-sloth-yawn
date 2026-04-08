@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { ProductId } from "@/lib/stripe";
 
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
@@ -79,6 +80,7 @@ function AcceptedContent() {
   const [handle, setHandle] = useState("");
   const [tier, setTier] = useState("nakoa");
   const [revealed, setRevealed] = useState(false);
+  const [loadingCheckout, setLoadingCheckout] = useState(false);
   const { days, hours, minutes, seconds } = useCountdown();
 
   useEffect(() => {
@@ -91,6 +93,27 @@ function AcceptedContent() {
     const t = setTimeout(() => setRevealed(true), 800);
     return () => clearTimeout(t);
   }, [searchParams]);
+
+  async function handleDuesCheckout() {
+    setLoadingCheckout(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product_id: "DUES_DOWN" as ProductId, handle }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("No checkout URL returned", data);
+        setLoadingCheckout(false);
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      setLoadingCheckout(false);
+    }
+  }
 
   const tierColor = TIER_COLORS[tier] || GOLD;
   const tierLabel = TIER_LABELS[tier] || "Nā Koa";
@@ -298,12 +321,10 @@ function AcceptedContent() {
           </div>
 
           {/* CTA */}
+          <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
           <button
-            onClick={() => {
-              if (typeof window !== "undefined") {
-                window.location.href = "https://t.me/+dsS4Mz0p5wM4OGYx";
-              }
-            }}
+            onClick={handleDuesCheckout}
+            disabled={loadingCheckout}
             style={{
               width: "100%",
               background: GOLD,
@@ -312,14 +333,24 @@ function AcceptedContent() {
               padding: "16px",
               fontSize: "0.56rem",
               letterSpacing: "0.22em",
-              cursor: "pointer",
+              cursor: loadingCheckout ? "not-allowed" : "pointer",
               borderRadius: 6,
               fontFamily: "'JetBrains Mono', monospace",
               fontWeight: 700,
               marginBottom: 10,
+              opacity: loadingCheckout ? 0.7 : 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
             }}
           >
-            I COMMIT TO THE ORDER — $249.25 TODAY
+            {loadingCheckout ? (
+              <>
+                <span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+                SECURING...
+              </>
+            ) : "I COMMIT TO THE ORDER — $249.25 TODAY"}
           </button>
           <p style={{ textAlign: "center", color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", lineHeight: 1.6 }}>
             Your dues start the moment you commit.<br />

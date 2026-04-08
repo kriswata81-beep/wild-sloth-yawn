@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { ProductId } from "@/lib/stripe";
 
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
@@ -20,7 +21,7 @@ const BG = "#04060a";
 const WAR_VAN_TOTAL = 8;
 const WAR_ROOM_TOTAL = 12;
 const MASTERMIND_TOTAL = 12;
-const DAYPASS_TOTAL = 12; // 6/day × 2 days
+const DAYPASS_TOTAL = 12;
 const WAR_VAN_FILLED = 0;
 const WAR_ROOM_FILLED = 0;
 const MASTERMIND_FILLED = 0;
@@ -145,7 +146,6 @@ function PricingBlock({
   return (
     <div style={{ background: bg, border: `1px solid ${border}`, borderRadius: 8, padding: "16px", marginBottom: 18 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-        {/* Early Bird column */}
         <div>
           <p style={{
             color: isEarlyBird ? color : "rgba(232,224,208,0.25)",
@@ -161,7 +161,6 @@ function PricingBlock({
             textDecoration: isEarlyBird ? "none" : "line-through",
           }}>{earlyPrice}</p>
         </div>
-        {/* Last Call column */}
         <div style={{ textAlign: "right" }}>
           <p style={{
             color: isEarlyBird ? "rgba(232,224,208,0.3)" : color,
@@ -216,16 +215,17 @@ const TIMELINE = [
 ];
 
 const TEAM_PACKS = [
-  { label: "War Van · Team of 3", perPerson: "$699/each", total: "$2,097", color: GOLD, border: GOLD_40 },
-  { label: "War Van · Team of 5", perPerson: "$649/each", total: "$3,245", color: GOLD, border: GOLD_40 },
-  { label: "War Room · Team of 3", perPerson: "$449/each", total: "$1,347", color: GOLD, border: GOLD_20 },
-  { label: "Mastermind · Team of 3", perPerson: "$265/each", total: "$797", color: BLUE, border: BLUE_20 },
+  { label: "War Van · Team of 3", perPerson: "$699/each", total: "$2,097", productId: "TEAM_WAR_VAN_3" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK TEAM OF 3" },
+  { label: "War Van · Team of 5", perPerson: "$649/each", total: "$3,245", productId: "TEAM_WAR_VAN_5" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK TEAM OF 5" },
+  { label: "War Room · Team of 3", perPerson: "$449/each", total: "$1,347", productId: "TEAM_WAR_ROOM_3" as ProductId, color: GOLD, border: GOLD_20, btnLabel: "BOOK TEAM OF 3" },
+  { label: "Mastermind · Team of 3", perPerson: "$265/each", total: "$797", productId: "TEAM_MASTERMIND_3" as ProductId, color: BLUE, border: BLUE_20, btnLabel: "BOOK TEAM OF 3" },
 ];
 
 function Founding48Content() {
   const searchParams = useSearchParams();
   const [handle, setHandle] = useState("Brother");
   const [showTimeline, setShowTimeline] = useState(false);
+  const [loadingProduct, setLoadingProduct] = useState<ProductId | null>(null);
 
   const isEarlyBird = Date.now() < EARLY_BIRD_CUTOFF.getTime();
 
@@ -237,11 +237,28 @@ function Founding48Content() {
     return () => clearTimeout(t);
   }, [searchParams]);
 
-  function handleClaim(tier: string) {
-    if (typeof window !== "undefined") {
-      window.location.href = "https://t.me/+dsS4Mz0p5wM4OGYx";
+  async function handleCheckout(productId: ProductId) {
+    setLoadingProduct(productId);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product_id: productId, handle }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("No checkout URL returned", data);
+        setLoadingProduct(null);
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      setLoadingProduct(null);
     }
   }
+
+  const isLoading = (id: ProductId) => loadingProduct === id;
 
   return (
     <div style={{ background: BG, minHeight: "100vh", color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80 }}>
@@ -251,6 +268,7 @@ function Founding48Content() {
         @keyframes urgencyPulse { 0%,100% { opacity:0.6; transform:scale(1); } 50% { opacity:1; transform:scale(1.4); } }
         @keyframes breathe { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
         @keyframes goldGlow { 0%,100% { box-shadow: 0 0 12px rgba(176,142,80,0.15); } 50% { box-shadow: 0 0 28px rgba(176,142,80,0.35); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
 
       {/* ── HERO HEADER ─────────────────────────────────────────────────────── */}
@@ -307,7 +325,6 @@ function Founding48Content() {
           The only event where brothers are sworn in at the founding fire.
         </p>
 
-        {/* Dual countdowns */}
         <div style={{ maxWidth: 400, margin: "0 auto", animation: "fadeUp 0.9s ease 0.6s both" }}>
           <div style={{ marginBottom: 20 }}>
             <CountdownBlock target={MAY_1} label="FOUNDING FIRE IN" color={GOLD} />
@@ -448,7 +465,6 @@ function Founding48Content() {
             pointerEvents: "none",
           }} />
 
-          {/* Crown badge */}
           <div style={{
             position: "absolute", top: 14, right: 14,
             background: GOLD, color: "#000",
@@ -499,16 +515,20 @@ function Founding48Content() {
           <SeatBar filled={WAR_VAN_FILLED} total={WAR_VAN_TOTAL} color={GOLD} />
 
           <button
-            onClick={() => handleClaim("warvan")}
+            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_VAN_EARLY" : "MAYDAY_WAR_VAN_LAST")}
+            disabled={isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")}
             style={{
               width: "100%", background: GOLD, color: "#000",
               border: "none", padding: "16px", fontSize: "0.54rem",
               letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
               fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 16,
+              marginTop: 16, opacity: (isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? 0.7 : 1,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
             }}
           >
-            CLAIM YOUR VAN SEAT
+            {(isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? (
+              <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
+            ) : "CLAIM YOUR VAN SEAT"}
           </button>
           {isEarlyBird && (
             <p style={{ textAlign: "center", color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", marginTop: 8 }}>
@@ -581,16 +601,20 @@ function Founding48Content() {
           <SeatBar filled={WAR_ROOM_FILLED} total={WAR_ROOM_TOTAL} color={GOLD} />
 
           <button
-            onClick={() => handleClaim("warroom")}
+            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_ROOM_EARLY" : "MAYDAY_WAR_ROOM_LAST")}
+            disabled={isLoading("MAYDAY_WAR_ROOM_EARLY") || isLoading("MAYDAY_WAR_ROOM_LAST")}
             style={{
               width: "100%", background: GOLD, color: "#000",
               border: "none", padding: "15px", fontSize: "0.54rem",
               letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
               fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 16,
+              marginTop: 16, opacity: (isLoading("MAYDAY_WAR_ROOM_EARLY") || isLoading("MAYDAY_WAR_ROOM_LAST")) ? 0.7 : 1,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
             }}
           >
-            CLAIM YOUR WAR ROOM SEAT
+            {(isLoading("MAYDAY_WAR_ROOM_EARLY") || isLoading("MAYDAY_WAR_ROOM_LAST")) ? (
+              <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
+            ) : "CLAIM YOUR WAR ROOM SEAT"}
           </button>
           {isEarlyBird && (
             <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
@@ -671,16 +695,20 @@ function Founding48Content() {
           <SeatBar filled={MASTERMIND_FILLED} total={MASTERMIND_TOTAL} color={BLUE} />
 
           <button
-            onClick={() => handleClaim("mastermind")}
+            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_MASTERMIND_EARLY" : "MAYDAY_MASTERMIND_LAST")}
+            disabled={isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")}
             style={{
               width: "100%", background: "transparent", color: BLUE,
               border: `1px solid ${BLUE}`, padding: "15px", fontSize: "0.54rem",
               letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
               fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 16,
+              marginTop: 16, opacity: (isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")) ? 0.7 : 1,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
             }}
           >
-            CLAIM YOUR MASTERMIND SEAT
+            {(isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")) ? (
+              <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${BLUE}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
+            ) : "CLAIM YOUR MASTERMIND SEAT"}
           </button>
           {isEarlyBird && (
             <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
@@ -760,16 +788,20 @@ function Founding48Content() {
           <SeatBar filled={DAYPASS_FILLED} total={DAYPASS_TOTAL} color={GREEN} />
 
           <button
-            onClick={() => handleClaim("daypass")}
+            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_DAY_PASS_EARLY" : "MAYDAY_DAY_PASS_LAST")}
+            disabled={isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")}
             style={{
               width: "100%", background: "transparent", color: GREEN,
               border: `1px solid ${GREEN}`, padding: "15px", fontSize: "0.54rem",
               letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
               fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 16,
+              marginTop: 16, opacity: (isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")) ? 0.7 : 1,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
             }}
           >
-            GRAB A DAY PASS
+            {(isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")) ? (
+              <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${GREEN}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
+            ) : "GRAB A DAY PASS"}
           </button>
           {isEarlyBird && (
             <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
@@ -800,8 +832,8 @@ function Founding48Content() {
           </p>
 
           <div style={{ display: "grid", gap: 10 }}>
-            {TEAM_PACKS.map((pack, i) => (
-              <div key={i} style={{
+            {TEAM_PACKS.map((pack) => (
+              <div key={pack.productId} style={{
                 display: "flex", justifyContent: "space-between", alignItems: "center",
                 background: "rgba(0,0,0,0.3)",
                 border: `1px solid ${pack.border}`,
@@ -817,16 +849,21 @@ function Founding48Content() {
                     {pack.total}
                   </p>
                   <button
-                    onClick={() => handleClaim("team")}
+                    onClick={() => handleCheckout(pack.productId)}
+                    disabled={isLoading(pack.productId)}
                     style={{
                       background: "transparent", color: pack.color,
                       border: `1px solid ${pack.color}`, padding: "5px 12px",
                       fontSize: "0.38rem", letterSpacing: "0.12em",
                       cursor: "pointer", borderRadius: 4,
                       fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
+                      opacity: isLoading(pack.productId) ? 0.7 : 1,
+                      display: "inline-flex", alignItems: "center", gap: 5,
                     }}
                   >
-                    {i < 2 ? `BOOK TEAM OF ${i === 0 ? "3" : "5"}` : "BOOK TEAM OF 3"}
+                    {isLoading(pack.productId) ? (
+                      <><span style={{ display: "inline-block", width: 10, height: 10, border: `2px solid ${pack.color}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> ...</>
+                    ) : pack.btnLabel}
                   </button>
                 </div>
               </div>
@@ -997,16 +1034,21 @@ function Founding48Content() {
         )}
 
         <button
-          onClick={() => handleClaim("warvan")}
+          onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_VAN_EARLY" : "MAYDAY_WAR_VAN_LAST")}
+          disabled={isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")}
           style={{
             width: "100%", background: GOLD, color: "#000",
             border: "none", padding: "17px", fontSize: "0.58rem",
             letterSpacing: "0.22em", cursor: "pointer", borderRadius: 6,
             fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
             marginBottom: 12,
+            opacity: (isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? 0.7 : 1,
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
           }}
         >
-          CLAIM YOUR FOUNDING SEAT
+          {(isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? (
+            <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
+          ) : "CLAIM YOUR FOUNDING SEAT"}
         </button>
         <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginBottom: 32 }}>
           44 seats total · once they're gone, this moment is gone
