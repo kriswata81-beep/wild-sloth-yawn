@@ -384,6 +384,56 @@ function PaymentSuccessContent() {
           </p>
         </div>
 
+        {/* ── ACTION BUTTONS ───────────────────────────────────────────────── */}
+        <div style={{ display: "grid", gap: 12, marginBottom: 32 }}>
+          <a
+            href="https://t.me/+dsS4Mz0p5wM4OGYx"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              background: "rgba(88,166,255,0.08)",
+              border: "1px solid rgba(88,166,255,0.35)",
+              borderRadius: 8,
+              padding: "15px 20px",
+              textDecoration: "none",
+              color: "#58a6ff",
+              fontSize: "0.52rem",
+              letterSpacing: "0.18em",
+              fontFamily: "'JetBrains Mono', monospace",
+              fontWeight: 700,
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.04 9.613c-.15.678-.546.843-1.107.524l-3.07-2.263-1.48 1.424c-.164.164-.302.302-.618.302l.22-3.12 5.67-5.12c.247-.22-.054-.342-.383-.122L6.48 14.41l-3.02-.944c-.657-.205-.67-.657.137-.973l11.81-4.554c.547-.198 1.025.133.855.97l-.7-.661z"/>
+            </svg>
+            JOIN THE MAKOA 808 ON TELEGRAM
+          </a>
+
+          <a
+            href="/"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "transparent",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 8,
+              padding: "13px 20px",
+              textDecoration: "none",
+              color: "rgba(232,224,208,0.3)",
+              fontSize: "0.48rem",
+              letterSpacing: "0.15em",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          >
+            ← RETURN HOME
+          </a>
+        </div>
+
         {/* Footer */}
         <div
           style={{

@@ -52,14 +52,15 @@ function useCountdown() {
       seconds: Math.floor((diff % 60000) / 1000),
     };
   };
-  // Start with zeros to match SSR, then hydrate on client
   const [time, setTime] = useState(zero);
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
+    setMounted(true);
     setTime(calc());
     const id = setInterval(() => setTime(calc()), 1000);
     return () => clearInterval(id);
   }, []);
-  return time;
+  return mounted ? time : zero;
 }
 
 function DiceBearAvatar({ seed }: { seed: string }) {
@@ -131,6 +132,8 @@ function AcceptedContent() {
         @keyframes shimmer { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
         @keyframes pulse { 0%,100% { opacity:0.7; transform:scale(1); } 50% { opacity:1; transform:scale(1.02); } }
         @keyframes countFlip { 0% { transform:translateY(-4px); opacity:0; } 100% { transform:translateY(0); opacity:1; } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes teaseGlow { 0%,100% { box-shadow: 0 0 16px rgba(176,142,80,0.1); } 50% { box-shadow: 0 0 36px rgba(176,142,80,0.3); } }
       `}</style>
 
       {/* ── ACCEPTANCE BANNER ─────────────────────────────────────────────── */}
@@ -140,7 +143,6 @@ function AcceptedContent() {
         padding: "48px 24px 40px",
         textAlign: "center",
       }}>
-        {/* Gold shimmer line top */}
         <div style={{ height: 1, background: `linear-gradient(to right, transparent, ${GOLD_40}, transparent)`, marginBottom: 32 }} />
 
         <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", marginBottom: 20 }}>
@@ -161,7 +163,6 @@ function AcceptedContent() {
           into the order.
         </p>
 
-        {/* DiceBear Avatar */}
         <div style={{ animation: "fadeIn 1s ease 0.6s both", marginBottom: 16 }}>
           <DiceBearAvatar seed={handle} />
         </div>
@@ -228,7 +229,8 @@ function AcceptedContent() {
             borderLeft: `2px solid ${GOLD_40}`,
             paddingLeft: 16,
           }}>
-            The order asks one thing: $997 per year.<br />
+            The order asks one thing: $497 per year.<br />
+            This is the founding rate — locked for life.<br />
             This is your commitment to the brotherhood —<br />
             and the brotherhood's commitment to you.
           </p>
@@ -279,7 +281,6 @@ function AcceptedContent() {
           position: "relative",
           overflow: "hidden",
         }}>
-          {/* Shimmer overlay */}
           <div style={{
             position: "absolute", inset: 0,
             background: "linear-gradient(135deg, rgba(176,142,80,0.04) 0%, transparent 60%)",
@@ -287,23 +288,23 @@ function AcceptedContent() {
           }} />
 
           <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 16 }}>
-            ANNUAL DUES · MALU TRUST
+            ANNUAL DUES · MALU TRUST · FOUNDING RATE
           </p>
 
           {/* Price display */}
           <div style={{ textAlign: "center", marginBottom: 22 }}>
             <p style={{ color: GOLD, fontSize: "3rem", fontWeight: 700, lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>
-              $997
+              $497
             </p>
-            <p style={{ color: GOLD_DIM, fontSize: "0.44rem", marginTop: 6 }}>per year · Makoa Order membership</p>
+            <p style={{ color: GOLD_DIM, fontSize: "0.44rem", marginTop: 6 }}>per year · founding rate · locked for life</p>
           </div>
 
           {/* Payment breakdown */}
           <div style={{ display: "grid", gap: 8, marginBottom: 24 }}>
             {[
-              { label: "25% down today", value: "$249.25", highlight: true },
-              { label: "Then $74.78/mo for 10 months", value: "$747.80", highlight: false },
-              { label: "Or pay in full", value: "$997", highlight: false },
+              { label: "25% down today", value: "$124.25", highlight: true },
+              { label: "Then $31.06/mo for 12 months", value: "$372.75", highlight: false },
+              { label: "Or pay in full", value: "$497", highlight: false },
             ].map(row => (
               <div key={row.label} style={{
                 display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -324,7 +325,6 @@ function AcceptedContent() {
           </div>
 
           {/* CTA */}
-          <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
           <button
             onClick={handleDuesCheckout}
             disabled={loadingCheckout}
@@ -353,10 +353,10 @@ function AcceptedContent() {
                 <span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
                 SECURING...
               </>
-            ) : "I COMMIT TO THE ORDER — $249.25 TODAY"}
+            ) : "I COMMIT TO THE ORDER — $124.25 TODAY"}
           </button>
           <p style={{ textAlign: "center", color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", lineHeight: 1.6 }}>
-            Your dues start the moment you commit.<br />
+            Founding rate: $497/yr locked for life.<br />
             Your first quarterly 48 hotel gathering is covered.
           </p>
         </div>
@@ -460,6 +460,83 @@ function AcceptedContent() {
                 Your commitment unlocks access.
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* ── MAKAHIKI LAHAINA TEASE ────────────────────────────────────────── */}
+        <div style={{
+          marginBottom: 36,
+          border: `1px solid rgba(176,142,80,0.25)`,
+          borderRadius: 12,
+          background: "linear-gradient(135deg, #0c0e10 0%, #080a0c 100%)",
+          padding: "26px 22px",
+          position: "relative",
+          overflow: "hidden",
+          animation: "teaseGlow 5s ease-in-out infinite",
+        }}>
+          {/* Subtle radial glow */}
+          <div style={{
+            position: "absolute", inset: 0,
+            background: "radial-gradient(ellipse at 50% 100%, rgba(176,142,80,0.06) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }} />
+
+          {/* Coming Soon badge */}
+          <div style={{
+            position: "absolute", top: 14, right: 14,
+            background: "rgba(176,142,80,0.12)",
+            border: `1px solid ${GOLD_40}`,
+            color: GOLD_DIM,
+            fontSize: "0.36rem", letterSpacing: "0.18em",
+            padding: "3px 9px", borderRadius: 3,
+          }}>COMING 2026</div>
+
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.28em", marginBottom: 12 }}>
+            NEXT GATHERING · MAKAHIKI SEASON
+          </p>
+
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: GOLD,
+            fontSize: "1.7rem",
+            lineHeight: 1.2,
+            marginBottom: 10,
+          }}>
+            Makahiki Lahaina
+          </p>
+
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: "rgba(232,224,208,0.5)",
+            fontSize: "0.95rem",
+            lineHeight: 2.0,
+            marginBottom: 18,
+          }}>
+            The ancient Makahiki season returns.<br />
+            Brotherhood. Ceremony. The Valley of Lahaina.<br />
+            West Maui. The land that remembers.
+          </p>
+
+          <div style={{ height: 1, background: `linear-gradient(to right, transparent, ${GOLD_20}, transparent)`, marginBottom: 18 }} />
+
+          <p style={{
+            color: "rgba(232,224,208,0.3)",
+            fontSize: "0.46rem",
+            lineHeight: 1.8,
+            fontStyle: "italic",
+          }}>
+            Founding Brothers get first access.<br />
+            Details drop after MAYDAY.
+          </p>
+
+          {/* Lock icon */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 16 }}>
+            <span style={{ color: GOLD_DIM, fontSize: "0.8rem" }}>🔒</span>
+            <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.42rem", letterSpacing: "0.12em" }}>
+              FOUNDING BROTHERS ONLY · LOCKED UNTIL MAYDAY
+            </p>
           </div>
         </div>
 

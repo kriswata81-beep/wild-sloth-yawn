@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -7,10 +8,12 @@ const GOLD_20 = "rgba(176,142,80,0.2)";
 const GOLD_10 = "rgba(176,142,80,0.1)";
 
 export default function ConfirmPage() {
+  const router = useRouter();
   const [handle, setHandle] = useState("");
   const [xiMessage, setXiMessage] = useState("");
   const [xiTier, setXiTier] = useState("");
   const [revealed, setRevealed] = useState(false);
+  const [btnVisible, setBtnVisible] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -18,8 +21,13 @@ export default function ConfirmPage() {
       setXiMessage(sessionStorage.getItem("makoa_xi_message") || "");
       setXiTier(sessionStorage.getItem("makoa_xi_tier") || "");
     }
-    const t = setTimeout(() => setRevealed(true), 1200);
-    return () => clearTimeout(t);
+    const t1 = setTimeout(() => setRevealed(true), 1200);
+    // Button appears after 5 seconds
+    const t2 = setTimeout(() => setBtnVisible(true), 5000);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, []);
 
   const tierColors: Record<string, string> = {
@@ -46,6 +54,7 @@ export default function ConfirmPage() {
         @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes breathe { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
         @keyframes pulse808 { 0%,100% { opacity:0.3; transform:scale(1); } 50% { opacity:0.7; transform:scale(1.04); } }
+        @keyframes btnGlow { 0%,100% { box-shadow: 0 0 12px rgba(176,142,80,0.2); } 50% { box-shadow: 0 0 28px rgba(176,142,80,0.5); } }
       `}</style>
 
       {/* Crest */}
@@ -165,6 +174,57 @@ export default function ConfirmPage() {
       }}>
         Hana · Pale · Ola
       </p>
+
+      {/* ── CONTINUE BUTTON (fades in after 5s) ─────────────────────────── */}
+      <div style={{
+        maxWidth: 340,
+        width: "100%",
+        opacity: btnVisible ? 1 : 0,
+        transform: btnVisible ? "translateY(0)" : "translateY(12px)",
+        transition: "opacity 1s ease, transform 1s ease",
+        marginBottom: 16,
+      }}>
+        <button
+          onClick={() => router.push("/accepted")}
+          style={{
+            width: "100%",
+            background: GOLD,
+            color: "#000",
+            border: "none",
+            padding: "16px",
+            fontSize: "0.56rem",
+            letterSpacing: "0.22em",
+            cursor: "pointer",
+            borderRadius: 6,
+            fontFamily: "'JetBrains Mono', monospace",
+            fontWeight: 700,
+            animation: btnVisible ? "btnGlow 3s ease-in-out infinite" : "none",
+          }}
+        >
+          CONTINUE — SEE YOUR ACCEPTANCE →
+        </button>
+      </div>
+
+      {/* Return Home link */}
+      <div style={{
+        opacity: btnVisible ? 1 : 0,
+        transition: "opacity 1s ease 0.2s",
+        marginBottom: 24,
+      }}>
+        <a
+          href="/"
+          style={{
+            color: "rgba(232,224,208,0.25)",
+            fontSize: "0.44rem",
+            letterSpacing: "0.15em",
+            textDecoration: "none",
+            borderBottom: "1px solid rgba(232,224,208,0.1)",
+            paddingBottom: 2,
+          }}
+        >
+          ← Return Home
+        </a>
+      </div>
 
       <p style={{
         color: "rgba(232,224,208,0.2)",

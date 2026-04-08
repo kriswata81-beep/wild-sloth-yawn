@@ -17,17 +17,16 @@ const GREEN_10 = "rgba(63,185,80,0.1)";
 const RED = "#f85149";
 const BG = "#04060a";
 
-// ─── Seat state ───────────────────────────────────────────────────────────────
-const WAR_VAN_TOTAL = 8;
-const WAR_ROOM_TOTAL = 12;
-const MASTERMIND_TOTAL = 12;
+// ─── Seat counts ──────────────────────────────────────────────────────────────
+const VIP_TOTAL = 12;
+const WAR_ROOM_TOTAL = 24;
+const MASTERMIND_TOTAL = 24;
 const DAYPASS_TOTAL = 12;
-const WAR_VAN_FILLED = 0;
+const VIP_FILLED = 0;
 const WAR_ROOM_FILLED = 0;
 const MASTERMIND_FILLED = 0;
 const DAYPASS_FILLED = 0;
 
-// April 15 Hawaii time (HST = UTC-10)
 const EARLY_BIRD_CUTOFF = new Date("2026-04-15T23:59:59-10:00");
 const MAY_1 = new Date("2026-05-01T17:00:00-10:00");
 
@@ -43,14 +42,15 @@ function useCountdown(target: Date) {
       seconds: Math.floor((diff % 60000) / 1000),
     };
   };
-  // Start with zeros to match SSR, then hydrate on client
   const [time, setTime] = useState(zero);
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
+    setMounted(true);
     setTime(calc());
     const id = setInterval(() => setTime(calc()), 1000);
     return () => clearInterval(id);
   }, []);
-  return time;
+  return mounted ? time : zero;
 }
 
 function CountdownBlock({ target, label, color = GOLD }: { target: Date; label: string; color?: string }) {
@@ -91,7 +91,7 @@ function SeatBar({ filled, total, color }: { filled: number; total: number; colo
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
         <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem" }}>{filled} claimed</span>
-        <span style={{ color: remaining <= 3 ? RED : color, fontSize: "0.44rem", fontWeight: remaining <= 3 ? 700 : 400 }}>
+        <span style={{ color: remaining <= 4 ? RED : color, fontSize: "0.44rem", fontWeight: remaining <= 4 ? 700 : 400 }}>
           {remaining} of {total} remaining
         </span>
       </div>
@@ -218,10 +218,10 @@ const TIMELINE = [
 ];
 
 const TEAM_PACKS = [
-  { label: "War Van · Team of 3", perPerson: "$699/each", total: "$2,097", productId: "TEAM_WAR_VAN_3" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK TEAM OF 3" },
-  { label: "War Van · Team of 5", perPerson: "$649/each", total: "$3,245", productId: "TEAM_WAR_VAN_5" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK TEAM OF 5" },
-  { label: "War Room · Team of 3", perPerson: "$449/each", total: "$1,347", productId: "TEAM_WAR_ROOM_3" as ProductId, color: GOLD, border: GOLD_20, btnLabel: "BOOK TEAM OF 3" },
-  { label: "Mastermind · Team of 3", perPerson: "$265/each", total: "$797", productId: "TEAM_MASTERMIND_3" as ProductId, color: BLUE, border: BLUE_20, btnLabel: "BOOK TEAM OF 3" },
+  { label: "72HR VIP · Team of 3", perPerson: "$699/each", total: "$2,097", productId: "TEAM_WAR_VAN_3" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK TEAM OF 3" },
+  { label: "72HR VIP · Team of 5", perPerson: "$649/each", total: "$3,245", productId: "TEAM_WAR_VAN_5" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK TEAM OF 5" },
+  { label: "48HR War Room · Team of 3", perPerson: "$449/each", total: "$1,347", productId: "TEAM_WAR_ROOM_3" as ProductId, color: GOLD, border: GOLD_20, btnLabel: "BOOK TEAM OF 3" },
+  { label: "24HR Mastermind · Team of 3", perPerson: "$265/each", total: "$797", productId: "TEAM_MASTERMIND_3" as ProductId, color: BLUE, border: BLUE_20, btnLabel: "BOOK TEAM OF 3" },
 ];
 
 function Founding48Content() {
@@ -229,8 +229,8 @@ function Founding48Content() {
   const [handle, setHandle] = useState("Brother");
   const [showTimeline, setShowTimeline] = useState(false);
   const [loadingProduct, setLoadingProduct] = useState<ProductId | null>(null);
-
   const [isEarlyBird, setIsEarlyBird] = useState(false);
+
   useEffect(() => {
     setIsEarlyBird(Date.now() < EARLY_BIRD_CUTOFF.getTime());
   }, []);
@@ -275,6 +275,7 @@ function Founding48Content() {
         @keyframes breathe { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
         @keyframes goldGlow { 0%,100% { box-shadow: 0 0 12px rgba(176,142,80,0.15); } 50% { box-shadow: 0 0 28px rgba(176,142,80,0.35); } }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes crowdPulse { 0%,100% { opacity:0.8; } 50% { opacity:1; } }
       `}</style>
 
       {/* ── HERO HEADER ─────────────────────────────────────────────────────── */}
@@ -354,14 +355,14 @@ function Founding48Content() {
           marginTop: 20,
           animation: "fadeUp 0.9s ease 0.7s both",
         }}>
-          44 seats total. Once they're gone, this moment is gone.
+          72 seats total. Once they're gone, this moment is gone.
         </p>
       </div>
 
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "0 20px" }}>
 
-        {/* ── EARLY BIRD BANNER ─────────────────────────────────────────────── */}
-        {isEarlyBird && (
+        {/* ── EARLY BIRD / LAST CALL BANNER ─────────────────────────────────── */}
+        {isEarlyBird ? (
           <div style={{
             margin: "28px 0 0",
             background: "rgba(176,142,80,0.06)",
@@ -378,9 +379,7 @@ function Founding48Content() {
               <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem" }}>Lock in your seat before April 15. Prices rise April 16.</p>
             </div>
           </div>
-        )}
-
-        {!isEarlyBird && (
+        ) : (
           <div style={{
             margin: "28px 0 0",
             background: "rgba(248,81,73,0.08)",
@@ -398,6 +397,84 @@ function Founding48Content() {
             </div>
           </div>
         )}
+
+        {/* ── CROWDFUNDING MESSAGE ───────────────────────────────────────────── */}
+        <div style={{
+          margin: "28px 0 0",
+          background: "rgba(176,142,80,0.04)",
+          border: `1px solid ${GOLD_20}`,
+          borderRadius: 10,
+          padding: "22px 20px",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          <div style={{
+            position: "absolute", inset: 0,
+            background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.05) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }} />
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+            <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
+            <span style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.25em", whiteSpace: "nowrap" }}>WHY THIS MATTERS</span>
+            <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
+          </div>
+
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: "#e8e0d0",
+            fontSize: "1.1rem",
+            lineHeight: 2.0,
+            marginBottom: 16,
+          }}>
+            This is not a ticket sale.<br />
+            This is a crowdfund for the brotherhood.
+          </p>
+
+          <p style={{
+            color: "rgba(232,224,208,0.55)",
+            fontSize: "0.5rem",
+            lineHeight: 1.9,
+            marginBottom: 16,
+          }}>
+            Every seat purchased funds the Makoa House — the physical space where brothers gather, train, and build. The hotel. The van. The ice. The fire. None of it happens without the men who show up first.
+          </p>
+
+          <div style={{ display: "grid", gap: 8 }}>
+            {[
+              { icon: "🏠", text: "Funds the Makoa House operations" },
+              { icon: "🚐", text: "Covers the van, ice, and logistics" },
+              { icon: "🔥", text: "Makes the founding fire possible" },
+              { icon: "🤝", text: "Builds the brotherhood infrastructure" },
+            ].map(item => (
+              <div key={item.text} style={{
+                display: "flex", alignItems: "center", gap: 10,
+                padding: "8px 12px",
+                background: "rgba(0,0,0,0.2)",
+                border: "1px solid rgba(176,142,80,0.06)",
+                borderRadius: 6,
+              }}>
+                <span style={{ fontSize: "0.9rem", flexShrink: 0 }}>{item.icon}</span>
+                <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item.text}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ height: 1, background: GOLD_20, margin: "18px 0" }} />
+
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: GOLD_DIM,
+            fontSize: "0.95rem",
+            lineHeight: 1.9,
+            textAlign: "center",
+          }}>
+            You are not buying a seat.<br />
+            You are building something that lasts.
+          </p>
+        </div>
 
         {/* ── WHAT HAPPENS IN 48 HOURS ──────────────────────────────────────── */}
         <div style={{ padding: "36px 0 28px" }}>
@@ -445,6 +522,117 @@ function Founding48Content() {
           </div>
         </div>
 
+        {/* ── 3-YEAR VISION ─────────────────────────────────────────────────── */}
+        <div style={{
+          marginBottom: 36,
+          background: "linear-gradient(135deg, #0a0d12 0%, #060810 100%)",
+          border: `1px solid ${GOLD_20}`,
+          borderRadius: 12,
+          padding: "28px 22px",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          <div style={{
+            position: "absolute", inset: 0,
+            background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.05) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }} />
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+            <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
+            <span style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.25em", whiteSpace: "nowrap" }}>THE 3-YEAR VISION</span>
+            <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
+          </div>
+
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: GOLD,
+            fontSize: "1.3rem",
+            lineHeight: 1.4,
+            marginBottom: 20,
+          }}>
+            What we are building<br />by 2028.
+          </p>
+
+          <div style={{ display: "grid", gap: 16 }}>
+            {[
+              {
+                year: "YEAR 1 · 2026",
+                color: GREEN,
+                title: "The Founding Fire",
+                items: [
+                  "24 founding brothers sworn in at MAYDAY",
+                  "Makoa House opens in West Oahu",
+                  "52 Wednesday 4am trainings begin",
+                  "Makahiki Lahaina — first island gathering",
+                ],
+              },
+              {
+                year: "YEAR 2 · 2027",
+                color: BLUE,
+                title: "The Network Expands",
+                items: [
+                  "3 Makoa Houses across Hawaii",
+                  "Neighbor island chapters: Maui, Big Island",
+                  "200+ active brothers in the 808",
+                  "First mainland chapter — West Coast",
+                ],
+              },
+              {
+                year: "YEAR 3 · 2028",
+                color: GOLD,
+                title: "The Order Stands",
+                items: [
+                  "10 Makoa Houses across the Pacific",
+                  "Annual Makahiki gathering — 500 brothers",
+                  "Trade academy fully operational",
+                  "The brotherhood that outlasts us all",
+                ],
+              },
+            ].map((phase, i) => (
+              <div key={i} style={{
+                padding: "16px 18px",
+                background: "rgba(0,0,0,0.3)",
+                border: `1px solid ${phase.color}20`,
+                borderLeft: `3px solid ${phase.color}`,
+                borderRadius: "0 8px 8px 0",
+              }}>
+                <p style={{ color: phase.color, fontSize: "0.38rem", letterSpacing: "0.2em", marginBottom: 6 }}>{phase.year}</p>
+                <p style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontStyle: "italic",
+                  color: "#e8e0d0",
+                  fontSize: "1.05rem",
+                  marginBottom: 10,
+                }}>{phase.title}</p>
+                <div style={{ display: "grid", gap: 5 }}>
+                  {phase.items.map(item => (
+                    <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                      <span style={{ color: phase.color, fontSize: "0.44rem", flexShrink: 0, marginTop: 1 }}>→</span>
+                      <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.46rem", lineHeight: 1.5 }}>{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ height: 1, background: GOLD_20, margin: "20px 0" }} />
+
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: "rgba(232,224,208,0.5)",
+            fontSize: "0.95rem",
+            lineHeight: 2.0,
+            textAlign: "center",
+          }}>
+            The founding 72 become the first house leaders.<br />
+            This is how it starts.
+          </p>
+        </div>
+
         {/* ── SECTION DIVIDER ───────────────────────────────────────────────── */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
@@ -453,98 +641,176 @@ function Founding48Content() {
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════
-            TIER 1 — WAR VAN VIP
+            TIER 1 — 12HR DAY PASS (GREEN)
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
-          border: `2px solid ${GOLD}`,
-          borderRadius: 14,
-          background: "linear-gradient(135deg, #0f1018 0%, #080a0f 100%)",
-          padding: "28px 22px",
+          border: `1px solid ${GREEN_20}`,
+          borderRadius: 12,
+          background: "linear-gradient(135deg, #0a0d0a 0%, #080a08 100%)",
+          padding: "26px 22px",
           marginBottom: 20,
           position: "relative",
           overflow: "hidden",
-          animation: "goldGlow 4s ease-in-out infinite",
         }}>
           <div style={{
             position: "absolute", inset: 0,
-            background: "linear-gradient(135deg, rgba(176,142,80,0.08) 0%, transparent 60%)",
+            background: "linear-gradient(135deg, rgba(63,185,80,0.04) 0%, transparent 60%)",
             pointerEvents: "none",
           }} />
 
-          <div style={{
-            position: "absolute", top: 14, right: 14,
-            background: GOLD, color: "#000",
-            fontSize: "0.38rem", letterSpacing: "0.12em",
-            padding: "4px 10px", borderRadius: 3, fontWeight: 700,
-          }}>👑 VIP · 8 SEATS</div>
+          <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(63,185,80,0.12)", border: `1px solid ${GREEN_20}`, color: GREEN, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
+            ⚡ 12HR · {DAYPASS_TOTAL} SEATS
+          </div>
 
           <div style={{ marginBottom: 8 }}>
-            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>WAR VAN VIP</p>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.5rem", lineHeight: 1.2 }}>
-              The Full Experience
+            <p style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>12HR DAY PASS</p>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.4rem", lineHeight: 1.2 }}>
+              Warrior Level
             </p>
           </div>
 
-          <SeatBadge remaining={WAR_VAN_TOTAL - WAR_VAN_FILLED} total={WAR_VAN_TOTAL} />
+          <SeatBadge remaining={DAYPASS_TOTAL - DAYPASS_FILLED} total={DAYPASS_TOTAL} />
 
           <div style={{ marginBottom: 20 }}>
             {[
-              "Airport pickup from HNL — Makoa van",
-              "Hotel room included · 2 nights shared",
-              "All War Room + Mastermind sessions",
-              "4am ice bath both mornings",
-              "Founding fire + oath",
-              "Founding gear pack",
-              "Private XI briefing",
-              "Founding Brother status — permanent",
+              "Saturday OR Sunday — your choice",
+              "Seminar block 9am–2pm",
+              "4am ice bath (both mornings)",
+              "Founding fire — Sunday only",
+              "No hotel room",
             ].map(item => (
               <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
-                <span style={{ color: GOLD, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item}</p>
+                <span style={{ color: GREEN, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
+                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item}</p>
               </div>
             ))}
           </div>
 
           <PricingBlock
             isEarlyBird={isEarlyBird}
-            earlyPrice="$799"
-            lastCallPrice="$999"
+            earlyPrice="$149"
+            lastCallPrice="$199"
             earlyLabel="EARLY BIRD · THRU APR 15"
             lastCallLabel="LAST CALL · APR 16–25"
-            downToday="$199.75"
-            paymentNote="Balance: 3 payments of $199.75"
-            color={GOLD}
-            bg={GOLD_10}
-            border={GOLD_40}
+            downToday="$149"
+            paymentNote="Pay in full today"
+            color={GREEN}
+            bg={GREEN_10}
+            border={GREEN_20}
           />
 
-          <SeatBar filled={WAR_VAN_FILLED} total={WAR_VAN_TOTAL} color={GOLD} />
+          <SeatBar filled={DAYPASS_FILLED} total={DAYPASS_TOTAL} color={GREEN} />
 
           <button
-            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_VAN_EARLY" : "MAYDAY_WAR_VAN_LAST")}
-            disabled={isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")}
+            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_DAY_PASS_EARLY" : "MAYDAY_DAY_PASS_LAST")}
+            disabled={isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")}
             style={{
-              width: "100%", background: GOLD, color: "#000",
-              border: "none", padding: "16px", fontSize: "0.54rem",
+              width: "100%", background: "transparent", color: GREEN,
+              border: `1px solid ${GREEN}`, padding: "15px", fontSize: "0.54rem",
               letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
               fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 16, opacity: (isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? 0.7 : 1,
+              marginTop: 16, opacity: (isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")) ? 0.7 : 1,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
             }}
           >
-            {(isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? (
-              <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-            ) : "CLAIM YOUR VAN SEAT"}
+            {(isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")) ? (
+              <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${GREEN}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
+            ) : "GRAB A DAY PASS"}
           </button>
           {isEarlyBird && (
-            <p style={{ textAlign: "center", color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", marginTop: 8 }}>
-              $199.75 today · 3 payments of $199.75
+            <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
+              $149 today · pay in full
             </p>
           )}
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════
-            TIER 2 — WAR ROOM
+            TIER 2 — 24HR MASTERMIND (BLUE, 24 SEATS)
+        ══════════════════════════════════════════════════════════════════════ */}
+        <div style={{
+          border: `1px solid ${BLUE_20}`,
+          borderRadius: 12,
+          background: "linear-gradient(135deg, #0a0d14 0%, #080a0f 100%)",
+          padding: "26px 22px",
+          marginBottom: 20,
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          <div style={{
+            position: "absolute", inset: 0,
+            background: "linear-gradient(135deg, rgba(88,166,255,0.04) 0%, transparent 60%)",
+            pointerEvents: "none",
+          }} />
+
+          <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(88,166,255,0.12)", border: `1px solid ${BLUE_20}`, color: BLUE, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
+            🌀 24HR · 24 SEATS
+          </div>
+
+          <div style={{ marginBottom: 8 }}>
+            <p style={{ color: BLUE, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>24HR MASTERMIND</p>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.4rem", lineHeight: 1.2 }}>
+              Skills Level
+            </p>
+          </div>
+
+          <SeatBadge remaining={MASTERMIND_TOTAL - MASTERMIND_FILLED} total={MASTERMIND_TOTAL} />
+
+          <div style={{ marginBottom: 20 }}>
+            {[
+              "Book your own hotel",
+              "All Mastermind sessions",
+              "4am ice bath both mornings",
+              "Founding fire + oath",
+              "Founding gear pack",
+              "Founding Brother status — permanent",
+            ].map(item => (
+              <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
+                <span style={{ color: BLUE, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
+                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item}</p>
+              </div>
+            ))}
+          </div>
+
+          <PricingBlock
+            isEarlyBird={isEarlyBird}
+            earlyPrice="$299"
+            lastCallPrice="$399"
+            earlyLabel="EARLY BIRD · THRU APR 15"
+            lastCallLabel="LAST CALL · APR 16–25"
+            downToday="$299"
+            paymentNote="Pay in full today"
+            color={BLUE}
+            bg={BLUE_10}
+            border={BLUE_20}
+          />
+
+          <SeatBar filled={MASTERMIND_FILLED} total={MASTERMIND_TOTAL} color={BLUE} />
+
+          <button
+            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_MASTERMIND_EARLY" : "MAYDAY_MASTERMIND_LAST")}
+            disabled={isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")}
+            style={{
+              width: "100%", background: "transparent", color: BLUE,
+              border: `1px solid ${BLUE}`, padding: "15px", fontSize: "0.54rem",
+              letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
+              fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
+              marginTop: 16, opacity: (isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")) ? 0.7 : 1,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            }}
+          >
+            {(isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")) ? (
+              <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${BLUE}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
+            ) : "CLAIM YOUR MASTERMIND SEAT"}
+          </button>
+          {isEarlyBird && (
+            <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
+              $299 today · pay in full
+            </p>
+          )}
+        </div>
+
+        {/* ══════════════════════════════════════════════════════════════════════
+            TIER 3 — 48HR WAR ROOM (GOLD, 24 SEATS)
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           border: `1px solid ${GOLD_40}`,
@@ -562,11 +828,11 @@ function Founding48Content() {
           }} />
 
           <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(176,142,80,0.15)", border: `1px solid ${GOLD_40}`, color: GOLD, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
-            👑 12 SEATS
+            ⚔️ 48HR · 24 SEATS
           </div>
 
           <div style={{ marginBottom: 8 }}>
-            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>WAR ROOM</p>
+            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>48HR WAR ROOM</p>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.4rem", lineHeight: 1.2 }}>
               Council Level
             </p>
@@ -630,188 +896,92 @@ function Founding48Content() {
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════
-            TIER 3 — MASTERMIND
+            TIER 4 — 72HR WAR VAN VIP (GOLD, 12 SEATS)
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
-          border: `1px solid ${BLUE_20}`,
-          borderRadius: 12,
-          background: "linear-gradient(135deg, #0a0d14 0%, #080a0f 100%)",
-          padding: "26px 22px",
+          border: `2px solid ${GOLD}`,
+          borderRadius: 14,
+          background: "linear-gradient(135deg, #0f1018 0%, #080a0f 100%)",
+          padding: "28px 22px",
           marginBottom: 20,
           position: "relative",
           overflow: "hidden",
+          animation: "goldGlow 4s ease-in-out infinite",
         }}>
           <div style={{
             position: "absolute", inset: 0,
-            background: "linear-gradient(135deg, rgba(88,166,255,0.04) 0%, transparent 60%)",
+            background: "linear-gradient(135deg, rgba(176,142,80,0.08) 0%, transparent 60%)",
             pointerEvents: "none",
           }} />
 
-          <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(88,166,255,0.12)", border: `1px solid ${BLUE_20}`, color: BLUE, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
-            🌀 12 SEATS
-          </div>
+          <div style={{
+            position: "absolute", top: 14, right: 14,
+            background: GOLD, color: "#000",
+            fontSize: "0.38rem", letterSpacing: "0.12em",
+            padding: "4px 10px", borderRadius: 3, fontWeight: 700,
+          }}>👑 72HR VIP · 12 SEATS</div>
 
           <div style={{ marginBottom: 8 }}>
-            <p style={{ color: BLUE, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>MASTERMIND</p>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.4rem", lineHeight: 1.2 }}>
-              Skills Level
+            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>72HR WAR VAN VIP</p>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.5rem", lineHeight: 1.2 }}>
+              The Full Experience
             </p>
           </div>
 
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 7,
-            background: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.3)",
-            borderRadius: 4, padding: "5px 11px", marginBottom: 16,
-          }}>
-            <PulsingDot />
-            <span style={{ color: RED, fontSize: "0.42rem", letterSpacing: "0.15em" }}>
-              {MASTERMIND_TOTAL - MASTERMIND_FILLED} OF {MASTERMIND_TOTAL} SEATS REMAINING
-            </span>
-          </div>
+          <SeatBadge remaining={VIP_TOTAL - VIP_FILLED} total={VIP_TOTAL} />
 
           <div style={{ marginBottom: 20 }}>
             {[
-              "Book your own hotel",
-              "All Mastermind sessions",
+              "Airport pickup from HNL — Makoa van",
+              "Hotel room included · 2 nights shared",
+              "All War Room + Mastermind sessions",
               "4am ice bath both mornings",
               "Founding fire + oath",
               "Founding gear pack",
+              "Private XI briefing",
               "Founding Brother status — permanent",
             ].map(item => (
               <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
-                <span style={{ color: BLUE, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item}</p>
+                <span style={{ color: GOLD, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
+                <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item}</p>
               </div>
             ))}
           </div>
 
           <PricingBlock
             isEarlyBird={isEarlyBird}
-            earlyPrice="$299"
-            lastCallPrice="$399"
+            earlyPrice="$799"
+            lastCallPrice="$999"
             earlyLabel="EARLY BIRD · THRU APR 15"
             lastCallLabel="LAST CALL · APR 16–25"
-            downToday="$299"
-            paymentNote="Pay in full today"
-            color={BLUE}
-            bg={BLUE_10}
-            border={BLUE_20}
+            downToday="$199.75"
+            paymentNote="Balance: 3 payments of $199.75"
+            color={GOLD}
+            bg={GOLD_10}
+            border={GOLD_40}
           />
 
-          <SeatBar filled={MASTERMIND_FILLED} total={MASTERMIND_TOTAL} color={BLUE} />
+          <SeatBar filled={VIP_FILLED} total={VIP_TOTAL} color={GOLD} />
 
           <button
-            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_MASTERMIND_EARLY" : "MAYDAY_MASTERMIND_LAST")}
-            disabled={isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")}
+            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_VAN_EARLY" : "MAYDAY_WAR_VAN_LAST")}
+            disabled={isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")}
             style={{
-              width: "100%", background: "transparent", color: BLUE,
-              border: `1px solid ${BLUE}`, padding: "15px", fontSize: "0.54rem",
+              width: "100%", background: GOLD, color: "#000",
+              border: "none", padding: "16px", fontSize: "0.54rem",
               letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
               fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 16, opacity: (isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")) ? 0.7 : 1,
+              marginTop: 16, opacity: (isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? 0.7 : 1,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
             }}
           >
-            {(isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")) ? (
-              <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${BLUE}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-            ) : "CLAIM YOUR MASTERMIND SEAT"}
+            {(isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? (
+              <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
+            ) : "CLAIM YOUR VAN SEAT"}
           </button>
           {isEarlyBird && (
-            <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
-              $299 today · pay in full
-            </p>
-          )}
-        </div>
-
-        {/* ══════════════════════════════════════════════════════════════════════
-            TIER 4 — DAY PASS
-        ══════════════════════════════════════════════════════════════════════ */}
-        <div style={{
-          border: `1px solid ${GREEN_20}`,
-          borderRadius: 12,
-          background: "linear-gradient(135deg, #0a0d0a 0%, #080a08 100%)",
-          padding: "26px 22px",
-          marginBottom: 32,
-          position: "relative",
-          overflow: "hidden",
-        }}>
-          <div style={{
-            position: "absolute", inset: 0,
-            background: "linear-gradient(135deg, rgba(63,185,80,0.04) 0%, transparent 60%)",
-            pointerEvents: "none",
-          }} />
-
-          <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(63,185,80,0.12)", border: `1px solid ${GREEN_20}`, color: GREEN, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
-            ⚔️ 6/DAY
-          </div>
-
-          <div style={{ marginBottom: 8 }}>
-            <p style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>DAY PASS</p>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.4rem", lineHeight: 1.2 }}>
-              Warrior Level
-            </p>
-          </div>
-
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 7,
-            background: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.3)",
-            borderRadius: 4, padding: "5px 11px", marginBottom: 16,
-          }}>
-            <PulsingDot />
-            <span style={{ color: RED, fontSize: "0.42rem", letterSpacing: "0.15em" }}>
-              {DAYPASS_TOTAL - DAYPASS_FILLED} OF {DAYPASS_TOTAL} PASSES REMAINING (6/DAY)
-            </span>
-          </div>
-
-          <div style={{ marginBottom: 20 }}>
-            {[
-              "Saturday OR Sunday — your choice",
-              "Seminar block 9am–2pm",
-              "4am ice bath (both mornings)",
-              "Founding fire — Sunday only",
-              "No hotel room",
-            ].map(item => (
-              <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
-                <span style={{ color: GREEN, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item}</p>
-              </div>
-            ))}
-          </div>
-
-          <PricingBlock
-            isEarlyBird={isEarlyBird}
-            earlyPrice="$149"
-            lastCallPrice="$199"
-            earlyLabel="EARLY BIRD · THRU APR 15"
-            lastCallLabel="LAST CALL · APR 16–25"
-            downToday="$149"
-            paymentNote="Pay in full today"
-            color={GREEN}
-            bg={GREEN_10}
-            border={GREEN_20}
-          />
-
-          <SeatBar filled={DAYPASS_FILLED} total={DAYPASS_TOTAL} color={GREEN} />
-
-          <button
-            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_DAY_PASS_EARLY" : "MAYDAY_DAY_PASS_LAST")}
-            disabled={isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")}
-            style={{
-              width: "100%", background: "transparent", color: GREEN,
-              border: `1px solid ${GREEN}`, padding: "15px", fontSize: "0.54rem",
-              letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
-              fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 16, opacity: (isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")) ? 0.7 : 1,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            }}
-          >
-            {(isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")) ? (
-              <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${GREEN}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-            ) : "GRAB A DAY PASS"}
-          </button>
-          {isEarlyBird && (
-            <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
-              $149 today · pay in full
+            <p style={{ textAlign: "center", color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", marginTop: 8 }}>
+              $199.75 today · 3 payments of $199.75
             </p>
           )}
         </div>
@@ -1018,7 +1188,7 @@ function Founding48Content() {
             You leave MAYDAY as a founding ambassador.<br /><br />
             Go home. Open a Makoa house in your city.<br />
             Lead the first 4am. Build the order where you are.<br /><br />
-            The founding 24 become the first house leaders on earth.
+            The founding 72 become the first house leaders on earth.
           </p>
         </div>
 
@@ -1057,7 +1227,7 @@ function Founding48Content() {
           ) : "CLAIM YOUR FOUNDING SEAT"}
         </button>
         <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginBottom: 32 }}>
-          44 seats total · once they're gone, this moment is gone
+          72 seats total · once they're gone, this moment is gone
         </p>
 
         {/* ── TELEGRAM STRIP ───────────────────────────────────────────────── */}
