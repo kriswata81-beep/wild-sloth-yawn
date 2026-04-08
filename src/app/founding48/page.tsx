@@ -18,11 +18,11 @@ const RED = "#f85149";
 const BG = "#04060a";
 
 // ─── Seat counts ──────────────────────────────────────────────────────────────
-const VIP_TOTAL = 12;
-const WAR_ROOM_TOTAL = 24;
-const MASTERMIND_TOTAL = 24;
-const DAYPASS_TOTAL = 12;
-const VIP_FILLED = 0;
+const WAR_PARTY_TOTAL = 5;   // 5 war parties of 2–4 makoa each
+const WAR_ROOM_TOTAL = 24;   // 48HR Aliʻi War Room
+const MASTERMIND_TOTAL = 24; // 24HR Mana Mastermind
+const DAYPASS_TOTAL = 12;    // 12HR Nā Koa Day Pass
+const WAR_PARTY_FILLED = 0;
 const WAR_ROOM_FILLED = 0;
 const MASTERMIND_FILLED = 0;
 const DAYPASS_FILLED = 0;
@@ -91,7 +91,7 @@ function SeatBar({ filled, total, color }: { filled: number; total: number; colo
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
         <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem" }}>{filled} claimed</span>
-        <span style={{ color: remaining <= 4 ? RED : color, fontSize: "0.44rem", fontWeight: remaining <= 4 ? 700 : 400 }}>
+        <span style={{ color: remaining <= 3 ? RED : color, fontSize: "0.44rem", fontWeight: remaining <= 3 ? 700 : 400 }}>
           {remaining} of {total} remaining
         </span>
       </div>
@@ -108,7 +108,7 @@ function PulsingDot({ color = RED }: { color?: string }) {
   );
 }
 
-function SeatBadge({ remaining, total, color = RED }: { remaining: number; total: number; color?: string }) {
+function SeatBadge({ remaining, total, label = "SEATS", color = RED }: { remaining: number; total: number; label?: string; color?: string }) {
   return (
     <div style={{
       display: "inline-flex", alignItems: "center", gap: 7,
@@ -117,7 +117,7 @@ function SeatBadge({ remaining, total, color = RED }: { remaining: number; total
     }}>
       <PulsingDot />
       <span style={{ color: RED, fontSize: "0.42rem", letterSpacing: "0.15em" }}>
-        {remaining} OF {total} SEATS REMAINING
+        {remaining} OF {total} {label} REMAINING
       </span>
     </div>
   );
@@ -218,10 +218,11 @@ const TIMELINE = [
 ];
 
 const TEAM_PACKS = [
-  { label: "72HR VIP · Team of 3", perPerson: "$699/each", total: "$2,097", productId: "TEAM_WAR_VAN_3" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK TEAM OF 3" },
-  { label: "72HR VIP · Team of 5", perPerson: "$649/each", total: "$3,245", productId: "TEAM_WAR_VAN_5" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK TEAM OF 5" },
-  { label: "48HR War Room · Team of 3", perPerson: "$449/each", total: "$1,347", productId: "TEAM_WAR_ROOM_3" as ProductId, color: GOLD, border: GOLD_20, btnLabel: "BOOK TEAM OF 3" },
-  { label: "24HR Mastermind · Team of 3", perPerson: "$265/each", total: "$797", productId: "TEAM_MASTERMIND_3" as ProductId, color: BLUE, border: BLUE_20, btnLabel: "BOOK TEAM OF 3" },
+  { label: "War Party VIP · Party of 2", perPerson: "$749/each", total: "$1,498", productId: "TEAM_WAR_PARTY_2" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK PARTY OF 2" },
+  { label: "War Party VIP · Party of 3", perPerson: "$699/each", total: "$2,097", productId: "TEAM_WAR_PARTY_3" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK PARTY OF 3" },
+  { label: "War Party VIP · Party of 4", perPerson: "$649/each", total: "$2,596", productId: "TEAM_WAR_PARTY_4" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK PARTY OF 4" },
+  { label: "48HR Aliʻi War Room · Team of 3", perPerson: "$449/each", total: "$1,347", productId: "TEAM_WAR_ROOM_3" as ProductId, color: GOLD, border: GOLD_20, btnLabel: "BOOK TEAM OF 3" },
+  { label: "24HR Mana Mastermind · Team of 3", perPerson: "$265/each", total: "$797", productId: "TEAM_MASTERMIND_3" as ProductId, color: BLUE, border: BLUE_20, btnLabel: "BOOK TEAM OF 3" },
 ];
 
 function Founding48Content() {
@@ -273,9 +274,8 @@ function Founding48Content() {
         @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
         @keyframes urgencyPulse { 0%,100% { opacity:0.6; transform:scale(1); } 50% { opacity:1; transform:scale(1.4); } }
         @keyframes breathe { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
-        @keyframes goldGlow { 0%,100% { box-shadow: 0 0 12px rgba(176,142,80,0.15); } 50% { box-shadow: 0 0 28px rgba(176,142,80,0.35); } }
+        @keyframes goldGlow { 0%,100% { box-shadow: 0 0 16px rgba(176,142,80,0.2); } 50% { box-shadow: 0 0 40px rgba(176,142,80,0.5); } }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes crowdPulse { 0%,100% { opacity:0.8; } 50% { opacity:1; } }
       `}</style>
 
       {/* ── HERO HEADER ─────────────────────────────────────────────────────── */}
@@ -292,13 +292,10 @@ function Founding48Content() {
           background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
-
         <div style={{ height: 1, background: `linear-gradient(to right, transparent, ${GOLD_40}, transparent)`, marginBottom: 32 }} />
-
         <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", marginBottom: 16 }}>
           MĀKOA ORDER · FOUNDING EVENT
         </p>
-
         <h1 style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: "italic",
@@ -310,7 +307,6 @@ function Founding48Content() {
         }}>
           MAYDAY<br />Founding 48
         </h1>
-
         <p style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: "italic",
@@ -321,7 +317,6 @@ function Founding48Content() {
         }}>
           May 1–3 · Kapolei · West Oahu
         </p>
-
         <p style={{
           color: "rgba(232,224,208,0.35)",
           fontSize: "0.5rem",
@@ -331,7 +326,6 @@ function Founding48Content() {
         }}>
           The only event where brothers are sworn in at the founding fire.
         </p>
-
         <div style={{ maxWidth: 400, margin: "0 auto", animation: "fadeUp 0.9s ease 0.6s both" }}>
           <div style={{ marginBottom: 20 }}>
             <CountdownBlock target={MAY_1} label="FOUNDING FIRE IN" color={GOLD} />
@@ -347,7 +341,6 @@ function Founding48Content() {
             </div>
           )}
         </div>
-
         <p style={{
           color: "rgba(232,224,208,0.3)",
           fontSize: "0.48rem",
@@ -355,7 +348,7 @@ function Founding48Content() {
           marginTop: 20,
           animation: "fadeUp 0.9s ease 0.7s both",
         }}>
-          72 seats total. Once they're gone, this moment is gone.
+          5 War Parties + 60 brothers. Once they're gone, this moment is gone.
         </p>
       </div>
 
@@ -369,9 +362,7 @@ function Founding48Content() {
             border: `1px solid ${GOLD_40}`,
             borderRadius: 8,
             padding: "14px 18px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
+            display: "flex", alignItems: "center", gap: 12,
           }}>
             <PulsingDot color={GOLD} />
             <div>
@@ -386,9 +377,7 @@ function Founding48Content() {
             border: "1px solid rgba(248,81,73,0.3)",
             borderRadius: 8,
             padding: "14px 18px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
+            display: "flex", alignItems: "center", gap: 12,
           }}>
             <PulsingDot color={RED} />
             <div>
@@ -413,13 +402,11 @@ function Founding48Content() {
             background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.05) 0%, transparent 70%)",
             pointerEvents: "none",
           }} />
-
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
             <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
             <span style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.25em", whiteSpace: "nowrap" }}>WHY THIS MATTERS</span>
             <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
           </div>
-
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
@@ -431,16 +418,9 @@ function Founding48Content() {
             This is not a ticket sale.<br />
             This is a crowdfund for the brotherhood.
           </p>
-
-          <p style={{
-            color: "rgba(232,224,208,0.55)",
-            fontSize: "0.5rem",
-            lineHeight: 1.9,
-            marginBottom: 16,
-          }}>
+          <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.5rem", lineHeight: 1.9, marginBottom: 16 }}>
             Every seat purchased funds the Makoa House — the physical space where brothers gather, train, and build. The hotel. The van. The ice. The fire. None of it happens without the men who show up first.
           </p>
-
           <div style={{ display: "grid", gap: 8 }}>
             {[
               { icon: "🏠", text: "Funds the Makoa House operations" },
@@ -460,9 +440,7 @@ function Founding48Content() {
               </div>
             ))}
           </div>
-
           <div style={{ height: 1, background: GOLD_20, margin: "18px 0" }} />
-
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
@@ -481,23 +459,18 @@ function Founding48Content() {
           <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.25em", marginBottom: 24 }}>
             WHAT HAPPENS IN 48 HOURS
           </p>
-
           <div style={{ position: "relative" }}>
             <div style={{
               position: "absolute", left: 52, top: 0, bottom: 0,
               width: 1, background: `linear-gradient(to bottom, ${GOLD_20}, transparent)`,
             }} />
-
             {TIMELINE.map((item, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex", gap: 16, marginBottom: 20,
-                  opacity: showTimeline ? 1 : 0,
-                  transform: showTimeline ? "translateY(0)" : "translateY(12px)",
-                  transition: `opacity 0.5s ease ${i * 0.05}s, transform 0.5s ease ${i * 0.05}s`,
-                }}
-              >
+              <div key={i} style={{
+                display: "flex", gap: 16, marginBottom: 20,
+                opacity: showTimeline ? 1 : 0,
+                transform: showTimeline ? "translateY(0)" : "translateY(12px)",
+                transition: `opacity 0.5s ease ${i * 0.05}s, transform 0.5s ease ${i * 0.05}s`,
+              }}>
                 <div style={{ width: 90, flexShrink: 0, textAlign: "right", paddingRight: 16 }}>
                   <p style={{ color: GOLD_DIM, fontSize: "0.4rem", lineHeight: 1.5 }}>{item.time}</p>
                 </div>
@@ -537,13 +510,11 @@ function Founding48Content() {
             background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.05) 0%, transparent 70%)",
             pointerEvents: "none",
           }} />
-
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
             <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
             <span style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.25em", whiteSpace: "nowrap" }}>THE 3-YEAR VISION</span>
             <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
           </div>
-
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
@@ -554,7 +525,6 @@ function Founding48Content() {
           }}>
             What we are building<br />by 2028.
           </p>
-
           <div style={{ display: "grid", gap: 16 }}>
             {[
               {
@@ -562,7 +532,7 @@ function Founding48Content() {
                 color: GREEN,
                 title: "The Founding Fire",
                 items: [
-                  "24 founding brothers sworn in at MAYDAY",
+                  "Founding brothers sworn in at MAYDAY",
                   "Makoa House opens in West Oahu",
                   "52 Wednesday 4am trainings begin",
                   "Makahiki Lahaina — first island gathering",
@@ -617,9 +587,7 @@ function Founding48Content() {
               </div>
             ))}
           </div>
-
           <div style={{ height: 1, background: GOLD_20, margin: "20px 0" }} />
-
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
@@ -628,7 +596,7 @@ function Founding48Content() {
             lineHeight: 2.0,
             textAlign: "center",
           }}>
-            The founding 72 become the first house leaders.<br />
+            The founding brothers become the first house leaders.<br />
             This is how it starts.
           </p>
         </div>
@@ -640,8 +608,35 @@ function Founding48Content() {
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
+        {/* ── TIER LEGEND ───────────────────────────────────────────────────── */}
+        <div style={{
+          display: "grid", gridTemplateColumns: "1fr 1fr",
+          gap: 8, marginBottom: 28,
+        }}>
+          {[
+            { color: GREEN, label: "NĀ KOA", sub: "12HR Day Pass" },
+            { color: BLUE, label: "MANA", sub: "24HR Mastermind" },
+            { color: GOLD, label: "ALIʻI", sub: "48HR War Room" },
+            { color: GOLD, label: "WAR PARTY", sub: "72HR VIP" },
+          ].map(t => (
+            <div key={t.label} style={{
+              display: "flex", alignItems: "center", gap: 8,
+              padding: "8px 12px",
+              background: "rgba(0,0,0,0.3)",
+              border: `1px solid ${t.color}20`,
+              borderLeft: `3px solid ${t.color}`,
+              borderRadius: "0 6px 6px 0",
+            }}>
+              <div>
+                <p style={{ color: t.color, fontSize: "0.38rem", letterSpacing: "0.15em", marginBottom: 2 }}>{t.label}</p>
+                <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.38rem" }}>{t.sub}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
         {/* ══════════════════════════════════════════════════════════════════════
-            TIER 1 — 12HR DAY PASS (GREEN)
+            TIER 1 — 12HR NĀ KOA DAY PASS (GREEN)
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           border: `1px solid ${GREEN_20}`,
@@ -657,20 +652,16 @@ function Founding48Content() {
             background: "linear-gradient(135deg, rgba(63,185,80,0.04) 0%, transparent 60%)",
             pointerEvents: "none",
           }} />
-
           <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(63,185,80,0.12)", border: `1px solid ${GREEN_20}`, color: GREEN, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
             ⚡ 12HR · {DAYPASS_TOTAL} SEATS
           </div>
-
           <div style={{ marginBottom: 8 }}>
-            <p style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>12HR DAY PASS</p>
+            <p style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>NĀ KOA · 12HR DAY PASS</p>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.4rem", lineHeight: 1.2 }}>
               Warrior Level
             </p>
           </div>
-
           <SeatBadge remaining={DAYPASS_TOTAL - DAYPASS_FILLED} total={DAYPASS_TOTAL} />
-
           <div style={{ marginBottom: 20 }}>
             {[
               "Saturday OR Sunday — your choice",
@@ -685,7 +676,6 @@ function Founding48Content() {
               </div>
             ))}
           </div>
-
           <PricingBlock
             isEarlyBird={isEarlyBird}
             earlyPrice="$149"
@@ -698,9 +688,7 @@ function Founding48Content() {
             bg={GREEN_10}
             border={GREEN_20}
           />
-
           <SeatBar filled={DAYPASS_FILLED} total={DAYPASS_TOTAL} color={GREEN} />
-
           <button
             onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_DAY_PASS_EARLY" : "MAYDAY_DAY_PASS_LAST")}
             disabled={isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")}
@@ -715,7 +703,7 @@ function Founding48Content() {
           >
             {(isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")) ? (
               <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${GREEN}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-            ) : "GRAB A DAY PASS"}
+            ) : "GRAB A NĀ KOA DAY PASS"}
           </button>
           {isEarlyBird && (
             <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
@@ -725,7 +713,7 @@ function Founding48Content() {
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════
-            TIER 2 — 24HR MASTERMIND (BLUE, 24 SEATS)
+            TIER 2 — 24HR MANA MASTERMIND (BLUE, 24 SEATS)
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           border: `1px solid ${BLUE_20}`,
@@ -741,20 +729,16 @@ function Founding48Content() {
             background: "linear-gradient(135deg, rgba(88,166,255,0.04) 0%, transparent 60%)",
             pointerEvents: "none",
           }} />
-
           <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(88,166,255,0.12)", border: `1px solid ${BLUE_20}`, color: BLUE, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
             🌀 24HR · 24 SEATS
           </div>
-
           <div style={{ marginBottom: 8 }}>
-            <p style={{ color: BLUE, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>24HR MASTERMIND</p>
+            <p style={{ color: BLUE, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>MANA · 24HR MASTERMIND</p>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.4rem", lineHeight: 1.2 }}>
               Skills Level
             </p>
           </div>
-
           <SeatBadge remaining={MASTERMIND_TOTAL - MASTERMIND_FILLED} total={MASTERMIND_TOTAL} />
-
           <div style={{ marginBottom: 20 }}>
             {[
               "Book your own hotel",
@@ -770,7 +754,6 @@ function Founding48Content() {
               </div>
             ))}
           </div>
-
           <PricingBlock
             isEarlyBird={isEarlyBird}
             earlyPrice="$299"
@@ -783,9 +766,7 @@ function Founding48Content() {
             bg={BLUE_10}
             border={BLUE_20}
           />
-
           <SeatBar filled={MASTERMIND_FILLED} total={MASTERMIND_TOTAL} color={BLUE} />
-
           <button
             onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_MASTERMIND_EARLY" : "MAYDAY_MASTERMIND_LAST")}
             disabled={isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")}
@@ -800,7 +781,7 @@ function Founding48Content() {
           >
             {(isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")) ? (
               <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${BLUE}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-            ) : "CLAIM YOUR MASTERMIND SEAT"}
+            ) : "CLAIM YOUR MANA SEAT"}
           </button>
           {isEarlyBird && (
             <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
@@ -810,7 +791,7 @@ function Founding48Content() {
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════
-            TIER 3 — 48HR WAR ROOM (GOLD, 24 SEATS)
+            TIER 3 — 48HR ALIʻI WAR ROOM (GOLD, 24 SEATS)
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           border: `1px solid ${GOLD_40}`,
@@ -826,20 +807,16 @@ function Founding48Content() {
             background: "linear-gradient(135deg, rgba(176,142,80,0.05) 0%, transparent 60%)",
             pointerEvents: "none",
           }} />
-
           <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(176,142,80,0.15)", border: `1px solid ${GOLD_40}`, color: GOLD, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
             ⚔️ 48HR · 24 SEATS
           </div>
-
           <div style={{ marginBottom: 8 }}>
-            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>48HR WAR ROOM</p>
+            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>ALIʻI · 48HR WAR ROOM</p>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.4rem", lineHeight: 1.2 }}>
               Council Level
             </p>
           </div>
-
           <SeatBadge remaining={WAR_ROOM_TOTAL - WAR_ROOM_FILLED} total={WAR_ROOM_TOTAL} />
-
           <div style={{ marginBottom: 20 }}>
             {[
               "Drive yourself to the hotel",
@@ -856,7 +833,6 @@ function Founding48Content() {
               </div>
             ))}
           </div>
-
           <PricingBlock
             isEarlyBird={isEarlyBird}
             earlyPrice="$499"
@@ -869,9 +845,7 @@ function Founding48Content() {
             bg={GOLD_10}
             border={GOLD_40}
           />
-
           <SeatBar filled={WAR_ROOM_FILLED} total={WAR_ROOM_TOTAL} color={GOLD} />
-
           <button
             onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_ROOM_EARLY" : "MAYDAY_WAR_ROOM_LAST")}
             disabled={isLoading("MAYDAY_WAR_ROOM_EARLY") || isLoading("MAYDAY_WAR_ROOM_LAST")}
@@ -886,7 +860,7 @@ function Founding48Content() {
           >
             {(isLoading("MAYDAY_WAR_ROOM_EARLY") || isLoading("MAYDAY_WAR_ROOM_LAST")) ? (
               <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-            ) : "CLAIM YOUR WAR ROOM SEAT"}
+            ) : "CLAIM YOUR ALIʻI SEAT"}
           </button>
           {isEarlyBird && (
             <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
@@ -896,7 +870,7 @@ function Founding48Content() {
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════
-            TIER 4 — 72HR WAR VAN VIP (GOLD, 12 SEATS)
+            TIER 4 — 72HR WAR PARTY VIP (GOLD GLOWING, 5 WAR PARTIES)
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           border: `2px solid ${GOLD}`,
@@ -913,33 +887,56 @@ function Founding48Content() {
             background: "linear-gradient(135deg, rgba(176,142,80,0.08) 0%, transparent 60%)",
             pointerEvents: "none",
           }} />
-
           <div style={{
             position: "absolute", top: 14, right: 14,
             background: GOLD, color: "#000",
             fontSize: "0.38rem", letterSpacing: "0.12em",
             padding: "4px 10px", borderRadius: 3, fontWeight: 700,
-          }}>👑 72HR VIP · 12 SEATS</div>
+          }}>👑 72HR VIP · 5 WAR PARTIES</div>
 
           <div style={{ marginBottom: 8 }}>
-            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>72HR WAR VAN VIP</p>
+            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>WAR PARTY · 72HR VIP</p>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.5rem", lineHeight: 1.2 }}>
               The Full Experience
             </p>
           </div>
 
-          <SeatBadge remaining={VIP_TOTAL - VIP_FILLED} total={VIP_TOTAL} />
+          {/* War Party badge — parties not seats */}
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: 7,
+            background: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.3)",
+            borderRadius: 4, padding: "5px 11px", marginBottom: 16,
+          }}>
+            <PulsingDot />
+            <span style={{ color: RED, fontSize: "0.42rem", letterSpacing: "0.15em" }}>
+              {WAR_PARTY_TOTAL - WAR_PARTY_FILLED} OF {WAR_PARTY_TOTAL} WAR PARTIES REMAINING
+            </span>
+          </div>
+
+          {/* What is a War Party */}
+          <div style={{
+            background: "rgba(176,142,80,0.06)",
+            border: `1px solid ${GOLD_20}`,
+            borderRadius: 8,
+            padding: "14px 16px",
+            marginBottom: 18,
+          }}>
+            <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.18em", marginBottom: 8 }}>WHAT IS A WAR PARTY?</p>
+            <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.48rem", lineHeight: 1.8 }}>
+              A War Party is 2–4 Makoa brothers who travel together. One booking covers your entire party. You arrive together, you train together, you leave together. The van picks you all up from HNL.
+            </p>
+          </div>
 
           <div style={{ marginBottom: 20 }}>
             {[
-              "Airport pickup from HNL — Makoa van",
+              "Airport pickup + dropoff from HNL — Makoa van",
               "Hotel room included · 2 nights shared",
               "All War Room + Mastermind sessions",
               "4am ice bath both mornings",
               "Founding fire + oath",
-              "Founding gear pack",
-              "Private XI briefing",
-              "Founding Brother status — permanent",
+              "Founding gear pack for each brother",
+              "Private XI briefing for the party",
+              "Founding Brother status — permanent for all",
             ].map(item => (
               <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
                 <span style={{ color: GOLD, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
@@ -952,16 +949,16 @@ function Founding48Content() {
             isEarlyBird={isEarlyBird}
             earlyPrice="$799"
             lastCallPrice="$999"
-            earlyLabel="EARLY BIRD · THRU APR 15"
-            lastCallLabel="LAST CALL · APR 16–25"
+            earlyLabel="EARLY BIRD · PER BROTHER"
+            lastCallLabel="LAST CALL · PER BROTHER"
             downToday="$199.75"
-            paymentNote="Balance: 3 payments of $199.75"
+            paymentNote="Balance: 3 payments of $199.75 per brother"
             color={GOLD}
             bg={GOLD_10}
             border={GOLD_40}
           />
 
-          <SeatBar filled={VIP_FILLED} total={VIP_TOTAL} color={GOLD} />
+          <SeatBar filled={WAR_PARTY_FILLED} total={WAR_PARTY_TOTAL} color={GOLD} />
 
           <button
             onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_VAN_EARLY" : "MAYDAY_WAR_VAN_LAST")}
@@ -977,17 +974,17 @@ function Founding48Content() {
           >
             {(isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? (
               <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-            ) : "CLAIM YOUR VAN SEAT"}
+            ) : "CLAIM YOUR WAR PARTY"}
           </button>
           {isEarlyBird && (
             <p style={{ textAlign: "center", color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", marginTop: 8 }}>
-              $199.75 today · 3 payments of $199.75
+              $199.75/brother today · book your party below
             </p>
           )}
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════
-            TEAM PACKS
+            WAR PARTY TEAM PACKS
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           background: "#080b10",
@@ -996,15 +993,18 @@ function Founding48Content() {
           padding: "26px 22px",
           marginBottom: 32,
         }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.25em", marginBottom: 6 }}>BRING YOUR TEAM</p>
+          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.25em", marginBottom: 6 }}>BOOK YOUR WAR PARTY</p>
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
             color: "rgba(232,224,208,0.6)",
             fontSize: "1.05rem",
-            marginBottom: 22,
+            marginBottom: 6,
           }}>
-            Save when you come together.
+            Come as a party. Save as a party.
+          </p>
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", lineHeight: 1.6, marginBottom: 22 }}>
+            Select your party size below. One booking covers all brothers. The van picks you all up from HNL.
           </p>
 
           <div style={{ display: "grid", gap: 10 }}>
@@ -1091,7 +1091,6 @@ function Founding48Content() {
             background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.06) 0%, transparent 70%)",
             pointerEvents: "none",
           }} />
-
           <div style={{
             width: 48, height: 48, borderRadius: "50%",
             border: `1px solid ${GOLD_20}`,
@@ -1100,11 +1099,9 @@ function Founding48Content() {
           }}>
             <span style={{ color: GOLD_DIM, fontSize: "1.2rem", animation: "breathe 3s ease-in-out infinite" }}>◈</span>
           </div>
-
           <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.25em", marginBottom: 16 }}>
             FOUNDING BROTHER STATUS
           </p>
-
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
@@ -1115,13 +1112,8 @@ function Founding48Content() {
           }}>
             Every man at the fire becomes<br />a Founding Brother.
           </p>
-
           <div style={{ display: "grid", gap: 6, marginBottom: 20 }}>
-            {[
-              "Permanent.",
-              "Stone engraved.",
-              "This happens once.",
-            ].map(line => (
+            {["Permanent.", "Stone engraved.", "This happens once."].map(line => (
               <p key={line} style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontStyle: "italic",
@@ -1131,9 +1123,7 @@ function Founding48Content() {
               }}>{line}</p>
             ))}
           </div>
-
           <div style={{ height: 1, background: GOLD_20, margin: "20px 0" }} />
-
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
@@ -1188,7 +1178,7 @@ function Founding48Content() {
             You leave MAYDAY as a founding ambassador.<br /><br />
             Go home. Open a Makoa house in your city.<br />
             Lead the first 4am. Build the order where you are.<br /><br />
-            The founding 72 become the first house leaders on earth.
+            The founding brothers become the first house leaders on earth.
           </p>
         </div>
 
@@ -1196,7 +1186,6 @@ function Founding48Content() {
         <div style={{ marginBottom: 24 }}>
           <CountdownBlock target={MAY_1} label="FOUNDING FIRE IN" color={GOLD} />
         </div>
-
         {isEarlyBird && (
           <div style={{
             background: "rgba(248,81,73,0.06)",
@@ -1208,7 +1197,6 @@ function Founding48Content() {
             <CountdownBlock target={EARLY_BIRD_CUTOFF} label="⚡ EARLY BIRD CLOSES IN" color={RED} />
           </div>
         )}
-
         <button
           onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_VAN_EARLY" : "MAYDAY_WAR_VAN_LAST")}
           disabled={isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")}
@@ -1227,7 +1215,7 @@ function Founding48Content() {
           ) : "CLAIM YOUR FOUNDING SEAT"}
         </button>
         <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginBottom: 32 }}>
-          72 seats total · once they're gone, this moment is gone
+          5 war parties · 60 brothers · once they're gone, this moment is gone
         </p>
 
         {/* ── TELEGRAM STRIP ───────────────────────────────────────────────── */}
