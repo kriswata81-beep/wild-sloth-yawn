@@ -42,6 +42,24 @@ const PRODUCT_TO_TIER: Record<string, string> = {
   DUES_DOWN: "member",
 };
 
+// Product display names for email
+const PRODUCT_DISPLAY: Record<string, string> = {
+  DUES_DOWN: "Annual Dues — 25% Down",
+  MAYDAY_DAY_PASS_EARLY: "12HR Nā Koa Day Pass — Early Bird",
+  MAYDAY_DAY_PASS_LAST: "12HR Nā Koa Day Pass — Last Call",
+  MAYDAY_MASTERMIND_EARLY: "24HR Mana Mastermind — Early Bird",
+  MAYDAY_MASTERMIND_LAST: "24HR Mana Mastermind — Last Call",
+  MAYDAY_WAR_ROOM_EARLY: "48HR Aliʻi War Room — Early Bird",
+  MAYDAY_WAR_ROOM_LAST: "48HR Aliʻi War Room — Last Call",
+  MAYDAY_WAR_VAN_EARLY: "72HR War Party VIP — Early Bird",
+  MAYDAY_WAR_VAN_LAST: "72HR War Party VIP — Last Call",
+  TEAM_WAR_PARTY_2: "Aliʻi War Party — Fly-In Party of 2",
+  TEAM_WAR_PARTY_3: "Aliʻi War Party — Fly-In Party of 3",
+  TEAM_WAR_PARTY_4: "Aliʻi War Party — Fly-In Party of 4",
+  TEAM_WAR_ROOM_3: "Aliʻi War Party — Drive-Up Team of 3",
+  TEAM_MASTERMIND_3: "Mana War Party — Drive-Up Team of 3",
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -82,10 +100,12 @@ serve(async (req) => {
     const session = event.data.object as Stripe.Checkout.Session;
     const productId = session.metadata?.product_id || "";
     const handle = session.metadata?.handle || "";
+    const daySelection = session.metadata?.day_selection || "";
     const amountPaid = session.amount_total || 0;
     const sessionId = session.id;
+    const customerEmail = session.customer_details?.email || "";
 
-    console.log("[stripe-webhook] Payment confirmed:", { productId, handle, amountPaid, sessionId });
+    console.log("[stripe-webhook] Payment confirmed:", { productId, handle, amountPaid, sessionId, customerEmail });
 
     // 1. Write to payments table
     const { error: paymentError } = await supabase.from("payments").insert({
@@ -99,7 +119,7 @@ serve(async (req) => {
       paid_at: new Date().toISOString(),
       stripe_session_id: sessionId,
       external_payment_method: "stripe",
-      notes_internal: `Product: ${productId} | Handle: ${handle}`,
+      notes_internal: `Product: ${productId}${daySelection ? ` | Day: ${daySelection}` : ""} | Handle: ${handle}`,
     });
 
     if (paymentError) {
@@ -108,7 +128,7 @@ serve(async (req) => {
       console.log("[stripe-webhook] Payment recorded in Supabase");
     }
 
-    // 2. Update gate_submission dues_paid / event_ticket if handle matches
+    // 2. Update gate_submission + portal tier
     if (handle) {
       if (productId === "DUES_DOWN") {
         const { error: duesError } = await supabase
@@ -125,8 +145,28 @@ serve(async (req) => {
         } else {
           console.log("[stripe-webhook] gate_submission dues_paid = true for:", handle);
         }
+
+        // Update memberships table tier to "member" after dues paid
+        const { error: memberError } = await supabase
+          .from("memberships")
+          .upsert({
+            handle,
+            tier: "member",
+            dues_paid: true,
+            dues_paid_at: new Date().toISOString(),
+            founding_rate: 497,
+            updated_at: new Date().toISOString(),
+          }, { onConflict: "handle" });
+
+        if (memberError) {
+          console.error("[stripe-webhook] Failed to update memberships tier:", memberError);
+        } else {
+          console.log("[stripe-webhook] memberships tier updated to member for:", handle);
+        }
       } else {
-        // Event ticket
+        // Event ticket — update gate_submission and portal tier
+        const tier = PRODUCT_TO_TIER[productId] || "nakoa";
+
         const { error: ticketError } = await supabase
           .from("gate_submissions")
           .update({
@@ -140,13 +180,29 @@ serve(async (req) => {
         } else {
           console.log("[stripe-webhook] gate_submission event_ticket set:", productId, "for:", handle);
         }
+
+        // Update memberships table with event tier
+        const { error: tierError } = await supabase
+          .from("memberships")
+          .upsert({
+            handle,
+            tier,
+            event_ticket: productId,
+            event_day: daySelection || null,
+            updated_at: new Date().toISOString(),
+          }, { onConflict: "handle" });
+
+        if (tierError) {
+          console.error("[stripe-webhook] Failed to update memberships event tier:", tierError);
+        } else {
+          console.log("[stripe-webhook] memberships tier updated to", tier, "for:", handle);
+        }
       }
     }
 
     // 3. Increment seat counter in events table
     const eventName = PRODUCT_TO_EVENT[productId];
     if (eventName) {
-      // Get current seats_filled
       const { data: eventData, error: fetchError } = await supabase
         .from("events")
         .select("id, seats_filled, capacity")
@@ -166,7 +222,6 @@ serve(async (req) => {
           console.error("[stripe-webhook] Failed to increment seat counter:", seatError);
         } else {
           console.log("[stripe-webhook] Seat counter updated:", eventName, newFilled, "/", eventData.capacity);
-          // Log if sold out
           if (newFilled >= eventData.capacity) {
             console.log("[stripe-webhook] ⚠️ EVENT SOLD OUT:", eventName);
           }
@@ -174,13 +229,49 @@ serve(async (req) => {
       }
     }
 
-    // 4. Log to admin_activity_log
+    // 4. Send email confirmation via send-confirmation edge function
+    if (customerEmail) {
+      try {
+        const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+        const emailRes = await fetch(
+          `${supabaseUrl}/functions/v1/send-confirmation`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`,
+            },
+            body: JSON.stringify({
+              to_email: customerEmail,
+              handle: handle || "Brother",
+              product_name: PRODUCT_DISPLAY[productId] || productId,
+              product_id: productId,
+              amount: `$${(amountPaid / 100).toFixed(2)}`,
+              day_selection: daySelection || undefined,
+              session_id: sessionId,
+            }),
+          }
+        );
+        const emailData = await emailRes.json();
+        if (!emailRes.ok) {
+          console.error("[stripe-webhook] Email send failed:", emailData);
+        } else {
+          console.log("[stripe-webhook] Confirmation email sent:", emailData.email_id);
+        }
+      } catch (emailErr) {
+        console.error("[stripe-webhook] Email send error:", emailErr);
+      }
+    } else {
+      console.warn("[stripe-webhook] No customer email — skipping confirmation email");
+    }
+
+    // 5. Log to admin_activity_log
     await supabase.from("admin_activity_log").insert({
       action_type: "payment_confirmed",
       application_id: handle || "unknown",
       target_table: "payments",
-      action_summary: `Payment confirmed: ${productId} · $${(amountPaid / 100).toFixed(2)} · ${handle}`,
-      details: { product_id: productId, session_id: sessionId, amount: amountPaid },
+      action_summary: `Payment confirmed: ${productId} · $${(amountPaid / 100).toFixed(2)} · ${handle}${daySelection ? ` · ${daySelection}` : ""}`,
+      details: { product_id: productId, session_id: sessionId, amount: amountPaid, day_selection: daySelection },
       performed_by: "stripe-webhook",
     });
 

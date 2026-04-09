@@ -121,6 +121,7 @@ export default function Home() {
           to { opacity: 1; }
         }
         input::placeholder { color: rgba(176,142,80,0.3); }
+        .home-nav-link:hover { color: rgba(176,142,80,0.7) !important; }
       `}</style>
 
       <div
@@ -225,12 +226,24 @@ export default function Home() {
         </button>
       </div>
 
-      <p style={{
+      {/* Bottom nav */}
+      <div style={{
         position: "absolute", bottom: "20px",
-        color: "rgba(176,142,80,0.15)", fontSize: "0.42rem", letterSpacing: "0.15em",
+        display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
+        opacity: ready ? 1 : 0,
+        transition: "opacity 0.8s ease 0.9s",
       }}>
-        Malu Trust · West Oahu · 2026
-      </p>
+        <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+          <a href="/founding48" className="home-nav-link" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>MAYDAY</a>
+          <span style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.38rem" }}>·</span>
+          <a href="/mana-makoa" className="home-nav-link" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>MANA MAKOA</a>
+          <span style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.38rem" }}>·</span>
+          <a href="/portal" className="home-nav-link" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>PORTAL</a>
+        </div>
+        <p style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.36rem", letterSpacing: "0.15em", margin: 0 }}>
+          Malu Trust · West Oahu · 2026
+        </p>
+      </div>
     </div>
   );
 }

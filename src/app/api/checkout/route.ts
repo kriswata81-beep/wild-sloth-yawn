@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { PRODUCTS, ProductId } from "@/lib/stripe";
+import { PRODUCTS, ProductId, isDayPass } from "@/lib/stripe";
 import { createClient } from "@supabase/supabase-js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -55,10 +55,22 @@ async function checkSeatAvailability(productId: string): Promise<{ available: bo
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { product_id, handle } = body as { product_id: string; handle?: string };
+    const { product_id, handle, day_selection } = body as {
+      product_id: string;
+      handle?: string;
+      day_selection?: "saturday" | "sunday";
+    };
 
     if (!product_id || !(product_id in PRODUCTS)) {
       return NextResponse.json({ error: "Invalid product_id" }, { status: 400 });
+    }
+
+    // Day pass requires a day selection
+    if (isDayPass(product_id) && !day_selection) {
+      return NextResponse.json(
+        { error: "day_required", message: "Please choose Saturday or Sunday for your Day Pass." },
+        { status: 400 }
+      );
     }
 
     const product = PRODUCTS[product_id as ProductId];
@@ -73,6 +85,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const dayLabel = day_selection ? ` · ${day_selection === "saturday" ? "Saturday May 2" : "Sunday May 3"}` : "";
+    const productDescription = product.description + dayLabel;
+
     // ── CREATE STRIPE SESSION ─────────────────────────────────────────────
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -81,8 +96,8 @@ export async function POST(req: NextRequest) {
           price_data: {
             currency: "usd",
             product_data: {
-              name: product.name,
-              description: product.description,
+              name: product.name + (day_selection ? ` — ${day_selection === "saturday" ? "Saturday" : "Sunday"}` : ""),
+              description: productDescription,
             },
             unit_amount: product.amount,
           },
@@ -90,11 +105,12 @@ export async function POST(req: NextRequest) {
         },
       ],
       mode: "payment",
-      success_url: `${BASE_URL}/payment-success?product_id=${product_id}&handle=${encodeURIComponent(handle || "Brother")}&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${BASE_URL}/payment-success?product_id=${product_id}&handle=${encodeURIComponent(handle || "Brother")}&day=${day_selection || ""}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${BASE_URL}/founding48${handle ? `?h=${encodeURIComponent(handle)}` : ""}`,
       metadata: {
         product_id,
         handle: handle || "",
+        day_selection: day_selection || "",
       },
     });
 
@@ -110,7 +126,7 @@ export async function POST(req: NextRequest) {
       payment_status: "pending",
       stripe_session_id: session.id,
       external_payment_method: "stripe",
-      notes_internal: `Checkout initiated: ${product_id} | Handle: ${handle} | Remaining seats: ${remaining}`,
+      notes_internal: `Checkout initiated: ${product_id}${day_selection ? ` | Day: ${day_selection}` : ""} | Handle: ${handle} | Remaining seats: ${remaining}`,
     });
 
     if (insertError) {
