@@ -185,27 +185,64 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
   const [view, setView] = useState<"home" | "schedule" | "signal" | "72" | "intel">("home");
   const [selectedDay, setSelectedDay] = useState<number>(new Date().getDay());
   const [memberCount, setMemberCount] = useState({ active: 0, pending: 0, total: 0 });
-  const [tick, setTick] = useState(0);
+  const [realSignal, setRealSignal] = useState<{ handle: string; tier: string; status: "active" | "quiet" | "silent"; lastSeen: string; zip: string }[]>([]);
+  const [signalLoading, setSignalLoading] = useState(true);
   const clockRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
-    clockRef.current = setInterval(() => {
-      setNow(new Date());
-      setTick(t => t + 1);
-    }, 1000);
+    clockRef.current = setInterval(() => setNow(new Date()), 1000);
     return () => { if (clockRef.current) clearInterval(clockRef.current); };
   }, []);
 
+  // Pull real member counts from gate_submissions
   useEffect(() => {
-    supabase.from("applicants").select("membership_status").then(({ data }) => {
+    supabase.from("gate_submissions").select("status, tier_flag").then(({ data }) => {
       if (!data) return;
       setMemberCount({
-        active: data.filter(a => a.membership_status === "active" || a.membership_status === "invited").length,
-        pending: data.filter(a => a.membership_status === "pending").length,
+        active: data.filter(a => a.status === "committed" || a.status === "active").length,
+        pending: data.filter(a => !a.status || a.status === "pending" || a.status === "reviewing").length,
         total: data.length,
       });
     });
+  }, []);
+
+  // Pull real 808 signal from gate_submissions
+  useEffect(() => {
+    setSignalLoading(true);
+    supabase
+      .from("gate_submissions")
+      .select("handle, tier_flag, zip, created_at, status")
+      .order("created_at", { ascending: false })
+      .limit(20)
+      .then(({ data }) => {
+        setSignalLoading(false);
+        if (!data || data.length === 0) {
+          setRealSignal([]);
+          return;
+        }
+        const now = Date.now();
+        const mapped = data.map(row => {
+          const created = new Date(row.created_at || "").getTime();
+          const daysSince = (now - created) / (1000 * 60 * 60 * 24);
+          let status: "active" | "quiet" | "silent" = "active";
+          if (daysSince > 10) status = "silent";
+          else if (daysSince > 3) status = "quiet";
+          const lastSeen = daysSince < 1
+            ? "Today"
+            : daysSince < 2
+            ? "Yesterday"
+            : `${Math.floor(daysSince)} days ago`;
+          return {
+            handle: row.handle || "Brother",
+            tier: row.tier_flag || "nakoa",
+            status,
+            lastSeen,
+            zip: row.zip || "96707",
+          };
+        });
+        setRealSignal(mapped);
+      });
   }, []);
 
   const todaySchedule = DAILY_SCHEDULE[now.getDay()];
@@ -213,9 +250,9 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
   const hour = now.getHours();
   const isCommandHour = hour === 4 || hour === 5;
 
-  const activeSignal = MOCK_SIGNAL.filter(m => m.status === "active").length;
-  const quietSignal = MOCK_SIGNAL.filter(m => m.status === "quiet").length;
-  const silentSignal = MOCK_SIGNAL.filter(m => m.status === "silent").length;
+  const activeSignal = realSignal.filter(m => m.status === "active").length;
+  const quietSignal = realSignal.filter(m => m.status === "quiet").length;
+  const silentSignal = realSignal.filter(m => m.status === "silent").length;
 
   const timeStr = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
   const dateStr = now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
@@ -231,10 +268,6 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
       <style>{`
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        @keyframes scanline {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100vh); }
-        }
         @keyframes goldGlow {
           0%, 100% { box-shadow: 0 0 0px 0px rgba(176,142,80,0); }
           50% { box-shadow: 0 0 20px 4px rgba(176,142,80,0.12); }
@@ -245,7 +278,6 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
         }
       `}</style>
 
-      {/* Scanline overlay */}
       <div style={{
         position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
         background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px)",
@@ -274,16 +306,11 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
       </div>
 
       {/* Live status bar */}
-      <div style={{
-        display: "flex",
-        gap: "0",
-        borderBottom: `1px solid ${GOLD_20}`,
-        background: "rgba(0,0,0,0.5)",
-      }}>
+      <div style={{ display: "flex", gap: "0", borderBottom: `1px solid ${GOLD_20}`, background: "rgba(0,0,0,0.5)" }}>
         {[
-          { label: "ACTIVE", value: memberCount.active, color: GREEN },
+          { label: "COMMITTED", value: memberCount.active, color: GREEN },
           { label: "PENDING", value: memberCount.pending, color: GOLD },
-          { label: "SIGNAL", value: `${activeSignal}/${MOCK_SIGNAL.length}`, color: isCommandHour ? GREEN : GOLD_DIM },
+          { label: "TOTAL PLEDGES", value: memberCount.total, color: BLUE },
           { label: todaySchedule.label.toUpperCase(), value: todaySchedule.lead, color: todaySchedule.color },
         ].map((s, i) => (
           <div key={s.label} style={{
@@ -337,8 +364,6 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
         {/* ── HOME ── */}
         {view === "home" && (
           <div style={{ animation: "fadeUp 0.4s ease forwards" }}>
-
-            {/* Monday 808 Check alert */}
             {isMonday && (
               <div style={{
                 background: "rgba(176,142,80,0.08)",
@@ -359,7 +384,6 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
               </div>
             )}
 
-            {/* Today's command */}
             <div style={{
               background: todaySchedule.type === "xi" ? "rgba(63,185,80,0.06)" : GOLD_FAINT,
               border: `1px solid ${todaySchedule.color}30`,
@@ -396,12 +420,11 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
               </div>
             </div>
 
-            {/* Quick stats */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", marginBottom: "20px" }}>
               {[
-                { label: "Active Members", value: memberCount.active, color: GREEN },
-                { label: "Pending Pledges", value: memberCount.pending, color: GOLD },
-                { label: "Total Roster", value: memberCount.total, color: BLUE },
+                { label: "Committed", value: memberCount.active, color: GREEN },
+                { label: "Pending", value: memberCount.pending, color: GOLD },
+                { label: "Total Pledges", value: memberCount.total, color: BLUE },
               ].map(s => (
                 <div key={s.label} style={{
                   background: "rgba(0,0,0,0.4)",
@@ -416,13 +439,7 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
               ))}
             </div>
 
-            {/* Week at a glance */}
-            <div style={{
-              background: "rgba(0,0,0,0.3)",
-              border: `1px solid ${GOLD_20}`,
-              borderRadius: "10px",
-              padding: "16px 18px",
-            }}>
+            <div style={{ background: "rgba(0,0,0,0.3)", border: `1px solid ${GOLD_20}`, borderRadius: "10px", padding: "16px 18px" }}>
               <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.2em", marginBottom: "12px" }}>WEEK AT A GLANCE</p>
               <div style={{ display: "grid", gap: "6px" }}>
                 {[1, 2, 3, 4, 5].map(day => {
@@ -467,8 +484,6 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
             <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "16px" }}>
               4AM DAILY SCHEDULE — CHIEF MAKOA + XI TEAM
             </p>
-
-            {/* Day selector */}
             <div style={{ display: "flex", gap: "6px", marginBottom: "20px", overflowX: "auto" }}>
               {[1, 2, 3, 4, 5].map(day => {
                 const d = DAILY_SCHEDULE[day];
@@ -482,15 +497,9 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                       background: isSelected ? `${d.color}15` : "transparent",
                       border: `1px solid ${isSelected ? d.color : d.color + "30"}`,
                       color: isSelected ? d.color : "rgba(232,224,208,0.35)",
-                      fontSize: "0.42rem",
-                      padding: "8px 12px",
-                      cursor: "pointer",
-                      borderRadius: "6px",
-                      fontFamily: "'JetBrains Mono', monospace",
-                      letterSpacing: "0.1em",
-                      whiteSpace: "nowrap",
-                      flexShrink: 0,
-                      transition: "all 0.2s",
+                      fontSize: "0.42rem", padding: "8px 12px", cursor: "pointer",
+                      borderRadius: "6px", fontFamily: "'JetBrains Mono', monospace",
+                      letterSpacing: "0.1em", whiteSpace: "nowrap", flexShrink: 0, transition: "all 0.2s",
                     }}
                   >
                     {d.label.slice(0, 3).toUpperCase()}
@@ -499,17 +508,12 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                 );
               })}
             </div>
-
-            {/* Selected day detail */}
             {(() => {
               const d = DAILY_SCHEDULE[selectedDay];
               return (
                 <div style={{
                   background: d.type === "xi" ? "rgba(63,185,80,0.06)" : GOLD_FAINT,
-                  border: `1px solid ${d.color}30`,
-                  borderRadius: "12px",
-                  padding: "20px",
-                  marginBottom: "20px",
+                  border: `1px solid ${d.color}30`, borderRadius: "12px", padding: "20px", marginBottom: "20px",
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
                     <div>
@@ -518,22 +522,14 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                         {d.type === "xi" ? "XI TEAM LEADS · ELITE TRAINING + RESET" : "CHIEF MAKOA · COMMAND SESSION"}
                       </p>
                     </div>
-                    <div style={{
-                      background: `${d.color}12`,
-                      border: `1px solid ${d.color}30`,
-                      borderRadius: "6px",
-                      padding: "6px 10px",
-                      textAlign: "center",
-                    }}>
+                    <div style={{ background: `${d.color}12`, border: `1px solid ${d.color}30`, borderRadius: "6px", padding: "6px 10px", textAlign: "center" }}>
                       <p style={{ color: d.color, fontSize: "0.42rem", letterSpacing: "0.1em" }}>{d.lead}</p>
                     </div>
                   </div>
-
                   <div style={{ display: "grid", gap: "0" }}>
                     {d.sessions.map((s, i) => (
                       <div key={i} style={{
-                        display: "flex", gap: "16px",
-                        padding: "14px 0",
+                        display: "flex", gap: "16px", padding: "14px 0",
                         borderBottom: i < d.sessions.length - 1 ? `1px solid ${d.color}10` : "none",
                         alignItems: "flex-start",
                       }}>
@@ -550,14 +546,7 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                 </div>
               );
             })()}
-
-            {/* Wednesday special callout */}
-            <div style={{
-              background: "rgba(63,185,80,0.05)",
-              border: `1px solid ${GREEN}20`,
-              borderRadius: "8px",
-              padding: "14px 16px",
-            }}>
+            <div style={{ background: "rgba(63,185,80,0.05)", border: `1px solid ${GREEN}20`, borderRadius: "8px", padding: "14px 16px" }}>
               <p style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.15em", marginBottom: "8px" }}>⚔ WEDNESDAY — XI TEAM RUNS IT</p>
               <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.46rem", lineHeight: 1.7 }}>
                 Chief Makoa does not lead Wednesday. XI team holds the 4am elite training and reset.
@@ -573,17 +562,16 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
           <div style={{ animation: "fadeUp 0.4s ease forwards" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
               <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.2em" }}>
-                808 SIGNAL CHECK — MONDAY 4AM
+                808 SIGNAL — FORMATION ROSTER
               </p>
               <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                 <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: isMonday && isCommandHour ? GREEN : GOLD_DIM, animation: "pulse 1.5s ease-in-out infinite" }} />
                 <span style={{ color: isMonday && isCommandHour ? GREEN : GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.1em" }}>
-                  {isMonday && isCommandHour ? "LIVE" : "STANDBY"}
+                  {isMonday && isCommandHour ? "LIVE CHECK" : "STANDBY"}
                 </span>
               </div>
             </div>
 
-            {/* Signal summary */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", marginBottom: "20px" }}>
               {[
                 { label: "Active", value: activeSignal, color: GREEN },
@@ -591,11 +579,8 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                 { label: "Silent", value: silentSignal, color: RED },
               ].map(s => (
                 <div key={s.label} style={{
-                  background: "rgba(0,0,0,0.4)",
-                  border: `1px solid ${s.color}20`,
-                  borderRadius: "8px",
-                  padding: "12px",
-                  textAlign: "center",
+                  background: "rgba(0,0,0,0.4)", border: `1px solid ${s.color}20`,
+                  borderRadius: "8px", padding: "12px", textAlign: "center",
                 }}>
                   <p style={{ color: s.color, fontSize: "1.2rem", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>{s.value}</p>
                   <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.38rem", marginTop: "4px" }}>{s.label}</p>
@@ -603,41 +588,52 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
               ))}
             </div>
 
-            {/* Signal list */}
-            <div style={{ display: "grid", gap: "8px", marginBottom: "20px" }}>
-              {MOCK_SIGNAL.map((m, i) => (
-                <div key={m.handle} style={{
-                  display: "flex", alignItems: "center", gap: "12px",
-                  padding: "12px 14px",
-                  background: m.status === "silent" ? "rgba(224,92,92,0.04)" : "rgba(0,0,0,0.3)",
-                  border: `1px solid ${STATUS_COLOR[m.status]}18`,
-                  borderRadius: "8px",
-                  animation: `fadeUp 0.4s ease ${i * 0.05}s both`,
-                }}>
-                  <img src={dicebearUrl(m.handle)} alt={m.handle} style={{ width: "32px", height: "32px", borderRadius: "50%", border: `1px solid ${TIER_COLOR[m.tier]}30`, background: "#0a0d12", flexShrink: 0 }} />
-                  <div style={{ flex: 1 }}>
-                    <p style={{ color: "#e8e0d0", fontSize: "0.52rem" }}>{m.handle}</p>
-                    <p style={{ color: TIER_COLOR[m.tier], fontSize: "0.38rem", letterSpacing: "0.1em" }}>{m.tier.toUpperCase()} · ZIP {m.zip}</p>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "5px", justifyContent: "flex-end", marginBottom: "3px" }}>
-                      <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: STATUS_COLOR[m.status], animation: m.status === "active" ? "pulse 1.5s ease-in-out infinite" : "none" }} />
-                      <span style={{ color: STATUS_COLOR[m.status], fontSize: "0.38rem", letterSpacing: "0.1em" }}>{STATUS_LABEL[m.status]}</span>
+            {signalLoading ? (
+              <div style={{ textAlign: "center", padding: "32px 0", color: "rgba(176,142,80,0.4)", fontSize: "0.46rem" }}>
+                Loading formation roster...
+              </div>
+            ) : realSignal.length === 0 ? (
+              <div style={{
+                background: "rgba(176,142,80,0.04)", border: `1px solid rgba(176,142,80,0.12)`,
+                borderRadius: "8px", padding: "24px", textAlign: "center",
+              }}>
+                <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.5rem", lineHeight: 1.8 }}>
+                  No pledges yet.<br />
+                  <span style={{ fontSize: "0.42rem", color: "rgba(176,142,80,0.25)" }}>Brothers appear here after submitting the gate form.</span>
+                </p>
+              </div>
+            ) : (
+              <div style={{ display: "grid", gap: "8px", marginBottom: "20px" }}>
+                {realSignal.map((m, i) => (
+                  <div key={m.handle + i} style={{
+                    display: "flex", alignItems: "center", gap: "12px",
+                    padding: "12px 14px",
+                    background: m.status === "silent" ? "rgba(224,92,92,0.04)" : "rgba(0,0,0,0.3)",
+                    border: `1px solid ${STATUS_COLOR[m.status]}18`,
+                    borderRadius: "8px",
+                    animation: `fadeUp 0.4s ease ${i * 0.05}s both`,
+                  }}>
+                    <img src={dicebearUrl(m.handle)} alt={m.handle} style={{ width: "32px", height: "32px", borderRadius: "50%", border: `1px solid ${TIER_COLOR[m.tier] || GREEN}30`, background: "#0a0d12", flexShrink: 0 }} />
+                    <div style={{ flex: 1 }}>
+                      <p style={{ color: "#e8e0d0", fontSize: "0.52rem" }}>{m.handle}</p>
+                      <p style={{ color: TIER_COLOR[m.tier] || GREEN, fontSize: "0.38rem", letterSpacing: "0.1em" }}>{(m.tier || "nakoa").toUpperCase()} · ZIP {m.zip}</p>
                     </div>
-                    <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.38rem" }}>{m.lastSeen}</p>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "5px", justifyContent: "flex-end", marginBottom: "3px" }}>
+                        <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: STATUS_COLOR[m.status], animation: m.status === "active" ? "pulse 1.5s ease-in-out infinite" : "none" }} />
+                        <span style={{ color: STATUS_COLOR[m.status], fontSize: "0.38rem", letterSpacing: "0.1em" }}>{STATUS_LABEL[m.status]}</span>
+                      </div>
+                      <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.38rem" }}>{m.lastSeen}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
-            {/* Silent escalation note */}
             {silentSignal > 0 && (
               <div style={{
-                background: "rgba(224,92,92,0.06)",
-                border: `1px solid ${RED}30`,
-                borderRadius: "8px",
-                padding: "14px 16px",
-                animation: "redPulse 3s ease-in-out infinite",
+                background: "rgba(224,92,92,0.06)", border: `1px solid ${RED}30`,
+                borderRadius: "8px", padding: "14px 16px", animation: "redPulse 3s ease-in-out infinite",
               }}>
                 <p style={{ color: RED, fontSize: "0.48rem", marginBottom: "6px", letterSpacing: "0.1em" }}>
                   ⚠ {silentSignal} BROTHER{silentSignal > 1 ? "S" : ""} SILENT 10+ DAYS
@@ -660,22 +656,18 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
             <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.46rem", lineHeight: 1.7, marginBottom: "20px" }}>
               Three tiers. Three venues. Three focuses. The 72 is where the order is built.
             </p>
-
             <div style={{ display: "grid", gap: "16px" }}>
               {GATHERINGS_72.map((g, i) => (
                 <div key={g.tier} style={{
-                  background: g.colorFaint,
-                  border: `1px solid ${g.color}30`,
-                  borderRadius: "12px",
-                  padding: "20px",
+                  background: g.colorFaint, border: `1px solid ${g.color}30`,
+                  borderRadius: "12px", padding: "20px",
                   animation: `fadeUp 0.5s ease ${i * 0.1}s both`,
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                       <div style={{
                         width: "44px", height: "44px", borderRadius: "50%",
-                        background: `${g.color}12`,
-                        border: `1px solid ${g.color}40`,
+                        background: `${g.color}12`, border: `1px solid ${g.color}40`,
                         display: "flex", alignItems: "center", justifyContent: "center",
                         fontSize: "1.2rem", flexShrink: 0,
                       }}>{g.emoji}</div>
@@ -688,19 +680,11 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                       <p style={{ color: g.color, fontSize: "0.45rem" }}>{g.price}</p>
                     </div>
                   </div>
-
-                  <div style={{
-                    background: `${g.color}08`,
-                    border: `1px solid ${g.color}20`,
-                    borderRadius: "6px",
-                    padding: "10px 12px",
-                    marginBottom: "12px",
-                  }}>
+                  <div style={{ background: `${g.color}08`, border: `1px solid ${g.color}20`, borderRadius: "6px", padding: "10px 12px", marginBottom: "12px" }}>
                     <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.38rem", letterSpacing: "0.15em", marginBottom: "4px" }}>VENUE</p>
                     <p style={{ color: "#e8e0d0", fontSize: "0.55rem" }}>{g.venue}</p>
                     <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem", marginTop: "4px", lineHeight: 1.6 }}>{g.focus}</p>
                   </div>
-
                   <div style={{ display: "grid", gap: "6px" }}>
                     {g.details.map((detail, j) => (
                       <div key={j} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -712,15 +696,7 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                 </div>
               ))}
             </div>
-
-            <div style={{
-              marginTop: "20px",
-              padding: "14px 16px",
-              background: GOLD_FAINT,
-              border: `1px solid ${GOLD}15`,
-              borderRadius: "8px",
-              textAlign: "center",
-            }}>
+            <div style={{ marginTop: "20px", padding: "14px 16px", background: GOLD_FAINT, border: `1px solid ${GOLD}15`, borderRadius: "8px", textAlign: "center" }}>
               <p style={{ color: GOLD_DIM, fontSize: "0.44rem", lineHeight: 1.8 }}>
                 The 72 is not optional. It is the order.<br />
                 Nā Koa builds at the house. Mana operates at the hotel. Aliʻi leads at the resort.<br />
@@ -736,35 +712,20 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
             <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "20px" }}>
               COMMAND INTELLIGENCE — CHIEF MAKOA DATABANK
             </p>
-
             {[
               {
-                title: "Order Architecture",
-                color: GOLD,
+                title: "Order Architecture", color: GOLD,
                 items: [
                   "3 tiers: Nā Koa (warriors) · Mana (operators) · Aliʻi (council)",
                   "4 gathering rhythms: weekly, monthly, quarterly, annual",
                   "80/10/10 cooperative revenue split",
                   "100 accounts per house: 80 Ohana + 20 B2B",
-                  "One house at capacity: $132,140 MRR (service $122,440 + membership $9,700)",
+                  "One house at capacity: $132,140 MRR",
                   "18-month formation track for all members",
                 ],
               },
               {
-                title: "Pricing Intelligence",
-                color: BLUE,
-                items: [
-                  "Aliʻi Plan: $1,497/mo (market: $1,500–$3,000)",
-                  "Kamaʻāina Plan: $749/mo (market: $750–$1,500)",
-                  "B2B Small: $1,299/mo · Mid: $2,499/mo · Large: $3,999/mo",
-                  "25% setup fee on all plans (due at signing)",
-                  "6-month contract: 20% off · 12-month: 40% off",
-                  "GE Tax: 4% of all service revenue, filed quarterly",
-                ],
-              },
-              {
-                title: "808 Channel System",
-                color: GREEN,
+                title: "808 Channel System", color: GREEN,
                 items: [
                   "808-911: Emergency peer response — nearest brothers dispatched",
                   "808-411: Knowledge routing — question matched to skilled brothers",
@@ -775,8 +736,7 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                 ],
               },
               {
-                title: "4AM Command Rhythm",
-                color: GOLD,
+                title: "4AM Command Rhythm", color: GOLD,
                 items: [
                   "Monday: 808 Signal Check + Week Ahead (Chief Makoa)",
                   "Tuesday: Route Review + B2B Pipeline (Chief Makoa)",
@@ -787,23 +747,20 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                 ],
               },
               {
-                title: "Stone Investment",
-                color: GOLD,
+                title: "MAYDAY Founding 48", color: BLUE,
                 items: [
-                  "Army Stone: $1,000 (25% down · $62.50/mo × 12)",
-                  "Warrior Stone: $5,000 (25% down · $312.50/mo × 12)",
-                  "Hale Stone: $10,000 (Malu Trust equity share)",
-                  "Warrior Stone covers Makahiki Mākoa annual resort 72",
-                  "Hale Stone: full council authority + Malu Trust seat",
+                  "May 1–4, 2026 · Kapolei, Oʻahu",
+                  "Nā Koa Day Pass: $149–$199 · 12 seats",
+                  "Mana Mastermind: $299–$399 · 24 seats",
+                  "Aliʻi War Room: $499–$699 · 24 seats",
+                  "War Party VIP: $799–$999 · 5 parties",
+                  "Fly-In War Party: $1,598–$2,997 · hotel + dinner + ice bath",
                 ],
               },
             ].map((section, i) => (
               <div key={section.title} style={{
-                background: "rgba(0,0,0,0.3)",
-                border: `1px solid ${section.color}18`,
-                borderRadius: "10px",
-                padding: "16px 18px",
-                marginBottom: "12px",
+                background: "rgba(0,0,0,0.3)", border: `1px solid ${section.color}18`,
+                borderRadius: "10px", padding: "16px 18px", marginBottom: "12px",
                 animation: `fadeUp 0.4s ease ${i * 0.08}s both`,
               }}>
                 <p style={{ color: section.color, fontSize: "0.42rem", letterSpacing: "0.18em", marginBottom: "12px", opacity: 0.8 }}>

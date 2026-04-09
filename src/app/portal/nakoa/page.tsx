@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/integrations/supabase/client";
 import EmergencyChannel from "@/components/EmergencyChannel";
+import GatheringsCalendar from "@/components/GatheringsCalendar";
 
 const GREEN = "#3fb950";
 const GREEN_DIM = "rgba(63,185,80,0.5)";
@@ -197,6 +198,11 @@ export default function NakoaPortal() {
             memberHandle={handle}
             memberZip={member?.region ? "96707" : "96707"}
           />
+        </div>
+
+        {/* Gatherings Calendar */}
+        <div style={{ marginBottom: "24px" }}>
+          <GatheringsCalendar memberTier="nakoa" memberHandle={handle} />
         </div>
 
         {/* Elite Training Schedule */}
