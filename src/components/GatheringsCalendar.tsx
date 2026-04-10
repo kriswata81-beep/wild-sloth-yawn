@@ -208,6 +208,22 @@ export default function GatheringsCalendar({ memberTier = "nakoa", memberHandle 
 
   const GATHERINGS: (GatheringCardProps & { memberHandle?: string })[] = [
     {
+      emoji: "🪨",
+      name: "The Weight Room",
+      subtitle: "CARRYING TOGETHER · POST-ICE HEALING CIRCLE",
+      frequency: "WEEKLY",
+      description: "Every Wednesday after ice bath. 90-minute guided circle — not iron, emotional weight. Topic: 'What I've been carrying alone.' No phones. No recording. No cross-talk. No advice unless asked. What's said in the circle stays in the circle. The ice strips the ego. The circle holds the man. A brother reveals himself when he's ready. If a brother is in crisis — 808-911 activates.",
+      price: "INCLUDED",
+      priceNote: "In $97/mo dues",
+      nextDates: wednesdays.map(w => w + " · After Ice"),
+      accent: "#e05c5c",
+      accentFaint: "rgba(224,92,92,0.07)",
+      accentDim: "rgba(224,92,92,0.5)",
+      memberTier,
+      requiredTier: "nakoa",
+      memberHandle,
+    },
+    {
       emoji: "⚔",
       name: "Ke Ala",
       subtitle: "THE PATH · WEEKLY WARRIOR TRAINING",
@@ -296,9 +312,9 @@ export default function GatheringsCalendar({ memberTier = "nakoa", memberHandle 
       </div>
       <div style={{ marginTop: "20px", padding: "14px 16px", background: "rgba(176,142,80,0.07)", border: "1px solid rgba(176,142,80,0.15)", borderRadius: "8px", textAlign: "center" }}>
         <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.45rem", lineHeight: 1.8 }}>
-          Weekly, monthly & academy gatherings included in $97/mo dues.<br />
+          Weekly training, Weight Room circles, & monthly gatherings included in $97/mo dues.<br />
           Ka Hoʻike +$199 · Makahiki +$399 · a la carte per event.<br />
-          Ice bath waiver required before first Pō Māhina. Contact XI to register.
+          Ice bath waiver required before first Pō Māhina. What's said in the circle stays in the circle.
         </p>
       </div>
     </div>

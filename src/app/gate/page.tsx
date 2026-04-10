@@ -558,6 +558,23 @@ export default function GatePageRoute() {
           </a>
         </div>
 
+        {/* ── QR CODE ─────────────────────────────────────────────────────── */}
+        <div style={{
+          textAlign: "center", padding: "28px 0 12px",
+        }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.2em", marginBottom: 12 }}>
+            SCAN TO SHARE THE GATE
+          </p>
+          <img
+            src="/makoa_qr.png"
+            alt="Mākoa Gate QR Code"
+            style={{ width: 160, height: 160, margin: "0 auto", display: "block", borderRadius: 8 }}
+          />
+          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.36rem", marginTop: 10, letterSpacing: "0.1em" }}>
+            makoaorder.com/gate
+          </p>
+        </div>
+
       </div>
 
       {/* ── CLASS BOTTOM SHEETS ───────────────────────────────────────────── */}

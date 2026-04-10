@@ -5,6 +5,8 @@ import CommandHomeTab from "./admin/CommandHomeTab";
 import ChannelsTab from "./admin/ChannelsTab";
 import SocialSchedulerTab from "./admin/SocialSchedulerTab";
 import MentorBoardTab from "./admin/MentorBoardTab";
+import CirclePartnersTab from "./admin/CirclePartnersTab";
+import RouteTrackingTab from "./admin/RouteTrackingTab";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -67,6 +69,8 @@ const ALL_TABS = [
   "808 Channels",
   "Social",
   "Mentors",
+  "Circle",
+  "Routes",
   "Members",
   "Pledges",
   "Houses",
@@ -242,7 +246,7 @@ export default function AdminPage({ onExit }: AdminPageProps) {
       }}>
         {ALL_TABS.map(t => {
           const isActive = tab === t;
-          const isNew = ["Command", "808 Channels", "Social", "Mentors"].includes(t);
+          const isNew = ["Command", "808 Channels", "Social", "Mentors", "Circle", "Routes"].includes(t);
           return (
             <button
               key={t}
@@ -282,7 +286,7 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
       {/* Content */}
       <div style={{ padding: "20px 16px", maxWidth: "960px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-        {loading && tab !== "Command" && tab !== "808 Channels" && tab !== "Social" && tab !== "Mentors" ? (
+        {loading && tab !== "Command" && tab !== "808 Channels" && tab !== "Social" && tab !== "Mentors" && tab !== "Circle" && tab !== "Routes" ? (
           <p style={{ color: GOLD_DIM, fontSize: "0.52rem", textAlign: "center", padding: "40px" }}>
             Loading...
           </p>
@@ -311,6 +315,12 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
             {/* MENTOR BOARD */}
             {tab === "Mentors" && <MentorBoardTab />}
+
+            {/* CIRCLE PARTNERS */}
+            {tab === "Circle" && <CirclePartnersTab />}
+
+            {/* ROUTE TRACKING */}
+            {tab === "Routes" && <RouteTrackingTab />}
 
             {/* MEMBERS TAB */}
             {tab === "Members" && (

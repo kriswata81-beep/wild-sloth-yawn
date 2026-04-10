@@ -9,23 +9,36 @@ const GOLD_20 = "rgba(176,142,80,0.2)";
 function MakoaCrest() {
   return (
     <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Outer compass rings */}
       <circle cx="100" cy="100" r="95" stroke={GOLD} strokeWidth="1.2" />
-      <circle cx="100" cy="100" r="72" stroke={GOLD} strokeWidth="0.6" strokeOpacity="0.4" />
-      <rect x="98.5" y="10" width="3" height="30" fill={GOLD} fillOpacity="0.25" />
-      <rect x="98.5" y="160" width="3" height="30" fill={GOLD} fillOpacity="0.25" />
-      <rect x="10" y="98.5" width="30" height="3" fill={GOLD} fillOpacity="0.25" />
-      <rect x="160" y="98.5" width="30" height="3" fill={GOLD} fillOpacity="0.25" />
+      <circle cx="100" cy="100" r="99" stroke={GOLD} strokeWidth="0.6" strokeOpacity="0.25" />
+      {/* Cardinal tick marks */}
+      <rect x="98.5" y="4" width="3" height="18" fill={GOLD} fillOpacity="0.35" />
+      <rect x="98.5" y="178" width="3" height="18" fill={GOLD} fillOpacity="0.35" />
+      <rect x="4" y="98.5" width="18" height="3" fill={GOLD} fillOpacity="0.35" />
+      <rect x="178" y="98.5" width="18" height="3" fill={GOLD} fillOpacity="0.35" />
+      {/* Ordinal ticks */}
+      <rect x="163" y="32" width="2" height="10" fill={GOLD} fillOpacity="0.15" transform="rotate(45 164 37)" />
+      <rect x="35" y="32" width="2" height="10" fill={GOLD} fillOpacity="0.15" transform="rotate(-45 36 37)" />
+      <rect x="163" y="158" width="2" height="10" fill={GOLD} fillOpacity="0.15" transform="rotate(-45 164 163)" />
+      <rect x="35" y="158" width="2" height="10" fill={GOLD} fillOpacity="0.15" transform="rotate(45 36 163)" />
+      {/* Compass arrows */}
       <polygon points="100,5 104,14 100,10 96,14" fill={GOLD} />
-      <polygon points="195,100 186,104 190,100 186,96" fill={GOLD} />
-      <polygon points="100,195 104,186 100,190 96,186" fill={GOLD} />
-      <polygon points="5,100 14,104 10,100 14,96" fill={GOLD} />
-      <rect x="60" y="60" width="80" height="80" fill="#000" stroke={GOLD} strokeWidth="0.8" strokeOpacity="0.3" />
+      <polygon points="100,195 104,186 100,190 96,186" fill={GOLD} fillOpacity="0.5" />
+      <polygon points="195,100 186,104 190,100 186,96" fill={GOLD} fillOpacity="0.5" />
+      <polygon points="5,100 14,104 10,100 14,96" fill={GOLD} fillOpacity="0.5" />
+      {/* Inner circle — clean, round like the moon */}
+      <circle cx="100" cy="100" r="72" stroke={GOLD} strokeWidth="0.8" />
+      <circle cx="100" cy="100" r="66" stroke={GOLD} strokeWidth="0.4" strokeOpacity="0.2" />
+      <circle cx="100" cy="100" r="72" fill={GOLD} fillOpacity="0.03" />
+      {/* QR-style blocks (simplified representation of the embedded QR) */}
       <rect x="65" y="65" width="18" height="18" stroke={GOLD} strokeWidth="1.2" fill="none" />
       <rect x="69" y="69" width="10" height="10" fill={GOLD} />
       <rect x="117" y="65" width="18" height="18" stroke={GOLD} strokeWidth="1.2" fill="none" />
       <rect x="121" y="69" width="10" height="10" fill={GOLD} />
       <rect x="65" y="117" width="18" height="18" stroke={GOLD} strokeWidth="1.2" fill="none" />
       <rect x="69" y="121" width="10" height="10" fill={GOLD} />
+      {/* Center grid pattern */}
       <rect x="90" y="90" width="4" height="4" fill={GOLD} fillOpacity="0.8" />
       <rect x="96" y="90" width="4" height="4" fill={GOLD} fillOpacity="0.5" />
       <rect x="102" y="90" width="4" height="4" fill={GOLD} fillOpacity="0.8" />
@@ -35,11 +48,11 @@ function MakoaCrest() {
       <rect x="90" y="102" width="4" height="4" fill={GOLD} fillOpacity="0.8" />
       <rect x="96" y="102" width="4" height="4" fill={GOLD} fillOpacity="0.5" />
       <rect x="102" y="102" width="4" height="4" fill={GOLD} fillOpacity="0.8" />
-      <text x="100" y="22" textAnchor="middle" fill={GOLD} fontSize="8" fontFamily="monospace">N</text>
-      <text x="100" y="186" textAnchor="middle" fill={GOLD} fontSize="8" fontFamily="monospace">S</text>
-      <text x="178" y="103" textAnchor="middle" fill={GOLD} fontSize="8" fontFamily="monospace">E</text>
-      <text x="22" y="103" textAnchor="middle" fill={GOLD} fontSize="8" fontFamily="monospace">W</text>
-      <text x="100" y="152" textAnchor="middle" fill={GOLD} fontSize="7" fontFamily="monospace" opacity="0.6">H·P·O</text>
+      {/* Cardinal labels */}
+      <text x="100" y="22" textAnchor="middle" fill={GOLD} fontSize="8" fontFamily="monospace" fontWeight="bold">N</text>
+      <text x="100" y="186" textAnchor="middle" fill={GOLD} fontSize="8" fontFamily="monospace" opacity="0.5">S</text>
+      <text x="180" y="103" textAnchor="middle" fill={GOLD} fontSize="8" fontFamily="monospace" opacity="0.5">E</text>
+      <text x="20" y="103" textAnchor="middle" fill={GOLD} fontSize="8" fontFamily="monospace" opacity="0.5">W</text>
     </svg>
   );
 }
