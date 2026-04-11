@@ -29,7 +29,7 @@ export default function AliiStonePage() {
       title: "RESPONSIBILITIES",
       items: [
         "Seat on the Ali'i Council — quarterly strategy sessions",
-        "Vote on all order-level decisions (expansion, treasury, discipline)",
+        "Counsel on all order-level decisions (expansion, treasury, discipline)",
         "Mentor assignment — 2 Nā Koa minimum under guidance",
         "Route oversight — quality and service standard enforcement",
         "House anchor — stabilize or plant a Mākoa house in your region",
@@ -38,7 +38,7 @@ export default function AliiStonePage() {
     },
     {
       title: "THE COUNCIL",
-      body: "The Ali'i Council meets quarterly. Remote brothers attend via secure channel. Decisions require 2/3 majority. Steward 0001 holds tie-breaker authority during founding period (first 24 months). After that, the council governs itself. XI provides intelligence. The brothers decide.",
+      body: "The Ali'i Council meets quarterly. Remote brothers attend via secure channel. Decisions require 2/3 majority. XI provides intelligence and operational authority. The Steward anchors the vision. The council governs the Order.",
     },
     {
       title: "RANK PROGRESSION",

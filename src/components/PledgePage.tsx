@@ -7,9 +7,9 @@ const GOLD_DIM = "rgba(176,142,80,0.5)";
 const GOLD_FAINT = "rgba(176,142,80,0.12)";
 
 const TIER_CONFIG = {
-  alii: { label: "Aliʻi", color: GOLD, colorDim: GOLD_DIM, price: "$97/mo", deposit: "$297 founding fee", pledgeFee: "$74.25 today" },
-  mana: { label: "Mana", color: "#58a6ff", colorDim: "rgba(88,166,255,0.5)", price: "$97/mo", deposit: "$297 founding fee", pledgeFee: "$74.25 today" },
-  nakoa: { label: "Nā Koa", color: "#8b9aaa", colorDim: "rgba(139,154,170,0.5)", price: "$97/mo", deposit: "$297 founding fee", pledgeFee: "$74.25 today" },
+  alii: { label: "Aliʻi", color: GOLD, colorDim: GOLD_DIM, price: "$497/year", deposit: "Founding rate — locked for life", pledgeFee: "$124.25 today (25% down)" },
+  mana: { label: "Mana", color: "#58a6ff", colorDim: "rgba(88,166,255,0.5)", price: "$497/year", deposit: "Founding rate — locked for life", pledgeFee: "$124.25 today (25% down)" },
+  nakoa: { label: "Nā Koa", color: "#8b9aaa", colorDim: "rgba(139,154,170,0.5)", price: "$497/year", deposit: "Founding rate — locked for life", pledgeFee: "$124.25 today (25% down)" },
 };
 
 const REGIONS = [
@@ -160,8 +160,8 @@ export default function PledgePage({ tier, prefillName = "", prefillPhone = "", 
         </p>
         <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.55rem", lineHeight: 1.8, maxWidth: "280px" }}>
           Your pledge has been recorded.<br />
-          XI will review your application.<br />
-          Watch for contact within 48 hours.
+          XI has reviewed your application.<br />
+          Stand by — your path forward is coming.
         </p>
       </div>
     );
@@ -242,7 +242,7 @@ export default function PledgePage({ tier, prefillName = "", prefillPhone = "", 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <p className="font-cormorant" style={{ color: cfg.color, fontSize: "1.3rem", fontStyle: "italic" }}>{cfg.label}</p>
-              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem" }}>{cfg.deposit} · {cfg.pledgeFee} · 3 payments of $74.25</p>
+              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem" }}>{cfg.deposit} · {cfg.pledgeFee} · then $31.06/mo × 12</p>
             </div>
             <p style={{ color: cfg.color, fontSize: "0.8rem", fontWeight: 500 }}>{cfg.price}</p>
           </div>

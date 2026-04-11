@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /gate
+Allow: /founding48
+Allow: /circle
+Allow: /services
+Allow: /sponsor
+Allow: /wahine
+Allow: /gatherings
+Allow: /stones/alii
+Allow: /stones/mana
+
+Disallow: /steward
+Disallow: /portal/
+Disallow: /api/
+
+Sitemap: https://wild-sloth-yawn.vercel.app/sitemap.xml

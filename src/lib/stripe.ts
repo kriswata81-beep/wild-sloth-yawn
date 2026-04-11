@@ -5,6 +5,7 @@
 // Elite Ice Bath: $75/person/session × 3 sessions = $225/person
 
 export type ProductId =
+  | "GATE_ENTRY"
   | "DUES_DOWN"
   // 12HR Nā Koa Day Pass (green) — Saturday OR Sunday
   | "MAYDAY_DAY_PASS_EARLY"
@@ -43,6 +44,13 @@ export interface Product {
 }
 
 export const PRODUCTS: Record<ProductId, Product> = {
+  GATE_ENTRY: {
+    id: "GATE_ENTRY",
+    name: "Mākoa Order — Gate Entry",
+    description: "Your $9.99 pledge to the Order. This signals you are serious. Entry fee to access the brotherhood.",
+    amount: 999,
+    displayPrice: "$9.99",
+  },
   DUES_DOWN: {
     id: "DUES_DOWN",
     name: "Mākoa Order — Annual Dues (25% Down)",

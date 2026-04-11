@@ -134,7 +134,7 @@ export default function CirclePartnersTab() {
             <p style={{ color: GOLD, fontSize: "0.55rem", marginBottom: "8px" }}>No circle partners yet</p>
             <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.42rem", lineHeight: 1.6 }}>
               Partners who register at <span style={{ color: GOLD_DIM }}>/circle</span> will appear here.<br />
-              Share the link — 12 co-founding steward seats worldwide.
+              Share the link — 12 co-founding director seats worldwide.
             </p>
           </div>
         ) : (

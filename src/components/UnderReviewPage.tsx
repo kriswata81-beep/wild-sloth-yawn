@@ -17,7 +17,7 @@ export default function UnderReviewPage({ applicationId, reason = "pending" }: U
     },
     pending: {
       title: "Under Review",
-      body: "Your pledge has been received. XI is reviewing your application. You will be contacted within 48 hours.",
+      body: "Your pledge has been received. XI is reviewing your application. Stand by — XI responds within moments.",
       sub: "Watch for a message from the Order.",
     },
     suspended: {

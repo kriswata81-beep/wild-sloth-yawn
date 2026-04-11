@@ -410,7 +410,7 @@ export default function SocialSchedulerTab({ activeBrothers, pendingPledges }: S
         <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.4rem", lineHeight: 1.8, textAlign: "center" }}>
           LinkedIn: Tue + Thu · Facebook: Mon + Wed + Fri · Telegram: Daily 6am<br />
           <span style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.36rem" }}>
-            All posts reviewed by Steward before scheduling. XI generates — Steward approves.
+            XI generates and schedules all content. Review available in Command Center.
           </span>
         </p>
       </div>

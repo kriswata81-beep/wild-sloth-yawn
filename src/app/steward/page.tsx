@@ -8,7 +8,7 @@ const GOLD_40 = "rgba(176,142,80,0.4)";
 const GOLD_20 = "rgba(176,142,80,0.2)";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
 
-const STEWARD_PASSWORD = "makoa0001";
+const STEWARD_PASSWORD = process.env.NEXT_PUBLIC_STEWARD_PASSWORD || "makoa0001";
 const SESSION_KEY = "makoa_steward_auth";
 
 export default function StewardPage() {

@@ -22,7 +22,7 @@ const GATHERINGS = [
     accentBorder: "rgba(248,81,73,0.25)",
     frequency: "Every Saturday · 5:30 AM",
     duration: "90 minutes",
-    location: "Local chapter — outdoor or gym",
+    location: "Local chapter — designated healing space",
     icon: "🔴",
     description:
       "The Weight Room is where brothers carry what they cannot carry alone. After the ice bath, we sit in circle. One brother speaks. The rest hold space. No advice. No fixing. Just presence. This is the heartbeat of the Order.",
@@ -45,7 +45,7 @@ const GATHERINGS = [
     accentBorder: "rgba(63,185,80,0.25)",
     frequency: "Every Wednesday · 6:00 PM",
     duration: "2 hours",
-    location: "Local chapter — park, beach, or gym",
+    location: "Local chapter — park, beach, or training ground",
     icon: "🟢",
     description:
       "Ke Ala means 'The Path.' This is where brothers sharpen the blade — physical training, skill development, and tactical planning for routes and personal missions. Part workout, part war room.",
@@ -108,14 +108,14 @@ const GATHERINGS = [
     accent: ORANGE,
     accentBg: "rgba(240,136,62,0.1)",
     accentBorder: "rgba(240,136,62,0.25)",
-    frequency: "Once per year · May",
+    frequency: "Once per year · November",
     duration: "4 days (Thu–Sun)",
     location: "Hawaii — where the Order was founded",
     icon: "🟠",
     description:
-      "Makahiki is the ancient Hawaiian festival of peace, harvest, and renewal. Our annual gathering returns to Hawaii — the birthplace of the Order — for the largest brotherhood event of the year. New co-founders are seated, the charter is renewed, and the next year's mission is set.",
+      "Makahiki is the ancient Hawaiian festival of peace, harvest, and renewal. Our annual gathering returns to Hawaii — the birthplace of the Order — for the largest brotherhood event of the year. New Ali'i are recognized, the charter is renewed, and the next year's mission is set.",
     format: [
-      "Thursday — Ali'i arrive, co-founder council",
+      "Thursday — Ali'i arrive, director council",
       "Friday — All classes arrive, War Room opens, 72HR begins",
       "Saturday — The full forge: ice, Weight Room, workshops, bonfire",
       "Sunday — Founding Dinner (Ali'i table), Stones, The Send",

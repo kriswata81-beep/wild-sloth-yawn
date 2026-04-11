@@ -156,8 +156,8 @@ function PaymentSuccessContent() {
             animation: "fadeUp 0.9s ease 0.5s both",
           }}
         >
-          XI will confirm your reservation within 24 hours<br />
-          on the Makoa 808.
+          XI has confirmed your reservation.<br />
+          Stand by on the Makoa 808.
         </p>
       </div>
 
@@ -266,7 +266,7 @@ function PaymentSuccessContent() {
             WHAT HAPPENS NEXT
           </p>
           {[
-            "XI reviews your reservation within 24 hours",
+            "XI has confirmed your reservation",
             "Confirmation drops on the Makoa 808 channel",
             "Full event details sent to your Telegram",
             "Your seat is locked — no action needed",

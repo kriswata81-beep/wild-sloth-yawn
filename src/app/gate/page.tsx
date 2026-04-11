@@ -108,15 +108,15 @@ function PledgePopup({ onConfirm, onClose, submitting }: { onConfirm: () => void
     <div>
       <p style={{ color: GOLD_DIM, fontSize: "0.44rem", letterSpacing: "0.22em", marginBottom: 10 }}>THE PLEDGE · MALU TRUST</p>
       <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.25rem", lineHeight: 1.4, marginBottom: 14 }}>
-        This is not a payment. This is a signal.
+        This is your entry into the order.
       </p>
       <div style={{ background: GOLD_10, border: `1px solid ${GOLD_20}`, borderRadius: 8, padding: "18px", marginBottom: 18, textAlign: "center" }}>
         <p style={{ color: GOLD, fontSize: "2rem", fontWeight: 700, lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>$9.99</p>
         <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.46rem", marginTop: 6, lineHeight: 1.7 }}>
           Your pledge signals to the order that you are serious.<br />
-          No charge is taken today.<br />
-          XI will review your 12 answers and contact you<br />
-          within 24 hours on the Makoa 808.
+          This is a one-time gate entry fee.<br />
+          XI will review your 12 answers and respond<br />
+          within moments. Stand by.
         </p>
       </div>
       {submitting ? (

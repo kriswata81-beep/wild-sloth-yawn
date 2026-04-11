@@ -151,7 +151,7 @@ export default function ConfirmPage() {
         </p>
         <div style={{ height: 1, background: GOLD_20, margin: "16px 0" }} />
         <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.5rem", lineHeight: 1.8 }}>
-          XI will reach you within 24 hours.<br />Keep your signal open.
+          XI has reviewed your answers.<br />Your path forward is below.
         </p>
       </div>
 

@@ -129,6 +129,269 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
     `,
   }),
 
+  // Weight Room — missed 1 session (Don't miss 2 in a row)
+  weight_room_miss1: (data) => ({
+    subject: "You missed the Weight Room.",
+    html: `
+      <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="width:48px;height:48px;border-radius:50%;border:1.5px solid #f85149;margin:0 auto 16px;"></div>
+          <p style="color:#f85149;font-size:12px;letter-spacing:4px;">THE WEIGHT ROOM</p>
+        </div>
+        <p style="color:#e8e0d0;font-size:18px;font-style:italic;text-align:center;margin-bottom:24px;">
+          ${data.name || "Brother"} — the circle noticed.
+        </p>
+        <p style="color:rgba(232,224,208,0.6);font-size:14px;line-height:1.8;margin-bottom:16px;">
+          You weren't at the Weight Room this week. Nobody's keeping score — but we noticed the empty chair.
+        </p>
+        <div style="margin:24px 0;padding:16px;border:1px solid rgba(248,81,73,0.2);border-radius:6px;background:rgba(248,81,73,0.04);">
+          <p style="color:#f85149;font-size:13px;font-weight:bold;margin-bottom:8px;">DON'T MISS TWO IN A ROW.</p>
+          <p style="color:rgba(232,224,208,0.5);font-size:13px;line-height:1.7;">
+            The weight you carry alone is the weight that breaks you. Next Saturday — 5:30 AM.
+            If something's wrong, reply to this email. A brother will reach out.
+          </p>
+        </div>
+        <p style="color:rgba(232,224,208,0.4);font-size:12px;line-height:1.7;margin-top:20px;">
+          No judgment. No guilt. Just presence.<br/>
+          We hold your seat.
+        </p>
+        <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
+          XI · MĀKOA ORDER · THE WEIGHT ROOM
+        </p>
+      </div>
+    `,
+  }),
+
+  // Weight Room — missed 2 sessions (escalation — a brother shows up)
+  weight_room_miss2: (data) => ({
+    subject: "Two weeks. We're coming to you.",
+    html: `
+      <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="width:48px;height:48px;border-radius:50%;border:1.5px solid #f85149;margin:0 auto 16px;"></div>
+          <p style="color:#f85149;font-size:12px;letter-spacing:4px;">INTERVAL CHECK</p>
+        </div>
+        <p style="color:#e8e0d0;font-size:18px;font-style:italic;text-align:center;margin-bottom:24px;">
+          ${data.name || "Brother"} — two weeks.
+        </p>
+        <p style="color:rgba(232,224,208,0.6);font-size:14px;line-height:1.8;margin-bottom:16px;">
+          You've missed two Weight Rooms in a row. That's the line.
+          A brother from your circle is going to reach out — not to lecture,
+          not to guilt. Just to check in. Face to face if possible.
+        </p>
+        <div style="margin:24px 0;padding:16px;border:1px solid rgba(248,81,73,0.25);border-radius:6px;background:rgba(248,81,73,0.06);">
+          <p style="color:#f85149;font-size:13px;font-weight:bold;margin-bottom:8px;">THIS IS THE PROMISE WE MADE.</p>
+          <p style="color:rgba(232,224,208,0.5);font-size:13px;line-height:1.7;">
+            When you pledged, you agreed: if you disappear, we come find you.
+            Not because you're in trouble. Because you matter.
+          </p>
+        </div>
+        <p style="color:rgba(232,224,208,0.4);font-size:12px;line-height:1.7;margin-top:20px;">
+          ${data.circle_lead || "Your circle lead"} will be in touch within 48 hours.<br/>
+          If you need to talk now, reply to this email.
+        </p>
+        <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
+          XI · MĀKOA ORDER · NO BROTHER LEFT BEHIND
+        </p>
+      </div>
+    `,
+  }),
+
+  // Weekly Weight Room reminder (sent Friday evening)
+  weight_room_reminder: (data) => ({
+    subject: "Tomorrow morning. The circle holds.",
+    html: `
+      <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="width:48px;height:48px;border-radius:50%;border:1.5px solid #f85149;margin:0 auto 16px;"></div>
+          <p style="color:#f85149;font-size:12px;letter-spacing:4px;">THE WEIGHT ROOM</p>
+        </div>
+        <p style="color:#e8e0d0;font-size:16px;text-align:center;margin-bottom:24px;">
+          Tomorrow · Saturday · 5:30 AM
+        </p>
+        <p style="color:rgba(232,224,208,0.5);font-size:14px;line-height:1.8;text-align:center;">
+          The circle holds space for you, ${data.name || "brother"}.<br/>
+          Whatever you're carrying — bring it tomorrow.
+        </p>
+        <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
+          XI · MĀKOA ORDER · EST. 2026
+        </p>
+      </div>
+    `,
+  }),
+
+  // HOLD — gate applicant needs follow-up before acceptance
+  gate_hold: (data) => ({
+    subject: "XI has a few more questions.",
+    html: `
+      <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="width:48px;height:48px;border-radius:50%;border:1.5px solid #b08e50;margin:0 auto 16px;"></div>
+          <p style="color:#b08e50;font-size:12px;letter-spacing:4px;">MĀKOA ORDER</p>
+        </div>
+        <p style="color:#e8e0d0;font-size:18px;font-style:italic;text-align:center;margin-bottom:24px;">
+          ${data.name || "Brother"} — your answers were received.
+        </p>
+        <p style="color:rgba(232,224,208,0.6);font-size:14px;line-height:1.8;margin-bottom:16px;">
+          XI reviewed your 12 questions. Before the gate opens, XI has a few more questions.
+          This is not rejection — this is care. The Order doesn't rush. We make sure you're ready,
+          and that we're ready for you.
+        </p>
+        <div style="margin:24px 0;padding:16px;border:1px solid rgba(176,142,80,0.15);border-radius:6px;background:rgba(176,142,80,0.04);">
+          <p style="color:#b08e50;font-size:11px;letter-spacing:3px;margin-bottom:8px;">WHAT HAPPENS NEXT</p>
+          <p style="color:rgba(232,224,208,0.5);font-size:13px;line-height:1.8;">
+            Reply to this email and tell XI what you need.<br/>
+            A brother will review your response within 48 hours.<br/>
+            Your answers are confidential. Nothing leaves this exchange.
+          </p>
+        </div>
+        <p style="color:rgba(232,224,208,0.4);font-size:12px;line-height:1.7;margin-top:20px;">
+          The gate is not closed. It is waiting for you.
+        </p>
+        <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
+          XI · MĀKOA ORDER · UNDER THE MALU
+        </p>
+      </div>
+    `,
+  }),
+
+  // CRISIS — immediate resources + Steward alert
+  gate_crisis: (data) => ({
+    subject: "You are not alone. Resources inside.",
+    html: `
+      <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="width:48px;height:48px;border-radius:50%;border:1.5px solid #f85149;margin:0 auto 16px;"></div>
+          <p style="color:#f85149;font-size:12px;letter-spacing:4px;">MĀKOA ORDER</p>
+        </div>
+        <p style="color:#e8e0d0;font-size:18px;font-style:italic;text-align:center;margin-bottom:24px;">
+          ${data.name || "Brother"} — you are not alone.
+        </p>
+        <p style="color:rgba(232,224,208,0.6);font-size:14px;line-height:1.8;margin-bottom:16px;">
+          XI read your answers. What you shared takes courage. Before anything else,
+          we want to make sure you have the right support — right now.
+        </p>
+        <div style="margin:24px 0;padding:20px;border:1px solid rgba(248,81,73,0.25);border-radius:8px;background:rgba(248,81,73,0.06);">
+          <p style="color:#f85149;font-size:13px;font-weight:bold;margin-bottom:12px;">IF YOU NEED HELP RIGHT NOW:</p>
+          <p style="color:rgba(232,224,208,0.7);font-size:14px;line-height:2.2;">
+            <strong style="color:#fff;">988 Suicide & Crisis Lifeline</strong> — Call or text <strong>988</strong><br/>
+            <strong style="color:#fff;">Crisis Text Line</strong> — Text <strong>HOME</strong> to <strong>741741</strong><br/>
+            <strong style="color:#fff;">SAMHSA Helpline</strong> — <strong>1-800-662-4357</strong> (free, 24/7)<br/>
+            <strong style="color:#fff;">Veterans Crisis Line</strong> — Call 988, press <strong>1</strong><br/>
+            <strong style="color:#fff;">Hawaii CARES</strong> — <strong>1-800-753-6879</strong><br/>
+            <strong style="color:#fff;">Aloha United Way</strong> — Dial <strong>211</strong>
+          </p>
+        </div>
+        <p style="color:rgba(232,224,208,0.5);font-size:13px;line-height:1.8;margin-top:16px;">
+          The brotherhood exists for moments like this. A Crisis Steward will reach out
+          within 24 hours — not to fix, not to lecture. Just to check in.
+        </p>
+        <p style="color:rgba(232,224,208,0.4);font-size:12px;line-height:1.7;margin-top:16px;font-style:italic;">
+          Mākoa Order is a peer-support brotherhood, not a clinical or crisis service.
+          If you are in immediate danger, please call 911 or 988.
+        </p>
+        <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
+          XI · MĀKOA ORDER · NO BROTHER LEFT BEHIND
+        </p>
+      </div>
+    `,
+  }),
+
+  // WELCOME DRIP — Day 1 (after $9.99 gate entry)
+  welcome_day1: (data) => ({
+    subject: "Day 1 — Your formation begins.",
+    html: `
+      <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="width:48px;height:48px;border-radius:50%;border:1.5px solid #b08e50;margin:0 auto 16px;"></div>
+          <p style="color:#b08e50;font-size:12px;letter-spacing:4px;">DAY 1 · FORMATION</p>
+        </div>
+        <p style="color:#e8e0d0;font-size:18px;font-style:italic;text-align:center;margin-bottom:24px;">
+          ${data.name || "Brother"} — welcome to the Order.
+        </p>
+        <p style="color:rgba(232,224,208,0.6);font-size:14px;line-height:1.8;margin-bottom:20px;">
+          Your $9.99 gate entry has been confirmed. You are now inside the brotherhood.
+          Here is what happens in your first 7 days:
+        </p>
+        <div style="margin:16px 0;padding:16px;border:1px solid rgba(176,142,80,0.12);border-radius:6px;">
+          <p style="color:rgba(232,224,208,0.5);font-size:13px;line-height:2;">
+            <strong style="color:#b08e50;">Day 1 (today):</strong> Read the oath. Let it sit.<br/>
+            <strong style="color:#b08e50;">Day 3:</strong> XI sends your first circle invitation.<br/>
+            <strong style="color:#b08e50;">Day 7:</strong> Your founding dues decision — $497/year locked for life.
+          </p>
+        </div>
+        <div style="text-align:center;margin-top:24px;">
+          <a href="https://wild-sloth-yawn.vercel.app/gatherings" style="display:inline-block;padding:12px 28px;border:1px solid rgba(176,142,80,0.4);color:#b08e50;text-decoration:none;font-size:12px;letter-spacing:3px;">SEE THE GATHERINGS</a>
+        </div>
+        <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
+          XI · MĀKOA ORDER · EST. 2026
+        </p>
+      </div>
+    `,
+  }),
+
+  // WELCOME DRIP — Day 3
+  welcome_day3: (data) => ({
+    subject: "Day 3 — Your first circle.",
+    html: `
+      <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="width:48px;height:48px;border-radius:50%;border:1.5px solid #3fb950;margin:0 auto 16px;"></div>
+          <p style="color:#3fb950;font-size:12px;letter-spacing:4px;">DAY 3 · FIRST CIRCLE</p>
+        </div>
+        <p style="color:#e8e0d0;font-size:16px;text-align:center;margin-bottom:24px;">
+          ${data.name || "Brother"} — this Saturday, your seat is waiting.
+        </p>
+        <p style="color:rgba(232,224,208,0.6);font-size:14px;line-height:1.8;margin-bottom:16px;">
+          The Weight Room meets every Saturday at 5:30 AM. This is where brothers
+          carry what they cannot carry alone. You don't need to say anything your first time.
+          Just show up. Just be present.
+        </p>
+        <div style="margin:20px 0;padding:16px;border:1px solid rgba(63,185,80,0.15);border-radius:6px;background:rgba(63,185,80,0.04);">
+          <p style="color:rgba(232,224,208,0.5);font-size:13px;line-height:1.8;">
+            <strong style="color:#3fb950;">When:</strong> Saturday · 5:30 AM<br/>
+            <strong style="color:#3fb950;">Where:</strong> ${data.location || "Your local chapter"}<br/>
+            <strong style="color:#3fb950;">What to bring:</strong> Nothing. Just yourself.
+          </p>
+        </div>
+        <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
+          XI · MĀKOA ORDER · THE WEIGHT ROOM
+        </p>
+      </div>
+    `,
+  }),
+
+  // WELCOME DRIP — Day 7 (dues decision)
+  welcome_day7: (data) => ({
+    subject: "Day 7 — Your founding rate expires soon.",
+    html: `
+      <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="width:48px;height:48px;border-radius:50%;border:1.5px solid #b08e50;margin:0 auto 16px;"></div>
+          <p style="color:#b08e50;font-size:12px;letter-spacing:4px;">DAY 7 · THE COMMITMENT</p>
+        </div>
+        <p style="color:#e8e0d0;font-size:18px;font-style:italic;text-align:center;margin-bottom:24px;">
+          ${data.name || "Brother"} — one week in.
+        </p>
+        <p style="color:rgba(232,224,208,0.6);font-size:14px;line-height:1.8;margin-bottom:16px;">
+          You've been inside the Order for 7 days. You've seen the circle.
+          You know what this is. Now it's time to decide.
+        </p>
+        <div style="margin:20px 0;padding:20px;border:1px solid rgba(176,142,80,0.2);border-radius:8px;background:rgba(176,142,80,0.04);text-align:center;">
+          <p style="color:#b08e50;font-size:24px;font-weight:bold;margin-bottom:4px;">$497/year</p>
+          <p style="color:rgba(232,224,208,0.5);font-size:13px;margin-bottom:12px;">Founding rate — locked for life.<br/>Standard rate after founding: $997/year.</p>
+          <p style="color:rgba(232,224,208,0.4);font-size:12px;">25% down today: $124.25 · then $31.06/mo</p>
+        </div>
+        <div style="text-align:center;margin-top:24px;">
+          <a href="https://wild-sloth-yawn.vercel.app/accepted" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#b08e50,#8a6d3b);color:#000;font-weight:bold;text-decoration:none;font-size:12px;letter-spacing:3px;border-radius:6px;">LOCK MY FOUNDING RATE</a>
+        </div>
+        <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
+          XI · MĀKOA ORDER · EST. 2026
+        </p>
+      </div>
+    `,
+  }),
+
   // Hotel block request
   hotel_block: (data) => ({
     subject: `Group Block Request — Mākoa Order — May 1-3, 2026`,

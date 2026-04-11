@@ -394,7 +394,7 @@ export default function AliiPortal() {
               {[
                 { step: "1", text: "Download Zello on your device" },
                 { step: "2", text: "Search channel: MAKOA-808-COMMAND" },
-                { step: "3", text: "Request access — XI approves within 24hrs" },
+                { step: "3", text: "Request access — XI processes instantly" },
                 { step: "4", text: "Use your handle as your Zello username" },
               ].map(s => (
                 <div key={s.step} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>

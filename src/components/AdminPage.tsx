@@ -8,6 +8,7 @@ import MentorBoardTab from "./admin/MentorBoardTab";
 import CirclePartnersTab from "./admin/CirclePartnersTab";
 import RouteTrackingTab from "./admin/RouteTrackingTab";
 import XiPostOfficeTab from "./admin/XiPostOfficeTab";
+import ImpactDashboardTab from "./admin/ImpactDashboardTab";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -81,6 +82,7 @@ const ALL_TABS = [
   "Log",
   "Newsletter",
   "Compliance",
+  "Impact",
   "Revenue",
 ] as const;
 type Tab = typeof ALL_TABS[number];
@@ -326,6 +328,9 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
             {/* XI POST OFFICE */}
             {tab === "XI Mail" && <XiPostOfficeTab />}
+
+            {/* IMPACT DASHBOARD */}
+            {tab === "Impact" && <ImpactDashboardTab />}
 
             {/* MEMBERS TAB */}
             {tab === "Members" && (

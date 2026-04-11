@@ -70,7 +70,7 @@ const DAILY_SCHEDULE: Record<number, { label: string; lead: string; type: "chief
     color: GOLD,
     sessions: [
       { time: "4:00 AM", name: "Week Close", desc: "Final review of the week. What held. What didn't. What the order needs." },
-      { time: "4:30 AM", name: "Steward Dispatch", desc: "XI sends weekly brief to all tier channels. Newsletter approved and sent." },
+      { time: "4:30 AM", name: "Weekly Dispatch", desc: "XI sends weekly brief to all tier channels. Newsletter generated and distributed." },
       { time: "5:00 AM", name: "Oath Renewal", desc: "Chief Makoa closes the week with the order's oath. Spoken aloud." },
       { time: "5:30 AM", name: "Closed", desc: "Command center goes dark until Monday." },
     ],

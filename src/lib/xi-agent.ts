@@ -75,6 +75,61 @@ function scoreTier(score: number): string {
   return "nakoa";
 }
 
+// ─── Crisis Detection (Q8) ──────────────────────────────────────────────────
+// Evidence-based keyword detection for "What keeps you up at night?"
+// Protocol: AI detects + displays resources. Human Crisis Steward follows up.
+const CRISIS_KEYWORDS = [
+  "suicide", "suicidal", "kill myself", "end it", "end my life", "don't want to live",
+  "want to die", "better off dead", "no reason to live", "can't go on",
+  "self harm", "self-harm", "cutting", "hurt myself",
+  "overdose", "od", "pills",
+  "gun", "weapon", "bridge", "jump",
+  "abuse", "hitting me", "beats me", "domestic",
+  "homeless", "on the street", "nowhere to go",
+  "drinking every", "can't stop drinking", "addicted", "addiction",
+  "relapse", "using again",
+];
+
+const DISTRESS_KEYWORDS = [
+  "divorce", "lost everything", "custody", "can't sleep",
+  "alone", "nobody", "no one cares", "invisible",
+  "broke", "bankrupt", "debt",
+  "fired", "laid off", "lost my job",
+  "wife left", "she left", "she's gone",
+  "my kids", "can't see my kids",
+  "depressed", "depression", "anxiety",
+  "ptsd", "combat", "deployment",
+  "prison", "incarcerated", "felony",
+];
+
+export type CrisisFlag = {
+  level: "crisis" | "distress" | "none";
+  keywords_found: string[];
+};
+
+export function detectCrisis(q8: string): CrisisFlag {
+  const text = (q8 || "").toLowerCase();
+  const crisisHits = CRISIS_KEYWORDS.filter(k => text.includes(k));
+  if (crisisHits.length > 0) {
+    return { level: "crisis", keywords_found: crisisHits };
+  }
+  const distressHits = DISTRESS_KEYWORDS.filter(k => text.includes(k));
+  if (distressHits.length > 0) {
+    return { level: "distress", keywords_found: distressHits };
+  }
+  return { level: "none", keywords_found: [] };
+}
+
+// Crisis resources — auto-displayed when crisis detected
+export const CRISIS_RESOURCES = {
+  "988 Suicide & Crisis Lifeline": "Call or text 988",
+  "Crisis Text Line": "Text HOME to 741741",
+  "SAMHSA National Helpline": "1-800-662-4357 (free, 24/7)",
+  "Veterans Crisis Line": "Call 988, press 1",
+  "Hawaii CARES Crisis Line": "1-800-753-6879",
+  "Aloha United Way 211": "Dial 211",
+};
+
 // ─── Main XI Agent Call ───────────────────────────────────────────────────────
 export async function callXIAgent(submission: XISubmission): Promise<XIResponse> {
   const apiKey = process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY;
@@ -258,7 +313,8 @@ export const XI_WORKFLOW_STATUS = {
   eventCheckout: { status: "ACTIVE", skill: "xi-checkout.skill.md", tiers: ["nakoa", "mana", "alii", "war-party"] },
   paymentSuccess: { status: "ACTIVE", skill: "xi-checkout.skill.md", buttons: ["telegram", "return-home"] },
   signal808: { status: "MANUAL", skill: "xi-808-signal.skill.md", note: "Telegram auto-add not yet built" },
-  seatCounter: { status: "NOT_BUILT", skill: "xi-checkout.skill.md", note: "Supabase seat counter needed" },
-  stripeWebhook: { status: "NOT_BUILT", skill: "xi-checkout.skill.md", note: "Webhook for auto-confirmation needed" },
-  emailConfirmation: { status: "NOT_BUILT", skill: "xi-checkout.skill.md", note: "Post-payment email not wired" },
+  seatCounter: { status: "ACTIVE", skill: "xi-checkout.skill.md", note: "Webhook increments seats on checkout.session.completed" },
+  stripeWebhook: { status: "ACTIVE", skill: "xi-checkout.skill.md", note: "Webhook at /api/webhook — needs signing secret in Vercel" },
+  emailConfirmation: { status: "ACTIVE", skill: "xi-checkout.skill.md", note: "8 templates in XI Post Office — needs Resend API key" },
+  crisisDetection: { status: "ACTIVE", skill: "xi-chief-makoa.skill.md", note: "Q8 crisis keyword detection + resource display" },
 } as const;
