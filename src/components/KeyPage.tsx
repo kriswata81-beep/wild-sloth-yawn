@@ -153,7 +153,7 @@ export default function KeyPage({ onEnter }: KeyPageProps) {
           textTransform: "uppercase",
           marginTop: "4px",
         }}>
-          The Order · Est. May 1, 2025
+          The Order · Est. May 1, 2026
         </p>
       </div>
 
