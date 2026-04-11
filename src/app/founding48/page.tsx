@@ -223,24 +223,30 @@ function PricingBlock({
 }
 
 const TIMELINE = [
-  { time: "Friday · 5:00 PM", event: "Gates Open", detail: "Check-in begins. Brothers arrive. The 48 starts." },
-  { time: "Friday · 6:00 PM", event: "War Room Roll Call", detail: "All brothers seated. XI opens the founding session." },
-  { time: "Friday · 9:00 PM", event: "Brotherhood Circle", detail: "First circle. Men speak. No performance. Just truth." },
+  // FRIDAY — ALI'I & MANA CHECK-IN
+  { time: "Friday · 5:00 PM", event: "Gates Open", detail: "Ali'i and Mana class check-in. Co-founders and founding brothers arrive at Embassy Suites Kapolei." },
+  { time: "Friday · 6:00 PM", event: "War Room Roll Call", detail: "Ali'i and Mana seated. XI opens the founding session. This is where the order begins." },
+  { time: "Friday · 9:00 PM", event: "Brotherhood Circle", detail: "First circle. Lite pūpū. Men speak. No performance. Just truth. No phones." },
+  // SATURDAY — THE FORGE
   { time: "Saturday · 3:00 AM", event: "Wake Call", detail: "The van is running. No alarm needed. You know." },
   { time: "Saturday · 3:33 AM", event: "In the Van", detail: "Brothers moving in the dark. West Oahu. The coast." },
   { time: "Saturday · 4:00 AM", event: "Ice Bath", detail: "The Flower Moon sets over the Pacific. You go in." },
   { time: "Saturday · 5:30 AM", event: "The Weight Room", detail: "Not iron — emotional weight. Guided circle: 'What I've been carrying alone.' No phones. No recording. What's said stays in the circle." },
   { time: "Saturday · 7:00 AM", event: "Morning Formation", detail: "Oath. Silence. The sun rises over the Ko'olau." },
-  { time: "Saturday · 9:00 AM", event: "The Blueprint", detail: "How the order works. Dues, service routes, ranks, the 808 network. Your path forward." },
+  { time: "Saturday · 9:00 AM", event: "The War Room — Order & Formation", detail: "The 5D space. How the order works — dues, ranks, the 808 network. Formation structure. This is where all the realms are proved." },
   { time: "Saturday · 11:00 AM", event: "Team Formation", detail: "War parties assigned. Brothers paired. Your team for the next 90 days." },
   { time: "Saturday · 1:00 PM", event: "Service Route Workshop", detail: "Trade academies. Skills. Business. What each team builds." },
-  { time: "Saturday · 4:00 PM", event: "Free Time", detail: "Beach. Explore Kapolei. Rest. Bond with your brothers." },
-  { time: "Saturday · 6:00 PM", event: "The Council", detail: "First Ali'i council session. 12 seats. The order's direction is set here." },
-  { time: "Saturday · 8:00 PM", event: "Founding Dinner", detail: "Brothers at the table. No phones. Just presence." },
+  { time: "Saturday · 2:00 PM", event: "Free Time", detail: "Beach. Explore Kapolei. Rest. Bond with your brothers." },
+  { time: "Saturday · 6:00 PM", event: "Ali'i Fire Ceremony", detail: "Co-founders and Ali'i class only. Small fire ceremony. The charter is sealed. The order is founded." },
+  { time: "Saturday · 7:00 PM", event: "Bonfire · All Classes", detail: "Mana and Nā Koa join. Open bonfire. Lite pūpū. Stories. The brotherhood is one." },
+  // SUNDAY — THE FOUNDING
   { time: "Sunday · 4:00 AM", event: "Ice Bath — Day 2", detail: "Who comes back? The ice reveals character on the second morning." },
   { time: "Sunday · 5:30 AM", event: "Sunrise Commitments", detail: "90-day commitments set. Each brother declares what he will build." },
-  { time: "Sunday · 9:00 AM", event: "The Stones", detail: "Each brother receives his rank stone. Your place in the order is sealed." },
-  { time: "Sunday · 10:00 AM", event: "The Send", detail: "Final circle. Departure blessing. The founding fire never goes out." },
+  { time: "Sunday · 9:00 AM", event: "The War Room — Co-Founders Charter", detail: "Ali'i and Mana class. Co-founders charter signed. Mākoa B2B, B2C, and P2P worldwide operations. Academies, Akamai Awards for Nā Koa class." },
+  { time: "Sunday · 12:00 PM", event: "The Stones", detail: "Each brother receives his rank stone and challenge coin. Your place in the order is sealed." },
+  { time: "Sunday · 2:00 PM", event: "Mana & Nā Koa Pūpū Party", detail: "Mana class founders host. Nā Koa class welcome. Casual, no reservations needed — Kapolei town, brother-hosted." },
+  { time: "Sunday · 5:00 PM", event: "Founding Dinner — Ali'i Table", detail: "Co-founders and Ali'i class at the table. The last meal as the founding council. No phones. Just presence." },
+  { time: "Sunday · 8:00 PM", event: "The Send", detail: "All classes. Final circle. Bonfire. Departure blessing. The founding fire never goes out." },
 ];
 
 const TEAM_PACKS = [

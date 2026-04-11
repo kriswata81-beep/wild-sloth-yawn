@@ -7,6 +7,7 @@ import SocialSchedulerTab from "./admin/SocialSchedulerTab";
 import MentorBoardTab from "./admin/MentorBoardTab";
 import CirclePartnersTab from "./admin/CirclePartnersTab";
 import RouteTrackingTab from "./admin/RouteTrackingTab";
+import XiPostOfficeTab from "./admin/XiPostOfficeTab";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -71,6 +72,7 @@ const ALL_TABS = [
   "Mentors",
   "Circle",
   "Routes",
+  "XI Mail",
   "Members",
   "Pledges",
   "Houses",
@@ -246,7 +248,7 @@ export default function AdminPage({ onExit }: AdminPageProps) {
       }}>
         {ALL_TABS.map(t => {
           const isActive = tab === t;
-          const isNew = ["Command", "808 Channels", "Social", "Mentors", "Circle", "Routes"].includes(t);
+          const isNew = ["Command", "808 Channels", "Social", "Mentors", "Circle", "Routes", "XI Mail"].includes(t);
           return (
             <button
               key={t}
@@ -286,7 +288,7 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
       {/* Content */}
       <div style={{ padding: "20px 16px", maxWidth: "960px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-        {loading && tab !== "Command" && tab !== "808 Channels" && tab !== "Social" && tab !== "Mentors" && tab !== "Circle" && tab !== "Routes" ? (
+        {loading && tab !== "Command" && tab !== "808 Channels" && tab !== "Social" && tab !== "Mentors" && tab !== "Circle" && tab !== "Routes" && tab !== "XI Mail" ? (
           <p style={{ color: GOLD_DIM, fontSize: "0.52rem", textAlign: "center", padding: "40px" }}>
             Loading...
           </p>
@@ -321,6 +323,9 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
             {/* ROUTE TRACKING */}
             {tab === "Routes" && <RouteTrackingTab />}
+
+            {/* XI POST OFFICE */}
+            {tab === "XI Mail" && <XiPostOfficeTab />}
 
             {/* MEMBERS TAB */}
             {tab === "Members" && (
