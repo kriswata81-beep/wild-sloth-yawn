@@ -329,28 +329,90 @@ export default function GatePageRoute() {
 
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "0 20px" }}>
 
-        {/* ── WHAT IS MĀKOA — PLAIN LANGUAGE ───────────────────────────────── */}
-        <div style={{
-          padding: "28px 20px", margin: "24px 0",
-          background: "rgba(176,142,80,0.04)", border: `1px solid ${GOLD_20}`, borderRadius: 10,
+        {/* ── BRUTAL CLEAR LINE — What this is ──────────────────────────────── */}
+        <p style={{
+          color: "rgba(232,224,208,0.7)", fontSize: "0.88rem", lineHeight: 1.7,
+          textAlign: "center", padding: "28px 8px 0", margin: 0,
         }}>
-          <p style={{ color: GOLD, fontSize: "0.85rem", fontWeight: 700, marginBottom: 10, letterSpacing: "0.05em" }}>
-            What is Mākoa?
-          </p>
-          <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.82rem", lineHeight: 1.8, marginBottom: 14 }}>
-            A private men&apos;s brotherhood. Weekly healing circles. Ice baths at 4am.
-            Trade skills. Service routes. A founding event in Hawaiʻi — May 2026.
-          </p>
+          A private brotherhood and training system based in West Oahu.
+          Apply below. If accepted, you get access to events, training, and founding membership for life.
+        </p>
+
+        {/* ── GROUNDING ELEMENT — Real place, real people ──────────────────── */}
+        <div style={{
+          display: "flex", justifyContent: "center", alignItems: "center", gap: 6,
+          padding: "14px 0 24px", flexWrap: "wrap",
+        }}>
+          <span style={{ color: GOLD, fontSize: "0.44rem", letterSpacing: "0.1em" }}>📍 Kapolei, Oʻahu</span>
+          <span style={{ color: "rgba(176,142,80,0.2)" }}>·</span>
+          <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.44rem" }}>Real location</span>
+          <span style={{ color: "rgba(176,142,80,0.2)" }}>·</span>
+          <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.44rem" }}>Real men</span>
+          <span style={{ color: "rgba(176,142,80,0.2)" }}>·</span>
+          <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.44rem" }}>Real training</span>
+          <span style={{ color: "rgba(176,142,80,0.2)" }}>·</span>
+          <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.44rem" }}>Lifetime membership</span>
+        </div>
+
+        {/* ── WHAT YOU GET — Plain language ─────────────────────────────────── */}
+        <div style={{
+          background: "rgba(176,142,80,0.04)", border: `1px solid ${GOLD_20}`, borderRadius: 10,
+          padding: "22px 20px", marginBottom: 24,
+        }}>
+          <p style={{ color: GOLD, fontSize: "0.5rem", letterSpacing: "0.18em", fontWeight: 700, marginBottom: 14 }}>WHAT YOU GET AS A FOUNDING MEMBER</p>
           <div style={{ display: "grid", gap: 8 }}>
             {[
-              { step: "1", text: "Answer 12 questions below (3 min)" },
-              { step: "2", text: "XI reviews your answers and places you in a class" },
-              { step: "3", text: "Pay $9.99 gate entry to confirm you're serious" },
-              { step: "4", text: "Receive your founding member instructions" },
+              "Weekly 4am ice bath + healing circle (The Weight Room)",
+              "Weekly warrior training — fitness, skills, route strategy",
+              "Monthly full moon brotherhood gathering (72 hours)",
+              "Access to the Mākoa 808 network — brothers worldwide",
+              "Service route income (you keep 80% of what you earn)",
+              "Trade skill training through Nā Koa Academy",
+              "Founding member status — locked for life, never repeated",
+              "MAYDAY Summit Founders Event — May 2026, Kapolei",
+            ].map(item => (
+              <div key={item} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                <span style={{ color: GREEN, fontSize: "0.65rem", flexShrink: 0, marginTop: 1 }}>✓</span>
+                <span style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.76rem", lineHeight: 1.5 }}>{item}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{
+            marginTop: 16, padding: "12px 14px",
+            background: "rgba(0,0,0,0.3)", border: `1px solid ${GOLD_10}`, borderRadius: 6,
+            textAlign: "center",
+          }}>
+            <p style={{ color: GOLD, fontSize: "0.78rem", fontWeight: 700, marginBottom: 2 }}>$497/year · Founding rate locked for life</p>
+            <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.62rem" }}>Standard rate after MAYDAY: $997/year. You will never pay that.</p>
+          </div>
+        </div>
+
+        {/* ── THE PATH — 4 steps, no confusion ─────────────────────────────── */}
+        <div style={{
+          border: `1px solid rgba(255,255,255,0.06)`, borderRadius: 10,
+          padding: "22px 20px", marginBottom: 28,
+        }}>
+          <p style={{ color: GOLD, fontSize: "0.5rem", letterSpacing: "0.18em", fontWeight: 700, marginBottom: 14 }}>HOW TO JOIN — ONE PATH</p>
+          <div style={{ display: "grid", gap: 14 }}>
+            {[
+              { num: "1", text: "Answer 12 questions below", sub: "Takes 3 minutes. Be honest — this is how XI places you." },
+              { num: "2", text: "XI reviews and places you in a class", sub: "Ali'i (leaders), Mana (builders), or Nā Koa (warriors)." },
+              { num: "3", text: "Pay $9.99 gate entry to confirm", sub: "This is not a donation. This is your entry into the order." },
+              { num: "4", text: "Receive founding member access", sub: "Event details, Mākoa 808 brotherhood channel, and payment instructions for annual dues." },
             ].map(s => (
-              <div key={s.step} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                <span style={{ color: GOLD, fontSize: "0.75rem", fontWeight: 700, flexShrink: 0, width: 20 }}>{s.step}.</span>
-                <span style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.78rem", lineHeight: 1.5 }}>{s.text}</span>
+              <div key={s.num} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+                <div style={{
+                  width: 28, height: 28, borderRadius: "50%",
+                  background: `${GOLD}15`, border: `1px solid ${GOLD}40`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  flexShrink: 0, marginTop: 2,
+                }}>
+                  <span style={{ color: GOLD, fontSize: "0.72rem", fontWeight: 700 }}>{s.num}</span>
+                </div>
+                <div>
+                  <p style={{ color: "#e8e0d0", fontSize: "0.78rem", fontWeight: 600, marginBottom: 2 }}>{s.text}</p>
+                  <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.65rem", lineHeight: 1.5 }}>{s.sub}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -460,24 +522,24 @@ export default function GatePageRoute() {
           </div>
 
           <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.46rem", textAlign: "center" }}>
-            Answer the 12 questions below → XI places you → $9.99 confirms your seat.
+            Founding membership + event access unlocked after application.
           </p>
         </div>
 
-        {/* ── CTA → SCROLL TO QUESTIONS ─────────────────────────────────────── */}
+        {/* ── CTA → SCROLL TO QUESTIONS (ONE PRIMARY ACTION) ─────────────── */}
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <button
             onClick={scrollToQuestions}
             style={{
               background: GOLD, color: "#000", border: "none",
-              padding: "16px 32px", fontSize: "0.56rem", letterSpacing: "0.22em",
-              cursor: "pointer", borderRadius: 6, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
+              padding: "18px 32px", fontSize: "0.62rem", letterSpacing: "0.2em",
+              cursor: "pointer", borderRadius: 8, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
               width: "100%",
             }}
           >
-            TELL XI WHO YOU ARE
+            START YOUR APPLICATION
           </button>
-          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>12 questions · takes 3 minutes</p>
+          <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", marginTop: 10 }}>12 questions · 3 minutes · one path in</p>
         </div>
 
         {/* ── THE 12 QUESTIONS ─────────────────────────────────────────────── */}
@@ -549,44 +611,25 @@ export default function GatePageRoute() {
             <TextQ placeholder="One word." value={q12} onChange={setQ12} />
           </QBlock>
 
-          {/* ── PLEDGE CTA ─────────────────────────────────────────────────── */}
+          {/* ── PLEDGE CTA — ONE ACTION ─────────────────────────────────── */}
           <button
             onClick={() => setPledgeOpen(true)}
             style={{
               width: "100%", background: GOLD, color: "#000",
-              border: "none", padding: "16px", fontSize: "0.58rem",
-              letterSpacing: "0.22em", cursor: "pointer", borderRadius: 6,
+              border: "none", padding: "18px", fontSize: "0.62rem",
+              letterSpacing: "0.2em", cursor: "pointer", borderRadius: 8,
               fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 8, marginBottom: 32,
+              marginTop: 8, marginBottom: 12,
             }}
           >
-            SEND MY ANSWERS TO XI
+            SUBMIT APPLICATION
           </button>
+          <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", textAlign: "center", marginBottom: 32 }}>
+            $9.99 gate entry · XI responds within moments · founding access unlocked after acceptance
+          </p>
         </div>
 
-        {/* ── TELEGRAM STRIP (Secondary — not competing with main CTA) ───── */}
-        <div style={{
-          background: "#080b10", border: "1px solid rgba(255,255,255,0.04)",
-          borderRadius: 8, padding: "12px 16px",
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-          marginBottom: 20,
-        }}>
-          <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", lineHeight: 1.5 }}>
-            Not ready to apply yet?<br />Follow updates on Telegram.
-          </p>
-          <a
-            href="https://t.me/+dsS4Mz0p5wM4OGYx"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              border: `1px solid rgba(88,166,255,0.3)`, color: "rgba(88,166,255,0.5)", fontSize: "0.38rem",
-              padding: "6px 12px", borderRadius: 4, textDecoration: "none",
-              letterSpacing: "0.1em", whiteSpace: "nowrap", flexShrink: 0,
-            }}
-          >
-            FOLLOW UPDATES
-          </a>
-        </div>
+        {/* Telegram access is given AFTER acceptance — not on the gate page */}
 
         {/* ── QR CODE ─────────────────────────────────────────────────────── */}
         <div style={{
