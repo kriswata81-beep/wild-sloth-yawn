@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
             mailPayload.to_email = applicant.email;
             mailPayload.to_name = applicant.full_name || handle;
 
-            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wild-sloth-yawn.vercel.app";
+            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://makoa.live";
             await fetch(`${baseUrl}/api/xi-mail`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -179,7 +179,7 @@ export async function POST(req: NextRequest) {
             .single();
 
           if (applicant?.email) {
-            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wild-sloth-yawn.vercel.app";
+            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://makoa.live";
             await fetch(`${baseUrl}/api/xi-mail`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -341,7 +341,7 @@ export async function POST(req: NextRequest) {
       // Send recovery email
       if (customerEmail) {
         try {
-          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wild-sloth-yawn.vercel.app";
+          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://makoa.live";
           const retryLink = `${baseUrl}/api/create-subscription?handle=${encodeURIComponent(handle || customerEmail)}`;
           await fetch(`${baseUrl}/api/xi-mail`, {
             method: "POST",
@@ -418,7 +418,7 @@ export async function POST(req: NextRequest) {
       // Send cancellation email
       if (customerEmail) {
         try {
-          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wild-sloth-yawn.vercel.app";
+          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://makoa.live";
           await fetch(`${baseUrl}/api/xi-mail`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

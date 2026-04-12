@@ -7,7 +7,7 @@ const SUPABASE_KEY =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZseml2amh4dGJvbGNmYW5pc2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NDcwNDMsImV4cCI6MjA5MTAyMzA0M30.sLLEl0hmMCbo-Ud18HdleJKrjTZ-mIiLdkwY7cfwGps";
 
-const XI_MAIL_URL = `${process.env.NEXT_PUBLIC_SITE_URL || "https://wild-sloth-yawn.vercel.app"}/api/xi-mail`;
+const XI_MAIL_URL = `${process.env.NEXT_PUBLIC_SITE_URL || "https://makoa.live"}/api/xi-mail`;
 
 // Drip windows: [hoursMin, hoursMax, flagColumn, templateId]
 const DRIP_WINDOWS = [

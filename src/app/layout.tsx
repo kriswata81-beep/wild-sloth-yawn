@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     siteName: "Mākoa Brotherhood",
     type: "website",
     locale: "en_US",
-    url: "https://makoa.org",
+    url: "https://makoa.live",
     images: [
       {
         url: "/makoa_eclipse_crest.png",

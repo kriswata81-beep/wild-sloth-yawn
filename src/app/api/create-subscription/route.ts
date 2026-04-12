@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       "price_monthly_3106";
 
     const baseUrl =
-      process.env.NEXT_PUBLIC_SITE_URL || "https://wild-sloth-yawn.vercel.app";
+      process.env.NEXT_PUBLIC_SITE_URL || "https://makoa.live";
 
     // Find existing Stripe customer by email, or create a new one
     let customerId: string;

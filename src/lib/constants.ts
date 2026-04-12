@@ -4,7 +4,7 @@
 
 // ─── Links ──────────────────────────────────────────────────────────────────
 export const TELEGRAM_GROUP = "https://t.me/+dsS4Mz0p5wM4OGYx";
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://wild-sloth-yawn.vercel.app";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://makoa.live";
 export const SUPPORT_EMAIL = "wakachief@gmail.com";
 
 // ─── MAYDAY Event ───────────────────────────────────────────────────────────

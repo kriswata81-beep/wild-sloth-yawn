@@ -30,7 +30,7 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
           May 1–3, 2026 · Kapolei, Hawai'i
         </p>
         <div style="text-align:center;margin-top:32px;">
-          <a href="https://wild-sloth-yawn.vercel.app/gate" style="display:inline-block;padding:12px 28px;border:1px solid rgba(176,142,80,0.4);color:#b08e50;text-decoration:none;font-size:12px;letter-spacing:3px;">ENTER THE GATE</a>
+          <a href="https://makoa.live/gate" style="display:inline-block;padding:12px 28px;border:1px solid rgba(176,142,80,0.4);color:#b08e50;text-decoration:none;font-size:12px;letter-spacing:3px;">ENTER THE GATE</a>
         </div>
         <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
           XI · MĀKOA ORDER · EST. 2026
@@ -321,7 +321,7 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
           </p>
         </div>
         <div style="text-align:center;margin-top:24px;">
-          <a href="https://wild-sloth-yawn.vercel.app/gatherings" style="display:inline-block;padding:12px 28px;border:1px solid rgba(176,142,80,0.4);color:#b08e50;text-decoration:none;font-size:12px;letter-spacing:3px;">SEE THE GATHERINGS</a>
+          <a href="https://makoa.live/gatherings" style="display:inline-block;padding:12px 28px;border:1px solid rgba(176,142,80,0.4);color:#b08e50;text-decoration:none;font-size:12px;letter-spacing:3px;">SEE THE GATHERINGS</a>
         </div>
         <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
           XI · MĀKOA ORDER · EST. 2026
@@ -389,7 +389,7 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
           <p style="color:rgba(232,224,208,0.4);font-size:12px;">25% down today: $124.25 · then $31.06/mo</p>
         </div>
         <div style="text-align:center;margin-top:24px;">
-          <a href="https://wild-sloth-yawn.vercel.app/accepted" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#b08e50,#8a6d3b);color:#000;font-weight:bold;text-decoration:none;font-size:12px;letter-spacing:3px;border-radius:6px;">LOCK MY FOUNDING RATE</a>
+          <a href="https://makoa.live/accepted" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#b08e50,#8a6d3b);color:#000;font-weight:bold;text-decoration:none;font-size:12px;letter-spacing:3px;border-radius:6px;">LOCK MY FOUNDING RATE</a>
         </div>
         <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
           XI · MĀKOA ORDER · EST. 2026
