@@ -2,6 +2,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { PRODUCTS, ProductId } from "@/lib/stripe";
+import SocialFooter from "@/components/SocialFooter";
 
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
@@ -520,6 +521,10 @@ function PaymentSuccessContent() {
           >
             MĀKOA ORDER · MALU TRUST · WEST OAHU · 2026
           </p>
+        </div>
+
+        <div style={{ marginTop: 32 }}>
+          <SocialFooter />
         </div>
       </div>
     </div>

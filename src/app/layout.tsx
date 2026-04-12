@@ -2,20 +2,42 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MĀKOA — Under the Malu",
-  description: "Mākoa Brotherhood Order. Men who build. Men who stand. West Oahu, Hawaiʻi. MAYDAY Summit Founders Event — May 2026.",
-  keywords: ["Mākoa", "brotherhood", "men", "Hawaii", "MAYDAY", "fraternal order", "ice bath", "healing circle"],
+  title: "Mākoa Brotherhood — West Oʻahu's Founding Order",
+  description:
+    "A private brotherhood and training system. 52 weekly trainings, 12 monthly gatherings, 808 emergency channels. Founded by warriors, for warriors.",
+  keywords: [
+    "Mākoa",
+    "brotherhood",
+    "men",
+    "Hawaii",
+    "MAYDAY",
+    "fraternal order",
+    "ice bath",
+    "healing circle",
+  ],
   openGraph: {
-    title: "MĀKOA — Under the Malu",
-    description: "The war is against silence. The enemy is isolation. The weapon is brotherhood.",
-    siteName: "Mākoa Order",
+    title: "Mākoa Brotherhood — West Oʻahu's Founding Order",
+    description:
+      "A private brotherhood and training system. 52 weekly trainings, 12 monthly gatherings, 808 emergency channels. Founded by warriors, for warriors.",
+    siteName: "Mākoa Brotherhood",
     type: "website",
     locale: "en_US",
+    url: "https://makoa.org",
+    images: [
+      {
+        url: "/makoa_eclipse_crest.png",
+        width: 1200,
+        height: 630,
+        alt: "Mākoa Brotherhood Crest",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MĀKOA — Under the Malu",
-    description: "The war is against silence. The enemy is isolation. The weapon is brotherhood.",
+    title: "Mākoa Brotherhood — West Oʻahu's Founding Order",
+    description:
+      "A private brotherhood and training system. 52 weekly trainings, 12 monthly gatherings, 808 emergency channels. Founded by warriors, for warriors.",
+    images: ["/makoa_eclipse_crest.png"],
   },
   robots: {
     index: true,

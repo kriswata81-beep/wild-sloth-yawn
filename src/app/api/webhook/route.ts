@@ -243,6 +243,201 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // ── INVOICE PAID (recurring subscription payment succeeded) ──────────
+    if (event.type === "invoice.paid") {
+      const invoice = event.data.object as Stripe.Invoice;
+      const customerEmail = typeof invoice.customer_email === "string" ? invoice.customer_email : "";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const rawSub = (invoice as any).subscription;
+      const subscriptionId = typeof rawSub === "string" ? rawSub : "";
+      const amountPaid = invoice.amount_paid || 0;
+
+      // Try to resolve handle from subscription metadata
+      let handle = "";
+      if (subscriptionId) {
+        try {
+          const sub = await stripe.subscriptions.retrieve(subscriptionId);
+          handle = sub.metadata?.handle || "";
+        } catch {
+          // non-fatal
+        }
+      }
+
+      console.log(`[webhook] Invoice paid: ${invoice.id} | ${customerEmail} | Handle: ${handle} | Amount: ${amountPaid}`);
+
+      // Upsert payment record as paid
+      try {
+        const { error: upsertError } = await supabase.from("payments").insert({
+          handle: handle || customerEmail,
+          amount: amountPaid,
+          payment_type: "subscription",
+          payment_status: "paid",
+          stripe_session_id: invoice.id,
+          notes_internal: `Invoice paid | Subscription: ${subscriptionId} | Email: ${customerEmail}`,
+        });
+
+        if (upsertError) {
+          console.error("[webhook] Failed to insert invoice payment:", upsertError);
+        }
+      } catch (dbErr) {
+        console.warn("[webhook] Supabase invoice insert failed (non-fatal):", dbErr);
+      }
+
+      // Audit log
+      try {
+        await supabase.from("webhook_events").insert({
+          event_id: event.id,
+          event_type: event.type,
+          product_id: "MONTHLY_SUB",
+          handle: handle || customerEmail,
+          stripe_session_id: invoice.id,
+          amount: amountPaid,
+          status: "processed",
+        });
+      } catch {
+        // non-fatal
+      }
+    }
+
+    // ── INVOICE PAYMENT FAILED (recurring subscription payment failed) ───
+    if (event.type === "invoice.payment_failed") {
+      const invoice = event.data.object as Stripe.Invoice;
+      const customerEmail = typeof invoice.customer_email === "string" ? invoice.customer_email : "";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const rawSub = (invoice as any).subscription;
+      const subscriptionId = typeof rawSub === "string" ? rawSub : "";
+      const amountDue = invoice.amount_due || 0;
+
+      let handle = "";
+      if (subscriptionId) {
+        try {
+          const sub = await stripe.subscriptions.retrieve(subscriptionId);
+          handle = sub.metadata?.handle || "";
+        } catch {
+          // non-fatal
+        }
+      }
+
+      console.warn(`[webhook] Invoice payment failed: ${invoice.id} | ${customerEmail} | Handle: ${handle}`);
+
+      // Update payment record to failed
+      try {
+        const { error: updateError } = await supabase.from("payments").insert({
+          handle: handle || customerEmail,
+          amount: amountDue,
+          payment_type: "subscription",
+          payment_status: "failed",
+          stripe_session_id: invoice.id,
+          notes_internal: `Invoice payment failed | Subscription: ${subscriptionId} | Email: ${customerEmail}`,
+        });
+
+        if (updateError) {
+          console.error("[webhook] Failed to insert failed invoice payment:", updateError);
+        }
+      } catch (dbErr) {
+        console.warn("[webhook] Supabase failed invoice insert (non-fatal):", dbErr);
+      }
+
+      // Send recovery email
+      if (customerEmail) {
+        try {
+          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wild-sloth-yawn.vercel.app";
+          const retryLink = `${baseUrl}/api/create-subscription?handle=${encodeURIComponent(handle || customerEmail)}`;
+          await fetch(`${baseUrl}/api/xi-mail`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              template_id: "payment_recovery",
+              to_name: handle || "Brother",
+              to_email: customerEmail,
+              variables: {
+                handle: handle || "Brother",
+                retry_link: retryLink,
+                amount: (amountDue / 100).toFixed(2),
+              },
+            }),
+          });
+          console.log(`[webhook] Payment recovery email sent to: ${customerEmail}`);
+        } catch (mailErr) {
+          console.warn("[webhook] Recovery email failed (non-fatal):", mailErr);
+        }
+      }
+
+      // Audit log
+      try {
+        await supabase.from("webhook_events").insert({
+          event_id: event.id,
+          event_type: event.type,
+          product_id: "MONTHLY_SUB",
+          handle: handle || customerEmail,
+          stripe_session_id: invoice.id,
+          amount: amountDue,
+          status: "failed",
+        });
+      } catch {
+        // non-fatal
+      }
+    }
+
+    // ── SUBSCRIPTION CANCELLED ───────────────────────────────────────────
+    if (event.type === "customer.subscription.deleted") {
+      const subscription = event.data.object as Stripe.Subscription;
+      const handle = subscription.metadata?.handle || "";
+      const customerId = typeof subscription.customer === "string" ? subscription.customer : "";
+
+      console.warn(`[webhook] Subscription cancelled: ${subscription.id} | Handle: ${handle}`);
+
+      // Try to find customer email for notification
+      let customerEmail = "";
+      if (customerId) {
+        try {
+          const customer = await stripe.customers.retrieve(customerId);
+          if (!customer.deleted && customer.email) {
+            customerEmail = customer.email;
+          }
+        } catch {
+          // non-fatal
+        }
+      }
+
+      // Audit log
+      try {
+        await supabase.from("webhook_events").insert({
+          event_id: event.id,
+          event_type: event.type,
+          product_id: "MONTHLY_SUB",
+          handle: handle || customerEmail,
+          stripe_session_id: subscription.id,
+          amount: 0,
+          status: "cancelled",
+        });
+      } catch {
+        // non-fatal
+      }
+
+      // Send cancellation email
+      if (customerEmail) {
+        try {
+          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wild-sloth-yawn.vercel.app";
+          await fetch(`${baseUrl}/api/xi-mail`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              template_id: "subscription_cancelled",
+              to_name: handle || "Brother",
+              to_email: customerEmail,
+              variables: {
+                handle: handle || "Brother",
+              },
+            }),
+          });
+          console.log(`[webhook] Subscription cancelled email sent to: ${customerEmail}`);
+        } catch (mailErr) {
+          console.warn("[webhook] Cancellation email failed (non-fatal):", mailErr);
+        }
+      }
+    }
+
     return NextResponse.json({ received: true });
   } catch (err) {
     console.error("[webhook] Unhandled error:", err);

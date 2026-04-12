@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import SocialFooter from "@/components/SocialFooter";
 
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
@@ -218,6 +219,10 @@ export default function Home() {
         <p style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.36rem", letterSpacing: "0.15em", margin: 0 }}>
           Malu Trust · West Oahu · 2026
         </p>
+      </div>
+
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, opacity: ready ? 1 : 0, transition: "opacity 0.8s ease 1.2s" }}>
+        <SocialFooter />
       </div>
     </div>
   );

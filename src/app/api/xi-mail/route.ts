@@ -299,7 +299,7 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
 
   // WELCOME DRIP — Day 1 (after $9.99 gate entry)
   welcome_day1: (data) => ({
-    subject: "Day 1 — Your formation begins.",
+    subject: `Day 1 — Your Formation Begins, ${data.handle || data.name || "Brother"}`,
     html: `
       <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
         <div style="text-align:center;margin-bottom:32px;">
@@ -332,7 +332,7 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
 
   // WELCOME DRIP — Day 3
   welcome_day3: (data) => ({
-    subject: "Day 3 — Your first circle.",
+    subject: `Day 3 — The Path Ahead, ${data.handle || data.name || "Brother"}`,
     html: `
       <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
         <div style="text-align:center;margin-bottom:32px;">
@@ -340,19 +340,23 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
           <p style="color:#3fb950;font-size:12px;letter-spacing:4px;">DAY 3 · FIRST CIRCLE</p>
         </div>
         <p style="color:#e8e0d0;font-size:16px;text-align:center;margin-bottom:24px;">
-          ${data.name || "Brother"} — this Saturday, your seat is waiting.
+          ${data.name || "Brother"} — checking in.
         </p>
         <p style="color:rgba(232,224,208,0.6);font-size:14px;line-height:1.8;margin-bottom:16px;">
-          The Weight Room meets every Saturday at 5:30 AM. This is where brothers
-          carry what they cannot carry alone. You don't need to say anything your first time.
-          Just show up. Just be present.
+          Three days inside the Order. You walked through the gate when most men
+          scroll past. That says something about you. The path ahead is 90 days
+          of formation, a circle of brothers who hold each other accountable,
+          and MAYDAY 2026 — the founding summit in Kapolei, Hawai'i.
         </p>
         <div style="margin:20px 0;padding:16px;border:1px solid rgba(63,185,80,0.15);border-radius:6px;background:rgba(63,185,80,0.04);">
+          <p style="color:#3fb950;font-size:11px;letter-spacing:3px;margin-bottom:8px;">YOUR NEXT MOVE</p>
           <p style="color:rgba(232,224,208,0.5);font-size:13px;line-height:1.8;">
-            <strong style="color:#3fb950;">When:</strong> Saturday · 5:30 AM<br/>
-            <strong style="color:#3fb950;">Where:</strong> ${data.location || "Your local chapter"}<br/>
-            <strong style="color:#3fb950;">What to bring:</strong> Nothing. Just yourself.
+            Join the Telegram group. This is where the brotherhood lives between
+            gatherings — daily check-ins, accountability, and real talk.
           </p>
+        </div>
+        <div style="text-align:center;margin-top:24px;">
+          <a href="https://t.me/+makoaorder" style="display:inline-block;padding:12px 28px;border:1px solid rgba(63,185,80,0.4);color:#3fb950;text-decoration:none;font-size:12px;letter-spacing:3px;">JOIN TELEGRAM</a>
         </div>
         <p style="color:rgba(176,142,80,0.2);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
           XI · MĀKOA ORDER · THE WEIGHT ROOM
@@ -363,7 +367,7 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
 
   // WELCOME DRIP — Day 7 (dues decision)
   welcome_day7: (data) => ({
-    subject: "Day 7 — Your founding rate expires soon.",
+    subject: `Day 7 — Warriors Don't Wait, ${data.handle || data.name || "Brother"}`,
     html: `
       <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
         <div style="text-align:center;margin-bottom:32px;">
@@ -371,11 +375,13 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
           <p style="color:#b08e50;font-size:12px;letter-spacing:4px;">DAY 7 · THE COMMITMENT</p>
         </div>
         <p style="color:#e8e0d0;font-size:18px;font-style:italic;text-align:center;margin-bottom:24px;">
-          ${data.name || "Brother"} — one week in.
+          ${data.name || "Brother"} — warriors don't wait.
         </p>
         <p style="color:rgba(232,224,208,0.6);font-size:14px;line-height:1.8;margin-bottom:16px;">
-          You've been inside the Order for 7 days. You've seen the circle.
-          You know what this is. Now it's time to decide.
+          Seven days inside the Order. Seats at MAYDAY 2026 are filling.
+          The founding class is capped at 100 brothers — once it closes,
+          the gate locks and the founding rate disappears. This is not a
+          sales pitch. This is a countdown.
         </p>
         <div style="margin:20px 0;padding:20px;border:1px solid rgba(176,142,80,0.2);border-radius:8px;background:rgba(176,142,80,0.04);text-align:center;">
           <p style="color:#b08e50;font-size:24px;font-weight:bold;margin-bottom:4px;">$497/year</p>
