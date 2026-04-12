@@ -9,6 +9,10 @@ import CirclePartnersTab from "./admin/CirclePartnersTab";
 import RouteTrackingTab from "./admin/RouteTrackingTab";
 import XiPostOfficeTab from "./admin/XiPostOfficeTab";
 import ImpactDashboardTab from "./admin/ImpactDashboardTab";
+import FamilyOfficeTab from "./admin/FamilyOfficeTab";
+import AliiSelectionTab from "./admin/AliiSelectionTab";
+import KnowledgeGraphTab from "./admin/KnowledgeGraphTab";
+import WarRoomTab from "./admin/WarRoomTab";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -84,6 +88,10 @@ const ALL_TABS = [
   "Compliance",
   "Impact",
   "Revenue",
+  "Family Office",
+  "Ali'i Select",
+  "XI Graph",
+  "War Room",
 ] as const;
 type Tab = typeof ALL_TABS[number];
 
@@ -250,7 +258,7 @@ export default function AdminPage({ onExit }: AdminPageProps) {
       }}>
         {ALL_TABS.map(t => {
           const isActive = tab === t;
-          const isNew = ["Command", "808 Channels", "Social", "Mentors", "Circle", "Routes", "XI Mail"].includes(t);
+          const isNew = ["Command", "808 Channels", "Social", "Mentors", "Circle", "Routes", "XI Mail", "Family Office", "Ali'i Select", "XI Graph", "War Room"].includes(t);
           return (
             <button
               key={t}
@@ -290,7 +298,7 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
       {/* Content */}
       <div style={{ padding: "20px 16px", maxWidth: "960px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-        {loading && tab !== "Command" && tab !== "808 Channels" && tab !== "Social" && tab !== "Mentors" && tab !== "Circle" && tab !== "Routes" && tab !== "XI Mail" ? (
+        {loading && tab !== "Command" && tab !== "808 Channels" && tab !== "Social" && tab !== "Mentors" && tab !== "Circle" && tab !== "Routes" && tab !== "XI Mail" && tab !== "Family Office" && tab !== "Ali'i Select" && tab !== "XI Graph" && tab !== "War Room" ? (
           <p style={{ color: GOLD_DIM, fontSize: "0.52rem", textAlign: "center", padding: "40px" }}>
             Loading...
           </p>
@@ -509,6 +517,31 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
             {/* REVENUE TAB */}
             {tab === "Revenue" && <RevenueTab applicants={applicants} />}
+
+            {/* FAMILY OFFICE */}
+            {tab === "Family Office" && (
+              <FamilyOfficeTab
+                totalRevenue={totalRevenueMTD}
+                activeBrothers={activeMembers.length}
+                aliiCount={applicants.filter(a => a.tier === "alii").length}
+              />
+            )}
+
+            {/* ALI'I SELECTION */}
+            {tab === "Ali'i Select" && (
+              <AliiSelectionTab applicants={applicants} />
+            )}
+
+            {/* XI KNOWLEDGE GRAPH */}
+            {tab === "XI Graph" && (
+              <KnowledgeGraphTab
+                activeBrothers={activeMembers.length}
+                totalApplicants={applicants.length}
+              />
+            )}
+
+            {/* WAR ROOM PROTOCOL */}
+            {tab === "War Room" && <WarRoomTab />}
           </>
         )}
       </div>

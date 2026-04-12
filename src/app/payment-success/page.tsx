@@ -384,6 +384,55 @@ function PaymentSuccessContent() {
           </p>
         </div>
 
+        {/* ── NEXT STEP: COMPLETE YOUR FORMATION ─────────────────────────── */}
+        <div style={{
+          background: "rgba(63,185,80,0.06)",
+          border: "1px solid rgba(63,185,80,0.25)",
+          borderRadius: 12,
+          padding: "24px 20px",
+          marginBottom: 24,
+          textAlign: "center",
+        }}>
+          <p style={{ color: "#3fb950", fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 12 }}>
+            NEXT STEP — COMPLETE YOUR FORMATION
+          </p>
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: "#e8e0d0",
+            fontSize: "1rem",
+            lineHeight: 1.8,
+            marginBottom: 16,
+          }}>
+            Take the oath. Receive your application ID.<br />
+            This activates your portal access.
+          </p>
+          <a
+            href={`/pledge?tier=nakoa&h=${encodeURIComponent(handle)}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              background: "#3fb950",
+              color: "#000",
+              border: "none",
+              borderRadius: 8,
+              padding: "16px 20px",
+              textDecoration: "none",
+              fontSize: "0.52rem",
+              letterSpacing: "0.2em",
+              fontFamily: "'JetBrains Mono', monospace",
+              fontWeight: 700,
+            }}
+          >
+            COMPLETE FORMATION — TAKE THE OATH →
+          </a>
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem", marginTop: 10, lineHeight: 1.6 }}>
+            Takes 2 minutes · Unlocks your Mākoa portal + 808 channels
+          </p>
+        </div>
+
         {/* ── ACTION BUTTONS ───────────────────────────────────────────────── */}
         <div style={{ display: "grid", gap: 12, marginBottom: 32 }}>
           <a

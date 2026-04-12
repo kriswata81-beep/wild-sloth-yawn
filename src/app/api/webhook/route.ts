@@ -129,7 +129,75 @@ export async function POST(req: NextRequest) {
         console.log(`[webhook] Gate entry confirmed for: ${handle}`);
       }
 
-      // 4. Log to webhook_events for audit trail
+      // 4. Send welcome email via XI Post Office
+      if (productId === "DUES_DOWN" || productId === "GATE_ENTRY") {
+        const templateId = productId === "GATE_ENTRY" ? "welcome_pledge" : "welcome_pledge";
+        try {
+          const mailPayload = {
+            template_id: templateId,
+            to_name: handle || "Brother",
+            to_email: "", // Will be populated from applicants table if available
+            variables: { handle: handle || "Brother", product: productId },
+          };
+
+          // Try to find brother's email from applicants table
+          const { data: applicant } = await supabase
+            .from("applicants")
+            .select("email, full_name")
+            .or(`full_name.ilike.%${handle}%`)
+            .limit(1)
+            .single();
+
+          if (applicant?.email) {
+            mailPayload.to_email = applicant.email;
+            mailPayload.to_name = applicant.full_name || handle;
+
+            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wild-sloth-yawn.vercel.app";
+            await fetch(`${baseUrl}/api/xi-mail`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(mailPayload),
+            });
+            console.log(`[webhook] Welcome email sent to: ${applicant.email}`);
+          } else {
+            console.log(`[webhook] No email found for handle: ${handle} — skipping welcome email`);
+          }
+        } catch (mailErr) {
+          // Non-fatal — payment is still confirmed
+          console.warn("[webhook] Email send failed (non-fatal):", mailErr);
+        }
+      }
+
+      // 4b. Send MAYDAY confirmation email
+      if (eventName) {
+        try {
+          const { data: applicant } = await supabase
+            .from("applicants")
+            .select("email, full_name")
+            .or(`full_name.ilike.%${handle}%`)
+            .limit(1)
+            .single();
+
+          if (applicant?.email) {
+            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wild-sloth-yawn.vercel.app";
+            await fetch(`${baseUrl}/api/xi-mail`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                template_id: "mayday_confirm",
+                to_name: applicant.full_name || handle,
+                to_email: applicant.email,
+                variables: { handle: handle || "Brother", event: eventName, product: productId },
+              }),
+            });
+            console.log(`[webhook] MAYDAY confirmation email sent to: ${applicant.email}`);
+          }
+        } catch (mailErr) {
+          console.warn("[webhook] MAYDAY email failed (non-fatal):", mailErr);
+        }
+      }
+
+      // 5. Log to webhook_events for audit trail
       const { error: auditError } = await supabase.from("webhook_events").insert({
         event_id: event.id,
         event_type: event.type,
@@ -148,12 +216,31 @@ export async function POST(req: NextRequest) {
     // ── PAYMENT FAILED ────────────────────────────────────────────────────
     if (event.type === "checkout.session.expired" || event.type === "payment_intent.payment_failed") {
       const session = event.data.object as Stripe.Checkout.Session;
-      console.warn(`[webhook] Payment failed/expired: ${session.id}`);
+      const failHandle = session.metadata?.handle || "";
+      console.warn(`[webhook] Payment failed/expired: ${session.id} | Handle: ${failHandle}`);
 
       await supabase
         .from("payments")
-        .update({ payment_status: "failed" })
+        .update({
+          payment_status: "failed",
+          notes_internal: `Payment failed/expired | Handle: ${failHandle} | Session: ${session.id}`,
+        })
         .eq("stripe_session_id", session.id);
+
+      // Log failed payment for Steward review
+      try {
+        await supabase.from("webhook_events").insert({
+          event_id: event.id,
+          event_type: event.type,
+          product_id: session.metadata?.product_id || "unknown",
+          handle: failHandle,
+          stripe_session_id: session.id,
+          amount: session.amount_total,
+          status: "failed",
+        });
+      } catch {
+        // non-fatal
+      }
     }
 
     return NextResponse.json({ received: true });
