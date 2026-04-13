@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -10,98 +9,272 @@ const GOLD_FAINT = "rgba(176,142,80,0.06)";
 const GREEN = "#3fb950";
 const BLUE = "#58a6ff";
 const PURPLE = "#a78bfa";
+const AMBER = "#f0883e";
 const BG = "#04060a";
 
-const STACK = [
+// ── Journey Map ──────────────────────────────────────────────────────────────
+const JOURNEY = [
   {
-    category: "FINANCIAL RETURN",
+    step: "01",
+    label: "QR CODE / CREST",
+    sublabel: "The First Signal",
+    detail: "A brother sees the Mākoa crest — on a card, a shirt, a wall. He scans the QR. The gate opens.",
+    color: GOLD_DIM,
+    href: null,
+  },
+  {
+    step: "02",
+    label: "THE GATE",
+    sublabel: "/gate — XI Reviews You",
+    detail: "12 questions. XI reads every answer. No fluff. He gets a tier: Nā Koa, Mana, or Aliʻi. The order sees him before he sees the order.",
     color: GREEN,
-    icon: "💰",
-    items: [
-      { label: "1% Equity", detail: "Mākoa Trade Co. LLC — founding valuation set at MAYDAY 2026. You're in at the floor." },
-      { label: "5% Territory Revenue Share", detail: "5% of net route revenue from your home territory, paid quarterly. Routes scale — so does your cut." },
-      { label: "$200 Ambassador Commission", detail: "Every brother you bring who completes 90-day formation pays you $200. No cap." },
-      { label: "Tax-Deductible Investment", detail: "Dues, events, equipment, and tech costs are deductible. Your $4,997 works harder than it looks." },
-    ],
+    href: "/gate",
   },
   {
-    category: "OPERATIONAL POWER",
-    color: GOLD,
-    icon: "⚔️",
-    items: [
-      { label: "Exclusive Territory", detail: "One co-founder per region. No overlap. No competition from inside the order. Your market is yours." },
-      { label: "First Access — Every Route & Market", detail: "New B2B contracts, hotel routes, property managers — co-founders get right of first refusal before anyone else." },
-      { label: "XI Agent Access", detail: "Full access to XI — the AI agent that runs ops, scores applicants, posts content, and briefs the council. $497/yr value included." },
-      { label: "Named on All LLC Filings", detail: "Co-Founding Director on the Articles of Organization. Not a title — a legal designation. Permanent." },
-    ],
-  },
-  {
-    category: "GOVERNANCE RIGHTS",
+    step: "03",
+    label: "ONBOARDING",
+    sublabel: "/accepted — Tier Assigned",
+    detail: "XI delivers his message. Tier confirmed. Dues committed. $497/yr founding rate. He's in the 808.",
     color: BLUE,
-    icon: "🏛",
-    items: [
-      { label: "Ali'i Council Seat", detail: "Quarterly strategy sessions. You vote on expansion, treasury, discipline, and order-level decisions." },
-      { label: "2/3 Majority Required", detail: "Your vote is not ceremonial. No decision passes without council consensus. You have real power." },
-      { label: "Succession Rights", detail: "Your seat transfers to your designated heir. This is generational — not just a membership." },
-      { label: "NDA + D&O Insurance", detail: "Directors & Officers insurance covers your seat. NDA protects the council's intelligence." },
+    href: "/accepted",
+  },
+  {
+    step: "04",
+    label: "THE ORDER",
+    sublabel: "Portal + Brotherhood",
+    detail: "Member portal. Route training. 4am circles. Wednesday training. The brotherhood is real — not digital.",
+    color: PURPLE,
+    href: "/portal/dashboard",
+  },
+  {
+    step: "05",
+    label: "MAYDAY SUMMIT",
+    sublabel: "Founding 48 — May 2026",
+    detail: "72 hours in Kapolei. Ice bath. War Room. Fire ceremony. The charter is signed. The order is legally founded.",
+    color: AMBER,
+    href: "/founding48",
+  },
+  {
+    step: "06",
+    label: "ALIʻI CO-FOUNDER",
+    sublabel: "/cofounder — This Page",
+    detail: "12 seats. Worldwide. 1% equity. Territory. Council. Legacy. The men who build the order from the inside.",
+    color: GOLD,
+    href: null,
+  },
+];
+
+// ── Budget Projections ───────────────────────────────────────────────────────
+const BUDGET_SCENARIOS = [
+  {
+    label: "YEAR 1 — FOUNDING",
+    color: GREEN,
+    revenue: [
+      { item: "12 Co-Founder seats × $4,997", amount: 59964 },
+      { item: "MAYDAY tickets (60 brothers avg)", amount: 28000 },
+      { item: "Founding dues (48 brothers × $497)", amount: 23856 },
+      { item: "Route revenue — 10% Order cut (est.)", amount: 18000 },
+      { item: "Circle Partners (12 × $997/mo × 6mo)", amount: 71784 },
+    ],
+    expenses: [
+      { item: "MAYDAY Summit operations", amount: 18000 },
+      { item: "Mākoa House — West Oahu (6mo)", amount: 24000 },
+      { item: "Van + equipment", amount: 8500 },
+      { item: "Legal (LLC, filings, insurance)", amount: 6500 },
+      { item: "XI platform + tech stack", amount: 3600 },
+      { item: "Chapter expansion reserve (30%)", amount: 21000 },
     ],
   },
   {
-    category: "LEGACY & IMPACT",
-    color: PURPLE,
-    icon: "🌊",
-    items: [
-      { label: "Founding Stone — Permanent", detail: "Your name carved in the founding record. Every brother who joins after you knows you were first." },
-      { label: "MAYDAY 2026 War Room Pass", detail: "The 48-hour founding event. The charter is signed. The order is legally founded. You're in the room." },
-      { label: "Chapter Leadership", detail: "You anchor the Mākoa chapter in your region. You open the first 4am. You build the first circle." },
-      { label: "100-Year Mission", detail: "You're not joining a startup. You're founding an order designed to outlive every one of us." },
+    label: "YEAR 2 — EXPANSION",
+    color: BLUE,
+    revenue: [
+      { item: "3 Mākoa Houses × $132K MRR", amount: 475200 },
+      { item: "Route revenue — 10% Order cut", amount: 57600 },
+      { item: "Circle Partners (ongoing)", amount: 143568 },
+      { item: "B2C subscriptions (200 homes)", amount: 396000 },
+      { item: "B2B contracts (hotels, property mgrs)", amount: 84000 },
+    ],
+    expenses: [
+      { item: "3 House operations", amount: 144000 },
+      { item: "Neighbor island expansion", amount: 48000 },
+      { item: "West Coast chapter seed", amount: 32000 },
+      { item: "Brother scholarships (15%)", amount: 53000 },
+      { item: "Equipment + assets (20%)", amount: 71000 },
+      { item: "Emergency fund (15%)", amount: 53000 },
     ],
   },
 ];
 
+// ── Co-Founder Fund Allocation ───────────────────────────────────────────────
+const FUND_USE = [
+  {
+    pct: 35,
+    label: "Chapter Expansion",
+    detail: "Seed funding for new Mākoa Houses — Maui, Big Island, West Coast, international. Each house needs $8–12K to open.",
+    color: GREEN,
+    icon: "🏠",
+  },
+  {
+    pct: 20,
+    label: "Operations Infrastructure",
+    detail: "Vans, equipment, ice bath rigs, training gear. The physical tools that make the 4am possible anywhere on earth.",
+    color: BLUE,
+    icon: "⚙️",
+  },
+  {
+    pct: 15,
+    label: "Legal & Compliance",
+    detail: "LLC filings, D&O insurance, membership agreements, NDA stack, event liability waivers. The order is built to last.",
+    color: AMBER,
+    icon: "📜",
+  },
+  {
+    pct: 15,
+    label: "Brother Scholarships",
+    detail: "Brothers who can't afford dues get sponsored. The order doesn't turn away the right man for money.",
+    color: PURPLE,
+    icon: "🎓",
+  },
+  {
+    pct: 10,
+    label: "XI Platform & Tech",
+    detail: "Supabase, Vercel, Stripe, Anthropic API. XI runs the order — this keeps XI running.",
+    color: GOLD,
+    icon: "🤖",
+  },
+  {
+    pct: 5,
+    label: "Emergency Reserve",
+    detail: "Liquid reserve for unexpected costs — venue changes, equipment failure, brother emergencies.",
+    color: GOLD_DIM,
+    icon: "🛡",
+  },
+];
+
+// ── MAYDAY War Room Investment Options ───────────────────────────────────────
+const WAR_ROOM_INVESTMENTS = [
+  {
+    tier: "FOUNDING SEAT",
+    amount: "$4,997",
+    type: "One-time",
+    color: GOLD,
+    what: "Your co-founder seat. Already paid. This is your base.",
+    why: "You're in. The charter is signed with your name on it.",
+    where: "LLC filing, founding stone, council seat",
+  },
+  {
+    tier: "CHAPTER SEED",
+    amount: "$10,000",
+    type: "Optional at MAYDAY",
+    color: GREEN,
+    what: "Seed a new Mākoa House in your territory.",
+    why: "Your house. Your chapter. Your revenue stream. You become the anchor.",
+    where: "House deposit, van, equipment, first 90 days of ops",
+  },
+  {
+    tier: "EXPANSION PARTNER",
+    amount: "$25,000",
+    type: "Optional at MAYDAY",
+    color: BLUE,
+    what: "Fund 2–3 chapter openings across your region.",
+    why: "More houses = more route revenue = bigger quarterly share for you.",
+    where: "Multi-house seed, regional ops, brother recruitment",
+  },
+  {
+    tier: "TRADE CO. INVESTOR",
+    amount: "$50,000+",
+    type: "Mākoa Trade Co. LLC",
+    color: PURPLE,
+    what: "Direct equity investment in Mākoa Trade Co. LLC.",
+    why: "The trade company holds all B2B contracts, route agreements, and subscription revenue. This is the operating entity.",
+    where: "See Trade Co. breakdown below",
+  },
+];
+
+// ── Trade Co. Investment Case ────────────────────────────────────────────────
+const TRADE_CO_USE = [
+  {
+    category: "Route Operator Expansion",
+    pct: 40,
+    detail: "Recruit, train, and equip 50+ new route operators across Hawaii and West Coast. Each operator generates $2,400–$4,800/mo in route revenue.",
+    color: GREEN,
+    icon: "🚛",
+  },
+  {
+    category: "B2B Contract Acquisition",
+    pct: 25,
+    detail: "Sales team to land hotel contracts, property management agreements, and commercial cleaning deals. B2B contracts are 3–5× the margin of residential.",
+    color: BLUE,
+    icon: "🏨",
+  },
+  {
+    category: "Trade Academy Build-Out",
+    pct: 20,
+    detail: "Formal training program for route operators — certifications, skills, safety. Graduates command higher rates and better contracts.",
+    color: AMBER,
+    icon: "🎓",
+  },
+  {
+    category: "Technology & Dispatch",
+    pct: 10,
+    detail: "Route management software, scheduling, customer portal, XI integration. Scale without adding overhead.",
+    color: PURPLE,
+    icon: "📱",
+  },
+  {
+    category: "Legal & IP Protection",
+    pct: 5,
+    detail: "Trademark the Mākoa brand. Protect the cooperative model. Ensure the 80/10/10 structure is legally bulletproof.",
+    color: GOLD,
+    icon: "⚖️",
+  },
+];
+
+const TRADE_CO_PROJECTIONS = [
+  { year: "2026", houses: 1, brothers: 48, mrr: "$132K", arr: "$1.58M", color: GREEN },
+  { year: "2027", houses: 3, brothers: 150, mrr: "$475K", arr: "$5.7M", color: BLUE },
+  { year: "2028", houses: 10, brothers: 400, mrr: "$1.4M", arr: "$16.8M", color: GOLD },
+];
+
+// ── FAQ ──────────────────────────────────────────────────────────────────────
 const FAQS = [
   {
-    q: "What does 1% equity actually mean?",
-    a: "1% of Mākoa Trade Co. LLC — the operating entity that holds route contracts, B2B agreements, and cooperative revenue. Founding valuation is set at MAYDAY 2026 by the council. You're buying in at the floor before any external valuation.",
+    q: "What does 1% equity actually mean in dollars?",
+    a: "1% of Mākoa Trade Co. LLC. At Year 1 ARR of $1.58M, that's a $15,800 annual dividend potential at full distribution. At Year 3 ARR of $16.8M, that's $168,000/yr. Founding valuation is set by the council at MAYDAY — you're buying in at the floor before any external valuation.",
   },
   {
-    q: "How does the revenue share work?",
-    a: "5% of net route revenue generated in your home territory, paid quarterly. As more brothers operate routes in your region, your share grows. The 80/10/10 model means 10% of all revenue flows to the Order fund — your 5% territory share comes from gross before that split.",
+    q: "How does the 5% territory revenue share work?",
+    a: "5% of net route revenue generated in your home territory, paid quarterly. If 10 brothers operate routes in your region at $3,200/mo average, that's $32K/mo gross → $1,600/mo → $19,200/yr to you. As your territory grows, so does your cut. No cap.",
   },
   {
-    q: "Can I sell or transfer my seat?",
-    a: "Co-founder seats are not publicly tradeable. If you step down, your seat opens for council vote. If you pass, your seat transfers to your designated successor. This protects the integrity of the founding council.",
+    q: "At MAYDAY, if I want to invest more — what exactly happens?",
+    a: "The War Room on Sunday morning is where co-founders can commit additional capital. Options range from $10K (Chapter Seed — fund your own house) to $50K+ (Trade Co. equity investment). All additional investments are documented in the co-founders charter and recorded in the LLC operating agreement.",
+  },
+  {
+    q: "Why would I invest in Mākoa Trade Co. LLC specifically?",
+    a: "The Trade Co. is the operating entity that holds all route contracts, B2B agreements, and subscription revenue. It's the engine. Your $4,997 co-founder seat gives you 1% equity. Additional investment increases your equity stake proportionally, subject to council vote and LLC amendment.",
+  },
+  {
+    q: "Where exactly does the co-founder fund go?",
+    a: "35% chapter expansion (new houses), 20% operations (vans, equipment), 15% legal & compliance, 15% brother scholarships, 10% XI platform, 5% emergency reserve. Every dollar is tracked in the Family Office treasury and reported to the Ali'i Council quarterly.",
+  },
+  {
+    q: "Can I sell or transfer my seat or equity?",
+    a: "Co-founder seats are not publicly tradeable. If you step down, your seat opens for council vote. Your equity stake in the LLC follows standard operating agreement terms — transfer requires council approval. Your designated heir inherits your seat and equity on death.",
   },
   {
     q: "What if I'm not in Hawaii?",
-    a: "Co-founders are worldwide. Your territory is wherever you are. West Coast, East Coast, international — the order is expanding. You anchor your region.",
+    a: "Co-founders are worldwide. Your territory is wherever you are. You anchor your region — open the first 4am, build the first circle, seed the first house. The order expands through you.",
   },
-  {
-    q: "What is XI exactly?",
-    a: "XI is the Mākoa AI agent. It runs the Command Center, scores applicants, generates content, sends the 808 Signal, briefs the council, and manages operational intelligence. As a co-founder, you have full access — it works for you.",
-  },
-  {
-    q: "Is $4,997 the only cost?",
-    a: "Yes. One-time. No monthly fees at the co-founder tier. Annual reaffirmation at Makahiki is ceremonial, not financial. Your seat is yours.",
-  },
-];
-
-const TIMELINE = [
-  { phase: "NOW", label: "Claim Your Seat", detail: "12 seats. First come, first seated. Pay $4,997 — your name goes on the founding docs." },
-  { phase: "MAYDAY", label: "War Room — May 2026", detail: "48 hours in Kapolei. Co-founders charter signed. Order legally founded. You're in the room." },
-  { phase: "30 DAYS", label: "Territory Activation", detail: "XI assigns your territory. You open your first 4am. First circle. First brothers under you." },
-  { phase: "90 DAYS", label: "Route Revenue Begins", detail: "First quarterly revenue share distributed. Your 5% territory cut starts flowing." },
-  { phase: "1 YEAR", label: "Council Seat Active", detail: "First full year of Ali'i Council governance. Expansion votes. Treasury decisions. Your voice matters." },
-  { phase: "100 YRS", label: "The Mission Continues", detail: "Your name is on the founding stone. The order outlives every one of us. That's the design." },
 ];
 
 export default function CofounderPage() {
-  const router = useRouter();
   const [ready, setReady] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [activeScenario, setActiveScenario] = useState(0);
   const [form, setForm] = useState({ name: "", email: "", phone: "", region: "" });
   const [submitting, setSubmitting] = useState(false);
-  const [seatsLeft] = useState(12);
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 300);
@@ -118,12 +291,7 @@ export default function CofounderPage() {
         body: JSON.stringify({
           priceId: "price_1TKnnt836uPpUiqMrOthQ4oE",
           customerEmail: form.email,
-          metadata: {
-            circle_type: "cofounder",
-            full_name: form.name,
-            phone: form.phone,
-            region: form.region,
-          },
+          metadata: { circle_type: "cofounder", full_name: form.name, phone: form.phone, region: form.region },
         }),
       });
       const data = await res.json();
@@ -133,6 +301,10 @@ export default function CofounderPage() {
     }
     setSubmitting(false);
   }
+
+  const scenario = BUDGET_SCENARIOS[activeScenario];
+  const totalRevenue = scenario.revenue.reduce((s, r) => s + r.amount, 0);
+  const totalExpenses = scenario.expenses.reduce((s, e) => s + e.amount, 0);
 
   const inputStyle: React.CSSProperties = {
     background: "rgba(0,0,0,0.5)",
@@ -149,250 +321,213 @@ export default function CofounderPage() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: BG,
-      fontFamily: "'JetBrains Mono', monospace",
-      color: "#e8e0d0",
-      overflowX: "hidden",
-    }}>
+    <div style={{ minHeight: "100vh", background: BG, fontFamily: "'JetBrains Mono', monospace", color: "#e8e0d0", overflowX: "hidden" }}>
       <style>{`
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-        @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.4;} }
         input::placeholder { color: rgba(176,142,80,0.2); }
-        .stack-card { transition: border-color 0.3s, transform 0.3s; }
-        .stack-card:hover { border-color: rgba(176,142,80,0.25) !important; transform: translateY(-2px); }
-        .faq-row { cursor: pointer; transition: background 0.2s; }
+        .hover-gold:hover { border-color: rgba(176,142,80,0.3) !important; transform: translateY(-2px); }
+        .faq-row { cursor:pointer; transition: background 0.2s; }
         .faq-row:hover { background: rgba(176,142,80,0.04) !important; }
-        .claim-btn { transition: all 0.25s; }
-        .claim-btn:hover:not(:disabled) { background: rgba(176,142,80,0.2) !important; transform: translateY(-1px); }
       `}</style>
 
-      {/* ── HERO ─────────────────────────────────────────────────── */}
+      {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <div style={{
-        padding: "80px 24px 60px",
-        textAlign: "center",
+        padding: "80px 24px 60px", textAlign: "center",
         borderBottom: `1px solid ${GOLD_10}`,
-        opacity: ready ? 1 : 0,
-        transform: ready ? "translateY(0)" : "translateY(20px)",
+        opacity: ready ? 1 : 0, transform: ready ? "translateY(0)" : "translateY(20px)",
         transition: "opacity 0.9s ease, transform 0.9s ease",
       }}>
-        {/* Seat counter */}
         <div style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          background: "rgba(63,185,80,0.08)",
-          border: "1px solid rgba(63,185,80,0.25)",
-          borderRadius: "20px",
-          padding: "6px 16px",
-          marginBottom: "28px",
+          display: "inline-flex", alignItems: "center", gap: "8px",
+          background: "rgba(63,185,80,0.08)", border: "1px solid rgba(63,185,80,0.25)",
+          borderRadius: "20px", padding: "6px 16px", marginBottom: "28px",
         }}>
-          <div style={{
-            width: "6px", height: "6px", borderRadius: "50%",
-            background: GREEN,
-            animation: "pulse 2s infinite",
-          }} />
-          <span style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.2em" }}>
-            {seatsLeft} OF 12 SEATS REMAINING
-          </span>
+          <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: GREEN, animation: "pulse 2s infinite" }} />
+          <span style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.2em" }}>12 SEATS · WORLDWIDE · ONE-TIME</span>
         </div>
 
-        <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.35em", marginBottom: "16px" }}>
-          ALI'I CO-FOUNDING PACK
-        </p>
+        <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.35em", marginBottom: "16px" }}>ALIʻI CO-FOUNDING PACK</p>
 
         <h1 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontStyle: "italic",
-          fontSize: "clamp(2.4rem, 8vw, 4rem)",
-          color: GOLD,
-          margin: "0 0 16px",
-          fontWeight: 300,
-          lineHeight: 1.1,
+          fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
+          fontSize: "clamp(2.4rem, 8vw, 4rem)", color: GOLD,
+          margin: "0 0 16px", fontWeight: 300, lineHeight: 1.1,
         }}>
           You're Not Joining.<br />You're Founding.
         </h1>
 
-        <p style={{
-          color: "rgba(232,224,208,0.45)",
-          fontSize: "0.58rem",
-          maxWidth: "480px",
-          margin: "0 auto 32px",
-          lineHeight: 1.9,
-        }}>
-          12 seats. Worldwide. One-time investment.<br />
-          Equity, territory, governance, and legacy —<br />
-          in an order built to last 100 years.
+        <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.58rem", maxWidth: "480px", margin: "0 auto 32px", lineHeight: 1.9 }}>
+          From the QR code to the founding fire to worldwide expansion —<br />
+          here is exactly where your investment goes, what it builds,<br />
+          and what it returns.
         </p>
 
-        <div style={{
-          display: "inline-flex",
-          alignItems: "baseline",
-          gap: "8px",
-          marginBottom: "8px",
-        }}>
-          <span style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "3.5rem",
-            color: GOLD,
-            fontWeight: 300,
-            lineHeight: 1,
-          }}>$4,997</span>
-          <span style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.1em" }}>ONE-TIME</span>
+        <div style={{ display: "inline-flex", alignItems: "baseline", gap: "8px", marginBottom: "8px" }}>
+          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "3.5rem", color: GOLD, fontWeight: 300, lineHeight: 1 }}>$4,997</span>
+          <span style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.1em" }}>ONE-TIME · 1% EQUITY</span>
         </div>
-
-        <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.42rem", marginBottom: "40px" }}>
-          No monthly fees. No lock-in. Your seat is permanent.
-        </p>
+        <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.42rem", marginBottom: "40px" }}>No monthly fees. No lock-in. Your seat is permanent.</p>
 
         <a href="#claim" style={{
-          display: "inline-block",
-          background: GOLD_10,
-          border: `1px solid ${GOLD_20}`,
-          color: GOLD,
-          fontSize: "0.5rem",
-          letterSpacing: "0.25em",
-          padding: "14px 36px",
-          borderRadius: "4px",
-          textDecoration: "none",
-          transition: "all 0.25s",
-        }}
-          onMouseEnter={e => {
-            (e.target as HTMLElement).style.background = "rgba(176,142,80,0.15)";
-            (e.target as HTMLElement).style.borderColor = "rgba(176,142,80,0.4)";
-          }}
-          onMouseLeave={e => {
-            (e.target as HTMLElement).style.background = GOLD_10;
-            (e.target as HTMLElement).style.borderColor = GOLD_20;
-          }}
-        >
-          CLAIM YOUR SEAT
-        </a>
+          display: "inline-block", background: GOLD_10, border: `1px solid ${GOLD_20}`,
+          color: GOLD, fontSize: "0.5rem", letterSpacing: "0.25em",
+          padding: "14px 36px", borderRadius: "4px", textDecoration: "none",
+        }}>CLAIM YOUR SEAT</a>
       </div>
 
-      {/* ── THE STACK ────────────────────────────────────────────── */}
+      {/* ── JOURNEY MAP ───────────────────────────────────────────────────── */}
       <div style={{ padding: "60px 24px", maxWidth: "680px", margin: "0 auto" }}>
-        <p style={{
-          color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em",
-          textAlign: "center", marginBottom: "40px",
-        }}>
-          WHAT YOU GET
+        <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", textAlign: "center", marginBottom: "8px" }}>THE MĀKOA JOURNEY</p>
+        <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", textAlign: "center", marginBottom: "40px", lineHeight: 1.7 }}>
+          From the first QR scan to the founding council — every step a man takes before he reaches this page.
         </p>
 
-        <div style={{ display: "grid", gap: "20px" }}>
-          {STACK.map((section, si) => (
-            <div
-              key={si}
-              className="stack-card"
-              style={{
-                background: GOLD_FAINT,
-                border: `1px solid ${GOLD_10}`,
-                borderRadius: "10px",
-                padding: "24px 20px",
-                opacity: ready ? 1 : 0,
-                transform: ready ? "translateY(0)" : "translateY(16px)",
-                transition: `opacity 0.6s ease ${0.2 + si * 0.1}s, transform 0.6s ease ${0.2 + si * 0.1}s, border-color 0.3s, box-shadow 0.3s`,
-              }}
-            >
-              {/* Section header */}
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
-                <span style={{ fontSize: "1rem" }}>{section.icon}</span>
-                <p style={{ color: section.color, fontSize: "0.42rem", letterSpacing: "0.25em" }}>
-                  {section.category}
-                </p>
+        <div style={{ display: "grid", gap: "0" }}>
+          {JOURNEY.map((step, i) => (
+            <div key={i} style={{ display: "flex", gap: "20px", alignItems: "flex-start", paddingBottom: i < JOURNEY.length - 1 ? "28px" : 0, position: "relative" }}>
+              {i < JOURNEY.length - 1 && (
+                <div style={{ position: "absolute", left: "31px", top: "32px", width: "1px", height: "calc(100% - 8px)", background: `linear-gradient(to bottom, ${step.color}, transparent)`, opacity: 0.3 }} />
+              )}
+              <div style={{
+                width: "62px", flexShrink: 0,
+                background: i === JOURNEY.length - 1 ? GOLD_10 : "rgba(0,0,0,0.4)",
+                border: `1px solid ${i === JOURNEY.length - 1 ? GOLD_20 : "rgba(176,142,80,0.08)"}`,
+                borderRadius: "6px", padding: "8px 4px", textAlign: "center",
+              }}>
+                <p style={{ color: step.color, fontSize: "0.55rem", fontWeight: 700 }}>{step.step}</p>
               </div>
+              <div style={{ paddingTop: "4px", flex: 1 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "3px", flexWrap: "wrap" }}>
+                  <p style={{ color: step.color, fontSize: "0.48rem", letterSpacing: "0.15em" }}>{step.label}</p>
+                  {step.href && (
+                    <a href={step.href} style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.36rem", textDecoration: "none", letterSpacing: "0.1em" }}>
+                      {step.sublabel} →
+                    </a>
+                  )}
+                  {!step.href && <span style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.36rem", letterSpacing: "0.1em" }}>{step.sublabel}</span>}
+                </div>
+                <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.44rem", lineHeight: 1.7 }}>{step.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-              {/* Items */}
-              <div style={{ display: "grid", gap: "16px" }}>
-                {section.items.map((item, ii) => (
-                  <div key={ii} style={{
-                    display: "flex",
-                    gap: "14px",
-                    paddingBottom: ii < section.items.length - 1 ? "16px" : 0,
-                    borderBottom: ii < section.items.length - 1 ? `1px solid rgba(176,142,80,0.06)` : "none",
-                  }}>
-                    <span style={{
-                      color: section.color,
-                      fontSize: "0.55rem",
-                      flexShrink: 0,
-                      marginTop: "1px",
-                      opacity: 0.8,
-                    }}>+</span>
+      {/* ── BUDGET PROJECTIONS ────────────────────────────────────────────── */}
+      <div style={{ padding: "60px 24px", borderTop: `1px solid ${GOLD_10}`, background: "rgba(0,0,0,0.3)" }}>
+        <div style={{ maxWidth: "680px", margin: "0 auto" }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", textAlign: "center", marginBottom: "8px" }}>MĀKOA TRADE CO. — BUDGET PROJECTIONS</p>
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", textAlign: "center", marginBottom: "32px", lineHeight: 1.7 }}>
+            Conservative numbers. Real model. The 80/10/10 cooperative structure.
+          </p>
+
+          {/* Scenario toggle */}
+          <div style={{ display: "flex", gap: "8px", marginBottom: "24px", justifyContent: "center" }}>
+            {BUDGET_SCENARIOS.map((s, i) => (
+              <button key={i} onClick={() => setActiveScenario(i)} style={{
+                background: activeScenario === i ? GOLD_10 : "transparent",
+                border: `1px solid ${activeScenario === i ? GOLD_20 : "rgba(176,142,80,0.08)"}`,
+                color: activeScenario === i ? GOLD : GOLD_DIM,
+                fontSize: "0.4rem", letterSpacing: "0.15em", padding: "8px 16px",
+                borderRadius: "4px", cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
+                transition: "all 0.2s",
+              }}>{s.label}</button>
+            ))}
+          </div>
+
+          <div style={{ display: "grid", gap: "16px" }}>
+            {/* Revenue */}
+            <div style={{ background: GOLD_FAINT, border: `1px solid ${GOLD_10}`, borderRadius: "10px", padding: "20px" }}>
+              <p style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>📈 REVENUE STREAMS</p>
+              {scenario.revenue.map((r, i) => (
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: i < scenario.revenue.length - 1 ? `1px solid rgba(176,142,80,0.06)` : "none" }}>
+                  <span style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.44rem" }}>{r.item}</span>
+                  <span style={{ color: GREEN, fontSize: "0.48rem", fontWeight: 500 }}>${r.amount.toLocaleString()}</span>
+                </div>
+              ))}
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: "12px", paddingTop: "12px", borderTop: `1px solid ${GOLD_20}` }}>
+                <span style={{ color: GOLD, fontSize: "0.44rem", letterSpacing: "0.1em" }}>TOTAL REVENUE</span>
+                <span style={{ color: GOLD, fontSize: "0.6rem", fontWeight: 700 }}>${totalRevenue.toLocaleString()}</span>
+              </div>
+            </div>
+
+            {/* Expenses */}
+            <div style={{ background: GOLD_FAINT, border: `1px solid ${GOLD_10}`, borderRadius: "10px", padding: "20px" }}>
+              <p style={{ color: AMBER, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>📊 OPERATING EXPENSES</p>
+              {scenario.expenses.map((e, i) => (
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: i < scenario.expenses.length - 1 ? `1px solid rgba(176,142,80,0.06)` : "none" }}>
+                  <span style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.44rem" }}>{e.item}</span>
+                  <span style={{ color: AMBER, fontSize: "0.48rem" }}>${e.amount.toLocaleString()}</span>
+                </div>
+              ))}
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: "12px", paddingTop: "12px", borderTop: `1px solid ${GOLD_20}` }}>
+                <span style={{ color: GOLD, fontSize: "0.44rem", letterSpacing: "0.1em" }}>NET POSITION</span>
+                <span style={{ color: totalRevenue - totalExpenses > 0 ? GREEN : "#f85149", fontSize: "0.6rem", fontWeight: 700 }}>
+                  ${(totalRevenue - totalExpenses).toLocaleString()}
+                </span>
+              </div>
+            </div>
+
+            {/* Trade Co. Projections */}
+            <div style={{ background: GOLD_FAINT, border: `1px solid ${GOLD_10}`, borderRadius: "10px", padding: "20px" }}>
+              <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>🏢 MĀKOA TRADE CO. — 3-YEAR ARR</p>
+              <div style={{ display: "grid", gap: "8px" }}>
+                {TRADE_CO_PROJECTIONS.map((p, i) => (
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "rgba(0,0,0,0.3)", borderRadius: "6px", border: `1px solid ${p.color}20` }}>
                     <div>
-                      <p style={{ color: "#e8e0d0", fontSize: "0.52rem", marginBottom: "4px", fontWeight: 500 }}>
-                        {item.label}
-                      </p>
-                      <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem", lineHeight: 1.7 }}>
-                        {item.detail}
-                      </p>
+                      <p style={{ color: p.color, fontSize: "0.42rem", letterSpacing: "0.1em", marginBottom: "2px" }}>{p.year}</p>
+                      <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.4rem" }}>{p.houses} house{p.houses > 1 ? "s" : ""} · {p.brothers} brothers</p>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <p style={{ color: p.color, fontSize: "0.55rem", fontWeight: 700 }}>{p.arr} ARR</p>
+                      <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.38rem" }}>{p.mrr}/mo</p>
                     </div>
                   </div>
                 ))}
               </div>
+              <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "0.38rem", textAlign: "center", marginTop: "12px", fontStyle: "italic" }}>
+                Your 1% equity at Year 3 ARR = $168,000/yr potential distribution
+              </p>
             </div>
-          ))}
+          </div>
         </div>
       </div>
 
-      {/* ── TIMELINE ─────────────────────────────────────────────── */}
-      <div style={{
-        padding: "60px 24px",
-        borderTop: `1px solid ${GOLD_10}`,
-        borderBottom: `1px solid ${GOLD_10}`,
-        background: "rgba(0,0,0,0.3)",
-      }}>
+      {/* ── CO-FOUNDER FUND ALLOCATION ────────────────────────────────────── */}
+      <div style={{ padding: "60px 24px", borderTop: `1px solid ${GOLD_10}` }}>
         <div style={{ maxWidth: "680px", margin: "0 auto" }}>
-          <p style={{
-            color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em",
-            textAlign: "center", marginBottom: "40px",
-          }}>
-            YOUR TIMELINE AS CO-FOUNDER
+          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", textAlign: "center", marginBottom: "8px" }}>WHERE YOUR $4,997 GOES</p>
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", textAlign: "center", marginBottom: "32px", lineHeight: 1.7 }}>
+            12 co-founders × $4,997 = $59,964 founding pool.<br />Here is exactly how it's deployed for maximum impact.
           </p>
 
-          <div style={{ display: "grid", gap: "0" }}>
-            {TIMELINE.map((step, i) => (
-              <div key={i} style={{
-                display: "flex",
-                gap: "20px",
-                alignItems: "flex-start",
-                paddingBottom: i < TIMELINE.length - 1 ? "28px" : 0,
-                position: "relative",
+          {/* Allocation bar */}
+          <div style={{ display: "flex", gap: "2px", height: "10px", borderRadius: "5px", overflow: "hidden", marginBottom: "24px" }}>
+            {FUND_USE.map((f, i) => (
+              <div key={i} style={{ width: `${f.pct}%`, background: f.color, transition: "width 0.3s" }} />
+            ))}
+          </div>
+
+          <div style={{ display: "grid", gap: "12px" }}>
+            {FUND_USE.map((f, i) => (
+              <div key={i} className="hover-gold" style={{
+                background: GOLD_FAINT, border: `1px solid ${GOLD_10}`, borderRadius: "10px",
+                padding: "18px 20px", display: "flex", gap: "16px", alignItems: "flex-start",
+                transition: "border-color 0.3s, transform 0.3s",
               }}>
-                {/* Line */}
-                {i < TIMELINE.length - 1 && (
-                  <div style={{
-                    position: "absolute",
-                    left: "31px",
-                    top: "28px",
-                    width: "1px",
-                    height: "calc(100% - 4px)",
-                    background: `linear-gradient(to bottom, ${GOLD_20}, transparent)`,
-                  }} />
-                )}
-
-                {/* Phase badge */}
-                <div style={{
-                  width: "62px",
-                  flexShrink: 0,
-                  background: i === 0 ? GOLD_10 : "rgba(0,0,0,0.4)",
-                  border: `1px solid ${i === 0 ? GOLD_20 : "rgba(176,142,80,0.08)"}`,
-                  borderRadius: "6px",
-                  padding: "6px 4px",
-                  textAlign: "center",
-                }}>
-                  <p style={{
-                    color: i === 0 ? GOLD : GOLD_DIM,
-                    fontSize: "0.38rem",
-                    letterSpacing: "0.1em",
-                  }}>{step.phase}</p>
+                <div style={{ width: "44px", height: "44px", borderRadius: "8px", background: `${f.color}15`, border: `1px solid ${f.color}30`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "1.1rem" }}>
+                  {f.icon}
                 </div>
-
-                {/* Content */}
-                <div style={{ paddingTop: "4px" }}>
-                  <p style={{ color: "#e8e0d0", fontSize: "0.52rem", marginBottom: "4px" }}>{step.label}</p>
-                  <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem", lineHeight: 1.7 }}>{step.detail}</p>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                    <p style={{ color: f.color, fontSize: "0.48rem", letterSpacing: "0.1em" }}>{f.label}</p>
+                    <span style={{ color: f.color, fontSize: "0.6rem", fontWeight: 700 }}>{f.pct}%</span>
+                  </div>
+                  <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.44rem", lineHeight: 1.7 }}>{f.detail}</p>
+                  <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.4rem", marginTop: "4px" }}>
+                    ≈ ${Math.round(59964 * f.pct / 100).toLocaleString()} from founding pool
+                  </p>
                 </div>
               </div>
             ))}
@@ -400,114 +535,154 @@ export default function CofounderPage() {
         </div>
       </div>
 
-      {/* ── ROI SNAPSHOT ─────────────────────────────────────────── */}
-      <div style={{ padding: "60px 24px", maxWidth: "680px", margin: "0 auto" }}>
-        <p style={{
-          color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em",
-          textAlign: "center", marginBottom: "40px",
-        }}>
-          CONSERVATIVE ROI SNAPSHOT
-        </p>
-
-        <div style={{
-          background: GOLD_FAINT,
-          border: `1px solid ${GOLD_10}`,
-          borderRadius: "10px",
-          padding: "24px 20px",
-          marginBottom: "16px",
-        }}>
-          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem", letterSpacing: "0.15em", marginBottom: "16px" }}>
-            EXAMPLE: 10 BROTHERS OPERATING ROUTES IN YOUR TERRITORY
+      {/* ── MAYDAY WAR ROOM — ADDITIONAL INVESTMENT ───────────────────────── */}
+      <div style={{ padding: "60px 24px", borderTop: `1px solid ${GOLD_10}`, background: "rgba(0,0,0,0.3)" }}>
+        <div style={{ maxWidth: "680px", margin: "0 auto" }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", textAlign: "center", marginBottom: "8px" }}>MAYDAY WAR ROOM — ADDITIONAL INVESTMENT</p>
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", textAlign: "center", marginBottom: "12px", lineHeight: 1.7 }}>
+            Sunday morning. The charter is signed. The order is founded.
+          </p>
+          <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.48rem", textAlign: "center", marginBottom: "32px", lineHeight: 1.8, fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
+            "If you want to go deeper — the War Room is where it happens.<br />
+            No pressure. No pitch. Just options for the men who want to build more."
           </p>
 
-          {[
-            { label: "Avg brother route revenue / mo", value: "$3,200", color: "rgba(232,224,208,0.6)" },
-            { label: "Territory gross / mo (10 brothers)", value: "$32,000", color: "rgba(232,224,208,0.6)" },
-            { label: "Your 5% territory share / mo", value: "$1,600", color: GREEN },
-            { label: "Your 5% territory share / yr", value: "$19,200", color: GREEN },
-            { label: "Ambassador commissions (est.)", value: "$2,000+", color: GOLD },
-            { label: "XI agent value (included)", value: "$497", color: GOLD },
-            { label: "Your initial investment", value: "$4,997", color: "rgba(232,224,208,0.4)" },
-            { label: "Break-even timeline", value: "~3 months", color: BLUE },
-          ].map((row, i) => (
-            <div key={i} style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "8px 0",
-              borderBottom: i < 7 ? `1px solid rgba(176,142,80,0.06)` : "none",
-            }}>
-              <span style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.44rem" }}>{row.label}</span>
-              <span style={{ color: row.color, fontSize: "0.52rem", fontWeight: 500 }}>{row.value}</span>
-            </div>
-          ))}
-        </div>
+          <div style={{ display: "grid", gap: "14px" }}>
+            {WAR_ROOM_INVESTMENTS.map((inv, i) => (
+              <div key={i} style={{
+                background: GOLD_FAINT, border: `1px solid ${i === 0 ? GOLD_20 : GOLD_10}`,
+                borderRadius: "10px", padding: "20px",
+                borderLeft: `3px solid ${inv.color}`,
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
+                  <div>
+                    <p style={{ color: inv.color, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "4px" }}>{inv.tier}</p>
+                    <p style={{ color: "#e8e0d0", fontSize: "0.7rem", fontFamily: "'Cormorant Garamond', serif", fontWeight: 300 }}>{inv.amount}</p>
+                  </div>
+                  <span style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.38rem", letterSpacing: "0.1em", background: "rgba(0,0,0,0.3)", padding: "4px 10px", borderRadius: "3px" }}>{inv.type}</span>
+                </div>
+                <div style={{ display: "grid", gap: "8px" }}>
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <span style={{ color: inv.color, fontSize: "0.42rem", flexShrink: 0, opacity: 0.7 }}>WHAT</span>
+                    <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.44rem", lineHeight: 1.6 }}>{inv.what}</p>
+                  </div>
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <span style={{ color: inv.color, fontSize: "0.42rem", flexShrink: 0, opacity: 0.7 }}>WHY</span>
+                    <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.44rem", lineHeight: 1.6 }}>{inv.why}</p>
+                  </div>
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <span style={{ color: inv.color, fontSize: "0.42rem", flexShrink: 0, opacity: 0.7 }}>WHERE</span>
+                    <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.44rem", lineHeight: 1.6 }}>{inv.where}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
 
-        <p style={{
-          color: "rgba(176,142,80,0.25)",
-          fontSize: "0.4rem",
-          textAlign: "center",
-          lineHeight: 1.7,
-          fontStyle: "italic",
-        }}>
-          These are conservative projections based on current route operator averages.<br />
-          Not a guarantee. The work determines the return.
-        </p>
+          <div style={{ marginTop: "24px", background: "rgba(0,0,0,0.3)", border: `1px solid ${GOLD_10}`, borderRadius: "8px", padding: "16px", textAlign: "center" }}>
+            <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", lineHeight: 1.8 }}>
+              All War Room investments are documented in the co-founders charter.<br />
+              Recorded in the LLC operating agreement. Reported quarterly to the Ali'i Council.<br />
+              <span style={{ color: GOLD_DIM }}>No pressure. No pitch. The order doesn't need your money — it needs your commitment.</span>
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* ── FAQ ──────────────────────────────────────────────────── */}
-      <div style={{
-        padding: "60px 24px",
-        borderTop: `1px solid ${GOLD_10}`,
-        background: "rgba(0,0,0,0.2)",
-      }}>
+      {/* ── MĀKOA TRADE CO. INVESTMENT CASE ──────────────────────────────── */}
+      <div style={{ padding: "60px 24px", borderTop: `1px solid ${GOLD_10}` }}>
         <div style={{ maxWidth: "680px", margin: "0 auto" }}>
-          <p style={{
-            color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em",
-            textAlign: "center", marginBottom: "40px",
-          }}>
-            QUESTIONS
+          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", textAlign: "center", marginBottom: "8px" }}>MĀKOA TRADE CO. LLC — THE INVESTMENT CASE</p>
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", textAlign: "center", marginBottom: "32px", lineHeight: 1.7 }}>
+            Why invest in the Trade Co. specifically — and where every dollar goes.
           </p>
 
+          {/* What is Trade Co */}
+          <div style={{ background: GOLD_FAINT, border: `1px solid ${GOLD_20}`, borderRadius: "10px", padding: "24px", marginBottom: "20px" }}>
+            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>WHAT IS MĀKOA TRADE CO. LLC?</p>
+            <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.48rem", lineHeight: 1.9, marginBottom: "16px" }}>
+              Mākoa Trade Co. is the operating entity. It holds all route contracts, B2B agreements, subscription revenue, and trade academy operations. It's the engine that generates the 80/10/10 revenue split.
+            </p>
+            <div style={{ display: "grid", gap: "8px" }}>
+              {[
+                { label: "80%", desc: "Goes directly to the brother operating the route", color: GREEN },
+                { label: "10%", desc: "Goes to the Mākoa House (operations, equipment, training)", color: BLUE },
+                { label: "10%", desc: "Goes to the Order fund (expansion, scholarships, XI)", color: GOLD },
+              ].map((row, i) => (
+                <div key={i} style={{ display: "flex", gap: "12px", alignItems: "center", padding: "8px 12px", background: "rgba(0,0,0,0.3)", borderRadius: "6px" }}>
+                  <span style={{ color: row.color, fontSize: "0.7rem", fontWeight: 700, minWidth: "36px" }}>{row.label}</span>
+                  <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.44rem" }}>{row.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Why invest */}
+          <div style={{ background: GOLD_FAINT, border: `1px solid ${GOLD_10}`, borderRadius: "10px", padding: "24px", marginBottom: "20px" }}>
+            <p style={{ color: BLUE, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>WHY INVEST IN THE TRADE CO.?</p>
+            <div style={{ display: "grid", gap: "10px" }}>
+              {[
+                "The home services market in Hawaii alone is $2.4B/yr. We're building the only brotherhood-operated route network in the state.",
+                "Route operators are brothers — they don't quit, they don't steal, they don't cut corners. The brotherhood is the quality control.",
+                "The 80/10/10 model means the Trade Co. keeps 20% of every dollar generated. At $1.58M ARR, that's $316K/yr to the company.",
+                "B2B contracts (hotels, property managers) are 3–5× the margin of residential. One hotel contract = 20 residential routes.",
+                "The Trade Academy creates a pipeline of trained operators. Every graduate is a new revenue stream.",
+              ].map((point, i) => (
+                <div key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                  <span style={{ color: BLUE, fontSize: "0.42rem", flexShrink: 0, marginTop: "2px" }}>→</span>
+                  <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.44rem", lineHeight: 1.7 }}>{point}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Where it goes */}
+          <div style={{ background: GOLD_FAINT, border: `1px solid ${GOLD_10}`, borderRadius: "10px", padding: "24px" }}>
+            <p style={{ color: PURPLE, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>WHERE TRADE CO. INVESTMENT GOES</p>
+
+            {/* Allocation bar */}
+            <div style={{ display: "flex", gap: "2px", height: "8px", borderRadius: "4px", overflow: "hidden", marginBottom: "16px" }}>
+              {TRADE_CO_USE.map((t, i) => (
+                <div key={i} style={{ width: `${t.pct}%`, background: t.color }} />
+              ))}
+            </div>
+
+            <div style={{ display: "grid", gap: "10px" }}>
+              {TRADE_CO_USE.map((t, i) => (
+                <div key={i} style={{ display: "flex", gap: "14px", alignItems: "flex-start", padding: "10px 0", borderBottom: i < TRADE_CO_USE.length - 1 ? `1px solid rgba(176,142,80,0.06)` : "none" }}>
+                  <span style={{ fontSize: "0.9rem", flexShrink: 0 }}>{t.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
+                      <p style={{ color: t.color, fontSize: "0.44rem" }}>{t.category}</p>
+                      <span style={{ color: t.color, fontSize: "0.48rem", fontWeight: 700 }}>{t.pct}%</span>
+                    </div>
+                    <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.42rem", lineHeight: 1.6 }}>{t.detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── FAQ ───────────────────────────────────────────────────────────── */}
+      <div style={{ padding: "60px 24px", borderTop: `1px solid ${GOLD_10}`, background: "rgba(0,0,0,0.2)" }}>
+        <div style={{ maxWidth: "680px", margin: "0 auto" }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", textAlign: "center", marginBottom: "32px" }}>QUESTIONS</p>
           <div style={{ display: "grid", gap: "4px" }}>
             {FAQS.map((faq, i) => (
-              <div
-                key={i}
-                className="faq-row"
-                style={{
-                  background: openFaq === i ? "rgba(176,142,80,0.05)" : "transparent",
-                  border: `1px solid ${openFaq === i ? GOLD_20 : "rgba(176,142,80,0.08)"}`,
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  transition: "all 0.2s",
-                }}
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-              >
-                <div style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "16px 18px",
-                  gap: "12px",
-                }}>
+              <div key={i} className="faq-row" style={{
+                background: openFaq === i ? "rgba(176,142,80,0.05)" : "transparent",
+                border: `1px solid ${openFaq === i ? GOLD_20 : "rgba(176,142,80,0.08)"}`,
+                borderRadius: "8px", overflow: "hidden", transition: "all 0.2s",
+              }} onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 18px", gap: "12px" }}>
                   <p style={{ color: "#e8e0d0", fontSize: "0.5rem", lineHeight: 1.5 }}>{faq.q}</p>
-                  <span style={{
-                    color: GOLD_DIM,
-                    fontSize: "0.7rem",
-                    flexShrink: 0,
-                    transform: openFaq === i ? "rotate(45deg)" : "rotate(0)",
-                    transition: "transform 0.2s",
-                    lineHeight: 1,
-                  }}>+</span>
+                  <span style={{ color: GOLD_DIM, fontSize: "0.7rem", flexShrink: 0, transform: openFaq === i ? "rotate(45deg)" : "rotate(0)", transition: "transform 0.2s", lineHeight: 1 }}>+</span>
                 </div>
                 {openFaq === i && (
-                  <div style={{
-                    padding: "0 18px 16px",
-                    animation: "fadeUp 0.2s ease forwards",
-                  }}>
-                    <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.46rem", lineHeight: 1.8 }}>
-                      {faq.a}
-                    </p>
+                  <div style={{ padding: "0 18px 16px", animation: "fadeUp 0.2s ease forwards" }}>
+                    <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.46rem", lineHeight: 1.8 }}>{faq.a}</p>
                   </div>
                 )}
               </div>
@@ -516,34 +691,18 @@ export default function CofounderPage() {
         </div>
       </div>
 
-      {/* ── CLAIM FORM ───────────────────────────────────────────── */}
-      <div id="claim" style={{
-        padding: "80px 24px",
-        borderTop: `1px solid ${GOLD_10}`,
-        maxWidth: "480px",
-        margin: "0 auto",
-      }}>
+      {/* ── CLAIM FORM ────────────────────────────────────────────────────── */}
+      <div id="claim" style={{ padding: "80px 24px", borderTop: `1px solid ${GOLD_10}`, maxWidth: "480px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "40px" }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", marginBottom: "12px" }}>
-            CLAIM YOUR SEAT
-          </p>
-          <h2 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            fontSize: "2rem",
-            color: GOLD,
-            fontWeight: 300,
-            margin: "0 0 12px",
-          }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", marginBottom: "12px" }}>CLAIM YOUR SEAT</p>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "2rem", color: GOLD, fontWeight: 300, margin: "0 0 12px" }}>
             12 Seats. Worldwide.
           </h2>
           <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.46rem", lineHeight: 1.7 }}>
-            When they're gone, they're gone.<br />
-            No second round. No waitlist.
+            When they're gone, they're gone.<br />No second round. No waitlist.
           </p>
         </div>
 
-        {/* Seat progress */}
         <div style={{ marginBottom: "32px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
             <span style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.1em" }}>SEATS CLAIMED</span>
@@ -555,93 +714,46 @@ export default function CofounderPage() {
         </div>
 
         <div style={{ display: "grid", gap: "12px", marginBottom: "20px" }}>
-          <input
-            style={inputStyle}
-            placeholder="Full name"
-            value={form.name}
-            onChange={e => setForm({ ...form, name: e.target.value })}
-          />
-          <input
-            style={inputStyle}
-            placeholder="Email address"
-            type="email"
-            value={form.email}
-            onChange={e => setForm({ ...form, email: e.target.value })}
-          />
-          <input
-            style={inputStyle}
-            placeholder="Phone (optional)"
-            type="tel"
-            value={form.phone}
-            onChange={e => setForm({ ...form, phone: e.target.value })}
-          />
-          <input
-            style={inputStyle}
-            placeholder="Your region (Hawaii, California, etc.)"
-            value={form.region}
-            onChange={e => setForm({ ...form, region: e.target.value })}
-          />
+          <input style={inputStyle} placeholder="Full name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+          <input style={inputStyle} placeholder="Email address" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+          <input style={inputStyle} placeholder="Phone (optional)" type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
+          <input style={inputStyle} placeholder="Your region (Hawaii, California, etc.)" value={form.region} onChange={e => setForm({ ...form, region: e.target.value })} />
         </div>
 
         <button
-          className="claim-btn"
           onClick={handleClaim}
           disabled={submitting || !form.name || !form.email}
           style={{
-            width: "100%",
-            background: form.name && form.email ? GOLD_10 : "transparent",
+            width: "100%", background: form.name && form.email ? GOLD_10 : "transparent",
             border: `1px solid ${form.name && form.email ? GOLD_20 : "rgba(176,142,80,0.08)"}`,
             color: form.name && form.email ? GOLD : GOLD_DIM,
-            fontSize: "0.52rem",
-            letterSpacing: "0.25em",
-            padding: "16px",
+            fontSize: "0.52rem", letterSpacing: "0.25em", padding: "16px",
             cursor: form.name && form.email && !submitting ? "pointer" : "not-allowed",
-            fontFamily: "'JetBrains Mono', monospace",
-            borderRadius: "6px",
-            opacity: !form.name || !form.email ? 0.4 : 1,
-            marginBottom: "16px",
+            fontFamily: "'JetBrains Mono', monospace", borderRadius: "6px",
+            opacity: !form.name || !form.email ? 0.4 : 1, marginBottom: "16px",
+            transition: "all 0.25s",
           }}
         >
           {submitting ? "CONNECTING..." : "ENTER THE FOUNDING COUNCIL — $4,997"}
         </button>
 
-        <p style={{
-          color: "rgba(176,142,80,0.2)",
-          fontSize: "0.4rem",
-          textAlign: "center",
-          lineHeight: 1.7,
-        }}>
+        <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.4rem", textAlign: "center", lineHeight: 1.7 }}>
           Secure checkout via Stripe · 1% equity · 12 seats worldwide<br />
           Questions? Talk to XI on the 808 channel.
         </p>
       </div>
 
-      {/* ── FOOTER ───────────────────────────────────────────────── */}
-      <div style={{
-        borderTop: `1px solid ${GOLD_10}`,
-        padding: "32px 24px",
-        textAlign: "center",
-      }}>
+      {/* ── FOOTER ────────────────────────────────────────────────────────── */}
+      <div style={{ borderTop: `1px solid ${GOLD_10}`, padding: "32px 24px", textAlign: "center" }}>
         <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap", marginBottom: "16px" }}>
           {[
             { label: "GATE", href: "/" },
             { label: "CIRCLE", href: "/circle" },
             { label: "MAYDAY", href: "/founding48" },
-            { label: "ALI'I STONE", href: "/stones/alii" },
+            { label: "ALIʻI STONE", href: "/stones/alii" },
             { label: "SERVICES", href: "/services" },
           ].map(link => (
-            <a key={link.label} href={link.href} style={{
-              color: "rgba(176,142,80,0.3)",
-              fontSize: "0.38rem",
-              textDecoration: "none",
-              letterSpacing: "0.15em",
-              transition: "color 0.2s",
-            }}
-              onMouseEnter={e => (e.target as HTMLElement).style.color = GOLD_DIM}
-              onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(176,142,80,0.3)"}
-            >
-              {link.label}
-            </a>
+            <a key={link.label} href={link.href} style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", textDecoration: "none", letterSpacing: "0.15em" }}>{link.label}</a>
           ))}
         </div>
         <p style={{ color: "rgba(176,142,80,0.1)", fontSize: "0.36rem", letterSpacing: "0.15em" }}>
