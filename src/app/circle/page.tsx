@@ -16,16 +16,19 @@ const CIRCLES = [
     badge: "1% EQUITY",
     color: GOLD,
     features: [
-      "1% equity in Makoa Trade Co. LLC",
-      "Permanent seat on the Ali'i Council",
-      "Named Co-Founding Director — all documents, all filings",
-      "Direct line to XI (operational intelligence)",
-      "Revenue share from your home territory",
-      "MAYDAY 2026 War Room pass included",
-      "First access to every route, every market",
-      "Your name carved in the founding stone",
+      "1% equity — Mākoa Trade Co. LLC (founding valuation at MAYDAY)",
+      "5% territory revenue share — paid quarterly, no cap",
+      "$200 ambassador commission per brother who completes formation",
+      "Named Co-Founding Director on all LLC filings — permanent",
+      "Exclusive territory — one co-founder per region, worldwide",
+      "Ali'i Council seat — vote on expansion, treasury, discipline",
+      "XI agent access — full operational intelligence ($497/yr included)",
+      "MAYDAY 2026 War Room pass — the charter signing",
+      "Succession rights — your seat transfers to your designated heir",
+      "Your name on the founding stone — forever",
     ],
-    note: "12 director seats worldwide. When they're gone, they're gone.",
+    note: "12 seats worldwide. Break-even ~3 months. When they're gone, they're gone.",
+    cta: "/cofounder",
   },
   {
     id: "cofounding_circle",
@@ -245,9 +248,29 @@ export default function CirclePage() {
               ))}
             </div>
 
-            <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.42rem", fontStyle: "italic" }}>
+            <p style={{ color: "rgba(176,142,80,0.35)", fontSize: "0.42rem", fontStyle: "italic", marginBottom: "12px" }}>
               {circle.note}
             </p>
+
+            {"cta" in circle && circle.cta && (
+              <a
+                href={circle.cta}
+                onClick={e => e.stopPropagation()}
+                style={{
+                  display: "inline-block",
+                  color: circle.color,
+                  fontSize: "0.4rem",
+                  letterSpacing: "0.2em",
+                  textDecoration: "none",
+                  borderBottom: `1px solid ${circle.color}40`,
+                  paddingBottom: "2px",
+                  marginBottom: "4px",
+                  transition: "border-color 0.2s",
+                }}
+              >
+                VIEW FULL CO-FOUNDER PACK →
+              </a>
+            )}
 
             {/* Expanded form */}
             {selectedCircle === circle.id && (
