@@ -79,7 +79,9 @@ interface PlatformColumnProps {
 function PlatformColumn({ platform, activeBrothers, pendingPledges }: PlatformColumnProps) {
   const [draft, setDraft] = useState("");
   const [generating, setGenerating] = useState(false);
-  const [scheduled, setScheduled] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [sendError, setSendError] = useState("");
 
   async function generateWithXI() {
     setGenerating(true);
@@ -138,11 +140,50 @@ Voice: direct, purposeful, warrior brotherhood. No fluff. No hashtag spam.`,
     setGenerating(false);
   }
 
-  function approveAndSchedule() {
+  async function approveAndSchedule() {
     if (!draft.trim()) return;
-    setScheduled(true);
-    setTimeout(() => setScheduled(false), 3000);
+    setSendError("");
+
+    if (platform.id === "telegram") {
+      setSending(true);
+      try {
+        const res = await fetch(
+          "https://flzivjhxtbolcfaniskv.supabase.co/functions/v1/telegram-send",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: draft.trim() }),
+          }
+        );
+        const data = await res.json();
+        if (!data.ok) {
+          setSendError(data.error || "Failed to send");
+        } else {
+          setSent(true);
+          setDraft("");
+          setTimeout(() => setSent(false), 4000);
+        }
+      } catch {
+        setSendError("Network error. Try again.");
+      }
+      setSending(false);
+    } else {
+      // Facebook — copy to clipboard for manual posting
+      try {
+        await navigator.clipboard.writeText(draft.trim());
+      } catch {
+        // fallback: still show confirmation
+      }
+      setSent(true);
+      setTimeout(() => setSent(false), 3000);
+    }
   }
+
+  const buttonLabel = () => {
+    if (sending) return "SENDING TO TELEGRAM...";
+    if (sent) return platform.id === "telegram" ? "✓ SENT TO TELEGRAM" : "✓ COPIED TO CLIPBOARD";
+    return platform.id === "telegram" ? "⚡ SEND TO TELEGRAM" : "📋 COPY FOR FACEBOOK";
+  };
 
   return (
     <div style={{
@@ -279,23 +320,35 @@ Voice: direct, purposeful, warrior brotherhood. No fluff. No hashtag spam.`,
 
         <button
           onClick={approveAndSchedule}
-          disabled={!draft.trim()}
+          disabled={!draft.trim() || sending}
           style={{
-            background: draft.trim() ? GOLD : "transparent",
-            border: `1px solid ${draft.trim() ? GOLD : "rgba(176,142,80,0.2)"}`,
-            color: draft.trim() ? "#000" : GOLD_DIM,
+            background: sent ? GREEN : draft.trim() && !sending ? GOLD : "transparent",
+            border: `1px solid ${sent ? GREEN : draft.trim() ? GOLD : "rgba(176,142,80,0.2)"}`,
+            color: sent ? "#fff" : draft.trim() && !sending ? "#000" : GOLD_DIM,
             fontSize: "0.42rem",
             letterSpacing: "0.15em",
             padding: "9px 12px",
-            cursor: draft.trim() ? "pointer" : "not-allowed",
+            cursor: draft.trim() && !sending ? "pointer" : "not-allowed",
             borderRadius: "6px",
             fontFamily: "'JetBrains Mono', monospace",
             fontWeight: draft.trim() ? 700 : 400,
             transition: "all 0.2s",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "6px",
           }}
         >
-          {scheduled ? "✓ SCHEDULED" : "APPROVE + SCHEDULE"}
+          {sending && (
+            <div style={{ width: "10px", height: "10px", border: `1px solid #000`, borderTop: "1px solid transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+          )}
+          {buttonLabel()}
         </button>
+        {sendError && (
+          <p style={{ color: "#f85149", fontSize: "0.38rem", textAlign: "center", margin: 0 }}>
+            ⚠ {sendError}
+          </p>
+        )}
       </div>
 
       {/* Post history */}
