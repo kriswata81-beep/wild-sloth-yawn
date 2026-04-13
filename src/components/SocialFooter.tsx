@@ -104,6 +104,19 @@ export default function SocialFooter() {
         ))}
       </div>
 
+      <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 16 }}>
+        {[
+          { href: "/sponsor", label: "SPONSOR A BROTHER" },
+          { href: "/wahine", label: "WAHINE CIRCLE" },
+          { href: "/cofounder", label: "CO-FOUNDER" },
+          { href: "/gate", label: "THE GATE" },
+        ].map(link => (
+          <a key={link.href} href={link.href} style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.12em", textDecoration: "none", opacity: 0.6, transition: "opacity 0.2s" }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
+            onMouseLeave={e => (e.currentTarget.style.opacity = "0.6")}
+          >{link.label}</a>
+        ))}
+      </div>
       <p
         style={{
           color: GOLD_DIM,

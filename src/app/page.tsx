@@ -212,7 +212,9 @@ export default function Home() {
         <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
           <a href="/founding48" className="home-nav-link" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>MAYDAY</a>
           <span style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.38rem" }}>·</span>
-          <a href="/mana-makoa" className="home-nav-link" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>MANA MAKOA</a>
+          <a href="/sponsor" className="home-nav-link" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>SPONSOR</a>
+          <span style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.38rem" }}>·</span>
+          <a href="/wahine" className="home-nav-link" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>WAHINE</a>
           <span style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.38rem" }}>·</span>
           <a href="/portal" className="home-nav-link" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>PORTAL</a>
         </div>

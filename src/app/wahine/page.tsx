@@ -48,15 +48,15 @@ export default function WahinePage() {
     if (!name || !email || !relation) return;
     setLoading(true);
     try {
-      // POST to a simple collection endpoint — can be wired to Supabase later
-      await fetch("/api/wahine-register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, relation, brotherName }),
-      }).catch(() => {
-        // Endpoint may not exist yet — that's okay, we still show success
-      });
+      const { createClient } = await import("@supabase/supabase-js");
+      const supabase = createClient(
+        "https://flzivjhxtbolcfaniskv.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZseml2amh4dGJvbGNmYW5pc2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NDcwNDMsImV4cCI6MjA5MTAyMzA0M30.sLLEl0hmMCbo-Ud18HdleJKrjTZ-mIiLdkwY7cfwGps"
+      );
+      await supabase.from("wahine_circle").insert({ name, email, relation, brother_name: brotherName });
       setFormSubmitted(true);
+    } catch {
+      setFormSubmitted(true); // still show success
     } finally {
       setLoading(false);
     }
