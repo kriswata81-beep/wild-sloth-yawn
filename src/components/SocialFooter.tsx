@@ -108,6 +108,7 @@ export default function SocialFooter() {
         {[
           { href: "/sponsor", label: "SPONSOR A BROTHER" },
           { href: "/wahine", label: "WAHINE CIRCLE" },
+          { href: "/trade", label: "TRADE CO." },
           { href: "/cofounder", label: "CO-FOUNDER" },
           { href: "/gate", label: "THE GATE" },
         ].map(link => (

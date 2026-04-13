@@ -636,6 +636,23 @@ export default function CofounderPage() {
             </div>
           </div>
 
+          {/* Trade Co. doctrine link */}
+          <a href="/trade" style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            background: "rgba(176,142,80,0.04)",
+            border: `1px solid ${GOLD_20}`,
+            borderRadius: "8px",
+            padding: "14px 18px",
+            marginBottom: "20px",
+            textDecoration: "none",
+          }}>
+            <div>
+              <p style={{ color: GOLD, fontSize: "0.44rem", letterSpacing: "0.15em", marginBottom: 3 }}>MĀKOA TRADE CO. — FULL DOCTRINE</p>
+              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.42rem" }}>What the route moves. The five laws. The 100-year mission.</p>
+            </div>
+            <span style={{ color: GOLD_DIM, fontSize: "0.8rem", flexShrink: 0, marginLeft: 12 }}>→</span>
+          </a>
+
           {/* Where it goes */}
           <div style={{ background: GOLD_FAINT, border: `1px solid ${GOLD_10}`, borderRadius: "10px", padding: "24px" }}>
             <p style={{ color: PURPLE, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "14px" }}>WHERE TRADE CO. INVESTMENT GOES</p>
