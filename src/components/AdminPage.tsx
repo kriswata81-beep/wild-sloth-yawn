@@ -74,6 +74,7 @@ const ALL_TABS = [
   "Command",
   "808 Channels",
   "Social",
+  "Campaign",
   "Mentors",
   "Circle",
   "Routes",
@@ -298,7 +299,7 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
       {/* Content */}
       <div style={{ padding: "20px 16px", maxWidth: "960px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-        {loading && tab !== "Command" && tab !== "808 Channels" && tab !== "Social" && tab !== "Mentors" && tab !== "Circle" && tab !== "Routes" && tab !== "XI Mail" && tab !== "Family Office" && tab !== "Ali'i Select" && tab !== "XI Graph" && tab !== "War Room" ? (
+        {loading && tab !== "Command" && tab !== "808 Channels" && tab !== "Social" && tab !== "Campaign" && tab !== "Mentors" && tab !== "Circle" && tab !== "Routes" && tab !== "XI Mail" && tab !== "Family Office" && tab !== "Ali'i Select" && tab !== "XI Graph" && tab !== "War Room" ? (
           <p style={{ color: GOLD_DIM, fontSize: "0.52rem", textAlign: "center", padding: "40px" }}>
             Loading...
           </p>
@@ -323,6 +324,36 @@ export default function AdminPage({ onExit }: AdminPageProps) {
                 activeBrothers={activeMembers.length}
                 pendingPledges={pendingPledges.length}
               />
+            )}
+
+            {/* CAMPAIGN VAULT */}
+            {tab === "Campaign" && (
+              <div style={{ textAlign: "center", padding: "40px 20px" }}>
+                <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.25em", marginBottom: 16 }}>12-DAY SPRINT CAMPAIGN VAULT</p>
+                <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.48rem", lineHeight: 1.8, marginBottom: 24 }}>
+                  Every post, caption, visual direction, and CTA for April 14–25.<br />
+                  Hotel deadline: April 20 · Sold out target: April 25.
+                </p>
+                <a
+                  href="/campaign"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "inline-block",
+                    background: GOLD,
+                    color: "#000",
+                    borderRadius: 6,
+                    padding: "14px 32px",
+                    fontSize: "0.52rem",
+                    letterSpacing: "0.2em",
+                    textDecoration: "none",
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontWeight: 700,
+                  }}
+                >
+                  OPEN CAMPAIGN VAULT →
+                </a>
+              </div>
             )}
 
             {/* MENTOR BOARD */}

@@ -1255,6 +1255,45 @@ function Founding48Content() {
           5 war parties · 60 brothers · once they're gone, this moment is gone
         </p>
 
+        {/* ── SPONSOR STRIP ────────────────────────────────────────────────── */}
+        <div style={{
+          background: "rgba(176,142,80,0.04)",
+          border: `1px solid ${GOLD_20}`,
+          borderRadius: 10,
+          padding: "20px",
+          marginBottom: 16,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 16,
+        }}>
+          <div>
+            <p style={{ color: GOLD, fontSize: "0.46rem", letterSpacing: "0.15em", marginBottom: 4 }}>KNOW A MAN WHO NEEDS THIS?</p>
+            <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem", lineHeight: 1.5 }}>
+              Send him through the gate.<br />He never has to know who.
+            </p>
+          </div>
+          <a
+            href="/sponsor"
+            style={{
+              background: GOLD,
+              color: "#000",
+              border: "none",
+              borderRadius: 6,
+              padding: "10px 16px",
+              fontSize: "0.42rem",
+              letterSpacing: "0.15em",
+              textDecoration: "none",
+              fontFamily: "'JetBrains Mono', monospace",
+              fontWeight: 700,
+              whiteSpace: "nowrap",
+              flexShrink: 0,
+            }}
+          >
+            SPONSOR →
+          </a>
+        </div>
+
         {/* ── TELEGRAM STRIP ───────────────────────────────────────────────── */}
         <div style={{
           background: "#080b10", border: "1px solid rgba(255,255,255,0.05)",
