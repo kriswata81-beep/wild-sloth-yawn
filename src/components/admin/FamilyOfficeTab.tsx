@@ -83,7 +83,7 @@ const LEGAL_DOCS: LegalDoc[] = [
 ];
 
 const SUCCESSION_SEATS = [
-  { seat: "Steward 0001", holder: "Kris Watanabe", backup: "First Ali'i Director", status: "active" },
+  { seat: "Steward 0001", holder: "Makoa Steward 0001", backup: "First Ali'i Director", status: "active" },
   { seat: "Ali'i Seat 2", holder: "TBD — MAYDAY Selection", backup: "—", status: "open" },
   { seat: "Ali'i Seat 3", holder: "TBD — MAYDAY Selection", backup: "—", status: "open" },
   { seat: "Ali'i Seat 4", holder: "TBD — MAYDAY Selection", backup: "—", status: "open" },
