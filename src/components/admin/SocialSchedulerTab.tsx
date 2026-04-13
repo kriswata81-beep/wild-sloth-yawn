@@ -5,11 +5,10 @@ const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
 const GOLD_FAINT = "rgba(176,142,80,0.07)";
 const GREEN = "#3fb950";
-const BLUE = "#58a6ff";
 const PURPLE = "#a78bfa";
 const AMBER = "#f0883e";
 
-type Platform = "linkedin" | "facebook" | "telegram";
+type Platform = "facebook" | "telegram";
 
 interface PostHistory {
   date: string;
@@ -31,24 +30,6 @@ interface PlatformConfig {
 }
 
 const PLATFORMS: PlatformConfig[] = [
-  {
-    id: "linkedin",
-    name: "LinkedIn",
-    icon: "in",
-    color: BLUE,
-    bgColor: "rgba(88,166,255,0.06)",
-    borderColor: "rgba(88,166,255,0.3)",
-    schedule: "TUE + THU",
-    days: ["TUE", "THU"],
-    nextDrop: "Tuesday 9:00 AM",
-    history: [
-      { date: "Thu Jun 5", preview: "The Mākoa Order is building Hawaii's next generation of...", status: "sent" },
-      { date: "Tue Jun 3", preview: "80/10/10 cooperative model — how we structure service...", status: "sent" },
-      { date: "Thu May 29", preview: "Wednesday 4am training. Ko Olina Beach. Brotherhood...", status: "sent" },
-      { date: "Tue May 27", preview: "What does it mean to be a Nā Koa warrior in 2025?...", status: "sent" },
-      { date: "Thu May 22", preview: "Mākoa House at capacity: $132,140 MRR. One house...", status: "sent" },
-    ],
-  },
   {
     id: "facebook",
     name: "Facebook",
@@ -105,7 +86,6 @@ function PlatformColumn({ platform, activeBrothers, pendingPledges }: PlatformCo
     const apiKey = process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY;
 
     const platformContext = {
-      linkedin: "professional, thought leadership, brotherhood values, business impact",
       facebook: "community-focused, warm, service-oriented, local Hawaii pride",
       telegram: "direct signal drop, brief, operational, brotherhood pulse check",
     };
@@ -120,9 +100,8 @@ Rules: NO DM · NO REPLY · DROP THE MARK · WALK AWAY`;
 
     if (!apiKey) {
       const fallbacks: Record<Platform, string> = {
-        linkedin: `The Mākoa Order is building Hawaii's next generation of service leaders.\n\n${activeBrothers} active brothers. ${pendingPledges} pledges under review.\n\nWe don't recruit. We select.\n\nIf you're ready to serve — the gate is open.\n\n#Makoa #Hawaii #Brotherhood #Service`,
-        facebook: `Wednesday 4am. Ko Olina Beach. ${activeBrothers} brothers showed up.\n\nNo excuses. No phones. Just the work.\n\nThis is what Mākoa looks like.\n\n🌊⚔`,
-        telegram: `808 SIGNAL · ${new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}\n\nActive: ${activeBrothers} · Pending: ${pendingPledges}\nRoutes: ACTIVE · Training: WED 4AM\n\nDROP THE MARK · WALK AWAY`,
+        facebook: `Wednesday 4am. Ko Olina Beach. ${activeBrothers} brothers showed up.\\n\\nNo excuses. No phones. Just the work.\\n\\nThis is what Mākoa looks like.\\n\\n🌊⚔`,
+        telegram: `808 SIGNAL · ${new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}\\n\\nActive: ${activeBrothers} · Pending: ${pendingPledges}\\nRoutes: ACTIVE · Training: WED 4AM\\n\\nDROP THE MARK · WALK AWAY`,
       };
       setDraft(fallbacks[platform.id]);
       setGenerating(false);
