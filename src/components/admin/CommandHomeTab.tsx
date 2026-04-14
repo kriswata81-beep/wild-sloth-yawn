@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import MakoaQR from "@/components/MakoaQR";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -279,38 +280,8 @@ export default function CommandHomeTab({ activeBrothers, pendingPledges, revenue
             pointerEvents: "none",
           }} />
 
-          {/* Eclipse crest — the outer ring */}
-          <div style={{ position: "relative", width: 200, height: 200, flexShrink: 0 }}>
-            {/* Eclipse crest image as the outer corona ring */}
-            <img
-              src="/makoa_eclipse_crest.png"
-              alt="Mākoa Eclipse Crest"
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-              }}
-            />
-            {/* QR code sits in the centre of the eclipse corona */}
-            <div style={{
-              position: "absolute",
-              top: "50%", left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 88, height: 88,
-              background: "#fff",
-              borderRadius: "8px",
-              padding: "4px",
-              boxShadow: `0 0 20px rgba(176,142,80,0.3)`,
-            }}>
-              <img
-                src="/makoa_qr.png"
-                alt="Mākoa QR Code"
-                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
-              />
-            </div>
-          </div>
+          {/* Gold compass-rose QR */}
+          <MakoaQR diameter={240} showLabel={true} />
 
           {/* Caption below the mark */}
           <div style={{ textAlign: "center" }}>

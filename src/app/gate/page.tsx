@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/integrations/supabase/client";
 import { callXIAgent } from "@/lib/xi-agent";
+import MakoaQR from "@/components/MakoaQR";
 
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
@@ -632,19 +633,15 @@ export default function GatePageRoute() {
         {/* Telegram access is given AFTER acceptance — not on the gate page */}
 
         {/* ── QR CODE ─────────────────────────────────────────────────────── */}
-        <div style={{
-          textAlign: "center", padding: "28px 0 12px",
-        }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.2em", marginBottom: 12 }}>
+        <div style={{ textAlign: "center", padding: "28px 0 12px" }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.2em", marginBottom: 16 }}>
             SCAN TO SHARE THE GATE
           </p>
-          <img
-            src="/makoa_qr.png"
-            alt="Mākoa Gate QR Code"
-            style={{ width: 160, height: 160, margin: "0 auto", display: "block", borderRadius: 8 }}
-          />
-          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.36rem", marginTop: 10, letterSpacing: "0.1em" }}>
-            makoaorder.com/gate
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <MakoaQR diameter={220} showLabel={true} />
+          </div>
+          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.36rem", marginTop: 14, letterSpacing: "0.1em" }}>
+            makoa.live
           </p>
         </div>
 
