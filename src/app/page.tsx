@@ -237,8 +237,8 @@ export default function Home() {
           }}>
             {[
               { label: "CO-FOUNDER", count: seatsLeft.cofounder, color: GOLD, sub: "Aliʻi · 1% equity" },
-              { label: "MANA", count: seatsLeft.mana, color: BLUE, sub: "24HR Mastermind" },
-              { label: "NĀ KOA", count: seatsLeft.nakoa, color: GREEN, sub: "12HR Day Pass" },
+              { label: "MANA", count: seatsLeft.mana, color: BLUE, sub: "Mastermind" },
+              { label: "NĀ KOA", count: seatsLeft.nakoa, color: GREEN, sub: "Day Pass" },
             ].map(s => (
               <div key={s.label} style={{
                 padding: "12px 6px",
