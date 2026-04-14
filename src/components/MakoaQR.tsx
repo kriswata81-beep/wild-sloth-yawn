@@ -1,210 +1,129 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import QRCode from "qrcode";
-
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.55)";
 const GOLD_FAINT = "rgba(176,142,80,0.18)";
 const BG = "#04060a";
 
+// QuickChart API — generates a real scannable QR, gold dots on black background
+const QR_URL =
+  "https://quickchart.io/qr?text=https%3A%2F%2Fmakoa.live&size=300&dark=b08e50&light=04060a&ecLevel=M&margin=1";
+
 interface MakoaQRProps {
   diameter?: number;
   showLabel?: boolean;
-  url?: string;
 }
 
-export default function MakoaQR({
-  diameter = 220,
-  showLabel = true,
-  url = "https://makoa.live",
-}: MakoaQRProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [matrix, setMatrix] = useState<boolean[][] | null>(null);
-
-  useEffect(() => {
-    // Generate QR matrix using the library
-    QRCode.create(url, { errorCorrectionLevel: "M" })
-      .then((qr) => {
-        const size = qr.modules.size;
-        const data = qr.modules.data;
-        const mat: boolean[][] = [];
-        for (let r = 0; r < size; r++) {
-          const row: boolean[] = [];
-          for (let c = 0; c < size; c++) {
-            row.push(!!data[r * size + c]);
-          }
-          mat.push(row);
-        }
-        setMatrix(mat);
-      })
-      .catch(console.error);
-  }, [url]);
-
-  if (!matrix) {
-    return (
-      <div
-        style={{
-          width: diameter,
-          height: diameter,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: GOLD_DIM,
-          fontSize: 12,
-          fontFamily: "monospace",
-        }}
-      >
-        loading…
-      </div>
-    );
-  }
-
-  const SIZE = matrix.length;
-  const padding = diameter * 0.1;
-  const qrArea = diameter - padding * 2;
-  const cellSize = qrArea / SIZE;
-  const offset = padding;
+export default function MakoaQR({ diameter = 220, showLabel = true }: MakoaQRProps) {
   const cx = diameter / 2;
   const cy = diameter / 2;
-  const r = diameter / 2 - diameter * 0.01;
+  const r = diameter / 2 - 2;
   const tickLen = diameter * 0.055;
 
+  // QR image sits inside the compass ring with padding
+  const qrPad = diameter * 0.12;
+  const qrSize = diameter - qrPad * 2;
+
   return (
-    <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-      <svg
-        width={diameter}
-        height={diameter}
-        viewBox={`0 0 ${diameter} ${diameter}`}
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ display: "block" }}
-      >
-        <defs>
-          <radialGradient id="mqGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor={GOLD} stopOpacity="0.15" />
-            <stop offset="100%" stopColor={GOLD} stopOpacity="0" />
-          </radialGradient>
-          <filter id="mqBloom" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="0.8" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
+    <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+      <div style={{ position: "relative", width: diameter, height: diameter }}>
 
-        {/* Background */}
-        <rect width={diameter} height={diameter} fill={BG} />
+        {/* Compass rose SVG — sits on top as overlay */}
+        <svg
+          width={diameter}
+          height={diameter}
+          viewBox={`0 0 ${diameter} ${diameter}`}
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none" }}
+        >
+          <defs>
+            <radialGradient id="mqGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor={GOLD} stopOpacity="0.1" />
+              <stop offset="100%" stopColor={GOLD} stopOpacity="0" />
+            </radialGradient>
+          </defs>
 
-        {/* Glow */}
-        <circle cx={cx} cy={cy} r={r * 0.85} fill="url(#mqGlow)" />
+          {/* Glow */}
+          <circle cx={cx} cy={cy} r={r * 0.9} fill="url(#mqGlow)" />
 
-        {/* Outer compass ring */}
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke={GOLD} strokeWidth={diameter * 0.007} opacity={0.75} />
+          {/* Outer ring */}
+          <circle cx={cx} cy={cy} r={r} fill="none" stroke={GOLD} strokeWidth={diameter * 0.008} opacity={0.8} />
 
-        {/* Inner ring */}
-        <circle cx={cx} cy={cy} r={r - diameter * 0.035} fill="none" stroke={GOLD_FAINT} strokeWidth={diameter * 0.003} />
+          {/* Inner ring */}
+          <circle cx={cx} cy={cy} r={r - diameter * 0.038} fill="none" stroke={GOLD_FAINT} strokeWidth={diameter * 0.003} />
 
-        {/* Cardinal ticks + labels */}
-        {[
-          { angle: -90, label: "N" },
-          { angle: 0,   label: "E" },
-          { angle: 90,  label: "S" },
-          { angle: 180, label: "W" },
-        ].map(({ angle, label }) => {
-          const rad = (angle * Math.PI) / 180;
-          const x1 = cx + r * Math.cos(rad);
-          const y1 = cy + r * Math.sin(rad);
-          const x2 = cx + (r - tickLen) * Math.cos(rad);
-          const y2 = cy + (r - tickLen) * Math.sin(rad);
-          const lx = cx + (r + diameter * 0.065) * Math.cos(rad);
-          const ly = cy + (r + diameter * 0.065) * Math.sin(rad);
-          return (
-            <g key={label}>
-              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={GOLD} strokeWidth={diameter * 0.007} strokeLinecap="round" />
-              <text
-                x={lx} y={ly}
-                textAnchor="middle"
-                dominantBaseline="central"
-                fill={GOLD}
-                fontSize={diameter * 0.052}
-                fontFamily="'JetBrains Mono', monospace"
-                fontWeight="700"
-                opacity={0.9}
-              >
-                {label}
-              </text>
-            </g>
-          );
-        })}
+          {/* Cardinal ticks + labels */}
+          {[
+            { angle: -90, label: "N" },
+            { angle: 0,   label: "E" },
+            { angle: 90,  label: "S" },
+            { angle: 180, label: "W" },
+          ].map(({ angle, label }) => {
+            const rad = (angle * Math.PI) / 180;
+            const x1 = cx + r * Math.cos(rad);
+            const y1 = cy + r * Math.sin(rad);
+            const x2 = cx + (r - tickLen) * Math.cos(rad);
+            const y2 = cy + (r - tickLen) * Math.sin(rad);
+            const lx = cx + (r + diameter * 0.07) * Math.cos(rad);
+            const ly = cy + (r + diameter * 0.07) * Math.sin(rad);
+            return (
+              <g key={label}>
+                <line x1={x1} y1={y1} x2={x2} y2={y2}
+                  stroke={GOLD} strokeWidth={diameter * 0.008} strokeLinecap="round" />
+                <text
+                  x={lx} y={ly}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill={GOLD}
+                  fontSize={diameter * 0.055}
+                  fontFamily="'JetBrains Mono', monospace"
+                  fontWeight="700"
+                >
+                  {label}
+                </text>
+              </g>
+            );
+          })}
 
-        {/* Diagonal half-ticks */}
-        {[45, 135, 225, 315].map((angle) => {
-          const rad = (angle * Math.PI) / 180;
-          const x1 = cx + r * Math.cos(rad);
-          const y1 = cy + r * Math.sin(rad);
-          const x2 = cx + (r - tickLen * 0.45) * Math.cos(rad);
-          const y2 = cy + (r - tickLen * 0.45) * Math.sin(rad);
-          return (
-            <line key={angle} x1={x1} y1={y1} x2={x2} y2={y2}
-              stroke={GOLD_FAINT} strokeWidth={diameter * 0.004} strokeLinecap="round" />
-          );
-        })}
+          {/* Diagonal half-ticks */}
+          {[45, 135, 225, 315].map((angle) => {
+            const rad = (angle * Math.PI) / 180;
+            const x1 = cx + r * Math.cos(rad);
+            const y1 = cy + r * Math.sin(rad);
+            const x2 = cx + (r - tickLen * 0.45) * Math.cos(rad);
+            const y2 = cy + (r - tickLen * 0.45) * Math.sin(rad);
+            return (
+              <line key={angle} x1={x1} y1={y1} x2={x2} y2={y2}
+                stroke={GOLD_FAINT} strokeWidth={diameter * 0.004} strokeLinecap="round" />
+            );
+          })}
+        </svg>
 
-        {/* QR dot modules — generated by library */}
-        <g filter="url(#mqBloom)">
-          {matrix.map((row, rowIdx) =>
-            row.map((cell, colIdx) => {
-              if (!cell) return null;
+        {/* Black background circle */}
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 0,
+          borderRadius: "50%",
+          background: BG,
+        }} />
 
-              const x = offset + colIdx * cellSize + cellSize / 2;
-              const y = offset + rowIdx * cellSize + cellSize / 2;
-              const dotR = cellSize * 0.4;
-
-              // Finder pattern corners — rounded squares for style
-              const inFinder =
-                (rowIdx < 7 && colIdx < 7) ||
-                (rowIdx < 7 && colIdx >= SIZE - 7) ||
-                (rowIdx >= SIZE - 7 && colIdx < 7);
-
-              // Gold brightness gradient — brighter toward centre
-              const dx = colIdx - SIZE / 2;
-              const dy = rowIdx - SIZE / 2;
-              const dist = Math.sqrt(dx * dx + dy * dy);
-              const maxDist = (Math.sqrt(2) * SIZE) / 2;
-              const t = 1 - (dist / maxDist) * 0.5;
-              const rr = Math.round(120 + 112 * t);
-              const gg = Math.round(90 + 90 * t);
-              const bb = Math.round(30 + 60 * t);
-              const dotColor = `rgb(${rr},${gg},${bb})`;
-
-              if (inFinder) {
-                return (
-                  <rect
-                    key={`${rowIdx}-${colIdx}`}
-                    x={x - dotR}
-                    y={y - dotR}
-                    width={dotR * 2}
-                    height={dotR * 2}
-                    rx={dotR * 0.35}
-                    fill={dotColor}
-                  />
-                );
-              }
-
-              return (
-                <circle
-                  key={`${rowIdx}-${colIdx}`}
-                  cx={x}
-                  cy={y}
-                  r={dotR}
-                  fill={dotColor}
-                />
-              );
-            })
-          )}
-        </g>
-      </svg>
+        {/* The actual QR image — centered inside the compass ring */}
+        <div style={{
+          position: "absolute",
+          top: qrPad, left: qrPad,
+          width: qrSize, height: qrSize,
+          zIndex: 1,
+          borderRadius: 8,
+          overflow: "hidden",
+        }}>
+          <img
+            src={QR_URL}
+            alt="Mākoa QR Code — scan to visit makoa.live"
+            width={qrSize}
+            height={qrSize}
+            style={{ display: "block", width: "100%", height: "100%" }}
+          />
+        </div>
+      </div>
 
       {showLabel && (
         <div style={{ textAlign: "center" }}>
