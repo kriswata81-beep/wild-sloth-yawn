@@ -36,17 +36,17 @@ Mākoa is a brotherhood with a founding fire — and it happens once.
 
 4am ice bath. Brotherhood circle. The oath. A trade network built by men who show up.
 
-12 Co-Founder seats. 24 Mana seats. 12 Nā Koa Day Passes.
+4 Co-Founder seats. 6 Mana seats. 10 Nā Koa Day Passes.
 
 Hotel rooms held until April 20.
 Sold out target: April 25.
 
 The gate is open.
-→ makoa.com
+→ makoa.live
 
 #Makoa #Brotherhood #WestOahu #MensMentalHealth #Hawaii #MAYDAY2026 #FoundingFire`,
     visual: "Crest on black. Gold glow. No text except MĀKOA. Let the image breathe.",
-    cta: "Link in bio → makoa.com",
+    cta: "Link in bio → makoa.live",
     target: "Cold leads — men who don't know you yet",
   },
   {
@@ -75,11 +75,11 @@ Day Pass · $97
 Mastermind · $197
 War Room · $397 deposit
 
-→ makoa.com/sponsor
+→ makoa.live/sponsor
 
 #SponsorABrother #Makoa #MensHealing #Hawaii #Brotherhood`,
     visual: "Two silhouettes. One hand on the other's shoulder. Gold light. No faces.",
-    cta: "makoa.com/sponsor",
+    cta: "makoa.live/sponsor",
     target: "Women — wives, mothers, sisters. Men who want to send a friend.",
   },
   {
@@ -104,10 +104,10 @@ The order sees you before you see the order."
 SLIDE 3:
 "Hotel rooms held until April 20.
 After that — you're on your own.
-→ makoa.com"
+→ makoa.live"
 [Swipe up / Link sticker]`,
     visual: "Dark. Minimal. Gold text on black. Each slide one thought.",
-    cta: "Swipe up → makoa.com",
+    cta: "Swipe up → makoa.live",
     target: "Men who are curious but haven't committed",
   },
   {
@@ -129,11 +129,11 @@ If you've been watching — this is the moment.
 West Oahu. May 1–3.
 The founding fire happens once.
 
-→ makoa.com/founding48
+→ makoa.live/founding20
 
 #Makoa #MAYDAY2026 #LastChance #Brotherhood #Hawaii`,
     visual: "Countdown clock. Red urgency. Gold crest. Price comparison side by side.",
-    cta: "makoa.com/founding48",
+    cta: "makoa.live/founding20",
     target: "Warm leads who've visited the site but haven't bought",
   },
   {
@@ -163,9 +163,9 @@ Each node opens a city."
 
 SLIDE 5: "West Oahu. May 1–3.
 The founding fire happens once.
-→ makoa.com"`,
+→ makoa.live"`,
     visual: "Dark cards. Each slide one cargo. Gold, Blue, Green color coding.",
-    cta: "makoa.com/trade",
+    cta: "makoa.live/trade",
     target: "Men who want to understand the business case before committing",
   },
   {
@@ -187,11 +187,11 @@ War Party VIP: $799/brother (airport pickup + hotel)
 
 After Sunday: book your own room.
 
-→ makoa.com/founding48
+→ makoa.live/founding20
 
 #Makoa #MAYDAY2026 #HotelDeadline #Brotherhood`,
     visual: "Calendar. April 20 circled in red. Hotel key icon.",
-    cta: "makoa.com/founding48",
+    cta: "makoa.live/founding20",
     target: "Men who want the full experience but are procrastinating",
   },
   {
@@ -201,8 +201,8 @@ After Sunday: book your own room.
     platform: "Instagram + Facebook",
     type: "STATIC + STORY",
     color: GOLD,
-    hook: "12 seats. 1% equity each. The men who build the order from the inside.",
-    caption: `12 seats.
+    hook: "4 seats. 1% equity each. The men who build the order from the inside.",
+    caption: `4 seats.
 1% equity each.
 The men who build the order from the inside.
 
@@ -218,13 +218,13 @@ You're buying in at the floor.
 Before any external valuation.
 Before the order is founded.
 
-12 seats. Some are already claimed.
+4 seats. Some are already claimed.
 
-→ makoa.com/cofounder
+→ makoa.live/cofounder
 
 #Makoa #CoFounder #Brotherhood #Investment #Hawaii #MAYDAY2026`,
-    visual: "12 empty chairs around a fire. One lit. Gold light.",
-    cta: "makoa.com/cofounder",
+    visual: "4 empty chairs around a fire. One lit. Gold light.",
+    cta: "makoa.live/cofounder",
     target: "High-value men — business owners, investors, leaders",
   },
   {
@@ -241,19 +241,19 @@ Hotel rooms release at midnight.
 
 After tonight — you book your own room.
 
-Aliʻi War Room (hotel included): makoa.com/founding48
-War Party VIP (airport pickup + hotel): makoa.com/founding48
+Aliʻi War Room (hotel included): makoa.live/founding20
+War Party VIP (airport pickup + hotel): makoa.live/founding20
 
 If you've been waiting — this is the last moment to get the full package.
 
 West Oahu. May 1–3.
 The founding fire happens once.
 
-→ makoa.com/founding48
+→ makoa.live/founding20
 
 #Makoa #MAYDAY2026 #TodayIsTheDay #Brotherhood #Hawaii`,
     visual: "Clock at 11:59. Red. Urgent. Crest. One CTA.",
-    cta: "makoa.com/founding48",
+    cta: "makoa.live/founding20",
     target: "Everyone. Maximum reach day. Post 3x today.",
   },
   {
@@ -276,11 +276,11 @@ You just book your own room.
 
 Embassy Suites Kapolei — mention Mākoa.
 
-→ makoa.com/founding48
+→ makoa.live/founding20
 
 #Makoa #MAYDAY2026 #LastCall #Brotherhood`,
     visual: "Hotel key crossed out. Seat still open. Gold.",
-    cta: "makoa.com/founding48",
+    cta: "makoa.live/founding20",
     target: "Men who missed the hotel deadline but can still come",
   },
   {
@@ -312,11 +312,11 @@ You've been sponsored into Mākoa."
 
 He never has to know who.
 
-→ makoa.com/sponsor
+→ makoa.live/sponsor
 
 #SponsorABrother #Makoa #MensHealing #Brotherhood #Hawaii`,
     visual: "Man alone. Then two men. Gold light. No faces needed.",
-    cta: "makoa.com/sponsor",
+    cta: "makoa.live/sponsor",
     target: "Women and men who want to send someone but haven't yet",
   },
   {
@@ -329,16 +329,16 @@ He never has to know who.
     hook: "Seat update. Here's where we stand.",
     caption: `Seat update.
 
-Co-Founder (Aliʻi): [X] of 12 claimed
-Mana Mastermind: [X] of 24 claimed
-Nā Koa Day Pass: [X] of 12 claimed
+Co-Founder (Aliʻi): [X] of 4 claimed
+Mana Mastermind: [X] of 6 claimed
+Nā Koa Day Pass: [X] of 10 claimed
 
 Sold out target: April 25.
 That's 2 days.
 
-→ makoa.com/founding48`,
+→ makoa.live/founding20`,
     visual: "Live seat count. Red dots for claimed. Gold for remaining. Clean.",
-    cta: "makoa.com/founding48",
+    cta: "makoa.live/founding20",
     target: "Everyone — FOMO trigger. Update the numbers manually.",
   },
   {
@@ -362,11 +362,11 @@ The order is sealed.
 
 If you're reading this — you still have time.
 
-→ makoa.com
+→ makoa.live
 
 #Makoa #MAYDAY2026 #24Hours #Brotherhood #Hawaii #FoundingFire`,
     visual: "Crest. 24:00:00 countdown. Gold. Maximum urgency.",
-    cta: "makoa.com",
+    cta: "makoa.live",
     target: "Everyone. Final push. Post morning + evening.",
   },
   {
@@ -376,10 +376,10 @@ If you're reading this — you still have time.
     platform: "ALL CHANNELS",
     type: "ANNOUNCEMENT",
     color: GOLD,
-    hook: "The gate is closed. The 72 are set.",
+    hook: "The gate is closed. The 20 are set.",
     caption: `The gate is closed.
 
-The 72 are set.
+The 20 are set.
 
 To every man who claimed his seat —
 we'll see you at the fire.
@@ -390,7 +390,7 @@ Under the Malu — I am Mākoa.
 
 #Makoa #MAYDAY2026 #SoldOut #Brotherhood #FoundingFire #Hawaii`,
     visual: "Crest. FOUNDING BROTHERS SEALED. Gold. Celebratory but serious.",
-    cta: "Waitlist → makoa.com/gate",
+    cta: "Waitlist → makoa.live/gate",
     target: "Everyone — social proof. Shows the world it sold out.",
   },
 ];
@@ -406,7 +406,7 @@ const PHASE_COLORS: Record<string, string> = {
 const STRATEGY = [
   {
     title: "You don't need hundreds",
-    body: "You need 150 warm leads to sell 48 seats. That's 2–3 posts that hit the right man in the chest. One viral reel about the sponsor path could fill the Nā Koa tier alone.",
+    body: "You need 50 warm leads to sell 20 seats. That's 2–3 posts that hit the right man in the chest. One viral reel about the sponsor path could fill the Nā Koa tier alone.",
     color: GOLD,
   },
   {
@@ -416,7 +416,7 @@ const STRATEGY = [
   },
   {
     title: "Scarcity is real — use it",
-    body: "12 Co-Founder seats. 24 Mana. 12 Nā Koa. These are real numbers. Post the seat count every 2 days. When a tier sells out, announce it. Nothing converts like 'only 3 left.'",
+    body: "4 Co-Founder seats. 6 Mana. 10 Nā Koa. These are real numbers. Post the seat count every 2 days. When a tier sells out, announce it. Nothing converts like 'only 3 left.'",
     color: RED,
   },
   {
@@ -698,9 +698,9 @@ export default function CampaignPage() {
 
           <div style={{ display: "grid", gap: 10, marginBottom: 20 }}>
             {[
-              { tier: "12 CO-FOUNDERS", need: "~40 qualified leads", price: "$4,997 each", color: GOLD, revenue: "$59,964" },
-              { tier: "24 MANA", need: "~80 qualified leads", price: "$299–$399 each", color: BLUE, revenue: "$7,176–$9,576" },
-              { tier: "12 NĀ KOA", need: "~30 qualified leads", price: "$149–$199 each", color: GREEN, revenue: "$1,788–$2,388" },
+              { tier: "4 CO-FOUNDERS", need: "~12 qualified leads", price: "$4,997 each", color: GOLD, revenue: "$19,988" },
+              { tier: "6 MANA", need: "~20 qualified leads", price: "$299–$399 each", color: BLUE, revenue: "$1,794–$2,394" },
+              { tier: "10 NĀ KOA", need: "~25 qualified leads", price: "$149–$199 each", color: GREEN, revenue: "$1,490–$1,990" },
             ].map(t => (
               <div key={t.tier} style={{
                 padding: "14px 16px",
@@ -725,7 +725,7 @@ export default function CampaignPage() {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             <div style={{ textAlign: "center", padding: "14px", background: GOLD_10, border: `1px solid ${GOLD_20}`, borderRadius: 8 }}>
-              <p style={{ color: GOLD, fontSize: "1.4rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>150</p>
+              <p style={{ color: GOLD, fontSize: "1.4rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>50</p>
               <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.1em", marginTop: 4 }}>WARM LEADS NEEDED</p>
             </div>
             <div style={{ textAlign: "center", padding: "14px", background: GOLD_10, border: `1px solid ${GOLD_20}`, borderRadius: 8 }}>

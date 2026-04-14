@@ -638,7 +638,7 @@ export default function GatePageRoute() {
             SCAN TO SHARE THE GATE
           </p>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <MakoaQR diameter={220} showLabel={true} />
+            <MakoaQR size={220} showLabel={true} />
           </div>
           <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.36rem", marginTop: 14, letterSpacing: "0.1em" }}>
             makoa.live
