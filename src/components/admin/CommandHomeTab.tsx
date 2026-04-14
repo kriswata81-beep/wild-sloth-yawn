@@ -242,6 +242,121 @@ export default function CommandHomeTab({ activeBrothers, pendingPledges, revenue
 
   return (
     <div style={{ animation: "fadeUp 0.4s ease forwards" }}>
+
+      {/* ── SOCIAL DROP ASSET ── */}
+      <div style={{
+        marginBottom: "20px",
+        padding: "20px",
+        background: "#04060a",
+        border: `1px solid ${GOLD}30`,
+        borderRadius: "14px",
+      }}>
+        <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.2em", marginBottom: "14px" }}>
+          SOCIAL DROP ASSET · SCREENSHOT &amp; POST
+        </p>
+
+        {/* The actual drop card — dark bg so it looks clean on any feed */}
+        <div style={{
+          background: "#04060a",
+          border: `1px solid ${GOLD}40`,
+          borderRadius: "12px",
+          padding: "24px 20px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "16px",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          {/* Subtle radial glow behind the mark */}
+          <div style={{
+            position: "absolute",
+            top: "50%", left: "50%",
+            transform: "translate(-50%,-50%)",
+            width: 260, height: 260,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(176,142,80,0.08) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }} />
+
+          {/* Eclipse crest — the outer ring */}
+          <div style={{ position: "relative", width: 200, height: 200, flexShrink: 0 }}>
+            {/* Eclipse crest image as the outer corona ring */}
+            <img
+              src="/makoa_eclipse_crest.png"
+              alt="Mākoa Eclipse Crest"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+              }}
+            />
+            {/* QR code sits in the centre of the eclipse corona */}
+            <div style={{
+              position: "absolute",
+              top: "50%", left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 88, height: 88,
+              background: "#fff",
+              borderRadius: "8px",
+              padding: "4px",
+              boxShadow: `0 0 20px rgba(176,142,80,0.3)`,
+            }}>
+              <img
+                src="/makoa_qr.png"
+                alt="Mākoa QR Code"
+                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+              />
+            </div>
+          </div>
+
+          {/* Caption below the mark */}
+          <div style={{ textAlign: "center" }}>
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              color: GOLD,
+              fontSize: "1.1rem",
+              lineHeight: 1.2,
+              marginBottom: "6px",
+            }}>
+              Mākoa Brotherhood
+            </p>
+            <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.4rem", letterSpacing: "0.18em" }}>
+              WEST OAHUʻ · MAY 1–3 · SCAN TO ENTER
+            </p>
+          </div>
+        </div>
+
+        {/* Quick copy captions */}
+        <div style={{ marginTop: "14px", display: "grid", gap: "8px" }}>
+          {[
+            { label: "IG / FB DROP", text: "The founding fire happens once. West Oahu. May 1–3. Scan if you're one of them. 🔥 #Mākoa #Brotherhood #WestOahu" },
+            { label: "STORY / REEL", text: "Not a gym. Not a podcast. A brotherhood of men who build real things. Scan the mark. 🤙" },
+            { label: "TELEGRAM / SMS", text: "Mākoa Brotherhood — West Oahu. May 1–3. The gate is open. Scan or go to makoa.live" },
+          ].map(item => (
+            <div key={item.label} style={{
+              background: "rgba(176,142,80,0.04)",
+              border: `1px solid ${GOLD}18`,
+              borderRadius: "8px",
+              padding: "10px 12px",
+              cursor: "pointer",
+            }}
+              onClick={() => navigator.clipboard?.writeText(item.text)}
+            >
+              <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.14em", marginBottom: "4px" }}>
+                {item.label} · TAP TO COPY
+              </p>
+              <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.4rem", lineHeight: 1.5 }}>
+                {item.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Live clock block */}
       <div style={{
         display: "flex",
