@@ -100,7 +100,7 @@ export default function Home() {
     tapTimer.current = setTimeout(() => setTapCount(0), 2000);
   }
 
-  const seatsLeft = { cofounder: 12, mana: 24, nakoa: 12 };
+  const seatsLeft = { cofounder: 4, mana: 6, nakoa: 10 };
 
   return (
     <div style={{ minHeight: "100vh", background: BG, color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", overflowX: "hidden" }}>
