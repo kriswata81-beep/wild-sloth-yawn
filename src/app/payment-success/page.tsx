@@ -409,7 +409,13 @@ function PaymentSuccessContent() {
             This activates your portal access.
           </p>
           <a
-            href={`/pledge?tier=nakoa&h=${encodeURIComponent(handle)}`}
+            href={`/pledge?tier=${
+              productId && (productId.includes("WAR_ROOM") || productId.includes("WAR_VAN") || productId.includes("TEAM_WAR_ROOM") || productId.includes("TEAM_WAR_PARTY"))
+                ? "alii"
+                : productId && (productId.includes("MASTERMIND") || productId.includes("TEAM_MASTERMIND"))
+                ? "mana"
+                : "nakoa"
+            }&h=${encodeURIComponent(handle)}`}
             style={{
               display: "flex",
               alignItems: "center",

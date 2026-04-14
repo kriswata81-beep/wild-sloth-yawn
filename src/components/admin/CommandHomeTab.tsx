@@ -315,6 +315,40 @@ export default function CommandHomeTab({ activeBrothers, pendingPledges, revenue
         ))}
       </div>
 
+      {/* System health warnings */}
+      <div style={{ display: "grid", gap: 6, marginBottom: 16 }}>
+        {[
+          {
+            key: "resend",
+            label: "RESEND API KEY",
+            status: process.env.NEXT_PUBLIC_RESEND_CONFIGURED === "true" ? "ok" : "warn",
+            ok: "Sponsor emails firing",
+            warn: "⚠ Set RESEND_API_KEY — sponsor notification emails are NOT sending",
+          },
+          {
+            key: "stripe_webhook",
+            label: "STRIPE WEBHOOK",
+            status: process.env.NEXT_PUBLIC_STRIPE_WEBHOOK_CONFIGURED === "true" ? "ok" : "warn",
+            ok: "Webhook verified",
+            warn: "⚠ Set STRIPE_WEBHOOK_SECRET — seat counts may not auto-update",
+          },
+        ].map(item => (
+          <div key={item.key} style={{
+            display: "flex", alignItems: "center", gap: 10,
+            padding: "10px 14px",
+            background: item.status === "warn" ? "rgba(248,81,73,0.06)" : "rgba(63,185,80,0.06)",
+            border: `1px solid ${item.status === "warn" ? "rgba(248,81,73,0.25)" : "rgba(63,185,80,0.2)"}`,
+            borderRadius: 6,
+          }}>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: item.status === "warn" ? RED : GREEN, flexShrink: 0 }} />
+            <div>
+              <p style={{ color: item.status === "warn" ? RED : GREEN, fontSize: "0.38rem", letterSpacing: "0.12em" }}>{item.label}</p>
+              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.38rem" }}>{item.status === "warn" ? item.warn : item.ok}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Week at a glance */}
       <div style={{
         background: "rgba(0,0,0,0.3)",

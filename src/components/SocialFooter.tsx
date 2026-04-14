@@ -110,6 +110,8 @@ export default function SocialFooter() {
           { href: "/wahine", label: "WAHINE CIRCLE" },
           { href: "/trade", label: "TRADE CO." },
           { href: "/cofounder", label: "CO-FOUNDER" },
+          { href: "/services", label: "HOME SERVICES" },
+          { href: "/gatherings", label: "GATHERINGS" },
           { href: "/gate", label: "THE GATE" },
         ].map(link => (
           <a key={link.href} href={link.href} style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.12em", textDecoration: "none", opacity: 0.6, transition: "opacity 0.2s" }}

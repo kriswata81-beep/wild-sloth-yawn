@@ -2,23 +2,18 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Mākoa Brotherhood — West Oʻahu's Founding Order",
+  title: "Mākoa — A Brotherhood of Men | West Oʻahu",
   description:
-    "A private brotherhood and training system. 52 weekly trainings, 12 monthly gatherings, 808 emergency channels. Founded by warriors, for warriors.",
+    "A brotherhood of men who build real things together. Not a gym. Not a podcast. 4am ice bath. Brotherhood circle. The oath. West Oahu. May 1–3. The founding fire happens once.",
   keywords: [
-    "Mākoa",
-    "brotherhood",
-    "men",
-    "Hawaii",
-    "MAYDAY",
-    "fraternal order",
-    "ice bath",
-    "healing circle",
+    "Mākoa", "brotherhood", "men", "Hawaii", "MAYDAY 2026",
+    "West Oahu", "founding order", "ice bath", "men's healing",
+    "brotherhood Hawaii", "men's circle", "4am training",
   ],
   openGraph: {
-    title: "Mākoa Brotherhood — West Oʻahu's Founding Order",
+    title: "Mākoa — A Brotherhood of Men",
     description:
-      "A private brotherhood and training system. 52 weekly trainings, 12 monthly gatherings, 808 emergency channels. Founded by warriors, for warriors.",
+      "Not a gym. Not a podcast. A brotherhood of men who build real things together. West Oahu. May 1–3. The founding fire happens once.",
     siteName: "Mākoa Brotherhood",
     type: "website",
     locale: "en_US",
@@ -26,17 +21,17 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/makoa_eclipse_crest.png",
-        width: 1200,
-        height: 630,
-        alt: "Mākoa Brotherhood Crest",
+        width: 800,
+        height: 800,
+        alt: "Mākoa Brotherhood — West Oahu's Founding Order",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mākoa Brotherhood — West Oʻahu's Founding Order",
+    title: "Mākoa — A Brotherhood of Men",
     description:
-      "A private brotherhood and training system. 52 weekly trainings, 12 monthly gatherings, 808 emergency channels. Founded by warriors, for warriors.",
+      "Not a gym. Not a podcast. A brotherhood of men who build real things together. West Oahu. May 1–3.",
     images: ["/makoa_eclipse_crest.png"],
   },
   robots: {

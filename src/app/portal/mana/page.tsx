@@ -164,6 +164,13 @@ export default function ManaPortal() {
 
         {/* Stone Investment Cards */}
         <Section title="Stone Investment" accent={BLUE}>
+          <a href="/stones/mana" style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            background: "rgba(88,166,255,0.06)", border: "1px solid rgba(88,166,255,0.2)",
+            borderRadius: 8, padding: "12px 16px", marginBottom: 14, textDecoration: "none",
+          }}>
+            <p style={{ color: BLUE, fontSize: "0.44rem", letterSpacing: "0.12em" }}>READ THE MANA STONE DOCTRINE →</p>
+          </a>
           <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.5rem", lineHeight: 1.7, marginBottom: "16px" }}>
             Invest in the order. Your stone unlocks Aliʻi War Room access and full council standing.
           </p>

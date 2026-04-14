@@ -25,12 +25,17 @@ export async function POST(req: NextRequest) {
       // If we can't fetch the price, use the provided mode
     }
 
+    const sponsorHandle = metadata?.brotherName ? encodeURIComponent(metadata.brotherName) : "";
+    const successUrl = metadata?.type === "sponsor"
+      ? `${req.nextUrl.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}&sponsor=true&h=${sponsorHandle}`
+      : `${req.nextUrl.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`;
+
     const session = await stripe.checkout.sessions.create({
       mode: sessionMode,
       line_items: [{ price: priceId, quantity: 1 }],
       ...(customerEmail ? { customer_email: customerEmail } : {}),
       ...(metadata ? { metadata } : {}),
-      success_url: `${req.nextUrl.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: successUrl,
       cancel_url: `${req.nextUrl.origin}/circle`,
     });
 
