@@ -3,6 +3,56 @@ import { useState, useEffect, useRef } from "react";
 import MakoaQR from "@/components/MakoaQR";
 
 const GOLD = "#b08e50";
+
+function CopyButton({ label, icon, text, gold, goldDim }: {
+  label: string; icon: string; text: string; gold: string; goldDim: string;
+}) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard?.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+  return (
+    <button
+      onClick={copy}
+      style={{
+        width: "100%",
+        background: copied ? "rgba(176,142,80,0.12)" : "rgba(176,142,80,0.04)",
+        border: `1px solid ${copied ? gold : "rgba(176,142,80,0.15)"}`,
+        borderRadius: 8,
+        padding: "10px 12px",
+        cursor: "pointer",
+        textAlign: "left",
+        transition: "all 0.2s",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 8,
+      }}
+    >
+      <div>
+        <p style={{ color: goldDim, fontSize: "0.36rem", letterSpacing: "0.14em", marginBottom: 3 }}>
+          {icon} {label}
+        </p>
+        <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.38rem", lineHeight: 1.5, whiteSpace: "pre-line" }}>
+          {text}
+        </p>
+      </div>
+      <p style={{
+        color: copied ? gold : "rgba(176,142,80,0.3)",
+        fontSize: "0.36rem",
+        letterSpacing: "0.1em",
+        flexShrink: 0,
+        fontFamily: "'JetBrains Mono', monospace",
+        transition: "color 0.2s",
+      }}>
+        {copied ? "✓ COPIED" : "TAP"}
+      </p>
+    </button>
+  );
+}
 const GOLD_DIM = "rgba(176,142,80,0.5)";
 const GOLD_FAINT = "rgba(176,142,80,0.07)";
 const GREEN = "#3fb950";
@@ -247,84 +297,132 @@ export default function CommandHomeTab({ activeBrothers, pendingPledges, revenue
       {/* ── SOCIAL DROP ASSET ── */}
       <div style={{
         marginBottom: "20px",
-        padding: "20px",
         background: "#04060a",
         border: `1px solid ${GOLD}30`,
         borderRadius: "14px",
+        overflow: "hidden",
       }}>
-        <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.2em", marginBottom: "14px" }}>
-          SOCIAL DROP ASSET · SCREENSHOT &amp; POST
-        </p>
+        {/* Header */}
+        <div style={{ padding: "14px 16px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.2em" }}>
+            📲 SOCIAL DROP · QR + CAPTIONS
+          </p>
+          <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.34rem", letterSpacing: "0.1em" }}>
+            HOLD IMAGE TO SAVE
+          </p>
+        </div>
 
-        {/* The actual drop card — dark bg so it looks clean on any feed */}
+        {/* QR card — this is what you screenshot or hold-to-save */}
         <div style={{
+          margin: "12px 16px 0",
           background: "#04060a",
-          border: `1px solid ${GOLD}40`,
+          border: `1px solid ${GOLD}35`,
           borderRadius: "12px",
-          padding: "24px 20px",
+          padding: "20px 16px 16px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: "16px",
-          position: "relative",
-          overflow: "hidden",
+          gap: "12px",
         }}>
-          {/* Subtle radial glow behind the mark */}
-          <div style={{
-            position: "absolute",
-            top: "50%", left: "50%",
-            transform: "translate(-50%,-50%)",
-            width: 260, height: 260,
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(176,142,80,0.08) 0%, transparent 70%)",
-            pointerEvents: "none",
-          }} />
+          {/* Eyebrow */}
+          <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.22em" }}>
+            MĀKOA ORDER · WEST OAHUʻ
+          </p>
 
-          {/* Gold compass-rose QR */}
-          <MakoaQR diameter={240} showLabel={true} />
+          {/* QR — hold to save on mobile */}
+          <MakoaQR size={220} showLabel={false} />
 
-          {/* Caption below the mark */}
+          {/* Tagline */}
           <div style={{ textAlign: "center" }}>
             <p style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontStyle: "italic",
               color: GOLD,
-              fontSize: "1.1rem",
-              lineHeight: 1.2,
-              marginBottom: "6px",
+              fontSize: "1.05rem",
+              lineHeight: 1.25,
+              marginBottom: 4,
             }}>
-              Mākoa Brotherhood
+              You Found the Gate.
             </p>
-            <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.4rem", letterSpacing: "0.18em" }}>
-              WEST OAHUʻ · MAY 1–3 · SCAN TO ENTER
+            <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.38rem", letterSpacing: "0.14em" }}>
+              Mākoa Brotherhood — West Oʻahu's founding order of men.
+            </p>
+          </div>
+
+          {/* CTA bar */}
+          <div style={{
+            width: "100%",
+            background: GOLD,
+            borderRadius: 8,
+            padding: "10px 0",
+            textAlign: "center",
+          }}>
+            <p style={{
+              color: "#04060a",
+              fontSize: "0.42rem",
+              fontFamily: "'JetBrains Mono', monospace",
+              fontWeight: 700,
+              letterSpacing: "0.18em",
+            }}>
+              ENTER THE GATE →
             </p>
           </div>
         </div>
 
-        {/* Quick copy captions */}
-        <div style={{ marginTop: "14px", display: "grid", gap: "8px" }}>
-          {[
-            { label: "IG / FB DROP", text: "The founding fire happens once. West Oahu. May 1–3. Scan if you're one of them. 🔥 #Mākoa #Brotherhood #WestOahu" },
-            { label: "STORY / REEL", text: "Not a gym. Not a podcast. A brotherhood of men who build real things. Scan the mark. 🤙" },
-            { label: "TELEGRAM / SMS", text: "Mākoa Brotherhood — West Oahu. May 1–3. The gate is open. Scan or go to makoa.live" },
-          ].map(item => (
-            <div key={item.label} style={{
-              background: "rgba(176,142,80,0.04)",
-              border: `1px solid ${GOLD}18`,
-              borderRadius: "8px",
-              padding: "10px 12px",
-              cursor: "pointer",
+        {/* Download button — saves the raw QR image */}
+        <div style={{ padding: "10px 16px 0" }}>
+          <a
+            href="https://quickchart.io/qr?text=https%3A%2F%2Fmakoa.live&size=800&dark=000000&light=ffffff&ecLevel=H&margin=2"
+            download="makoa-qr.png"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "block",
+              width: "100%",
+              padding: "11px 0",
+              background: "rgba(176,142,80,0.08)",
+              border: `1px solid ${GOLD}40`,
+              borderRadius: 8,
+              textAlign: "center",
+              textDecoration: "none",
+              color: GOLD,
+              fontSize: "0.4rem",
+              fontFamily: "'JetBrains Mono', monospace",
+              letterSpacing: "0.16em",
             }}
-              onClick={() => navigator.clipboard?.writeText(item.text)}
-            >
-              <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.14em", marginBottom: "4px" }}>
-                {item.label} · TAP TO COPY
-              </p>
-              <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.4rem", lineHeight: 1.5 }}>
-                {item.text}
-              </p>
-            </div>
-          ))}
+          >
+            ⬇ DOWNLOAD QR IMAGE (800px)
+          </a>
+        </div>
+
+        {/* Caption copy buttons */}
+        <div style={{ padding: "10px 16px 16px", display: "grid", gap: "8px" }}>
+          {[
+            {
+              label: "IG / FB",
+              icon: "📸",
+              text: "The founding fire happens once.\n\nWest Oahu. May 1–3.\n\nScan if you're one of them. 🔥\n\n#Mākoa #Brotherhood #WestOahu #MAYDAY2026",
+            },
+            {
+              label: "STORY / REEL",
+              icon: "🎬",
+              text: "Not a gym. Not a podcast.\n\nA brotherhood of men who build real things.\n\nScan the mark. 🤙 makoa.live",
+            },
+            {
+              label: "TELEGRAM / SMS",
+              icon: "💬",
+              text: "Mākoa Brotherhood — West Oahu. May 1–3. The gate is open. Scan or go to makoa.live",
+            },
+            {
+              label: "MYSTERY DROP",
+              icon: "🔥",
+              text: "👁\n\nmakoa.live\n\n.",
+            },
+          ].map(item => {
+            return (
+              <CopyButton key={item.label} label={item.label} icon={item.icon} text={item.text} gold={GOLD} goldDim={GOLD_DIM} />
+            );
+          })}
         </div>
       </div>
 
