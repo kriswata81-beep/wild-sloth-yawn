@@ -302,10 +302,28 @@ export default function NakoaPortal() {
           </div>
         </Section>
 
+        {/* Stone doctrine link */}
+        <a href="/stones/nakoa" style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          background: "rgba(63,185,80,0.05)", border: "1px solid rgba(63,185,80,0.18)",
+          borderRadius: 8, padding: "12px 16px", marginBottom: 20, textDecoration: "none",
+        }}>
+          <p style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.12em" }}>READ THE NĀ KOA WARRIOR STONE →</p>
+        </a>
+
         {/* Oath */}
-        <div style={{ textAlign: "center", padding: "24px 16px", borderTop: `1px solid ${GREEN_20}`, marginTop: "8px" }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: GREEN_DIM, fontSize: "0.95rem", lineHeight: 2 }}>
-            &ldquo;You are ready to build<br />something worth belonging to.&rdquo;
+        <div style={{ borderLeft: "3px solid rgba(63,185,80,0.3)", background: "rgba(63,185,80,0.03)", borderRadius: "0 8px 8px 0", padding: "20px 18px", marginBottom: 20 }}>
+          <p style={{ color: "rgba(63,185,80,0.4)", fontSize: "0.38rem", letterSpacing: "0.22em", marginBottom: 12 }}>THE OATH OF NĀ KOA</p>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: GREEN_DIM, fontSize: "0.95rem", lineHeight: 2, whiteSpace: "pre-line" }}>
+            {`"I did not come here to be comfortable.
+I came here to be forged.
+I will not quit when it gets hard — I will get harder.
+I serve the order before I serve myself.
+I earn my place. Every week. Every rep. Every 4am.
+I am not yet what I will become.
+But I am here. I showed up.
+That is where it begins.
+Nā Koa — I am a warrior of this order."`}
           </p>
         </div>
 
