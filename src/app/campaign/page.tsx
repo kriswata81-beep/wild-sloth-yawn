@@ -27,8 +27,8 @@ const SPRINT = [
     platform: "Instagram + Facebook",
     type: "REEL / VIDEO",
     color: GOLD,
-    hook: "72 men. West Oahu. May 1.",
-    caption: `72 men. West Oahu. May 1.
+    hook: "West Oahu. May 1. The founding fire.",
+    caption: `West Oahu. May 1.
 
 Not a conference. Not a retreat. Not a men's group that talks about doing things.
 
@@ -126,7 +126,7 @@ Aliʻi War Room: $499 → $699
 
 If you've been watching — this is the moment.
 
-72 men. West Oahu. May 1–3.
+West Oahu. May 1–3.
 The founding fire happens once.
 
 → makoa.com/founding48
@@ -161,7 +161,7 @@ SLIDE 4: TERRITORY
 Each house is a node.
 Each node opens a city."
 
-SLIDE 5: "72 men. May 1–3.
+SLIDE 5: "West Oahu. May 1–3.
 The founding fire happens once.
 → makoa.com"`,
     visual: "Dark cards. Each slide one cargo. Gold, Blue, Green color coding.",
@@ -246,7 +246,7 @@ War Party VIP (airport pickup + hotel): makoa.com/founding48
 
 If you've been waiting — this is the last moment to get the full package.
 
-72 men. West Oahu. May 1–3.
+West Oahu. May 1–3.
 The founding fire happens once.
 
 → makoa.com/founding48
@@ -353,7 +353,7 @@ That's 2 days.
 
 Then we close the gate.
 
-72 men. West Oahu. May 1–3.
+West Oahu. May 1–3.
 The founding fire happens once.
 
 After tomorrow — the gate closes.

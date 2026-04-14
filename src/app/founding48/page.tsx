@@ -385,7 +385,7 @@ function Founding48Content() {
           marginTop: 20,
           animation: "fadeUp 0.9s ease 0.7s both",
         }}>
-          5 War Parties + 60 brothers. Once they're gone, this moment is gone.
+          Limited seats. Once they're gone, this moment is gone.
         </p>
       </div>
 
@@ -1252,7 +1252,7 @@ function Founding48Content() {
           ) : "CLAIM YOUR FOUNDING SEAT"}
         </button>
         <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginBottom: 32 }}>
-          5 war parties · 60 brothers · once they're gone, this moment is gone
+          limited seats · once they're gone, this moment is gone
         </p>
 
         {/* ── SPONSOR STRIP ────────────────────────────────────────────────── */}

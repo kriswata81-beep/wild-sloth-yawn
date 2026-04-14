@@ -229,7 +229,7 @@ export default function Home() {
             opacity: ready ? 1 : 0,
             transition: "opacity 0.8s ease 0.5s",
           }}>
-            72 men. West Oahu. May 1–3.<br />
+            West Oahu. May 1–3.<br />
             The founding fire happens once.
           </p>
 
@@ -514,7 +514,7 @@ export default function Home() {
               { icon: "⚒", label: "A real trade", detail: "Labor, knowledge, territory. The route moves men." },
               { icon: "🏠", label: "A real house", detail: "Mākoa House — West Oahu. Physical. Permanent." },
               { icon: "◈", label: "A real rank", detail: "Nā Koa → Mana → Aliʻi. Earned, not bought." },
-              { icon: "🔥", label: "A real founding", detail: "72 men. May 1–3. The fire happens once." },
+              { icon: "🔥", label: "A real founding", detail: "West Oahu. May 1–3. The fire happens once." },
             ].map(item => (
               <div key={item.label} style={{
                 display: "flex",
@@ -653,10 +653,10 @@ export default function Home() {
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 28 }}>
             {[
-              { val: "72", label: "Founding Brothers", sub: "Total seats" },
               { val: "12", label: "Co-Founders", sub: "Aliʻi · 1% equity each" },
               { val: "24", label: "Mana Brothers", sub: "24HR Mastermind" },
-              { val: "APR 25", label: "Sold Out Target", sub: "12 days from now" },
+              { val: "12", label: "Nā Koa", sub: "Day Pass · 12HR" },
+              { val: "APR 25", label: "Sold Out Target", sub: "10 days from now" },
             ].map(s => (
               <div key={s.label} style={{
                 textAlign: "center",
@@ -689,7 +689,7 @@ export default function Home() {
               marginBottom: 16,
             }}>
               We don't need hundreds.<br />
-              We need 72 men who are ready.
+              We need the right men.
             </p>
             <button
               onClick={() => setView("gate")}
