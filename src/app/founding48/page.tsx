@@ -342,7 +342,7 @@ function Founding48Content() {
           margin: "0 0 12px",
           animation: "fadeUp 0.9s ease 0.2s both",
         }}>
-          MAYDAY<br />Founding 48
+          MAYDAY<br />Founding 20
         </h1>
         <p style={{
           fontFamily: "'Cormorant Garamond', serif",

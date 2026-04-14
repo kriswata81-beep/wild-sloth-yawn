@@ -49,7 +49,7 @@ const JOURNEY = [
   {
     step: "05",
     label: "MAYDAY SUMMIT",
-    sublabel: "Founding 48 — May 2026",
+    sublabel: "Founding 20 — May 2026",
     detail: "72 hours in Kapolei. Ice bath. War Room. Fire ceremony. The charter is signed. The order is legally founded.",
     color: AMBER,
     href: "/founding48",
@@ -72,7 +72,7 @@ const BUDGET_SCENARIOS = [
     revenue: [
       { item: "12 Co-Founder seats × $4,997", amount: 59964 },
       { item: "MAYDAY tickets (60 brothers avg)", amount: 28000 },
-      { item: "Founding dues (48 brothers × $497)", amount: 23856 },
+      { item: "Founding dues (20 brothers × $497)", amount: 9940 },
       { item: "Route revenue — 10% Order cut (est.)", amount: 18000 },
       { item: "Circle Partners (12 × $997/mo × 6mo)", amount: 71784 },
     ],
@@ -232,7 +232,7 @@ const TRADE_CO_USE = [
 ];
 
 const TRADE_CO_PROJECTIONS = [
-  { year: "2026", houses: 1, brothers: 48, mrr: "$132K", arr: "$1.58M", color: GREEN },
+  { year: "2026", houses: 1, brothers: 20, mrr: "$132K", arr: "$1.58M", color: GREEN },
   { year: "2027", houses: 3, brothers: 150, mrr: "$475K", arr: "$5.7M", color: BLUE },
   { year: "2028", houses: 10, brothers: 400, mrr: "$1.4M", arr: "$16.8M", color: GOLD },
 ];

@@ -87,7 +87,7 @@ const ANNUAL = {
 // MAYDAY is separate — founding event only (May 2026), never repeated
 const MAYDAY = {
   name: "MAYDAY — The Founding (2026 Only)",
-  detail: "The founding of the Order. May 1–3, 2026, Kapolei, Oʻahu. 48 brothers. Charter signed. Ali'i class seated. This event never repeats — it becomes Makahiki starting winter 2026.",
+  detail: "The founding of the Order. May 1–3, 2026, Kapolei, Oʻahu. 20 brothers. Charter signed. Ali'i class seated. This event never repeats — it becomes Makahiki starting winter 2026.",
   accent: GOLD,
   cost: "$149–$999 (founding tickets)",
 };
@@ -323,7 +323,7 @@ export default function CalendarPage() {
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
               {[
-                { label: "YEAR 1", val: "48 → 96", sub: "Founding doubles" },
+                { label: "YEAR 1", val: "20 → 48", sub: "Founding grows" },
                 { label: "YEAR 3", val: "~200", sub: "4 chapters" },
                 { label: "YEAR 5", val: "~500", sub: "10+ chapters" },
               ].map((g, i) => (

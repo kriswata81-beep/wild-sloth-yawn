@@ -747,7 +747,7 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                 ],
               },
               {
-                title: "MAYDAY Founding 48", color: BLUE,
+                title: "MAYDAY Founding 20", color: BLUE,
                 items: [
                   "May 1–4, 2026 · Kapolei, Oʻahu",
                   "Nā Koa Day Pass: $149–$199 · 12 seats",

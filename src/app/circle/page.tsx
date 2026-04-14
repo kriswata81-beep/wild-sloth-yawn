@@ -53,7 +53,7 @@ const CIRCLES = [
   {
     id: "founding",
     title: "FOUNDING CIRCLE",
-    seats: 48,
+    seats: 20,
     price: "$297",
     priceId: "price_1TKnnt836uPpUiqMv5qDqK7z",
     badge: "ONE-TIME",
@@ -68,7 +68,7 @@ const CIRCLES = [
       "Priority when new territories open",
       "Your name on the founding wall",
     ],
-    note: "48 seats. One payment. Brother for life.",
+    note: "20 seats. One payment. Brother for life.",
   },
 ];
 
