@@ -18,10 +18,10 @@ const RED = "#f85149";
 const BG = "#04060a";
 
 // ─── Seat defaults (overridden by live Supabase data) ────────────────────────
-const WAR_PARTY_TOTAL = 5;
-const WAR_ROOM_TOTAL = 24;
-const MASTERMIND_TOTAL = 24;
-const DAYPASS_TOTAL = 12;
+const WAR_PARTY_TOTAL = 2;
+const WAR_ROOM_TOTAL = 4;
+const MASTERMIND_TOTAL = 6;
+const DAYPASS_TOTAL = 10;
 
 type SeatCounts = {
   warPartyFilled: number;
@@ -750,7 +750,7 @@ function Founding48Content() {
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════
-            TIER 2 — 24HR MANA MASTERMIND (BLUE, 24 SEATS)
+            TIER 2 — 24HR MANA MASTERMIND (BLUE, 6 SEATS)
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           border: `1px solid ${BLUE_20}`,
@@ -767,7 +767,7 @@ function Founding48Content() {
             pointerEvents: "none",
           }} />
           <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(88,166,255,0.12)", border: `1px solid ${BLUE_20}`, color: BLUE, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
-            🌀 24HR · 24 SEATS
+            🌀 24HR · {MASTERMIND_TOTAL} SEATS
           </div>
           <div style={{ marginBottom: 8 }}>
             <p style={{ color: BLUE, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>MANA · 24HR MASTERMIND</p>
@@ -828,7 +828,7 @@ function Founding48Content() {
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════
-            TIER 3 — 48HR ALIʻI WAR ROOM (GOLD, 24 SEATS)
+            TIER 3 — 48HR ALIʻI WAR ROOM (GOLD, 4 SEATS)
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           border: `1px solid ${GOLD_40}`,
@@ -845,7 +845,7 @@ function Founding48Content() {
             pointerEvents: "none",
           }} />
           <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(176,142,80,0.15)", border: `1px solid ${GOLD_40}`, color: GOLD, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
-            ⚔️ 48HR · 24 SEATS
+            ⚔️ 48HR · {WAR_ROOM_TOTAL} SEATS
           </div>
           <div style={{ marginBottom: 8 }}>
             <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>ALIʻI · 48HR WAR ROOM</p>

@@ -58,7 +58,7 @@ const JOURNEY = [
     step: "06",
     label: "ALIʻI CO-FOUNDER",
     sublabel: "/cofounder — This Page",
-    detail: "12 seats. Worldwide. 1% equity. Territory. Council. Legacy. The men who build the order from the inside.",
+    detail: "4 seats. Worldwide. 1% equity. Territory. Council. Legacy. The men who build the order from the inside.",
     color: GOLD,
     href: null,
   },
@@ -70,19 +70,19 @@ const BUDGET_SCENARIOS = [
     label: "YEAR 1 — FOUNDING",
     color: GREEN,
     revenue: [
-      { item: "12 Co-Founder seats × $4,997", amount: 59964 },
-      { item: "MAYDAY tickets (60 brothers avg)", amount: 28000 },
+      { item: "4 Co-Founder seats × $4,997", amount: 19988 },
+      { item: "MAYDAY tickets (16 brothers)", amount: 5834 },
       { item: "Founding dues (20 brothers × $497)", amount: 9940 },
-      { item: "Route revenue — 10% Order cut (est.)", amount: 18000 },
-      { item: "Circle Partners (12 × $997/mo × 6mo)", amount: 71784 },
+      { item: "Circle Partners (10 × $297-$997)", amount: 13770 },
+      { item: "Gate entry pipeline (~80 × $9.99)", amount: 799 },
     ],
     expenses: [
-      { item: "MAYDAY Summit operations", amount: 18000 },
+      { item: "MAYDAY Summit operations", amount: 4480 },
       { item: "Mākoa House — West Oahu (6mo)", amount: 24000 },
       { item: "Van + equipment", amount: 8500 },
       { item: "Legal (LLC, filings, insurance)", amount: 6500 },
       { item: "XI platform + tech stack", amount: 3600 },
-      { item: "Chapter expansion reserve (30%)", amount: 21000 },
+      { item: "Chapter expansion reserve (30%)", amount: 12000 },
     ],
   },
   {
@@ -344,7 +344,7 @@ export default function CofounderPage() {
           borderRadius: "20px", padding: "6px 16px", marginBottom: "28px",
         }}>
           <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: GREEN, animation: "pulse 2s infinite" }} />
-          <span style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.2em" }}>12 SEATS · WORLDWIDE · ONE-TIME</span>
+          <span style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.2em" }}>4 SEATS · WORLDWIDE · ONE-TIME</span>
         </div>
 
         <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.35em", marginBottom: "16px" }}>ALIʻI CO-FOUNDING PACK</p>
@@ -499,7 +499,7 @@ export default function CofounderPage() {
         <div style={{ maxWidth: "680px", margin: "0 auto" }}>
           <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", textAlign: "center", marginBottom: "8px" }}>WHERE YOUR $4,997 GOES</p>
           <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", textAlign: "center", marginBottom: "32px", lineHeight: 1.7 }}>
-            12 co-founders × $4,997 = $59,964 founding pool.<br />Here is exactly how it's deployed for maximum impact.
+            4 co-founders × $4,997 = $19,988 founding pool.<br />Here is exactly how it's deployed for maximum impact.
           </p>
 
           {/* Allocation bar */}
@@ -713,7 +713,7 @@ export default function CofounderPage() {
         <div style={{ textAlign: "center", marginBottom: "40px" }}>
           <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", marginBottom: "12px" }}>CLAIM YOUR SEAT</p>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "2rem", color: GOLD, fontWeight: 300, margin: "0 0 12px" }}>
-            12 Seats. Worldwide.
+            4 Seats. Worldwide.
           </h2>
           <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.46rem", lineHeight: 1.7 }}>
             When they're gone, they're gone.<br />No second round. No waitlist.
@@ -755,7 +755,7 @@ export default function CofounderPage() {
         </button>
 
         <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.4rem", textAlign: "center", lineHeight: 1.7 }}>
-          Secure checkout via Stripe · 1% equity · 12 seats worldwide<br />
+          Secure checkout via Stripe · 1% equity · 4 seats worldwide<br />
           Questions? Talk to XI on the 808 channel.
         </p>
       </div>

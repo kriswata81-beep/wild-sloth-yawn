@@ -750,11 +750,11 @@ export default function CommandCenter({ onExit }: CommandCenterProps) {
                 title: "MAYDAY Founding 20", color: BLUE,
                 items: [
                   "May 1–4, 2026 · Kapolei, Oʻahu",
-                  "Nā Koa Day Pass: $149–$199 · 12 seats",
-                  "Mana Mastermind: $299–$399 · 24 seats",
-                  "Aliʻi War Room: $499–$699 · 24 seats",
-                  "War Party VIP: $799–$999 · 5 parties",
-                  "Fly-In War Party: $1,598–$2,997 · hotel + dinner + ice bath",
+                  "Nā Koa Day Pass: $149–$199 · 10 seats",
+                  "Mana Mastermind: $299–$399 · 6 seats",
+                  "Aliʻi War Room: $499–$699 · 4 seats",
+                  "Budget: $4,480 · Break-even: 5 brothers",
+                  "Projected revenue (sold out): $22,888 · Net: $18,408",
                 ],
               },
             ].map((section, i) => (
