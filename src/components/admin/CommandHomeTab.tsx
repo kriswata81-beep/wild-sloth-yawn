@@ -369,6 +369,26 @@ export default function CommandHomeTab({ activeBrothers, pendingPledges, revenue
           </div>
         </div>
 
+        {/* Poster link */}
+        <div style={{ padding: "10px 16px 0" }}>
+          <a
+            href="/poster"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "block", width: "100%", padding: "11px 0",
+              background: GOLD_FAINT,
+              border: `1px solid ${GOLD}50`,
+              borderRadius: 8, textAlign: "center", textDecoration: "none",
+              color: GOLD, fontSize: "0.4rem",
+              fontFamily: "'JetBrains Mono', monospace",
+              letterSpacing: "0.16em",
+            }}
+          >
+            🔥 OPEN LIVE COUNTDOWN POSTER
+          </a>
+        </div>
+
         {/* Download button — saves the raw QR image */}
         <div style={{ padding: "10px 16px 0" }}>
           <a
