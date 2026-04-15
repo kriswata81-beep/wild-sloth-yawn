@@ -127,11 +127,23 @@ export default function SocialFooter() {
           color: GOLD_DIM,
           fontSize: "0.48rem",
           letterSpacing: "0.12em",
-          margin: "0 0 6px",
+          margin: "0 0 4px",
           fontFamily: "'JetBrains Mono', monospace",
         }}
       >
         M&#257;koa Brotherhood &copy; 2026
+      </p>
+      <p
+        style={{
+          color: GOLD_DIM,
+          fontSize: "0.52rem",
+          letterSpacing: "0.14em",
+          margin: "0 0 4px",
+          fontFamily: "'JetBrains Mono', monospace",
+          fontWeight: 600,
+        }}
+      >
+        makoa.live
       </p>
       <p
         style={{

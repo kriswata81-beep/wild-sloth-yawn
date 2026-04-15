@@ -773,6 +773,9 @@ export default function CofounderPage() {
             <a key={link.label} href={link.href} style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", textDecoration: "none", letterSpacing: "0.15em" }}>{link.label}</a>
           ))}
         </div>
+        <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.5rem", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
+          makoa.live
+        </p>
         <p style={{ color: "rgba(176,142,80,0.1)", fontSize: "0.36rem", letterSpacing: "0.15em" }}>
           Mākoa Order · Co-Founding Council · 2026
         </p>

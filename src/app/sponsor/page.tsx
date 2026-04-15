@@ -458,6 +458,11 @@ export default function SponsorPage() {
             ))}
           </div>
 
+          {/* URL */}
+          <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.14em", marginBottom: 16, fontWeight: 600, textAlign: "center" }}>
+            makoa.live
+          </p>
+
           {/* Nav links */}
           <div style={{ display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap" }}>
             {[

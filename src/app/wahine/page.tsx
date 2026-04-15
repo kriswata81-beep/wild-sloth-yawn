@@ -395,6 +395,9 @@ export default function WahinePage() {
             </Link>
           ))}
         </div>
+        <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.5rem", letterSpacing: "0.14em", marginTop: 16, fontWeight: 600, textAlign: "center" }}>
+          makoa.live
+        </p>
       </div>
 
       {/* Keyframe animation */}

@@ -354,7 +354,10 @@ export default function CirclePage() {
           <span style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.38rem" }}>·</span>
           <a href="/services" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", textDecoration: "none", letterSpacing: "0.15em" }}>SERVICES</a>
         </div>
-        <p style={{ color: "rgba(176,142,80,0.1)", fontSize: "0.36rem", letterSpacing: "0.15em", marginTop: "12px" }}>
+        <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.5rem", letterSpacing: "0.14em", marginTop: "12px", marginBottom: 4, fontWeight: 600 }}>
+          makoa.live
+        </p>
+        <p style={{ color: "rgba(176,142,80,0.1)", fontSize: "0.36rem", letterSpacing: "0.15em" }}>
           Mākoa Order · Worldwide · 2026
         </p>
       </div>

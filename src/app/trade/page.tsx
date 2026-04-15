@@ -687,6 +687,9 @@ export default function TradePage() {
               }}>{link.label}</a>
             ))}
           </div>
+          <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.5rem", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
+            makoa.live
+          </p>
           <p style={{ color: "rgba(176,142,80,0.15)", fontSize: "0.4rem", letterSpacing: "0.15em" }}>
             MĀKOA TRADE CO. · MĀKOA ORDER · MALU TRUST · WEST OAHU · WORLDWIDE · 2026
           </p>

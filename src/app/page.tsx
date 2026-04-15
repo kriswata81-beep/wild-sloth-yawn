@@ -659,6 +659,9 @@ export default function Home() {
           <p style={{ textAlign: "center", color: "rgba(232,224,208,0.18)", fontSize: "12px", letterSpacing: "0.12em" }}>
             Malu Trust · West Oahu · 2026
           </p>
+          <p style={{ textAlign: "center", color: "rgba(176,142,80,0.35)", fontSize: "13px", letterSpacing: "0.1em", marginTop: 6 }}>
+            makoa.live
+          </p>
         </div>
       </div>
 

@@ -1332,6 +1332,9 @@ function Founding48Content() {
           <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginBottom: 6 }}>
             Questions: wakachief@gmail.com
           </p>
+          <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
+            makoa.live
+          </p>
           <p style={{ color: "rgba(176,142,80,0.15)", fontSize: "0.4rem", letterSpacing: "0.15em" }}>
             MĀKOA ORDER · MALU TRUST · WEST OAHU · 2026
           </p>
