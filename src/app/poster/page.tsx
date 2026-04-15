@@ -4,19 +4,27 @@ import { useState, useEffect } from "react";
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.6)";
 const GOLD_FAINT = "rgba(176,142,80,0.08)";
+const GOLD_20 = "rgba(176,142,80,0.2)";
 const BG = "#04060a";
 
-function useCountdown() {
-  const target = new Date("2026-05-01T18:00:00-10:00").getTime();
+// Gate closes April 25 — countdown to that
+function useGateCountdown() {
+  const gateClose = new Date("2026-04-25T23:59:59-10:00").getTime();
+  const eventStart = new Date("2026-05-01T18:00:00-10:00").getTime();
   const calc = () => {
-    const diff = target - Date.now();
-    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, done: true };
+    const now = Date.now();
+    const gateDiff = gateClose - now;
+    const eventDiff = eventStart - now;
+    const gateDone = gateDiff <= 0;
+    const diff = gateDone ? eventDiff : gateDiff;
+    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, gateDone, eventDone: eventDiff <= 0 };
     return {
       days: Math.floor(diff / 86400000),
       hours: Math.floor((diff % 86400000) / 3600000),
       minutes: Math.floor((diff % 3600000) / 60000),
       seconds: Math.floor((diff % 60000) / 1000),
-      done: false,
+      gateDone,
+      eventDone: eventDiff <= 0,
     };
   };
   const [time, setTime] = useState(calc);
@@ -27,14 +35,27 @@ function useCountdown() {
   return time;
 }
 
+const PROGRAM = [
+  { icon: "🧊", label: "4AM ICE BATH", desc: "Both mornings. Ko Olina. No excuses." },
+  { icon: "⚔", label: "ELITE TRAINING", desc: "Formation run. Combat fitness. Breathwork." },
+  { icon: "🧠", label: "MASTERMIND", desc: "Mana class. Build together. Trade + business." },
+  { icon: "🔗", label: "NETWORK 2 NETWORK", desc: "Aliʻi class. Room to room. B2B deal flow." },
+  { icon: "🏗", label: "B2B · B2C", desc: "Route contracts. Client pipeline. Trade ops." },
+  { icon: "🤝", label: "PEER 2 PEER", desc: "Nā Koa class. Skills shared. Brotherhood built." },
+  { icon: "🔥", label: "FOUNDERS SUMMIT", desc: "All classes. One table. The order is born." },
+  { icon: "🌅", label: "FOUNDING FIRE", desc: "Sunday sunrise. The oath. The order begins." },
+];
+
 export default function PosterPage() {
-  const { days, hours, minutes, seconds, done } = useCountdown();
+  const { days, hours, minutes, seconds, gateDone, eventDone } = useGateCountdown();
   const [ready, setReady] = useState(false);
-  const [variant, setVariant] = useState<"dark" | "fire">("dark");
+  const [variant, setVariant] = useState<"countdown" | "program">("countdown");
 
   useEffect(() => { setTimeout(() => setReady(true), 200); }, []);
 
   const pad = (n: number) => String(n).padStart(2, "0");
+
+  const countdownLabel = gateDone ? "UNTIL THE FIRE" : "GATE CLOSES IN";
 
   return (
     <div style={{
@@ -49,210 +70,201 @@ export default function PosterPage() {
     }}>
       <style>{`
         @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes coronaPulse { 0%,100% { opacity:0.7; transform:scale(1); } 50% { opacity:1; transform:scale(1.03); } }
-        @keyframes flicker { 0%,100% { opacity:1; } 45% { opacity:0.85; } 55% { opacity:0.95; } }
-        @keyframes countTick { 0% { transform:translateY(-4px); opacity:0; } 100% { transform:translateY(0); opacity:1; } }
+        @keyframes coronaPulse { 0%,100% { opacity:0.75; transform:scale(1); } 50% { opacity:1; transform:scale(1.03); } }
+        @keyframes flicker { 0%,100% { opacity:1; } 45% { opacity:0.8; } 55% { opacity:0.95; } }
       `}</style>
 
       {/* Variant toggle */}
-      <div style={{
-        display: "flex", gap: 8, marginBottom: 20,
-        animation: "fadeUp 0.4s ease forwards",
-      }}>
-        {(["dark", "fire"] as const).map(v => (
-          <button key={v} onClick={() => setVariant(v)} style={{
-            background: variant === v ? GOLD_FAINT : "transparent",
-            border: `1px solid ${variant === v ? GOLD : "rgba(176,142,80,0.2)"}`,
-            color: variant === v ? GOLD : "rgba(176,142,80,0.3)",
-            padding: "6px 14px",
-            borderRadius: 6,
-            cursor: "pointer",
-            fontSize: "0.36rem",
-            letterSpacing: "0.14em",
+      <div style={{ display: "flex", gap: 8, marginBottom: 20, animation: "fadeUp 0.4s ease forwards" }}>
+        {([
+          { id: "countdown", label: "⏱ COUNTDOWN DROP" },
+          { id: "program",   label: "📋 PROGRAM DROP" },
+        ] as const).map(v => (
+          <button key={v.id} onClick={() => setVariant(v.id)} style={{
+            background: variant === v.id ? GOLD_FAINT : "transparent",
+            border: `1px solid ${variant === v.id ? GOLD : "rgba(176,142,80,0.2)"}`,
+            color: variant === v.id ? GOLD : "rgba(176,142,80,0.3)",
+            padding: "7px 14px", borderRadius: 6, cursor: "pointer",
+            fontSize: "0.36rem", letterSpacing: "0.12em",
             fontFamily: "'JetBrains Mono', monospace",
+            transition: "all 0.2s",
           }}>
-            {v === "dark" ? "DARK DROP" : "FIRE DROP"}
+            {v.label}
           </button>
         ))}
       </div>
 
-      {/* ── THE POSTER ── screenshot this */}
+      {/* ── THE POSTER ── screenshot this whole card */}
       <div style={{
-        width: "100%",
-        maxWidth: 420,
-        background: variant === "fire"
-          ? "linear-gradient(180deg, #0a0500 0%, #04060a 40%, #04060a 100%)"
-          : BG,
-        border: `1px solid rgba(176,142,80,0.25)`,
+        width: "100%", maxWidth: 400,
+        background: BG,
+        border: `1px solid rgba(176,142,80,0.28)`,
         borderRadius: 16,
         overflow: "hidden",
         position: "relative",
         animation: "fadeUp 0.5s ease 0.1s both",
       }}>
-
         {/* Top glow */}
         <div style={{
-          position: "absolute", top: -60, left: "50%",
+          position: "absolute", top: -80, left: "50%",
           transform: "translateX(-50%)",
-          width: 300, height: 300,
-          borderRadius: "50%",
-          background: variant === "fire"
-            ? "radial-gradient(circle, rgba(255,120,20,0.12) 0%, transparent 70%)"
-            : "radial-gradient(circle, rgba(176,142,80,0.1) 0%, transparent 70%)",
+          width: 320, height: 320, borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(176,142,80,0.09) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
 
-        <div style={{ padding: "36px 28px 32px", position: "relative" }}>
+        <div style={{ padding: "32px 24px 28px", position: "relative" }}>
 
           {/* Order mark */}
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.3em", marginBottom: 16 }}>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <p style={{ color: GOLD_DIM, fontSize: "0.34rem", letterSpacing: "0.3em", marginBottom: 14 }}>
               MĀKOA ORDER · WEST OAHUʻ
             </p>
 
             {/* Eclipse corona */}
             <div style={{
-              width: 110, height: 110,
-              borderRadius: "50%",
+              width: 90, height: 90, borderRadius: "50%",
               border: `2px solid ${GOLD}`,
-              margin: "0 auto 6px",
+              margin: "0 auto 4px",
               display: "flex", alignItems: "center", justifyContent: "center",
               position: "relative",
               animation: "coronaPulse 4s ease-in-out infinite",
-              boxShadow: variant === "fire"
-                ? `0 0 40px rgba(255,120,20,0.2), 0 0 80px rgba(176,142,80,0.1)`
-                : `0 0 40px rgba(176,142,80,0.15)`,
+              boxShadow: "0 0 40px rgba(176,142,80,0.18)",
             }}>
-              {/* Inner ring */}
-              <div style={{
-                position: "absolute", inset: 8,
-                borderRadius: "50%",
-                border: `1px solid rgba(176,142,80,0.3)`,
-              }} />
-              {/* XI mark */}
+              <div style={{ position: "absolute", inset: 7, borderRadius: "50%", border: "1px solid rgba(176,142,80,0.25)" }} />
               <span style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontStyle: "italic",
-                color: GOLD,
-                fontSize: "2rem",
-                lineHeight: 1,
+                fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
+                color: GOLD, fontSize: "1.7rem", lineHeight: 1,
                 animation: "flicker 6s ease-in-out infinite",
               }}>XI</span>
             </div>
           </div>
 
           {/* MAYDAY headline */}
-          <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
             <h1 style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontStyle: "italic",
-              fontSize: "3.8rem",
-              color: GOLD,
-              margin: "0 0 4px",
-              fontWeight: 300,
-              lineHeight: 1,
-              letterSpacing: "0.04em",
-              textShadow: variant === "fire" ? "0 0 40px rgba(255,140,0,0.4)" : "none",
+              fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
+              fontSize: "3.4rem", color: GOLD,
+              margin: "0 0 2px", fontWeight: 300, lineHeight: 1, letterSpacing: "0.04em",
             }}>
               MAYDAY
             </h1>
             <p style={{
-              color: GOLD,
-              fontSize: "1.6rem",
+              color: GOLD, fontSize: "1.4rem",
               fontFamily: "'Cormorant Garamond', serif",
-              letterSpacing: "0.2em",
-              lineHeight: 1,
-              opacity: 0.7,
-            }}>
-              2026
-            </p>
+              letterSpacing: "0.22em", lineHeight: 1, opacity: 0.65,
+            }}>2026</p>
           </div>
 
           {/* Divider */}
-          <div style={{
-            height: 1,
-            background: `linear-gradient(to right, transparent, ${GOLD}, transparent)`,
-            marginBottom: 24,
-            opacity: 0.4,
-          }} />
+          <div style={{ height: 1, background: `linear-gradient(to right, transparent, ${GOLD}, transparent)`, marginBottom: 20, opacity: 0.35 }} />
 
-          {/* Countdown */}
-          {!done ? (
-            <div style={{ marginBottom: 24 }}>
-              <p style={{ color: GOLD_DIM, fontSize: "0.34rem", letterSpacing: "0.25em", textAlign: "center", marginBottom: 14 }}>
-                THE GATE CLOSES IN
+          {/* ── COUNTDOWN VARIANT ── */}
+          {variant === "countdown" && (
+            <>
+              <div style={{ marginBottom: 20 }}>
+                <p style={{ color: GOLD_DIM, fontSize: "0.32rem", letterSpacing: "0.25em", textAlign: "center", marginBottom: 12 }}>
+                  {countdownLabel}
+                </p>
+                {!eventDone ? (
+                  <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
+                    {[
+                      { val: days, label: "DAYS" },
+                      { val: hours, label: "HRS" },
+                      { val: minutes, label: "MIN" },
+                      { val: seconds, label: "SEC" },
+                    ].map(({ val, label }) => (
+                      <div key={label} style={{
+                        flex: 1, textAlign: "center",
+                        background: GOLD_FAINT,
+                        border: `1px solid rgba(176,142,80,0.2)`,
+                        borderRadius: 8, padding: "10px 4px",
+                      }}>
+                        <p style={{ color: GOLD, fontSize: "1.5rem", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1, marginBottom: 4 }}>
+                          {pad(val)}
+                        </p>
+                        <p style={{ color: GOLD_DIM, fontSize: "0.28rem", letterSpacing: "0.12em" }}>{label}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ color: GOLD, textAlign: "center", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "1.2rem" }}>
+                    The fire is lit.
+                  </p>
+                )}
+              </div>
+
+              {/* What's happening — teaser */}
+              <div style={{
+                background: GOLD_FAINT, border: `1px solid ${GOLD_20}`,
+                borderRadius: 10, padding: "14px", marginBottom: 18,
+              }}>
+                <p style={{ color: GOLD_DIM, fontSize: "0.3rem", letterSpacing: "0.22em", marginBottom: 10 }}>WHAT HAPPENS INSIDE</p>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 10px" }}>
+                  {PROGRAM.map((p, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                      <span style={{ fontSize: "0.55rem" }}>{p.icon}</span>
+                      <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.32rem", letterSpacing: "0.08em" }}>{p.label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ── PROGRAM VARIANT ── */}
+          {variant === "program" && (
+            <div style={{ marginBottom: 18 }}>
+              <p style={{ color: GOLD_DIM, fontSize: "0.3rem", letterSpacing: "0.25em", textAlign: "center", marginBottom: 14 }}>
+                WEST OAHU · MAY 1–3 · WHAT YOU'RE WALKING INTO
               </p>
-              <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-                {[
-                  { val: days, label: "DAYS" },
-                  { val: hours, label: "HRS" },
-                  { val: minutes, label: "MIN" },
-                  { val: seconds, label: "SEC" },
-                ].map(({ val, label }) => (
-                  <div key={label} style={{
-                    flex: 1,
-                    textAlign: "center",
+              <div style={{ display: "grid", gap: 8 }}>
+                {PROGRAM.map((p, i) => (
+                  <div key={i} style={{
+                    display: "flex", alignItems: "flex-start", gap: 10,
+                    padding: "9px 12px",
                     background: GOLD_FAINT,
-                    border: `1px solid rgba(176,142,80,0.2)`,
+                    border: `1px solid rgba(176,142,80,0.12)`,
                     borderRadius: 8,
-                    padding: "10px 4px",
                   }}>
-                    <p style={{
-                      color: GOLD,
-                      fontSize: "1.6rem",
-                      fontFamily: "'Cormorant Garamond', serif",
-                      lineHeight: 1,
-                      marginBottom: 4,
-                      animation: "countTick 0.15s ease",
-                    }}>
-                      {pad(val)}
-                    </p>
-                    <p style={{ color: GOLD_DIM, fontSize: "0.3rem", letterSpacing: "0.14em" }}>{label}</p>
+                    <span style={{ fontSize: "0.8rem", flexShrink: 0 }}>{p.icon}</span>
+                    <div>
+                      <p style={{ color: GOLD, fontSize: "0.34rem", letterSpacing: "0.12em", marginBottom: 2 }}>{p.label}</p>
+                      <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.32rem", lineHeight: 1.5 }}>{p.desc}</p>
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
-          ) : (
-            <div style={{ textAlign: "center", marginBottom: 24 }}>
-              <p style={{ color: GOLD, fontSize: "1.2rem", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
-                The fire is lit.
-              </p>
             </div>
           )}
 
           {/* Event details */}
           <div style={{
-            background: GOLD_FAINT,
-            border: `1px solid rgba(176,142,80,0.15)`,
-            borderRadius: 10,
-            padding: "16px",
-            marginBottom: 20,
+            background: GOLD_FAINT, border: `1px solid rgba(176,142,80,0.12)`,
+            borderRadius: 10, padding: "12px 14px", marginBottom: 18,
           }}>
             {[
               { label: "DATE", value: "May 1–3, 2026" },
               { label: "LOCATION", value: "West Oahuʻ, Hawaii" },
-              { label: "FORMAT", value: "48-Hour Founding Event" },
-              { label: "SEATS", value: "48 Brothers · Founding Only" },
+              { label: "GATE CLOSES", value: "April 25 · Final call" },
+              { label: "SEATS", value: "48 Brothers · Founding only" },
             ].map((row, i) => (
               <div key={i} style={{
                 display: "flex", justifyContent: "space-between",
-                padding: "6px 0",
+                padding: "5px 0",
                 borderBottom: i < 3 ? "1px solid rgba(176,142,80,0.07)" : "none",
               }}>
-                <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.12em" }}>{row.label}</p>
-                <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.38rem" }}>{row.value}</p>
+                <p style={{ color: GOLD_DIM, fontSize: "0.32rem", letterSpacing: "0.1em" }}>{row.label}</p>
+                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.34rem" }}>{row.value}</p>
               </div>
             ))}
           </div>
 
           {/* Tagline */}
-          <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <div style={{ textAlign: "center", marginBottom: 18 }}>
             <p style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontStyle: "italic",
-              color: "rgba(232,224,208,0.5)",
-              fontSize: "0.9rem",
-              lineHeight: 1.7,
+              fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
+              color: "rgba(232,224,208,0.45)", fontSize: "0.85rem", lineHeight: 1.7,
             }}>
               Not a gym. Not a podcast.<br />
               A brotherhood of men who build real things.<br />
@@ -260,50 +272,51 @@ export default function PosterPage() {
             </p>
           </div>
 
-          {/* CTA */}
-          <div style={{
-            background: GOLD,
-            borderRadius: 8,
-            padding: "12px 0",
-            textAlign: "center",
-          }}>
+          {/* CTA bar */}
+          <div style={{ background: GOLD, borderRadius: 8, padding: "11px 0", textAlign: "center" }}>
             <p style={{
-              color: BG,
-              fontSize: "0.42rem",
+              color: BG, fontSize: "0.38rem",
               fontFamily: "'JetBrains Mono', monospace",
-              fontWeight: 700,
-              letterSpacing: "0.18em",
+              fontWeight: 700, letterSpacing: "0.16em",
             }}>
               ENTER THE GATE → MAKOA.LIVE
             </p>
           </div>
 
           {/* Bottom mark */}
-          <p style={{
-            textAlign: "center",
-            color: "rgba(176,142,80,0.2)",
-            fontSize: "0.32rem",
-            letterSpacing: "0.2em",
-            marginTop: 16,
-          }}>
+          <p style={{ textAlign: "center", color: "rgba(176,142,80,0.18)", fontSize: "0.28rem", letterSpacing: "0.2em", marginTop: 14 }}>
             MĀKOA ORDER · 1846 · 2026
           </p>
         </div>
       </div>
 
       {/* Instructions */}
-      <div style={{
-        maxWidth: 420, width: "100%", marginTop: 16,
-        animation: "fadeUp 0.5s ease 0.3s both",
-      }}>
-        <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.36rem", letterSpacing: "0.14em", textAlign: "center", marginBottom: 12 }}>
-          SCREENSHOT THE POSTER ABOVE · DROP DAILY
+      <div style={{ maxWidth: 400, width: "100%", marginTop: 16, animation: "fadeUp 0.5s ease 0.3s both" }}>
+        <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.34rem", letterSpacing: "0.14em", textAlign: "center", marginBottom: 12 }}>
+          SCREENSHOT THE POSTER · DROP DAILY · GATE CLOSES APR 25
         </p>
         <div style={{ display: "grid", gap: 8 }}>
           {[
-            { label: "IG / FB", icon: "📸", text: "The founding fire happens once.\n\nWest Oahu. May 1–3.\n\nScan if you're one of them. 🔥\n\nmakoa.live\n\n#Mākoa #Brotherhood #WestOahu #MAYDAY2026" },
-            { label: "STORY", icon: "🎬", text: "Not a gym. Not a podcast.\n\nA brotherhood of men who build real things.\n\nWest Oahu. May 1–3. 🤙\n\nmakoa.live" },
-            { label: "MYSTERY DROP", icon: "🔥", text: "👁\n\nmakoa.live\n\n." },
+            {
+              label: "COUNTDOWN DROP",
+              icon: "⏱",
+              text: `${days} days until the gate closes.\n\nWest Oahu. May 1–3.\n\n4am ice bath. Elite training. Mastermind. Network 2 Network. B2B. B2C. P2P. Founders Summit.\n\nThe founding fire happens once.\n\nENTER THE GATE → makoa.live\n\n#Mākoa #Brotherhood #WestOahu #MAYDAY2026`,
+            },
+            {
+              label: "PROGRAM DROP",
+              icon: "📋",
+              text: `Here's what you're walking into.\n\n🧊 4am Ice Bath — both mornings\n⚔ Elite Training — formation + combat fitness\n🧠 Mastermind — build together\n🔗 Network 2 Network — room to room\n🏗 B2B · B2C — route contracts + client pipeline\n🤝 Peer 2 Peer — skills shared\n🔥 Founders Summit — all classes, one table\n🌅 Founding Fire — the oath. The order begins.\n\nWest Oahu. May 1–3.\n\nmakoa.live\n\n#MAYDAY2026 #Mākoa`,
+            },
+            {
+              label: "GATE CLOSING DROP",
+              icon: "🚨",
+              text: `The gate closes April 25.\n\nAfter that — no entry. No exceptions.\n\nWest Oahu. May 1–3.\n\nIf you've been watching — now is the time.\n\nmakoa.live\n\n#Mākoa #Brotherhood #WestOahu`,
+            },
+            {
+              label: "MYSTERY DROP",
+              icon: "🔥",
+              text: "👁\n\nmakoa.live\n\n.",
+            },
           ].map(item => (
             <CopyBtn key={item.label} {...item} />
           ))}
@@ -317,20 +330,20 @@ function CopyBtn({ label, icon, text }: { label: string; icon: string; text: str
   const [copied, setCopied] = useState(false);
   return (
     <button
-      onClick={() => { navigator.clipboard?.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+      onClick={() => { navigator.clipboard?.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2500); }}
       style={{
-        background: copied ? "rgba(176,142,80,0.1)" : "rgba(176,142,80,0.03)",
+        width: "100%", background: copied ? "rgba(176,142,80,0.1)" : "rgba(176,142,80,0.03)",
         border: `1px solid ${copied ? "rgba(176,142,80,0.4)" : "rgba(176,142,80,0.12)"}`,
         borderRadius: 8, padding: "10px 14px", cursor: "pointer",
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-        transition: "all 0.2s",
+        display: "flex", justifyContent: "space-between", alignItems: "flex-start",
+        transition: "all 0.2s", textAlign: "left",
       }}
     >
-      <div style={{ textAlign: "left" }}>
-        <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.34rem", letterSpacing: "0.14em", marginBottom: 3, fontFamily: "'JetBrains Mono', monospace" }}>
+      <div>
+        <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.34rem", letterSpacing: "0.14em", marginBottom: 4, fontFamily: "'JetBrains Mono', monospace" }}>
           {icon} {label}
         </p>
-        <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.38rem", lineHeight: 1.5, whiteSpace: "pre-line", fontFamily: "'JetBrains Mono', monospace" }}>
+        <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.36rem", lineHeight: 1.6, whiteSpace: "pre-line", fontFamily: "'JetBrains Mono', monospace" }}>
           {text}
         </p>
       </div>
