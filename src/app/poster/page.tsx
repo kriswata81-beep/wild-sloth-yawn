@@ -290,6 +290,18 @@ export default function PosterPage() {
         </div>
       </div>
 
+      {/* Day 12 generated poster — tap and hold to save */}
+      <div style={{ maxWidth: 400, width: "100%", marginTop: 16, animation: "fadeUp 0.5s ease 0.25s both" }}>
+        <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.34rem", letterSpacing: "0.14em", textAlign: "center", marginBottom: 10 }}>
+          📸 DAY 12 POSTER · HOLD TO SAVE IMAGE
+        </p>
+        <img
+          src="/mayday-poster-day12-full.png"
+          alt="MAYDAY 2026 Day 12 Poster"
+          style={{ width: "100%", borderRadius: 12, border: "1px solid rgba(176,142,80,0.2)", display: "block" }}
+        />
+      </div>
+
       {/* Instructions */}
       <div style={{ maxWidth: 400, width: "100%", marginTop: 16, animation: "fadeUp 0.5s ease 0.3s both" }}>
         <p style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.34rem", letterSpacing: "0.14em", textAlign: "center", marginBottom: 12 }}>
