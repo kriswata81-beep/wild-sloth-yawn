@@ -296,8 +296,8 @@ export default function PosterPage() {
           📸 DAY 12 POSTER · HOLD TO SAVE IMAGE
         </p>
         <img
-          src="/mayday-poster-day12-v3.png"
-          alt="MAYDAY 2026 Day 12 Poster"
+          src="/mayday-poster-day12-fomo.png"
+          alt="MAYDAY 2026 Day 12 FOMO Poster"
           style={{ width: "100%", borderRadius: 12, border: "1px solid rgba(176,142,80,0.2)", display: "block" }}
         />
       </div>
