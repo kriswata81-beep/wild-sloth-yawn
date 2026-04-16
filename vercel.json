@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/post-scheduled",
       "schedule": "5 8 * * *"
+    },
+    {
+      "path": "/api/cron/poll-status",
+      "schedule": "10 8 * * *"
     }
   ]
 }
