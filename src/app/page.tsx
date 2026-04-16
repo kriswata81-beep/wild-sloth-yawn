@@ -654,6 +654,14 @@ export default function Home() {
             }}>
               or sponsor a brother →
             </a>
+            <a href="/fire" style={{
+              display: "block", color: "rgba(176,142,80,0.4)",
+              fontSize: "13px", letterSpacing: "0.1em",
+              textDecoration: "none", textAlign: "center",
+              padding: "6px",
+            }}>
+              🔥 What actually happens inside →
+            </a>
           </div>
 
           <p style={{ textAlign: "center", color: "rgba(232,224,208,0.18)", fontSize: "12px", letterSpacing: "0.12em" }}>

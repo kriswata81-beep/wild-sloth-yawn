@@ -522,9 +522,16 @@ export default function GatePageRoute() {
             ))}
           </div>
 
-          <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.46rem", textAlign: "center" }}>
+          <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.46rem", textAlign: "center", marginBottom: 14 }}>
             Founding membership + event access unlocked after application.
           </p>
+          <a href="/fire" style={{
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+            color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.14em",
+            textDecoration: "none", opacity: 0.7,
+          }}>
+            🔥 What actually happens inside the 48 hours →
+          </a>
         </div>
 
         {/* ── CTA → SCROLL TO QUESTIONS (ONE PRIMARY ACTION) ─────────────── */}

@@ -163,8 +163,20 @@ export default function SponsorPage() {
           <span style={{ color: GOLD_DIM, fontSize: "1.2rem" }}>◈</span>
         </div>
 
+        {/* 9-day urgency badge */}
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 8,
+          background: "rgba(224,92,92,0.08)", border: "1px solid rgba(224,92,92,0.3)",
+          borderRadius: 20, padding: "6px 14px", marginBottom: 20,
+        }}>
+          <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#e05c5c", animation: "pulse 1.2s ease-in-out infinite" }} />
+          <p style={{ color: "#e05c5c", fontSize: "0.36rem", letterSpacing: "0.18em" }}>
+            9 DAYS LEFT · GATE CLOSES APRIL 25 · ONLY 20 SEATS
+          </p>
+        </div>
+
         <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.35em", marginBottom: "14px" }}>
-          MĀKOA ORDER
+          MĀKOA ORDER · FINAL CALL
         </p>
 
         <h1 style={{
@@ -176,19 +188,35 @@ export default function SponsorPage() {
           margin: "0 0 16px",
           lineHeight: 1.1,
         }}>
-          Sponsor a Brother
+          Give Him the Push<br />He Won't Give Himself.
         </h1>
 
         <p style={{
           color: TEXT_DIM,
           fontSize: "0.55rem",
-          maxWidth: 400,
-          margin: "0 auto 24px",
+          maxWidth: 420,
+          margin: "0 auto 20px",
           lineHeight: 1.9,
         }}>
-          Know a man who needs this?<br />
-          Send him through the gate.
+          Many of the right men won't apply — not because they don't want it,
+          but because pride and inertia get in the way.<br /><br />
+          You can bypass that.<br />
+          Sponsor him anonymously. He gets the message:<br />
+          <span style={{ color: GOLD, fontStyle: "italic" }}>"Someone believes in you. You've been sponsored into Mākoa."</span>
         </p>
+
+        {/* Who this is for */}
+        <div style={{
+          display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginBottom: 24,
+        }}>
+          {["Wives", "Mothers", "Girlfriends", "Brothers", "Close Friends", "Employers"].map(who => (
+            <span key={who} style={{
+              background: GOLD_FAINT, border: `1px solid ${GOLD_20}`,
+              borderRadius: 20, padding: "5px 12px",
+              color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.1em",
+            }}>{who}</span>
+          ))}
+        </div>
 
         {/* Divider */}
         <div style={{ height: 1, background: `linear-gradient(to right, transparent, ${GOLD_20}, transparent)`, maxWidth: 300, margin: "0 auto" }} />

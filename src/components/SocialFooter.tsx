@@ -112,6 +112,7 @@ export default function SocialFooter() {
           { href: "/cofounder", label: "CO-FOUNDER" },
           { href: "/services", label: "HOME SERVICES" },
           { href: "/gatherings", label: "GATHERINGS" },
+          { href: "/fire", label: "THE FOUNDING FIRE" },
           { href: "/poster", label: "MAYDAY POSTER" },
           { href: "/xi", label: "XI · INTELLIGENCE" },
           { href: "/gate", label: "THE GATE" },

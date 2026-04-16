@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import LastChanceBanner from "@/components/LastChanceBanner";
 
 export const metadata: Metadata = {
   title: "Mākoa — A Brotherhood of Men | West Oʻahu",
@@ -48,7 +49,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body>{children}</body>
+      <body>
+        <LastChanceBanner />
+        {children}
+      </body>
     </html>
   );
 }
