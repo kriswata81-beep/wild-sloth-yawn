@@ -30,14 +30,11 @@ export interface BlotatoFailure {
 
 export type BlotatoResult = BlotatoSuccess | BlotatoFailure;
 
-// Map our platform → the targetType Blotato expects.
-// Best-effort defaults based on Blotato's REST docs. Refine via dashboard
-// (my.blotato.com/failed) if any platform errors.
-function targetTypeFor(platform: SocialPlatform, hasPageId: boolean): string {
-  if (platform === "facebook") return "page";
-  if (platform === "linkedin") return hasPageId ? "page" : "user";
-  if (platform === "pinterest" as SocialPlatform) return "board";
-  return "user";
+// Blotato's targetType is just the platform name itself (confirmed via 400
+// error: must be one of "webhook"|"twitter"|"linkedin"|"facebook"|...).
+// pageId / boardId / etc. live as sibling fields in the target object.
+function targetTypeFor(platform: SocialPlatform): string {
+  return platform;
 }
 
 export async function blotatoPost(input: BlotatoPostInput): Promise<BlotatoResult> {
@@ -60,7 +57,6 @@ export async function blotatoPost(input: BlotatoPostInput): Promise<BlotatoResul
 
   // Merge defaults + per-post overrides for the target object.
   const targetExtras = { ...account.defaults, ...(input.overrides || {}) };
-  const hasPageId = "pageId" in targetExtras && Boolean(targetExtras.pageId);
 
   const body: Record<string, unknown> = {
     post: {
@@ -71,7 +67,7 @@ export async function blotatoPost(input: BlotatoPostInput): Promise<BlotatoResul
         platform: input.platform,
       },
       target: {
-        targetType: targetTypeFor(input.platform, hasPageId),
+        targetType: targetTypeFor(input.platform),
         ...targetExtras,
       },
     },
