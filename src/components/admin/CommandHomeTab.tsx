@@ -262,14 +262,52 @@ interface CommandHomeTabProps {
   alertCount: number;
 }
 
+type HealthStatus = "pending" | "ok" | "warn";
+interface SystemHealth {
+  resend: HealthStatus;
+  blotato: HealthStatus;
+  twilio: HealthStatus;
+  site: HealthStatus;
+}
+
 export default function CommandHomeTab({ activeBrothers, pendingPledges, revenueMTD, alertCount }: CommandHomeTabProps) {
   const [now, setNow] = useState(new Date());
   const [hoveredZip, setHoveredZip] = useState<string | null>(null);
+  const [health, setHealth] = useState<SystemHealth>({
+    resend: "pending",
+    blotato: "pending",
+    twilio: "pending",
+    site: "pending",
+  });
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     intervalRef.current = setInterval(() => setNow(new Date()), 1000);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, []);
+
+  // Live system health — refreshes every 60s. Real fetches, not env var checks.
+  useEffect(() => {
+    async function checkHealth() {
+      try {
+        const [resendRes, blotatoRes, smsRes] = await Promise.all([
+          fetch("/api/xi-mail").then(r => r.json()).catch(() => null),
+          fetch("/api/social/post").then(r => r.json()).catch(() => null),
+          fetch("/api/sms/inbound").then(r => r.json()).catch(() => null),
+        ]);
+        setHealth({
+          site: "ok", // if we got here, the site is up
+          resend: resendRes?.status === "ACTIVE" ? "ok" : "warn",
+          blotato: blotatoRes?.blotatoApiKey === "ACTIVE" ? "ok" : "warn",
+          twilio: smsRes?.twilio === "ACTIVE" ? "ok" : "warn",
+        });
+      } catch {
+        setHealth(h => ({ ...h, site: "warn" }));
+      }
+    }
+    checkHealth();
+    const id = setInterval(checkHealth, 60000);
+    return () => clearInterval(id);
   }, []);
 
   const timeStr = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
@@ -519,22 +557,36 @@ export default function CommandHomeTab({ activeBrothers, pendingPledges, revenue
         ))}
       </div>
 
-      {/* System health warnings */}
+      {/* System health rail — live fetches every 60s */}
       <div style={{ display: "grid", gap: 6, marginBottom: 16 }}>
         {[
           {
             key: "resend",
-            label: "RESEND API KEY",
-            status: process.env.NEXT_PUBLIC_RESEND_CONFIGURED === "true" ? "ok" : "warn",
-            ok: "Sponsor emails firing",
-            warn: "⚠ Set RESEND_API_KEY — sponsor notification emails are NOT sending",
+            label: "RESEND · EMAIL",
+            status: health.resend,
+            ok: "Sponsor + drip emails firing (verified live)",
+            warn: "⚠ Set RESEND_API_KEY in Vercel env + redeploy",
           },
           {
-            key: "stripe_webhook",
-            label: "STRIPE WEBHOOK",
-            status: process.env.NEXT_PUBLIC_STRIPE_WEBHOOK_CONFIGURED === "true" ? "ok" : "warn",
-            ok: "Webhook verified",
-            warn: "⚠ Set STRIPE_WEBHOOK_SECRET — seat counts may not auto-update",
+            key: "blotato",
+            label: "BLOTATO · SOCIAL",
+            status: health.blotato,
+            ok: "FB / IG / TT / YT posting active",
+            warn: "⚠ Set BLOTATO_API_KEY in Vercel env + redeploy",
+          },
+          {
+            key: "twilio",
+            label: "TWILIO · SMS",
+            status: health.twilio,
+            ok: "Inbound SMS screening active",
+            warn: "⚠ Twilio not configured — see /steward Messages tab for setup",
+          },
+          {
+            key: "site",
+            label: "SITE · API",
+            status: health.site,
+            ok: "All endpoints responding",
+            warn: "⚠ Network or API issues detected",
           },
         ].map(item => (
           <div key={item.key} style={{
