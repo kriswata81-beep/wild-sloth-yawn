@@ -207,7 +207,7 @@ function AcceptedContent() {
               You are called to the {tierLabel} class.<br />
               Your path begins now.
             </p>
-            <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.5rem", lineHeight: 1.8 }}>
+            <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.78rem", lineHeight: 1.7 }}>
               {tierMessage}
             </p>
           </div>
@@ -246,7 +246,7 @@ function AcceptedContent() {
                 animation: `fadeUp 0.6s ease ${0.1 + i * 0.06}s both`,
               }}>
                 <span style={{ color: GOLD, fontSize: "0.55rem", flexShrink: 0, marginTop: 1 }}>✓</span>
-                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.5rem", lineHeight: 1.6 }}>{item}</p>
+                <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.78rem", lineHeight: 1.6 }}>{item}</p>
               </div>
             ))}
           </div>
@@ -355,7 +355,7 @@ function AcceptedContent() {
               </>
             ) : "I COMMIT TO THE ORDER — $124.25 TODAY"}
           </button>
-          <p style={{ textAlign: "center", color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", lineHeight: 1.6 }}>
+          <p style={{ textAlign: "center", color: "rgba(232,224,208,0.45)", fontSize: "0.72rem", lineHeight: 1.6 }}>
             Founding rate: $497/yr locked for life.<br />
             Your first quarterly 48 hotel gathering is covered.
           </p>
@@ -400,7 +400,7 @@ function AcceptedContent() {
             }}>
               May 1–3 · Kapolei, Hawaii
             </p>
-            <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.5rem", marginBottom: 18, lineHeight: 1.7 }}>
+            <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.78rem", marginBottom: 18, lineHeight: 1.7 }}>
               Your first gathering is 17 days away.<br />
               24 founding seats.
             </p>
@@ -455,7 +455,7 @@ function AcceptedContent() {
               padding: "12px 16px",
               textAlign: "center",
             }}>
-              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.48rem", lineHeight: 1.7 }}>
+              <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.78rem", lineHeight: 1.7 }}>
                 Full details drop tomorrow at 4am.<br />
                 Your commitment unlocks access.
               </p>

@@ -151,9 +151,9 @@ function PaymentSuccessContent() {
 
         <p
           style={{
-            color: "rgba(232,224,208,0.45)",
-            fontSize: "0.5rem",
-            lineHeight: 1.8,
+            color: "rgba(232,224,208,0.65)",
+            fontSize: "0.78rem",
+            lineHeight: 1.7,
             animation: "fadeUp 0.9s ease 0.5s both",
           }}
         >
@@ -208,8 +208,8 @@ function PaymentSuccessContent() {
             </p>
             <p
               style={{
-                color: "rgba(232,224,208,0.45)",
-                fontSize: "0.48rem",
+                color: "rgba(232,224,208,0.65)",
+                fontSize: "0.78rem",
                 lineHeight: 1.6,
                 marginBottom: 16,
               }}
@@ -293,8 +293,8 @@ function PaymentSuccessContent() {
               </span>
               <p
                 style={{
-                  color: "rgba(232,224,208,0.6)",
-                  fontSize: "0.5rem",
+                  color: "rgba(232,224,208,0.7)",
+                  fontSize: "0.78rem",
                   lineHeight: 1.6,
                 }}
               >
@@ -435,7 +435,7 @@ function PaymentSuccessContent() {
           >
             COMPLETE FORMATION — TAKE THE OATH →
           </a>
-          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem", marginTop: 10, lineHeight: 1.6 }}>
+          <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.7rem", marginTop: 10, lineHeight: 1.6 }}>
             Takes 2 minutes · Unlocks your Mākoa portal + 808 channels
           </p>
         </div>

@@ -150,7 +150,7 @@ export default function ConfirmPage() {
           The Makoa 808 is the brotherhood's private brother-to-brother network — connecting men across Oahu who are building, healing, and showing up at 4am.
         </p>
         <div style={{ height: 1, background: GOLD_20, margin: "16px 0" }} />
-        <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.5rem", lineHeight: 1.8 }}>
+        <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.78rem", lineHeight: 1.7 }}>
           XI has reviewed your answers.<br />Your path forward is below.
         </p>
       </div>

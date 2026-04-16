@@ -355,8 +355,8 @@ function Founding48Content() {
           May 1–3 · Kapolei · West Oahu
         </p>
         <p style={{
-          color: "rgba(232,224,208,0.35)",
-          fontSize: "0.5rem",
+          color: "rgba(232,224,208,0.55)",
+          fontSize: "0.78rem",
           lineHeight: 1.7,
           marginBottom: 32,
           animation: "fadeUp 0.9s ease 0.5s both",
@@ -455,7 +455,7 @@ function Founding48Content() {
             This is not a ticket sale.<br />
             This is a crowdfund for the brotherhood.
           </p>
-          <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.5rem", lineHeight: 1.9, marginBottom: 16 }}>
+          <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.78rem", lineHeight: 1.7, marginBottom: 16 }}>
             Every seat purchased funds the Makoa House — the physical space where brothers gather, train, and build. The hotel. The van. The ice. The fire. None of it happens without the men who show up first.
           </p>
           <div style={{ display: "grid", gap: 8 }}>
@@ -525,7 +525,7 @@ function Founding48Content() {
                     fontWeight: (i === 5 || i === 11) ? 600 : 400,
                     marginBottom: 3,
                   }}>{item.event}</p>
-                  <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.46rem", lineHeight: 1.6 }}>{item.detail}</p>
+                  <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.74rem", lineHeight: 1.6 }}>{item.detail}</p>
                 </div>
               </div>
             ))}
@@ -959,7 +959,7 @@ function Founding48Content() {
             marginBottom: 18,
           }}>
             <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.18em", marginBottom: 8 }}>WHAT IS A WAR PARTY?</p>
-            <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.48rem", lineHeight: 1.8 }}>
+            <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.78rem", lineHeight: 1.7 }}>
               A War Party is 2–4 Makoa brothers who travel together. One booking covers your entire party. You arrive together, you train together, you leave together. The van picks you all up from HNL.
             </p>
           </div>
@@ -1040,7 +1040,7 @@ function Founding48Content() {
           }}>
             Come as a party. Save as a party.
           </p>
-          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", lineHeight: 1.6, marginBottom: 22 }}>
+          <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.74rem", lineHeight: 1.6, marginBottom: 22 }}>
             Select your party size below. One booking covers all brothers. The van picks you all up from HNL.
           </p>
 

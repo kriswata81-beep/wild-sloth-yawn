@@ -599,7 +599,7 @@ export default function Home() {
               { val: "4", label: "Co-Founders", sub: "Aliʻi · 1% equity each", color: GOLD },
               { val: "6", label: "Mana Brothers", sub: "Mastermind", color: BLUE },
               { val: "10", label: "Nā Koa", sub: "Day Pass", color: GREEN },
-              { val: "APR 25", label: "Gate Closes", sub: "12 days", color: RED },
+              { val: "APR 25", label: "Gate Closes", sub: soldOutTime ? `${soldOutTime.days} days left` : "closing soon", color: RED },
             ].map(s => (
               <div key={s.label} style={{
                 textAlign: "center", padding: "18px 12px",
