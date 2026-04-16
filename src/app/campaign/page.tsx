@@ -149,7 +149,7 @@ The founding fire happens once.
 SLIDE 2: LABOR
 "Skilled Hawaiian men, organized and dispatched.
 Construction. Landscaping. Maintenance.
-80% to the brother. 20% to the house."
+80% to the brother. 10% to the house. 10% to the order."
 
 SLIDE 3: KNOWLEDGE
 "Brother teaches brother.

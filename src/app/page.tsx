@@ -596,9 +596,9 @@ export default function Home() {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 28 }}>
             {[
-              { val: "4", label: "Co-Founders", sub: "Aliʻi · 1% equity each", color: GOLD },
-              { val: "6", label: "Mana Brothers", sub: "Mastermind", color: BLUE },
-              { val: "10", label: "Nā Koa", sub: "Day Pass", color: GREEN },
+              { val: `${seatsLeft.cofounder} of 4`, label: "Cofounder seats", sub: "Aliʻi · $4,997 · 1% equity", color: GOLD },
+              { val: `${seatsLeft.mana} of 24`, label: "Mastermind", sub: "Mana · $197 · 24hr", color: BLUE },
+              { val: `${seatsLeft.nakoa} of 12`, label: "Day Pass", sub: "Nā Koa · $97 · 12hr", color: GREEN },
               { val: "APR 25", label: "Gate Closes", sub: soldOutTime ? `${soldOutTime.days} days left` : "closing soon", color: RED },
             ].map(s => (
               <div key={s.label} style={{

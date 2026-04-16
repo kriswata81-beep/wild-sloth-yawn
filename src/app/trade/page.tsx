@@ -33,7 +33,7 @@ const CARGO = [
       "Landscaping & property maintenance",
       "Hauling, moving, and logistics",
       "Electrical, plumbing, handyman",
-      "80% to the brother · 20% to the house",
+      "80% to the brother · 10% to the house · 10% to the order",
       "Dispatched by XI · Backed by the order",
     ],
     stat: "$500–$5K per job",

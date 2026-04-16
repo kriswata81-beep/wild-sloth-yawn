@@ -17,6 +17,15 @@ export const MAYDAY_YEAR = 2026;
 export const MAKAHIKI_MONTH = "November";
 export const MAKAHIKI_SEASON = "winter";
 
+// ─── MAYDAY Seat Capacity (canonical) ──────────────────────────────────────
+// Source of truth for total seats per tier. Display "X of Y" everywhere.
+// "Remaining" counts should eventually pull live from Supabase payments table.
+export const MAYDAY_SEATS = {
+  alii: { total: 12, label: "Aliʻi · Co-Founders" },
+  mana: { total: 24, label: "Mana · Mastermind" },
+  nakoa: { total: 12, label: "Nā Koa · Day Pass" },
+} as const;
+
 // ─── Pricing ────────────────────────────────────────────────────────────────
 export const FOUNDING_DUES = 497;
 export const FOUNDING_DUES_DISPLAY = "$497/year";
