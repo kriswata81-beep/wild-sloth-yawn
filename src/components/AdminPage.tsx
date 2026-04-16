@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import CommandHomeTab from "./admin/CommandHomeTab";
 import ChannelsTab from "./admin/ChannelsTab";
 import SocialSchedulerTab from "./admin/SocialSchedulerTab";
+import MessagesTab from "./admin/MessagesTab";
 import MentorBoardTab from "./admin/MentorBoardTab";
 import CirclePartnersTab from "./admin/CirclePartnersTab";
 import RouteTrackingTab from "./admin/RouteTrackingTab";
@@ -74,6 +75,7 @@ const ALL_TABS = [
   "Command",
   "808 Channels",
   "Social",
+  "Messages",
   "Campaign",
   "Mentors",
   "Circle",
@@ -320,6 +322,9 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
             {/* SOCIAL SCHEDULER */}
             {tab === "Social" && <SocialSchedulerTab />}
+
+            {/* INBOUND MESSAGES (Twilio bridge) */}
+            {tab === "Messages" && <MessagesTab />}
 
             {/* CAMPAIGN VAULT */}
             {tab === "Campaign" && (
