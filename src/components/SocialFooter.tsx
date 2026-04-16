@@ -116,6 +116,8 @@ export default function SocialFooter() {
           { href: "/poster", label: "MAYDAY POSTER" },
           { href: "/xi", label: "XI · INTELLIGENCE" },
           { href: "/gate", label: "THE GATE" },
+          { href: "/privacy", label: "PRIVACY" },
+          { href: "/terms", label: "TERMS" },
         ].map(link => (
           <a key={link.href} href={link.href} style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.12em", textDecoration: "none", opacity: 0.6, transition: "opacity 0.2s" }}
             onMouseEnter={e => (e.currentTarget.style.opacity = "1")}

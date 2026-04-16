@@ -709,7 +709,7 @@ function Founding48Content() {
             ].map(item => (
               <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
                 <span style={{ color: GREEN, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item}</p>
+                <p style={{ color: "rgba(232,224,208,0.78)", fontSize: "0.74rem", lineHeight: 1.6 }}>{item}</p>
               </div>
             ))}
           </div>
@@ -787,7 +787,7 @@ function Founding48Content() {
             ].map(item => (
               <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
                 <span style={{ color: BLUE, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item}</p>
+                <p style={{ color: "rgba(232,224,208,0.78)", fontSize: "0.74rem", lineHeight: 1.6 }}>{item}</p>
               </div>
             ))}
           </div>
@@ -866,7 +866,7 @@ function Founding48Content() {
             ].map(item => (
               <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
                 <span style={{ color: GOLD, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item}</p>
+                <p style={{ color: "rgba(232,224,208,0.78)", fontSize: "0.74rem", lineHeight: 1.6 }}>{item}</p>
               </div>
             ))}
           </div>

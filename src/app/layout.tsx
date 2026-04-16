@@ -22,8 +22,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/makoa_eclipse_crest.png",
-        width: 800,
-        height: 800,
+        width: 1200,
+        height: 1200,
         alt: "Mākoa Brotherhood — West Oahu's Founding Order",
       },
     ],
