@@ -1,449 +1,524 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { SOCIAL_ACCOUNTS, type SocialPlatform } from "@/lib/constants";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
 const GOLD_FAINT = "rgba(176,142,80,0.07)";
 const GREEN = "#3fb950";
-const PURPLE = "#a78bfa";
+const RED = "#e05c5c";
+const BLUE = "#58a6ff";
 const AMBER = "#f0883e";
+const TEXT = "rgba(232,224,208,0.78)";
+const TEXT_DIM = "rgba(232,224,208,0.45)";
 
-type Platform = "facebook" | "telegram";
+const PLATFORM_ORDER: SocialPlatform[] = ["facebook", "instagram", "tiktok", "youtube"];
 
-interface PostHistory {
-  date: string;
-  preview: string;
-  status: "sent" | "scheduled" | "draft";
+interface SocialPost {
+  id: string;
+  platform: SocialPlatform;
+  text: string;
+  media_urls: string[];
+  scheduled_for: string | null;
+  status: "draft" | "scheduled" | "firing" | "fired" | "failed";
+  fired_by: string | null;
+  fired_at: string | null;
+  blotato_submission_id: string | null;
+  error_message: string | null;
+  created_at: string;
+  created_by: string;
 }
 
-interface PlatformConfig {
-  id: Platform;
-  name: string;
-  icon: string;
-  color: string;
-  bgColor: string;
-  borderColor: string;
-  schedule: string;
-  days: string[];
-  nextDrop: string;
-  history: PostHistory[];
+interface BlotatoStatus {
+  blotatoApiKey: "ACTIVE" | "AWAITING_BLOTATO_API_KEY";
+  channels: Array<{
+    platform: SocialPlatform;
+    label: string;
+    username: string;
+    connected: boolean;
+    accountId: string;
+  }>;
 }
 
-const PLATFORMS: PlatformConfig[] = [
-  {
-    id: "facebook",
-    name: "Facebook",
-    icon: "f",
-    color: "#4267B2",
-    bgColor: "rgba(66,103,178,0.06)",
-    borderColor: "rgba(66,103,178,0.3)",
-    schedule: "MON + WED + FRI",
-    days: ["MON", "WED", "FRI"],
-    nextDrop: "Monday 8:00 AM",
-    history: [
-      { date: "Fri Jun 6", preview: "Service routes active. Brothers on the ground in West...", status: "sent" },
-      { date: "Wed Jun 4", preview: "Wednesday training recap. 14 brothers showed up at 4am...", status: "sent" },
-      { date: "Mon Jun 2", preview: "New week. New routes. New pledges under review...", status: "sent" },
-      { date: "Fri May 30", preview: "Mākoa 1st Roundup — May 1–4, 2026. Kapolei. All...", status: "sent" },
-      { date: "Wed May 28", preview: "Ice bath. Sauna. Brotherhood circle. No phones...", status: "sent" },
-    ],
-  },
-  {
-    id: "telegram",
-    name: "Telegram",
-    icon: "✈",
-    color: PURPLE,
-    bgColor: "rgba(167,139,250,0.06)",
-    borderColor: "rgba(167,139,250,0.3)",
-    schedule: "DAILY SIGNAL",
-    days: ["MON", "TUE", "WED", "THU", "FRI"],
-    nextDrop: "Tomorrow 6:00 AM",
-    history: [
-      { date: "Today 6am", preview: "808 SIGNAL · Active: 6 · Quiet: 2 · Silent: 0 · Routes...", status: "sent" },
-      { date: "Yesterday 6am", preview: "808 SIGNAL · Wednesday training complete. 14 brothers...", status: "sent" },
-      { date: "Tue 6am", preview: "808 SIGNAL · Route review complete. B2B pipeline...", status: "sent" },
-      { date: "Mon 6am", preview: "808 SIGNAL · Week begins. Signal check complete...", status: "sent" },
-      { date: "Fri 6am", preview: "808 SIGNAL · Week close. Steward dispatch sent...", status: "sent" },
-    ],
-  },
-];
+const STATUS_COLOR: Record<SocialPost["status"], string> = {
+  draft: TEXT_DIM,
+  scheduled: BLUE,
+  firing: AMBER,
+  fired: GREEN,
+  failed: RED,
+};
 
-const WEEK_DAYS = ["MON", "TUE", "WED", "THU", "FRI"];
+const STATUS_LABEL: Record<SocialPost["status"], string> = {
+  draft: "DRAFT",
+  scheduled: "SCHEDULED",
+  firing: "FIRING…",
+  fired: "FIRED",
+  failed: "FAILED",
+};
 
-interface PlatformColumnProps {
-  platform: PlatformConfig;
-  activeBrothers: number;
-  pendingPledges: number;
-}
+export default function SocialSchedulerTab() {
+  const [platform, setPlatform] = useState<SocialPlatform>("facebook");
+  const [text, setText] = useState("");
+  const [mediaUrl, setMediaUrl] = useState("");
+  const [scheduledFor, setScheduledFor] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [flash, setFlash] = useState<{ ok: boolean; msg: string } | null>(null);
+  const [history, setHistory] = useState<SocialPost[]>([]);
+  const [blotatoStatus, setBlotatoStatus] = useState<BlotatoStatus | null>(null);
 
-function PlatformColumn({ platform, activeBrothers, pendingPledges }: PlatformColumnProps) {
-  const [draft, setDraft] = useState("");
-  const [generating, setGenerating] = useState(false);
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [sendError, setSendError] = useState("");
+  // Load Blotato connection status + post history
+  const loadHistory = useCallback(async () => {
+    const { data } = await supabase
+      .from("social_posts")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(30);
+    setHistory((data || []) as SocialPost[]);
+  }, []);
 
-  async function generateWithXI() {
-    setGenerating(true);
-    const apiKey = process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY;
+  useEffect(() => {
+    fetch("/api/social/post")
+      .then((r) => r.json())
+      .then((d) => setBlotatoStatus(d))
+      .catch(() => setBlotatoStatus(null));
+    loadHistory();
+    const id = setInterval(loadHistory, 15000);
+    return () => clearInterval(id);
+  }, [loadHistory]);
 
-    const platformContext = {
-      facebook: "community-focused, warm, service-oriented, local Hawaii pride",
-      telegram: "direct signal drop, brief, operational, brotherhood pulse check",
-    };
-
-    const contextData = `Platform: ${platform.name}
-Schedule: ${platform.schedule}
-Active brothers: ${activeBrothers}
-Pending pledges: ${pendingPledges}
-Tone: ${platformContext[platform.id]}
-Order: Mākoa — Hawaii brotherhood, service cooperative, warrior formation
-Rules: NO DM · NO REPLY · DROP THE MARK · WALK AWAY`;
-
-    if (!apiKey) {
-      const fallbacks: Record<Platform, string> = {
-        facebook: `Wednesday 4am. Ko Olina Beach. ${activeBrothers} brothers showed up.\\n\\nNo excuses. No phones. Just the work.\\n\\nThis is what Mākoa looks like.\\n\\n🌊⚔`,
-        telegram: `808 SIGNAL · ${new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}\\n\\nActive: ${activeBrothers} · Pending: ${pendingPledges}\\nRoutes: ACTIVE · Training: WED 4AM\\n\\nDROP THE MARK · WALK AWAY`,
-      };
-      setDraft(fallbacks[platform.id]);
-      setGenerating(false);
-      return;
-    }
-
-    try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": apiKey,
-          "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-direct-browser-access": "true",
-        },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 300,
-          system: `You are XI, the AI agent of the Mākoa Order. Generate a social media post for ${platform.name}. 
-Rules: NO DM · NO REPLY · DROP THE MARK · WALK AWAY. 
-Keep it under 150 words. Tone: ${platformContext[platform.id]}. 
-Voice: direct, purposeful, warrior brotherhood. No fluff. No hashtag spam.`,
-          messages: [{ role: "user", content: `Generate a ${platform.name} post using this data:\n\n${contextData}` }],
-        }),
-      });
-
-      if (!response.ok) throw new Error(`API error ${response.status}`);
-      const data = await response.json();
-      setDraft(data?.content?.[0]?.text || "");
-    } catch {
-      setDraft("Error generating post. Check API key.");
-    }
-
-    setGenerating(false);
-  }
-
-  async function approveAndSchedule() {
-    if (!draft.trim()) return;
-    setSendError("");
-
-    if (platform.id === "telegram") {
-      setSending(true);
-      try {
-        const res = await fetch(
-          "https://flzivjhxtbolcfaniskv.supabase.co/functions/v1/telegram-send",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: draft.trim() }),
-          }
-        );
-        const data = await res.json();
-        if (!data.ok) {
-          setSendError(data.error || "Failed to send");
-        } else {
-          setSent(true);
-          setDraft("");
-          setTimeout(() => setSent(false), 4000);
-        }
-      } catch {
-        setSendError("Network error. Try again.");
-      }
-      setSending(false);
-    } else {
-      // Facebook — copy to clipboard for manual posting
-      try {
-        await navigator.clipboard.writeText(draft.trim());
-      } catch {
-        // fallback: still show confirmation
-      }
-      setSent(true);
-      setTimeout(() => setSent(false), 3000);
-    }
-  }
-
-  const buttonLabel = () => {
-    if (sending) return "SENDING TO TELEGRAM...";
-    if (sent) return platform.id === "telegram" ? "✓ SENT TO TELEGRAM" : "✓ COPIED TO CLIPBOARD";
-    return platform.id === "telegram" ? "⚡ SEND TO TELEGRAM" : "📋 COPY FOR FACEBOOK";
+  const flashFor = (ms: number, payload: { ok: boolean; msg: string }) => {
+    setFlash(payload);
+    setTimeout(() => setFlash(null), ms);
   };
 
+  async function postNow() {
+    if (!text.trim()) return flashFor(3000, { ok: false, msg: "Text is empty" });
+    setBusy(true);
+    try {
+      const res = await fetch("/api/social/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          platform,
+          text: text.trim(),
+          mediaUrls: mediaUrl.trim() ? [mediaUrl.trim()] : [],
+          createdBy: "steward",
+          firedBy: "steward_manual",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        flashFor(6000, { ok: false, msg: data.error || `HTTP ${res.status}` });
+      } else {
+        flashFor(4000, { ok: true, msg: `Fired to ${platform} · ${data.blotatoSubmissionId}` });
+        setText("");
+        setMediaUrl("");
+        loadHistory();
+      }
+    } catch (e) {
+      flashFor(6000, { ok: false, msg: e instanceof Error ? e.message : "Network error" });
+    }
+    setBusy(false);
+  }
+
+  async function scheduleIt() {
+    if (!text.trim()) return flashFor(3000, { ok: false, msg: "Text is empty" });
+    if (!scheduledFor) return flashFor(3000, { ok: false, msg: "Pick a future time" });
+    const when = new Date(scheduledFor);
+    if (isNaN(when.getTime()) || when.getTime() <= Date.now() + 60000) {
+      return flashFor(3000, { ok: false, msg: "Time must be at least 1 min in future" });
+    }
+    setBusy(true);
+    try {
+      const res = await fetch("/api/social/schedule", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          platform,
+          text: text.trim(),
+          mediaUrls: mediaUrl.trim() ? [mediaUrl.trim()] : [],
+          scheduledFor: when.toISOString(),
+          createdBy: "steward",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        flashFor(6000, { ok: false, msg: data.error || `HTTP ${res.status}` });
+      } else {
+        flashFor(4000, { ok: true, msg: `Queued for ${when.toLocaleString()}` });
+        setText("");
+        setMediaUrl("");
+        setScheduledFor("");
+        loadHistory();
+      }
+    } catch (e) {
+      flashFor(6000, { ok: false, msg: e instanceof Error ? e.message : "Network error" });
+    }
+    setBusy(false);
+  }
+
+  async function cancelScheduled(id: string) {
+    if (!confirm("Cancel this scheduled post?")) return;
+    const res = await fetch(`/api/social/schedule?id=${id}`, { method: "DELETE" });
+    const data = await res.json();
+    if (data.success) {
+      flashFor(3000, { ok: true, msg: "Cancelled" });
+      loadHistory();
+    } else {
+      flashFor(5000, { ok: false, msg: data.error || "Cancel failed" });
+    }
+  }
+
+  const account = SOCIAL_ACCOUNTS[platform];
+
   return (
-    <div style={{
-      background: platform.bgColor,
-      border: `1px solid ${platform.borderColor}`,
-      borderRadius: "12px",
-      padding: "16px",
-      display: "flex",
-      flexDirection: "column",
-      gap: "12px",
-    }}>
-      {/* Platform header */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <div style={{
-          width: "32px", height: "32px",
-          background: platform.color,
-          borderRadius: "8px",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          color: "#000",
-          fontSize: "0.7rem",
-          fontWeight: 700,
-          flexShrink: 0,
-        }}>
-          {platform.icon}
-        </div>
-        <div>
-          <p style={{ color: "#e8e0d0", fontSize: "0.6rem", lineHeight: 1 }}>{platform.name}</p>
-          <p style={{ color: platform.color, fontSize: "0.38rem", letterSpacing: "0.12em", marginTop: "2px" }}>
-            {platform.schedule}
+    <div style={{ padding: "20px 0" }}>
+      {/* Header */}
+      <div style={{ marginBottom: 20 }}>
+        <p style={{ color: GOLD_DIM, fontSize: "0.5rem", letterSpacing: "0.22em", marginBottom: 6 }}>
+          SOCIAL — DROP & SCHEDULE
+        </p>
+        <p style={{ color: TEXT_DIM, fontSize: "0.78rem", lineHeight: 1.6 }}>
+          Posts fire through Blotato to the connected order accounts. Steward composes here,
+          XI ad-hoc from the terminal, Vercel cron drains the schedule queue daily.
+        </p>
+      </div>
+
+      {/* Connection status */}
+      <div
+        style={{
+          background: blotatoStatus?.blotatoApiKey === "ACTIVE" ? "rgba(63,185,80,0.06)" : "rgba(224,92,92,0.06)",
+          border: `1px solid ${blotatoStatus?.blotatoApiKey === "ACTIVE" ? GREEN : RED}40`,
+          borderRadius: 8,
+          padding: "12px 14px",
+          marginBottom: 18,
+        }}
+      >
+        <p
+          style={{
+            color: blotatoStatus?.blotatoApiKey === "ACTIVE" ? GREEN : RED,
+            fontSize: "0.72rem",
+            letterSpacing: "0.18em",
+            marginBottom: 8,
+            fontWeight: 700,
+          }}
+        >
+          {blotatoStatus?.blotatoApiKey === "ACTIVE" ? "● BLOTATO API · ACTIVE" : "⚠ BLOTATO_API_KEY MISSING"}
+        </p>
+        {blotatoStatus?.blotatoApiKey !== "ACTIVE" && (
+          <p style={{ color: TEXT, fontSize: "0.72rem", lineHeight: 1.6 }}>
+            Set <code style={{ color: GOLD }}>BLOTATO_API_KEY</code> in Vercel → Settings → Environment Variables, then redeploy.
+            Until then posts will fail. Channels themselves are connected at my.blotato.com.
           </p>
-        </div>
+        )}
+        {blotatoStatus && (
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 8 }}>
+            {blotatoStatus.channels
+              .filter((c) => PLATFORM_ORDER.includes(c.platform))
+              .map((c) => (
+                <span
+                  key={c.platform}
+                  style={{
+                    fontSize: "0.65rem",
+                    padding: "4px 10px",
+                    borderRadius: 4,
+                    border: `1px solid ${c.connected ? GREEN : RED}40`,
+                    color: c.connected ? GREEN : RED,
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  {c.connected ? "✓" : "✗"} {c.label.toUpperCase()}
+                </span>
+              ))}
+          </div>
+        )}
       </div>
 
-      {/* Next drop */}
-      <div style={{
-        background: "rgba(0,0,0,0.3)",
-        borderRadius: "6px",
-        padding: "8px 10px",
-      }}>
-        <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.36rem", letterSpacing: "0.12em", marginBottom: "2px" }}>
-          NEXT DROP
+      {/* Compose */}
+      <div
+        style={{
+          background: GOLD_FAINT,
+          border: `1px solid ${GOLD_DIM}40`,
+          borderRadius: 10,
+          padding: 16,
+          marginBottom: 24,
+        }}
+      >
+        <p style={{ color: GOLD_DIM, fontSize: "0.66rem", letterSpacing: "0.18em", marginBottom: 12 }}>
+          COMPOSE
         </p>
-        <p style={{ color: platform.color, fontSize: "0.48rem" }}>{platform.nextDrop}</p>
-      </div>
 
-      {/* Week calendar */}
-      <div>
-        <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.36rem", letterSpacing: "0.12em", marginBottom: "6px" }}>
-          SCHEDULE
-        </p>
-        <div style={{ display: "flex", gap: "4px" }}>
-          {WEEK_DAYS.map(day => {
-            const isActive = platform.days.includes(day);
+        {/* Platform picker */}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+          {PLATFORM_ORDER.map((p) => {
+            const a = SOCIAL_ACCOUNTS[p];
+            const active = platform === p;
             return (
-              <div key={day} style={{
-                flex: 1,
-                textAlign: "center",
-                padding: "5px 2px",
-                background: isActive ? `${platform.color}15` : "rgba(0,0,0,0.2)",
-                border: `1px solid ${isActive ? platform.color + "40" : "rgba(255,255,255,0.04)"}`,
-                borderRadius: "4px",
-              }}>
-                <p style={{
-                  color: isActive ? platform.color : "rgba(232,224,208,0.2)",
-                  fontSize: "0.34rem",
-                  letterSpacing: "0.05em",
-                }}>
-                  {day}
+              <button
+                key={p}
+                onClick={() => setPlatform(p)}
+                disabled={!a.connected}
+                style={{
+                  padding: "8px 14px",
+                  background: active ? a.color : "transparent",
+                  color: active ? "#fff" : a.connected ? a.color : "rgba(232,224,208,0.25)",
+                  border: `1px solid ${active ? a.color : "rgba(232,224,208,0.15)"}`,
+                  borderRadius: 6,
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.12em",
+                  fontWeight: 600,
+                  cursor: a.connected ? "pointer" : "not-allowed",
+                  fontFamily: "'JetBrains Mono', monospace",
+                  textTransform: "uppercase",
+                  transition: "all 0.15s",
+                }}
+              >
+                {a.label}
+              </button>
+            );
+          })}
+        </div>
+        <p style={{ color: TEXT_DIM, fontSize: "0.66rem", marginBottom: 14, fontFamily: "'JetBrains Mono', monospace" }}>
+          → Posting as <span style={{ color: account.color }}>{account.username || "(not connected)"}</span>
+        </p>
+
+        {/* Text */}
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Drop the mark. No DMs. Walk away."
+          style={{
+            width: "100%",
+            minHeight: 110,
+            padding: 12,
+            background: "#0a0d12",
+            border: "1px solid rgba(232,224,208,0.12)",
+            borderRadius: 6,
+            color: TEXT,
+            fontSize: "0.82rem",
+            lineHeight: 1.6,
+            fontFamily: "'JetBrains Mono', monospace",
+            resize: "vertical",
+            marginBottom: 10,
+          }}
+        />
+        <p style={{ color: TEXT_DIM, fontSize: "0.66rem", marginBottom: 12, textAlign: "right" }}>
+          {text.length} chars
+        </p>
+
+        {/* Media URL */}
+        <input
+          type="url"
+          value={mediaUrl}
+          onChange={(e) => setMediaUrl(e.target.value)}
+          placeholder="Optional: media URL (image or video, public)"
+          style={{
+            width: "100%",
+            padding: "10px 12px",
+            background: "#0a0d12",
+            border: "1px solid rgba(232,224,208,0.12)",
+            borderRadius: 6,
+            color: TEXT,
+            fontSize: "0.74rem",
+            fontFamily: "'JetBrains Mono', monospace",
+            marginBottom: 12,
+          }}
+        />
+
+        {/* Schedule time */}
+        <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 14, flexWrap: "wrap" }}>
+          <p style={{ color: TEXT_DIM, fontSize: "0.7rem", letterSpacing: "0.1em" }}>
+            SCHEDULE FOR (optional):
+          </p>
+          <input
+            type="datetime-local"
+            value={scheduledFor}
+            onChange={(e) => setScheduledFor(e.target.value)}
+            style={{
+              padding: "8px 10px",
+              background: "#0a0d12",
+              border: "1px solid rgba(232,224,208,0.12)",
+              borderRadius: 6,
+              color: TEXT,
+              fontSize: "0.72rem",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          />
+          {scheduledFor && (
+            <button
+              onClick={() => setScheduledFor("")}
+              style={{
+                padding: "6px 10px",
+                background: "transparent",
+                color: TEXT_DIM,
+                border: "1px solid rgba(232,224,208,0.15)",
+                borderRadius: 4,
+                fontSize: "0.66rem",
+                cursor: "pointer",
+              }}
+            >
+              ✕ clear
+            </button>
+          )}
+        </div>
+
+        {/* Buttons */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <button
+            onClick={postNow}
+            disabled={busy || !text.trim() || !account.connected}
+            style={{
+              flex: "1 1 200px",
+              padding: "14px 20px",
+              background: account.color,
+              color: "#fff",
+              border: "none",
+              borderRadius: 6,
+              fontSize: "0.78rem",
+              letterSpacing: "0.16em",
+              fontWeight: 700,
+              fontFamily: "'JetBrains Mono', monospace",
+              cursor: busy || !text.trim() ? "not-allowed" : "pointer",
+              opacity: busy || !text.trim() ? 0.4 : 1,
+              transition: "opacity 0.15s",
+            }}
+          >
+            {busy ? "FIRING…" : `▲ POST NOW → ${account.label.toUpperCase()}`}
+          </button>
+          <button
+            onClick={scheduleIt}
+            disabled={busy || !text.trim() || !scheduledFor || !account.connected}
+            style={{
+              flex: "1 1 200px",
+              padding: "14px 20px",
+              background: "transparent",
+              color: GOLD,
+              border: `1px solid ${GOLD}`,
+              borderRadius: 6,
+              fontSize: "0.78rem",
+              letterSpacing: "0.16em",
+              fontWeight: 700,
+              fontFamily: "'JetBrains Mono', monospace",
+              cursor: busy || !text.trim() || !scheduledFor ? "not-allowed" : "pointer",
+              opacity: busy || !text.trim() || !scheduledFor ? 0.4 : 1,
+              transition: "opacity 0.15s",
+            }}
+          >
+            ⏱ SCHEDULE
+          </button>
+        </div>
+
+        {flash && (
+          <p
+            style={{
+              marginTop: 12,
+              color: flash.ok ? GREEN : RED,
+              fontSize: "0.72rem",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          >
+            {flash.ok ? "✓" : "⚠"} {flash.msg}
+          </p>
+        )}
+      </div>
+
+      {/* History */}
+      <div>
+        <p style={{ color: GOLD_DIM, fontSize: "0.66rem", letterSpacing: "0.18em", marginBottom: 12 }}>
+          RECENT POSTS · LAST 30
+        </p>
+        {history.length === 0 && (
+          <p style={{ color: TEXT_DIM, fontSize: "0.74rem", padding: "16px 0" }}>
+            No posts yet. Compose one above.
+          </p>
+        )}
+        <div style={{ display: "grid", gap: 8 }}>
+          {history.map((p) => {
+            const account = SOCIAL_ACCOUNTS[p.platform];
+            const time = p.scheduled_for
+              ? new Date(p.scheduled_for).toLocaleString()
+              : new Date(p.created_at).toLocaleString();
+            return (
+              <div
+                key={p.id}
+                style={{
+                  background: "#0a0d12",
+                  border: `1px solid rgba(232,224,208,0.06)`,
+                  borderLeft: `3px solid ${account?.color || GOLD}`,
+                  borderRadius: 6,
+                  padding: "12px 14px",
+                  display: "grid",
+                  gap: 6,
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  <span style={{ color: account?.color || GOLD, fontSize: "0.7rem", letterSpacing: "0.12em", fontWeight: 700 }}>
+                    {(account?.label || p.platform).toUpperCase()}
+                  </span>
+                  <span style={{ color: STATUS_COLOR[p.status], fontSize: "0.66rem", letterSpacing: "0.14em", fontWeight: 600 }}>
+                    {STATUS_LABEL[p.status]}
+                  </span>
+                </div>
+                <p style={{ color: TEXT, fontSize: "0.78rem", lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
+                  {p.text.length > 220 ? p.text.slice(0, 220) + "…" : p.text}
                 </p>
+                {p.media_urls && p.media_urls.length > 0 && (
+                  <p style={{ color: TEXT_DIM, fontSize: "0.66rem" }}>
+                    📎 {p.media_urls.length} media
+                  </p>
+                )}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  <span style={{ color: TEXT_DIM, fontSize: "0.66rem" }}>
+                    {p.scheduled_for ? `for ${time}` : time} · by {p.created_by || "—"}
+                    {p.fired_by ? ` · fired by ${p.fired_by}` : ""}
+                  </span>
+                  {p.status === "scheduled" && (
+                    <button
+                      onClick={() => cancelScheduled(p.id)}
+                      style={{
+                        padding: "4px 10px",
+                        background: "transparent",
+                        color: RED,
+                        border: `1px solid ${RED}40`,
+                        borderRadius: 4,
+                        fontSize: "0.62rem",
+                        cursor: "pointer",
+                        letterSpacing: "0.1em",
+                      }}
+                    >
+                      ✕ CANCEL
+                    </button>
+                  )}
+                </div>
+                {p.error_message && (
+                  <p style={{ color: RED, fontSize: "0.7rem", lineHeight: 1.5 }}>
+                    {p.error_message}
+                  </p>
+                )}
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* Draft area */}
-      <div>
-        <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.36rem", letterSpacing: "0.12em", marginBottom: "6px" }}>
-          DRAFT CONTENT
-        </p>
-        <textarea
-          value={draft}
-          onChange={e => setDraft(e.target.value)}
-          placeholder={`Write ${platform.name} post or generate with XI...`}
-          rows={5}
-          style={{
-            width: "100%",
-            background: "rgba(0,0,0,0.4)",
-            border: `1px solid ${platform.color}20`,
-            borderRadius: "6px",
-            color: "#e8e0d0",
-            fontSize: "0.44rem",
-            fontFamily: "'JetBrains Mono', monospace",
-            padding: "10px",
-            resize: "vertical",
-            outline: "none",
-            lineHeight: 1.7,
-            boxSizing: "border-box",
-          }}
-        />
-      </div>
-
-      {/* Action buttons */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <button
-          onClick={generateWithXI}
-          disabled={generating}
-          style={{
-            background: "transparent",
-            border: `1px solid ${platform.color}40`,
-            color: platform.color,
-            fontSize: "0.42rem",
-            letterSpacing: "0.15em",
-            padding: "9px 12px",
-            cursor: generating ? "not-allowed" : "pointer",
-            borderRadius: "6px",
-            fontFamily: "'JetBrains Mono', monospace",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "6px",
-            opacity: generating ? 0.6 : 1,
-          }}
-        >
-          {generating ? (
-            <>
-              <div style={{ width: "10px", height: "10px", border: `1px solid ${platform.color}`, borderTop: "1px solid transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-              GENERATING...
-            </>
-          ) : (
-            "⚡ GENERATE WITH XI"
-          )}
-        </button>
-
-        <button
-          onClick={approveAndSchedule}
-          disabled={!draft.trim() || sending}
-          style={{
-            background: sent ? GREEN : draft.trim() && !sending ? GOLD : "transparent",
-            border: `1px solid ${sent ? GREEN : draft.trim() ? GOLD : "rgba(176,142,80,0.2)"}`,
-            color: sent ? "#fff" : draft.trim() && !sending ? "#000" : GOLD_DIM,
-            fontSize: "0.42rem",
-            letterSpacing: "0.15em",
-            padding: "9px 12px",
-            cursor: draft.trim() && !sending ? "pointer" : "not-allowed",
-            borderRadius: "6px",
-            fontFamily: "'JetBrains Mono', monospace",
-            fontWeight: draft.trim() ? 700 : 400,
-            transition: "all 0.2s",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "6px",
-          }}
-        >
-          {sending && (
-            <div style={{ width: "10px", height: "10px", border: `1px solid #000`, borderTop: "1px solid transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-          )}
-          {buttonLabel()}
-        </button>
-        {sendError && (
-          <p style={{ color: "#f85149", fontSize: "0.38rem", textAlign: "center", margin: 0 }}>
-            ⚠ {sendError}
-          </p>
-        )}
-      </div>
-
-      {/* Post history */}
-      <div>
-        <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.36rem", letterSpacing: "0.12em", marginBottom: "8px" }}>
-          POST HISTORY
-        </p>
-        <div style={{ display: "grid", gap: "5px" }}>
-          {platform.history.map((post, i) => (
-            <div key={i} style={{
-              background: "rgba(0,0,0,0.25)",
-              borderRadius: "5px",
-              padding: "7px 9px",
-              borderLeft: `2px solid ${platform.color}30`,
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "2px" }}>
-                <span style={{ color: platform.color, fontSize: "0.36rem" }}>{post.date}</span>
-                <span style={{ color: GREEN, fontSize: "0.34rem" }}>✓ {post.status}</span>
-              </div>
-              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.4rem", lineHeight: 1.4 }}>
-                {post.preview}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-interface SocialSchedulerTabProps {
-  activeBrothers: number;
-  pendingPledges: number;
-}
-
-export default function SocialSchedulerTab({ activeBrothers, pendingPledges }: SocialSchedulerTabProps) {
-  return (
-    <div style={{ animation: "fadeUp 0.4s ease forwards" }}>
-      {/* Header */}
-      <div style={{ marginBottom: "20px" }}>
-        <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.2em", marginBottom: "4px" }}>
-          SOCIAL MEDIA SCHEDULER — XI POWERED
-        </p>
-        <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", lineHeight: 1.6, marginBottom: "10px" }}>
-          Schedule and generate posts across all platforms. XI drafts from live Supabase data.
-        </p>
-
-        {/* Rules banner */}
-        <div style={{
-          background: GOLD_FAINT,
-          border: `1px solid rgba(176,142,80,0.2)`,
-          borderRadius: "8px",
-          padding: "10px 14px",
-          textAlign: "center",
-        }}>
-          <p style={{
-            color: GOLD,
-            fontSize: "0.48rem",
-            letterSpacing: "0.2em",
-            fontFamily: "'JetBrains Mono', monospace",
-          }}>
-            NO DM · NO REPLY · DROP THE MARK · WALK AWAY
-          </p>
-        </div>
-      </div>
-
-      {/* Platform columns — stacked on mobile, 3-col on desktop */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(1, 1fr)",
-        gap: "16px",
-      }}>
-        {PLATFORMS.map(platform => (
-          <PlatformColumn
-            key={platform.id}
-            platform={platform}
-            activeBrothers={activeBrothers}
-            pendingPledges={pendingPledges}
-          />
-        ))}
-      </div>
-
-      {/* Footer */}
-      <div style={{
-        marginTop: "20px",
-        padding: "12px 16px",
-        background: "rgba(0,0,0,0.2)",
-        border: "1px solid rgba(255,255,255,0.04)",
-        borderRadius: "8px",
-      }}>
-        <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.4rem", lineHeight: 1.8, textAlign: "center" }}>
-          LinkedIn: Tue + Thu · Facebook: Mon + Wed + Fri · Telegram: Daily 6am<br />
-          <span style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.36rem" }}>
-            XI generates and schedules all content. Review available in Command Center.
-          </span>
+      {/* Footer note */}
+      <div
+        style={{
+          marginTop: 20,
+          padding: "12px 14px",
+          background: "rgba(0,0,0,0.2)",
+          border: "1px solid rgba(255,255,255,0.04)",
+          borderRadius: 6,
+        }}
+      >
+        <p style={{ color: TEXT_DIM, fontSize: "0.66rem", lineHeight: 1.6 }}>
+          <span style={{ color: GOLD }}>NOTE:</span> Vercel Hobby plan only allows daily crons —
+          scheduled posts fire once per day at 08:05 UTC. For 15-minute granularity, upgrade to
+          Vercel Pro or hit{" "}
+          <code style={{ color: GOLD }}>/api/cron/post-scheduled</code> from an external cron
+          (cron-job.org free tier) with the <code>CRON_SECRET</code> bearer.
         </p>
       </div>
     </div>

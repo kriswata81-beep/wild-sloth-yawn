@@ -62,3 +62,108 @@ export const XI_CSUITE = {
   cto: { title: "XI CTO", domain: "Chief Technology Intelligence", agents: ["SIERRA", "PAPA"] },
   coo: { title: "XI COO", domain: "Chief Operations Intelligence", agents: ["ECHO", "OMEGA", "TANGO"] },
 } as const;
+
+// ─── Social Channels (via Blotato) ─────────────────────────────────────────
+// Account IDs come from blotato_list_accounts. Re-pull when adding new platforms.
+// Platform-specific required fields (pageId, privacyLevel, etc.) live in defaults
+// below — UI can override per-post.
+export type SocialPlatform =
+  | "facebook"
+  | "instagram"
+  | "tiktok"
+  | "youtube"
+  | "twitter"
+  | "threads"
+  | "bluesky"
+  | "linkedin";
+
+export const SOCIAL_ACCOUNTS: Record<string, {
+  platform: SocialPlatform;
+  accountId: string;
+  username: string;
+  connected: boolean;
+  defaults: Record<string, unknown>;
+  label: string;
+  color: string;
+}> = {
+  facebook: {
+    platform: "facebook",
+    accountId: "27169",
+    username: "Makoa Brotherhood",
+    connected: true,
+    label: "Facebook",
+    color: "#4267B2",
+    defaults: { pageId: "988463247693052" },
+  },
+  instagram: {
+    platform: "instagram",
+    accountId: "41415",
+    username: "@makoabrotherhood",
+    connected: true,
+    label: "Instagram",
+    color: "#E4405F",
+    defaults: {},
+  },
+  tiktok: {
+    platform: "tiktok",
+    accountId: "38279",
+    username: "@makoa_brotherhood",
+    connected: true,
+    label: "TikTok",
+    color: "#000000",
+    defaults: {
+      privacyLevel: "PUBLIC_TO_EVERYONE",
+      disabledComments: false,
+      disabledDuet: false,
+      disabledStitch: false,
+      isBrandedContent: false,
+      isYourBrand: true,
+      isAiGenerated: false,
+    },
+  },
+  youtube: {
+    platform: "youtube",
+    accountId: "33625",
+    username: "WakaChiefs (Makoa Brotherhood)",
+    connected: true,
+    label: "YouTube",
+    color: "#FF0000",
+    defaults: {
+      privacyStatus: "public",
+      shouldNotifySubscribers: true,
+      isMadeForKids: false,
+    },
+  },
+  // Not yet connected — Steward to OAuth at my.blotato.com
+  twitter: {
+    platform: "twitter",
+    accountId: "",
+    username: "",
+    connected: false,
+    label: "Twitter / X",
+    color: "#1DA1F2",
+    defaults: {},
+  },
+  threads: {
+    platform: "threads",
+    accountId: "",
+    username: "",
+    connected: false,
+    label: "Threads",
+    color: "#000000",
+    defaults: {},
+  },
+  linkedin: {
+    platform: "linkedin",
+    accountId: "",
+    username: "",
+    connected: false,
+    label: "LinkedIn",
+    color: "#0A66C2",
+    defaults: {},
+  },
+} as const;
+
+export const CONNECTED_SOCIAL_PLATFORMS = Object.values(SOCIAL_ACCOUNTS)
+  .filter((a) => a.connected)
+  .map((a) => a.platform);

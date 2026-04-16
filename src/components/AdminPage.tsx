@@ -319,12 +319,7 @@ export default function AdminPage({ onExit }: AdminPageProps) {
             {tab === "808 Channels" && <ChannelsTab />}
 
             {/* SOCIAL SCHEDULER */}
-            {tab === "Social" && (
-              <SocialSchedulerTab
-                activeBrothers={activeMembers.length}
-                pendingPledges={pendingPledges.length}
-              />
-            )}
+            {tab === "Social" && <SocialSchedulerTab />}
 
             {/* CAMPAIGN VAULT */}
             {tab === "Campaign" && (
