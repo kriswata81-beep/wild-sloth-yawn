@@ -27,8 +27,9 @@ function useGateCountdown() {
       eventDone: eventDiff <= 0,
     };
   };
-  const [time, setTime] = useState(calc);
+  const [time, setTime] = useState<ReturnType<typeof calc> | null>(null);
   useEffect(() => {
+    setTime(calc());
     const id = setInterval(() => setTime(calc()), 1000);
     return () => clearInterval(id);
   }, []);
@@ -47,7 +48,14 @@ const PROGRAM = [
 ];
 
 export default function PosterPage() {
-  const { days, hours, minutes, seconds, gateDone, eventDone } = useGateCountdown();
+  const time = useGateCountdown();
+  const days = time?.days ?? 0;
+  const hours = time?.hours ?? 0;
+  const minutes = time?.minutes ?? 0;
+  const seconds = time?.seconds ?? 0;
+  const gateDone = time?.gateDone ?? false;
+  const eventDone = time?.eventDone ?? false;
+
   const [ready, setReady] = useState(false);
   const [variant, setVariant] = useState<"countdown" | "program">("countdown");
 
