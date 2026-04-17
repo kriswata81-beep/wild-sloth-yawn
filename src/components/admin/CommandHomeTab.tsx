@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import MakoaQR from "@/components/MakoaQR";
 
 const GOLD = "#b08e50";
@@ -60,26 +61,58 @@ const BLUE = "#58a6ff";
 const RED = "#e05c5c";
 const AMBER = "#f0883e";
 
-// Oahu ZIP cluster data (approximate lat/lng mapped to SVG coords)
-const OAHU_CLUSTERS = [
-  { zip: "96707", label: "Kapolei", x: 95, y: 195, alii: 3, mana: 5, nakoa: 12 },
-  { zip: "96706", label: "Ewa Beach", x: 115, y: 210, alii: 1, mana: 3, nakoa: 8 },
-  { zip: "96792", label: "Waianae", x: 55, y: 165, alii: 0, mana: 2, nakoa: 6 },
-  { zip: "96791", label: "Haleiwa", x: 130, y: 75, alii: 1, mana: 1, nakoa: 4 },
-  { zip: "96813", label: "Honolulu", x: 230, y: 195, alii: 2, mana: 4, nakoa: 9 },
-  { zip: "96816", label: "Kaimuki", x: 245, y: 205, alii: 1, mana: 2, nakoa: 5 },
-  { zip: "96744", label: "Kaneohe", x: 270, y: 145, alii: 1, mana: 3, nakoa: 7 },
-  { zip: "96734", label: "Kailua", x: 295, y: 160, alii: 2, mana: 2, nakoa: 4 },
-  { zip: "96782", label: "Pearl City", x: 175, y: 175, alii: 1, mana: 3, nakoa: 6 },
-  { zip: "96786", label: "Wahiawa", x: 165, y: 120, alii: 0, mana: 1, nakoa: 3 },
-];
+// Oahu ZIP coordinates (geographic → SVG pixel mapping, permanent)
+const OAHU_ZIP_COORDS: Record<string, { label: string; x: number; y: number }> = {
+  "96707": { label: "Kapolei", x: 95, y: 195 },
+  "96706": { label: "Ewa Beach", x: 115, y: 210 },
+  "96792": { label: "Waianae", x: 55, y: 165 },
+  "96791": { label: "Haleiwa", x: 130, y: 75 },
+  "96813": { label: "Honolulu", x: 230, y: 195 },
+  "96816": { label: "Kaimuki", x: 245, y: 205 },
+  "96744": { label: "Kaneohe", x: 270, y: 145 },
+  "96734": { label: "Kailua", x: 295, y: 160 },
+  "96782": { label: "Pearl City", x: 175, y: 175 },
+  "96786": { label: "Wahiawa", x: 165, y: 120 },
+};
+
+interface ClusterData {
+  zip: string;
+  label: string;
+  x: number;
+  y: number;
+  alii: number;
+  mana: number;
+  nakoa: number;
+}
+
+// Build live cluster data from gate_submissions ZIP + tier_flag
+function buildClusters(submissions: Array<{ zip: string | null; tier_flag: string | null }>): ClusterData[] {
+  const counts: Record<string, { alii: number; mana: number; nakoa: number }> = {};
+  for (const s of submissions) {
+    const zip = (s.zip || "").trim().slice(0, 5);
+    if (!zip || !OAHU_ZIP_COORDS[zip]) continue;
+    if (!counts[zip]) counts[zip] = { alii: 0, mana: 0, nakoa: 0 };
+    const tier = (s.tier_flag || "nakoa").toLowerCase();
+    if (tier === "alii") counts[zip].alii++;
+    else if (tier === "mana") counts[zip].mana++;
+    else counts[zip].nakoa++;
+  }
+  return Object.entries(OAHU_ZIP_COORDS).map(([zip, coord]) => ({
+    zip,
+    ...coord,
+    alii: counts[zip]?.alii || 0,
+    mana: counts[zip]?.mana || 0,
+    nakoa: counts[zip]?.nakoa || 0,
+  }));
+}
 
 interface HeatMapProps {
   hoveredZip: string | null;
   setHoveredZip: (zip: string | null) => void;
+  clusters: ClusterData[];
 }
 
-function OahuHeatMap({ hoveredZip, setHoveredZip }: HeatMapProps) {
+function OahuHeatMap({ hoveredZip, setHoveredZip, clusters }: HeatMapProps) {
   return (
     <div style={{ position: "relative", width: "100%", maxWidth: "380px", margin: "0 auto" }}>
       <svg
@@ -127,7 +160,7 @@ function OahuHeatMap({ hoveredZip, setHoveredZip }: HeatMapProps) {
         ))}
 
         {/* Cluster dots */}
-        {OAHU_CLUSTERS.map(cluster => {
+        {clusters.map(cluster => {
           const total = cluster.alii + cluster.mana + cluster.nakoa;
           const isHovered = hoveredZip === cluster.zip;
           const radius = Math.max(6, Math.min(14, 5 + total * 0.5));
@@ -223,7 +256,7 @@ function OahuHeatMap({ hoveredZip, setHoveredZip }: HeatMapProps) {
 
       {/* Tooltip */}
       {hoveredZip && (() => {
-        const c = OAHU_CLUSTERS.find(cl => cl.zip === hoveredZip);
+        const c = clusters.find(cl => cl.zip === hoveredZip);
         if (!c) return null;
         return (
           <div style={{
@@ -279,11 +312,24 @@ export default function CommandHomeTab({ activeBrothers, pendingPledges, revenue
     twilio: "pending",
     site: "pending",
   });
+  const [clusters, setClusters] = useState<ClusterData[]>(
+    () => Object.entries(OAHU_ZIP_COORDS).map(([zip, c]) => ({ zip, ...c, alii: 0, mana: 0, nakoa: 0 }))
+  );
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     intervalRef.current = setInterval(() => setNow(new Date()), 1000);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, []);
+
+  // Live heatmap — pull gate_submissions ZIPs on mount
+  useEffect(() => {
+    supabase
+      .from("gate_submissions")
+      .select("zip, tier_flag")
+      .then(({ data }) => {
+        if (data) setClusters(buildClusters(data));
+      });
   }, []);
 
   // Live system health — refreshes every 60s. Real fetches, not env var checks.
@@ -684,7 +730,7 @@ export default function CommandHomeTab({ activeBrothers, pendingPledges, revenue
             ))}
           </div>
         </div>
-        <OahuHeatMap hoveredZip={hoveredZip} setHoveredZip={setHoveredZip} />
+        <OahuHeatMap hoveredZip={hoveredZip} setHoveredZip={setHoveredZip} clusters={clusters} />
         <p style={{ color: "rgba(232,224,208,0.15)", fontSize: "0.36rem", textAlign: "center", marginTop: "8px", letterSpacing: "0.1em" }}>
           STEWARD EYES ONLY · ZIP CLUSTER DATA
         </p>
