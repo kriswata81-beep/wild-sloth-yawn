@@ -25,7 +25,7 @@ const SECTIONS = [
   {
     h: "GATE & MEMBERSHIP",
     body: [
-      "The gate ($9.99) is an application fee. It is not a guarantee of acceptance. XI scores every application and may accept, hold, or decline. The fee is non-refundable.",
+      "The gate is free. Your 12 answers are your application. XI scores every submission and may accept, hold, or decline.",
       "If you are accepted, the founding membership rate is $497/year, locked for life as long as you remain in good standing. If you decline within 7 days of acceptance, your founding rate is refunded (gate fee is not).",
       "The order may remove a brother for breach of conduct, dishonesty, threats, or behavior that endangers the brotherhood. Removal forfeits remaining dues and equity. The order does not refund forfeited amounts.",
     ],

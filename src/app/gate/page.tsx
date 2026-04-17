@@ -111,13 +111,11 @@ function PledgePopup({ onConfirm, onClose, submitting }: { onConfirm: () => void
       <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.25rem", lineHeight: 1.4, marginBottom: 14 }}>
         This is your entry into the order.
       </p>
-      <div style={{ background: GOLD_10, border: `1px solid ${GOLD_20}`, borderRadius: 8, padding: "18px", marginBottom: 18, textAlign: "center" }}>
-        <p style={{ color: GOLD, fontSize: "2rem", fontWeight: 700, lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>$9.99</p>
-        <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.46rem", marginTop: 6, lineHeight: 1.7 }}>
-          Your pledge signals to the order that you are serious.<br />
-          This is a one-time gate entry fee.<br />
-          XI will review your 12 answers and respond<br />
-          within moments. Stand by.
+      <div style={{ background: "rgba(63,185,80,0.06)", border: "1px solid rgba(63,185,80,0.2)", borderRadius: 8, padding: "18px", marginBottom: 18, textAlign: "center" }}>
+        <p style={{ color: "#3fb950", fontSize: "1.6rem", fontWeight: 700, lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>FREE ENTRY</p>
+        <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.72rem", marginTop: 8, lineHeight: 1.7 }}>
+          No fee. Your 12 answers are your pledge.<br />
+          XI will review and respond within moments.
         </p>
       </div>
       {submitting ? (
@@ -259,7 +257,7 @@ export default function GatePageRoute() {
         q10, q11, q12,
         zip: q10,
         referral_code: q11,
-        pledge_amount: 9.99,
+        pledge_amount: 0,
         tier_flag: xiTier || tier_flag,
       });
       if (error) console.error("[GatePage] Supabase insert error:", error);
@@ -398,8 +396,8 @@ export default function GatePageRoute() {
             {[
               { num: "1", text: "Answer 12 questions below", sub: "Takes 3 minutes. Be honest — this is how XI places you." },
               { num: "2", text: "XI reviews and places you in a class", sub: "Ali'i (leaders), Mana (builders), or Nā Koa (warriors)." },
-              { num: "3", text: "Pay $9.99 gate entry to confirm", sub: "This is not a donation. This is your entry into the order." },
-              { num: "4", text: "Receive founding member access", sub: "Event details, Mākoa 808 brotherhood channel, and payment instructions for annual dues." },
+              { num: "3", text: "Receive XI's response + Telegram access", sub: "Founding brother access: 808 channel, event details, and rank doctrine." },
+              { num: "4", text: "Choose your MAYDAY tier", sub: "Day Pass ($97), Mastermind ($197), or War Room ($397). Your seat at the founding fire." },
             ].map(s => (
               <div key={s.num} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                 <div style={{
@@ -633,7 +631,7 @@ export default function GatePageRoute() {
             SUBMIT APPLICATION
           </button>
           <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", textAlign: "center", marginBottom: 32 }}>
-            $9.99 gate entry · XI responds within moments · founding access unlocked after acceptance
+            Free entry · XI responds within moments · founding access unlocked after acceptance
           </p>
         </div>
 

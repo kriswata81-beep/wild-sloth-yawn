@@ -29,8 +29,8 @@ export const MAYDAY_SEATS = {
 // ─── Pricing ────────────────────────────────────────────────────────────────
 export const FOUNDING_DUES = 497;
 export const FOUNDING_DUES_DISPLAY = "$497/year";
-export const GATE_ENTRY_FEE = 9.99;
-export const GATE_ENTRY_DISPLAY = "$9.99";
+export const GATE_ENTRY_FEE = 0;
+export const GATE_ENTRY_DISPLAY = "FREE";
 export const DEPOSIT_PERCENT = 0.25;
 export const DEPOSIT_AMOUNT = Math.round(FOUNDING_DUES * DEPOSIT_PERCENT * 100) / 100; // $124.25
 

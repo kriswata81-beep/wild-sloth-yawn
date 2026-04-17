@@ -185,7 +185,7 @@ export default function XIPage() {
             <XISection color={GOLD} title="THE TRUST ARCHITECTURE">
               <div style={{ display: "grid", gap: 0 }}>
                 {[
-                  { step: "01", label: "Brother enters the gate", sub: "12 questions. $9.99. No fluff." },
+                  { step: "01", label: "Brother enters the gate", sub: "12 questions. Free. No fluff." },
                   { step: "02", label: "XI reads every answer", sub: "Classification matrix runs. Crisis scan runs." },
                   { step: "03", label: "XI classifies and speaks", sub: "2–3 sentences. His words reflected back. Signed — XI." },
                   { step: "04", label: "XI routes to correct class", sub: "Aliʻi → N2N. Mana → B2B/B2C. Nā Koa → P2P." },
