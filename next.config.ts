@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
     ];
   },
   webpack: (config, { isServer }) => {
+    // Disable filesystem cache to prevent corrupted chunk errors on Windows
+    config.cache = false;
+
     if (process.env.NODE_ENV === "development") {
       config.module.rules.push({
         test: /\.(jsx|tsx)$/,
