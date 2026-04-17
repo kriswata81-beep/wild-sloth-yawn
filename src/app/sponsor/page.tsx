@@ -25,7 +25,7 @@ const GIFT_OPTIONS = [
     description: "One day that changes everything.",
     detail: "He arrives Saturday morning. 4am ice bath. Brotherhood circle. The Nā Koa Academy. He leaves a different man. One day is enough to know if he belongs.",
     what: ["4am ice bath — Saturday morning", "Brotherhood circle — no performance, just truth", "Nā Koa Academy — trade skills + formation", "Founding fire — Sunday oath ceremony"],
-    priceId: "price_1TKlQr836uPpUiqMWjqFLNKv",
+    priceId: "price_1TN55d6JgsMzYUQR8GfoWcoQ",
     color: "#3fb950",
     badge: "12HR",
   },
