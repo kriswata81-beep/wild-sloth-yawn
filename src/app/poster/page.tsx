@@ -252,7 +252,7 @@ export default function PosterPage() {
             borderRadius: 10, padding: "12px 14px", marginBottom: 18,
           }}>
             {[
-              { label: "DATE", value: "May 1–3, 2026" },
+              { label: "DATE", value: "May 1–4, 2026" },
               { label: "LOCATION", value: "West Oahuʻ, Hawaii" },
               { label: "GATE CLOSES", value: "April 25 · Final call" },
               { label: "SEATS", value: "48 Brothers · Founding only" },
@@ -276,7 +276,7 @@ export default function PosterPage() {
             }}>
               Not a gym. Not a podcast.<br />
               A brotherhood of men who build real things.<br />
-              <span style={{ color: GOLD }}>The founding fire happens once.</span>
+              <span style={{ color: GOLD }}>The founding fire burns the first weekend of every month.</span>
             </p>
           </div>
 
@@ -320,17 +320,17 @@ export default function PosterPage() {
             {
               label: "COUNTDOWN DROP",
               icon: "⏱",
-              text: `${days} days until the gate closes.\n\nWest Oahu. May 1–3.\n\n4am ice bath. Elite training. Mastermind. Network 2 Network. B2B. B2C. P2P. Founders Summit.\n\nThe founding fire happens once.\n\nENTER THE GATE → makoa.live\n\n#Mākoa #Brotherhood #WestOahu #MAYDAY2026`,
+              text: `${days} days until the gate closes.\n\nWest Oahu. May 1–4.\n\n4am ice bath. Elite training. Mastermind. Network 2 Network. B2B. B2C. P2P. Founders Summit.\n\nThe founding fire burns the first weekend of every month.\n\nENTER THE GATE → makoa.live\n\n#Mākoa #Brotherhood #WestOahu #MAYDAY2026`,
             },
             {
               label: "PROGRAM DROP",
               icon: "📋",
-              text: `Here's what you're walking into.\n\n🧊 4am Ice Bath — both mornings\n⚔ Elite Training — formation + combat fitness\n🧠 Mastermind — build together\n🔗 Network 2 Network — room to room\n🏗 B2B · B2C — route contracts + client pipeline\n🤝 Peer 2 Peer — skills shared\n🔥 Founders Summit — all classes, one table\n🌅 Founding Fire — the oath. The order begins.\n\nWest Oahu. May 1–3.\n\nmakoa.live\n\n#MAYDAY2026 #Mākoa`,
+              text: `Here's what you're walking into.\n\n🧊 4am Ice Bath — both mornings\n⚔ Elite Training — formation + combat fitness\n🧠 Mastermind — build together\n🔗 Network 2 Network — room to room\n🏗 B2B · B2C — route contracts + client pipeline\n🤝 Peer 2 Peer — skills shared\n🔥 Founders Summit — all classes, one table\n🌅 Founding Fire — the oath. The order begins.\n\nWest Oahu. May 1–4.\n\nmakoa.live\n\n#MAYDAY2026 #Mākoa`,
             },
             {
               label: "GATE CLOSING DROP",
               icon: "🚨",
-              text: `The gate closes April 25.\n\nAfter that — no entry. No exceptions.\n\nWest Oahu. May 1–3.\n\nIf you've been watching — now is the time.\n\nmakoa.live\n\n#Mākoa #Brotherhood #WestOahu`,
+              text: `The gate closes April 25.\n\nAfter that — no entry. No exceptions.\n\nWest Oahu. May 1–4.\n\nIf you've been watching — now is the time.\n\nmakoa.live\n\n#Mākoa #Brotherhood #WestOahu`,
             },
             {
               label: "MYSTERY DROP",

@@ -518,9 +518,9 @@ export default function GatheringsPage() {
             marginBottom: 28,
           }}
         >
-          72 hours. 3 days. The founding of the Order.
+          Co-Founders Weekend. The founding of the Order.
           <br />
-          May 1–3, 2026 · Kapolei, Oʻahu
+          May 1–4, 2026 · Kapolei, Oʻahu
         </p>
         <a
           href="/founding48"

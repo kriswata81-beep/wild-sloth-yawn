@@ -5,7 +5,7 @@ import LastChanceBanner from "@/components/LastChanceBanner";
 export const metadata: Metadata = {
   title: "Mākoa — A Brotherhood of Men | West Oʻahu",
   description:
-    "A brotherhood of men who build real things together. Not a gym. Not a podcast. 4am ice bath. Brotherhood circle. The oath. West Oahu. May 1–3. The founding fire happens once.",
+    "A brotherhood of men who build real things together. Not a gym. Not a podcast. 4am ice bath. Brotherhood circle. The oath. West Oahu. Co-Founders Weekend — May 1–4. Founding Brothers Month.",
   keywords: [
     "Mākoa", "brotherhood", "men", "Hawaii", "MAYDAY 2026",
     "West Oahu", "founding order", "ice bath", "men's healing",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Mākoa — A Brotherhood of Men",
     description:
-      "Not a gym. Not a podcast. A brotherhood of men who build real things together. West Oahu. May 1–3. The founding fire happens once.",
+      "Not a gym. Not a podcast. A brotherhood of men who build real things together. West Oahu. Co-Founders Weekend — May 1–4. Founding Brothers Month.",
     siteName: "Mākoa Brotherhood",
     type: "website",
     locale: "en_US",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Mākoa — A Brotherhood of Men",
     description:
-      "Not a gym. Not a podcast. A brotherhood of men who build real things together. West Oahu. May 1–3.",
+      "Not a gym. Not a podcast. A brotherhood of men who build real things together. West Oahu. May 1–4.",
     images: ["/makoa_eclipse_crest.png"],
   },
   robots: {

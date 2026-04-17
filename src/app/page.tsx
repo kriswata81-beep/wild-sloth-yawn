@@ -227,7 +227,7 @@ export default function Home() {
             opacity: ready ? 1 : 0,
             transition: "opacity 0.7s ease 0.6s",
           }}>
-            West Oahu. May 1–3. The founding fire happens once.
+            West Oahu. May 1–4. Co-Founders Weekend — every month.
           </p>
 
           {/* SEAT COUNTS */}
@@ -496,7 +496,7 @@ export default function Home() {
               { icon: "⚒", label: "A real trade", detail: "Labor, knowledge, territory. The route moves men — not products." },
               { icon: "🏠", label: "A real house", detail: "Mākoa House — West Oahu. Physical. Permanent. Yours." },
               { icon: "◈", label: "A real rank", detail: "Nā Koa → Mana → Aliʻi. Earned through the work, not bought." },
-              { icon: "🔥", label: "A real founding", detail: "West Oahu. May 1–3. Ice bath. Oath. The fire happens once." },
+              { icon: "🔥", label: "A real founding", detail: "West Oahu. May 1–4. Co-Founders Weekend — first weekend of every month." },
             ].map(item => (
               <div key={item.label} style={{
                 display: "flex", alignItems: "flex-start", gap: 16,

@@ -126,8 +126,8 @@ Aliʻi War Room: $499 → $699
 
 If you've been watching — this is the moment.
 
-West Oahu. May 1–3.
-The founding fire happens once.
+West Oahu. May 1–4.
+The founding fire burns the first weekend of every month.
 
 → makoa.live/founding20
 
@@ -161,8 +161,8 @@ SLIDE 4: TERRITORY
 Each house is a node.
 Each node opens a city."
 
-SLIDE 5: "West Oahu. May 1–3.
-The founding fire happens once.
+SLIDE 5: "West Oahu. May 1–4.
+The founding fire burns the first weekend of every month.
 → makoa.live"`,
     visual: "Dark cards. Each slide one cargo. Gold, Blue, Green color coding.",
     cta: "makoa.live/trade",
@@ -246,8 +246,8 @@ War Party VIP (airport pickup + hotel): makoa.live/founding20
 
 If you've been waiting — this is the last moment to get the full package.
 
-West Oahu. May 1–3.
-The founding fire happens once.
+West Oahu. May 1–4.
+The founding fire burns the first weekend of every month.
 
 → makoa.live/founding20
 
@@ -353,8 +353,8 @@ That's 2 days.
 
 Then we close the gate.
 
-West Oahu. May 1–3.
-The founding fire happens once.
+West Oahu. May 1–4.
+The founding fire burns the first weekend of every month.
 
 After tomorrow — the gate closes.
 The founding brothers are set.

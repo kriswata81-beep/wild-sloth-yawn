@@ -19,7 +19,7 @@ export default function NaKoaStonePage() {
       items: [
         "Gate application accepted by XI",
         "Formation fee paid — commitment confirmed",
-        "Attended the founding MAYDAY event (May 1–3) or first available 48",
+        "Attended the founding MAYDAY event (May 1–4) or first available 48",
         "Completed 90-day formation period",
         "80%+ attendance at weekly circles and trainings",
         "Completed at least 1 service route shadow shift",

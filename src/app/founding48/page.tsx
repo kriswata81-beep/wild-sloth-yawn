@@ -336,6 +336,12 @@ function Founding48Content() {
         <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", marginBottom: 16 }}>
           MĀKOA ORDER · FOUNDING EVENT
         </p>
+        <p style={{
+          color: "rgba(176,142,80,0.5)", fontSize: "0.4rem", letterSpacing: "0.28em",
+          marginBottom: 10, animation: "fadeUp 0.9s ease 0.1s both",
+        }}>
+          🌕 FOUNDING BROTHERS MONTH
+        </p>
         <h1 style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: "italic",
@@ -345,7 +351,7 @@ function Founding48Content() {
           margin: "0 0 12px",
           animation: "fadeUp 0.9s ease 0.2s both",
         }}>
-          MAYDAY<br />Founding 20
+          Co-Founders<br />Weekend
         </h1>
         <p style={{
           fontFamily: "'Cormorant Garamond', serif",
@@ -355,7 +361,7 @@ function Founding48Content() {
           marginBottom: 8,
           animation: "fadeUp 0.9s ease 0.35s both",
         }}>
-          May 1–3 · Kapolei · West Oahu
+          May 1–4 · Kapolei · West Oahu
         </p>
         <p style={{
           color: "rgba(232,224,208,0.55)",
@@ -364,7 +370,8 @@ function Founding48Content() {
           marginBottom: 32,
           animation: "fadeUp 0.9s ease 0.5s both",
         }}>
-          The only event where brothers are sworn in at the founding fire.
+          The first weekend of every month, founding brothers are sworn in.<br />
+          This is where the order is built — one weekend at a time.
         </p>
         <div style={{ maxWidth: 400, margin: "0 auto", animation: "fadeUp 0.9s ease 0.6s both" }}>
           <div style={{ marginBottom: 20 }}>

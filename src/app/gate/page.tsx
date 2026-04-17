@@ -496,7 +496,7 @@ export default function GatePageRoute() {
             May 1st · Kapolei · A Hotel
           </p>
           <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.5rem", marginBottom: 16 }}>
-            48 brothers. 48 hours. Friday dusk to Sunday dusk.
+            8–20 brothers. May 1–4. Friday dusk to Monday morning.
           </p>
 
           <div style={{ borderLeft: `2px solid ${GOLD_20}`, paddingLeft: 14, marginBottom: 20 }}>

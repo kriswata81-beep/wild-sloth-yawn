@@ -86,8 +86,8 @@ const ANNUAL = {
 
 // MAYDAY is separate — founding event only (May 2026), never repeated
 const MAYDAY = {
-  name: "MAYDAY — The Founding (2026 Only)",
-  detail: "The founding of the Order. May 1–3, 2026, Kapolei, Oʻahu. 20 brothers. Charter signed. Ali'i class seated. This event never repeats — it becomes Makahiki starting winter 2026.",
+  name: "MAYDAY — Co-Founders Weekend",
+  detail: "The founding of the Order. May 1–4, 2026, Kapolei, Oʻahu. 8–20 brothers per weekend. Charter signed. Ali'i class seated. First weekend of every month — Founding Brothers Month.",
   accent: GOLD,
   cost: "$149–$999 (founding tickets)",
 };

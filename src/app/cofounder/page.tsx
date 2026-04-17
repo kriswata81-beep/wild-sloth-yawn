@@ -49,8 +49,8 @@ const JOURNEY = [
   {
     step: "05",
     label: "MAYDAY SUMMIT",
-    sublabel: "Founding 20 — May 2026",
-    detail: "72 hours in Kapolei. Ice bath. War Room. Fire ceremony. The charter is signed. The order is legally founded.",
+    sublabel: "Co-Founders Weekend — May 1–4",
+    detail: "4 days in Kapolei. Ice bath. War Room. Fire ceremony. The charter is signed. The order is legally founded.",
     color: AMBER,
     href: "/founding48",
   },

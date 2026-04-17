@@ -140,7 +140,7 @@ export default function FirePage() {
         </div>
 
         <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.3em", marginBottom: 12 }}>
-          MĀKOA ORDER · WEST OAHUʻ · MAY 1–3
+          MĀKOA ORDER · WEST OAHUʻ · MAY 1–4
         </p>
         <h1 style={{
           fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
@@ -333,7 +333,7 @@ export default function FirePage() {
             fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
             color: GOLD, fontSize: "1.3rem", lineHeight: 1.4, marginBottom: 16,
           }}>
-            "The founding fire happens once.<br />You either stood in it — or you didn't."
+            "The founding fire burns the first weekend of every month.<br />Your seat — or someone else's."
           </p>
           <a href="/gate" style={{
             display: "block", background: GOLD, color: BG,

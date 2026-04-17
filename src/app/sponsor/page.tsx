@@ -320,7 +320,7 @@ export default function SponsorPage() {
               { n: "03", t: "Enter his contact info", d: "Name + email. Add a personal note if you want." },
               { n: "04", t: "He receives the message", d: '"Someone believes in you. You\'ve been sponsored into Mākoa."' },
               { n: "05", t: "He enters the gate", d: "His application is reviewed by XI. His class is assigned." },
-              { n: "06", t: "He shows up May 1–3", d: "West Oahu. The founding fire. He comes back different." },
+              { n: "06", t: "He shows up May 1–4", d: "West Oahu. The founding fire. He comes back different." },
             ].map((s, i) => (
               <div key={i} style={{
                 display: "flex", gap: 14, padding: "10px 14px",
@@ -522,17 +522,17 @@ export default function SponsorPage() {
               {
                 label: "FOR WIVES / GIRLFRIENDS",
                 icon: "💍",
-                text: "I thought of [his name] for this. It's a brotherhood event in West Oahu — May 1–3. Real men, 4am ice bath, building real things together. I know he'd never ask for it himself, so I wanted to give you the option to sponsor him. No obligation. makoa.live/sponsor",
+                text: "I thought of [his name] for this. It's a brotherhood event in West Oahu — May 1–4. Real men, 4am ice bath, building real things together. I know he'd never ask for it himself, so I wanted to give you the option to sponsor him. No obligation. makoa.live/sponsor",
               },
               {
                 label: "FOR MOTHERS",
                 icon: "🤍",
-                text: "I came across something I thought of [his name] for. It's a brotherhood in West Oahu — men who show up at 4am, hold each other accountable, build real things. The founding event is May 1–3. You can sponsor him anonymously. He gets the message: 'Someone believes in you.' makoa.live/sponsor",
+                text: "I came across something I thought of [his name] for. It's a brotherhood in West Oahu — men who show up at 4am, hold each other accountable, build real things. The founding event is May 1–4. You can sponsor him anonymously. He gets the message: 'Someone believes in you.' makoa.live/sponsor",
               },
               {
                 label: "FOR CLOSE FRIENDS",
                 icon: "✊",
-                text: "Bro — I'm going to Mākoa MAYDAY in West Oahu, May 1–3. 4am ice bath, brotherhood, real work. I thought of you. Gate closes April 25. If you're in, go to makoa.live. If you need a push, I'll sponsor you.",
+                text: "Bro — I'm going to Mākoa MAYDAY in West Oahu, May 1–4. 4am ice bath, brotherhood, real work. I thought of you. Gate closes April 25. If you're in, go to makoa.live. If you need a push, I'll sponsor you.",
               },
               {
                 label: "FOR INSTAGRAM / FACEBOOK",

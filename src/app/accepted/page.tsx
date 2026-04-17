@@ -398,11 +398,11 @@ function AcceptedContent() {
               fontSize: "1.5rem",
               margin: "0 0 6px",
             }}>
-              May 1–3 · Kapolei, Hawaii
+              May 1–4 · Kapolei, Hawaii
             </p>
             <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.78rem", marginBottom: 18, lineHeight: 1.7 }}>
-              Your first gathering is 17 days away.<br />
-              24 founding seats.
+              Co-Founders Weekend — first of every month.<br />
+              Seats limited. Show up.
             </p>
 
             <div style={{ borderLeft: `2px solid ${GOLD_20}`, paddingLeft: 14, marginBottom: 20 }}>
