@@ -14,7 +14,7 @@ const BLUE = "#58a6ff";
 const BG = "#04060a";
 
 const SOLD_OUT_TARGET = new Date("2026-04-25T23:59:59-10:00");
-const HOTEL_DEADLINE = new Date("2026-04-20T23:59:59-10:00");
+const HOTEL_DEADLINE = new Date("2026-04-25T23:59:59-10:00");
 
 function useCountdown(target: Date) {
   const calc = () => {
@@ -342,7 +342,7 @@ export default function Home() {
               transition: "opacity 0.7s ease 0.85s",
             }}>
               <p style={{ color: "rgba(248,81,73,0.65)", fontSize: "11px", letterSpacing: "0.15em", marginBottom: 8, textAlign: "center" }}>
-                ⚡ HOTEL ROOMS HELD UNTIL APR 20
+                ⚡ HOTEL ROOMS HELD UNTIL APR 25
               </p>
               <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
                 {[

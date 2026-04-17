@@ -49,6 +49,9 @@ async function fetchLiveSeats(): Promise<SeatCounts> {
 
 const EARLY_BIRD_CUTOFF = new Date("2026-04-15T23:59:59-10:00");
 const MAY_1 = new Date("2026-05-01T17:00:00-10:00");
+// Hotel block cutoffs — teams need more lead time than solos
+const TEAM_HOTEL_CUTOFF = new Date("2026-04-22T23:59:59-10:00");
+const SOLO_HOTEL_CUTOFF = new Date("2026-04-25T23:59:59-10:00");
 
 function useCountdown(target: Date) {
   const zero = { days: 0, hours: 0, minutes: 0, seconds: 0 };
@@ -635,6 +638,68 @@ function Founding48Content() {
           }}>
             The founding brothers become the first house leaders.<br />
             This is how it starts.
+          </p>
+        </div>
+
+        {/* ── HOTEL CUTOFF RAIL ─────────────────────────────────────────────── */}
+        <div style={{
+          marginBottom: 28,
+          background: "rgba(248,81,73,0.04)",
+          border: "1px solid rgba(248,81,73,0.18)",
+          borderRadius: 10,
+          padding: "20px 20px",
+        }}>
+          <p style={{ color: RED, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 14 }}>🏨 HOTEL BLOCK CUTOFFS</p>
+          <div style={{ display: "grid", gap: 10 }}>
+            {[
+              {
+                label: "TEAMS · 2+ BROTHERS",
+                cutoff: "APR 22",
+                detail: "Group room block — coordinate your party before rooms go back to the hotel.",
+                countdown: TEAM_HOTEL_CUTOFF,
+                color: GOLD,
+              },
+              {
+                label: "SOLOS · INDIVIDUAL BEDS",
+                cutoff: "APR 25",
+                detail: "Single beds held in the block. Claim yours before gate close.",
+                countdown: SOLO_HOTEL_CUTOFF,
+                color: BLUE,
+              },
+            ].map(item => {
+              const now = Date.now();
+              const diff = item.countdown.getTime() - now;
+              const days = diff > 0 ? Math.floor(diff / 86400000) : 0;
+              const hours = diff > 0 ? Math.floor((diff % 86400000) / 3600000) : 0;
+              const expired = diff <= 0;
+              return (
+                <div key={item.label} style={{
+                  background: "rgba(0,0,0,0.3)",
+                  border: `1px solid ${item.color}20`,
+                  borderLeft: `3px solid ${item.color}`,
+                  borderRadius: "0 8px 8px 0",
+                  padding: "14px 16px",
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                    <p style={{ color: item.color, fontSize: "0.4rem", letterSpacing: "0.15em" }}>{item.label}</p>
+                    <div style={{
+                      background: expired ? "rgba(248,81,73,0.12)" : `${item.color}15`,
+                      border: `1px solid ${expired ? "rgba(248,81,73,0.3)" : item.color + "30"}`,
+                      borderRadius: 3, padding: "3px 8px",
+                    }}>
+                      <p style={{ color: expired ? RED : item.color, fontSize: "0.38rem", letterSpacing: "0.1em", fontWeight: 700 }}>
+                        {expired ? "CLOSED" : `${days}D ${hours}H LEFT`}
+                      </p>
+                    </div>
+                  </div>
+                  <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem", lineHeight: 1.5, marginBottom: 4 }}>{item.detail}</p>
+                  <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.38rem", letterSpacing: "0.1em" }}>CUTOFF: {item.cutoff} · 11:59 PM HST</p>
+                </div>
+              );
+            })}
+          </div>
+          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.4rem", marginTop: 12, lineHeight: 1.6 }}>
+            Hotel: Embassy Suites by Hilton Kapolei · Rooms held under MĀKOA block. After cutoff, book directly at hotel rate.
           </p>
         </div>
 
