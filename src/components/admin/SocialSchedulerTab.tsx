@@ -171,6 +171,58 @@ export default function SocialSchedulerTab() {
     }
   }
 
+  // Promote a draft (e.g. from ECHO) to actual fire — calls /api/social/post
+  // with the draft's content, then deletes the original draft row.
+  async function approveAndFire(draft: SocialPost) {
+    if (!confirm(`Fire this ECHO/draft to ${draft.platform.toUpperCase()} now?\n\n"${draft.text.slice(0, 120)}…"`)) return;
+    setBusy(true);
+    try {
+      const res = await fetch("/api/social/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          platform: draft.platform,
+          text: draft.text,
+          mediaUrls: draft.media_urls || [],
+          createdBy: draft.created_by || "echo",
+          firedBy: "steward_manual",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        flashFor(6000, { ok: false, msg: data.error || `HTTP ${res.status}` });
+      } else {
+        // Delete the original draft row now that the fired copy exists
+        await supabase.from("social_posts").delete().eq("id", draft.id);
+        flashFor(4000, { ok: true, msg: `Fired · ${data.blotatoSubmissionId}` });
+        loadHistory();
+      }
+    } catch (e) {
+      flashFor(6000, { ok: false, msg: e instanceof Error ? e.message : "Network error" });
+    }
+    setBusy(false);
+  }
+
+  // Discard a draft outright
+  async function discardDraft(id: string) {
+    if (!confirm("Discard this draft?")) return;
+    const { error } = await supabase.from("social_posts").delete().eq("id", id);
+    if (error) {
+      flashFor(5000, { ok: false, msg: error.message });
+    } else {
+      flashFor(3000, { ok: true, msg: "Discarded" });
+      loadHistory();
+    }
+  }
+
+  // Pull text from a draft into the compose box for editing
+  function loadDraftIntoCompose(draft: SocialPost) {
+    setPlatform(draft.platform);
+    setText(draft.text);
+    setMediaUrl((draft.media_urls && draft.media_urls[0]) || "");
+    flashFor(2500, { ok: true, msg: "Draft loaded into compose — edit then POST or SCHEDULE" });
+  }
+
   const account = SOCIAL_ACCOUNTS[platform];
 
   return (
@@ -490,6 +542,58 @@ export default function SocialSchedulerTab() {
                     >
                       ✕ CANCEL
                     </button>
+                  )}
+                  {p.status === "draft" && (
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      <button
+                        onClick={() => approveAndFire(p)}
+                        disabled={busy}
+                        style={{
+                          padding: "5px 12px",
+                          background: GREEN,
+                          color: "#000",
+                          border: "none",
+                          borderRadius: 4,
+                          fontSize: "0.66rem",
+                          cursor: busy ? "not-allowed" : "pointer",
+                          letterSpacing: "0.1em",
+                          fontWeight: 700,
+                          opacity: busy ? 0.4 : 1,
+                        }}
+                      >
+                        ▲ APPROVE & FIRE
+                      </button>
+                      <button
+                        onClick={() => loadDraftIntoCompose(p)}
+                        style={{
+                          padding: "5px 12px",
+                          background: "transparent",
+                          color: GOLD,
+                          border: `1px solid ${GOLD}60`,
+                          borderRadius: 4,
+                          fontSize: "0.62rem",
+                          cursor: "pointer",
+                          letterSpacing: "0.1em",
+                        }}
+                      >
+                        ✎ EDIT
+                      </button>
+                      <button
+                        onClick={() => discardDraft(p.id)}
+                        style={{
+                          padding: "5px 12px",
+                          background: "transparent",
+                          color: RED,
+                          border: `1px solid ${RED}40`,
+                          borderRadius: 4,
+                          fontSize: "0.62rem",
+                          cursor: "pointer",
+                          letterSpacing: "0.1em",
+                        }}
+                      >
+                        ✕ DISCARD
+                      </button>
+                    </div>
                   )}
                 </div>
                 {p.error_message && (
