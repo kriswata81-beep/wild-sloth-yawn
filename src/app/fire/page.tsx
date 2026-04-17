@@ -144,10 +144,13 @@ export default function FirePage() {
         </p>
         <h1 style={{
           fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
-          fontSize: "2.4rem", color: GOLD, margin: "0 0 14px", fontWeight: 300, lineHeight: 1.15,
+          fontSize: "2.4rem", color: GOLD, margin: "0 0 10px", fontWeight: 300, lineHeight: 1.15,
         }}>
           What the Founding Fire<br />Actually Is
         </h1>
+        <p style={{ color: "rgba(176,142,80,0.55)", fontSize: "0.38rem", letterSpacing: "0.18em", marginBottom: 18, marginTop: 2 }}>
+          $97 · $197 · $4,997 &nbsp;·&nbsp; 48 SEATS TOTAL &nbsp;·&nbsp; GATE CLOSES APR 25
+        </p>
         <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.46rem", lineHeight: 1.8, maxWidth: 460, margin: "0 auto 24px" }}>
           Not a retreat. Not a seminar. Not a men's group.<br />
           A 48-hour founding event where an order of men is born.<br />

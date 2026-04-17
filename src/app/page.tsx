@@ -53,9 +53,9 @@ function MakoaCrest({ size = 88 }: { size?: number }) {
 
 const PROOF = [
   {
-    quote: "I've been to men's retreats. I've done the circles. Nothing hit like the 4am ice bath with brothers who actually show up.",
-    name: "K.M.",
-    role: "Founding Brother · West Oahu",
+    quote: "I built this because I was the man who needed it. No one told me what to do with the weight I was carrying. Brotherhood isn't therapy — it's showing up at 4am when a brother calls. That's Mākoa.",
+    name: "Kris W.",
+    role: "Founder · West Oahu",
   },
   {
     quote: "My wife sent me. I didn't want to go. I came back a different man. She knew before I did.",
@@ -250,6 +250,36 @@ export default function Home() {
                 <p style={{ color: s.color, fontSize: "1.5rem", fontWeight: 700, lineHeight: 1, marginBottom: 3, fontFamily: "'JetBrains Mono', monospace" }}>{s.count}</p>
                 <p style={{ color: `${s.color}90`, fontSize: "10px", letterSpacing: "0.14em", marginBottom: 2 }}>{s.label}</p>
                 <p style={{ color: "rgba(232,224,208,0.22)", fontSize: "10px" }}>{s.sub}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* TIER LADDER */}
+          <div style={{
+            background: "rgba(176,142,80,0.04)",
+            border: "1px solid rgba(176,142,80,0.1)",
+            borderRadius: 8,
+            padding: "14px 16px",
+            marginBottom: 16,
+            opacity: ready ? 1 : 0,
+            transition: "opacity 0.7s ease 0.7s",
+          }}>
+            <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "10px", letterSpacing: "0.2em", marginBottom: 10, textAlign: "center" }}>MAYDAY ENTRY TIERS</p>
+            {[
+              { tier: "NĀ KOA", price: "$97", desc: "Day Pass · 12 hrs · meet the brothers", color: GREEN },
+              { tier: "MANA", price: "$197", desc: "Mastermind · 24 hrs · deep work", color: BLUE },
+              { tier: "ALIʻI", price: "$4,997", desc: "Co-Founder · 48 hrs · 1% equity", color: GOLD },
+            ].map((t, i, arr) => (
+              <div key={t.tier} style={{
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                padding: "6px 0",
+                borderBottom: i < arr.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+              }}>
+                <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
+                  <span style={{ color: t.color, fontSize: "10px", letterSpacing: "0.12em", fontWeight: 600 }}>{t.tier}</span>
+                  <span style={{ color: "rgba(232,224,208,0.25)", fontSize: "10px" }}>{t.desc}</span>
+                </div>
+                <span style={{ color: t.color, fontSize: "13px", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginLeft: 8 }}>{t.price}</span>
               </div>
             ))}
           </div>
@@ -596,9 +626,9 @@ export default function Home() {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 28 }}>
             {[
-              { val: `${seatsLeft.cofounder} of 4`, label: "Cofounder seats", sub: "Aliʻi · $4,997 · 1% equity", color: GOLD },
-              { val: `${seatsLeft.mana} of 24`, label: "Mastermind", sub: "Mana · $197 · 24hr", color: BLUE },
-              { val: `${seatsLeft.nakoa} of 12`, label: "Day Pass", sub: "Nā Koa · $97 · 12hr", color: GREEN },
+              { val: `${seatsLeft.cofounder} LEFT`, label: "Co-Founder seats", sub: "Aliʻi · $4,997 · 1% equity", color: GOLD },
+              { val: `${seatsLeft.mana} of 24`, label: "Mastermind seats", sub: "Mana · $197 · 24hr", color: BLUE },
+              { val: `${seatsLeft.nakoa} of 20`, label: "Day Pass seats", sub: "Nā Koa · $97 · 12hr", color: GREEN },
               { val: "APR 25", label: "Gate Closes", sub: soldOutTime ? `${soldOutTime.days} days left` : "closing soon", color: RED },
             ].map(s => (
               <div key={s.label} style={{

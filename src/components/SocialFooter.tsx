@@ -106,16 +106,10 @@ export default function SocialFooter() {
 
       <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 16 }}>
         {[
-          { href: "/sponsor", label: "SPONSOR A BROTHER" },
-          { href: "/wahine", label: "WAHINE CIRCLE" },
-          { href: "/trade", label: "TRADE CO." },
-          { href: "/cofounder", label: "CO-FOUNDER" },
-          { href: "/services", label: "HOME SERVICES" },
-          { href: "/gatherings", label: "GATHERINGS" },
-          { href: "/fire", label: "THE FOUNDING FIRE" },
-          { href: "/poster", label: "MAYDAY POSTER" },
-          { href: "/xi", label: "XI · INTELLIGENCE" },
           { href: "/gate", label: "THE GATE" },
+          { href: "/fire", label: "THE FOUNDING FIRE" },
+          { href: "/sponsor", label: "SPONSOR A BROTHER" },
+          { href: "/trade", label: "TRADE CO." },
           { href: "/privacy", label: "PRIVACY" },
           { href: "/terms", label: "TERMS" },
         ].map(link => (

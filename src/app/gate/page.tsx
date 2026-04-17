@@ -382,7 +382,12 @@ export default function GatePageRoute() {
             textAlign: "center",
           }}>
             <p style={{ color: GOLD, fontSize: "0.78rem", fontWeight: 700, marginBottom: 2 }}>$497/year · Founding rate locked for life</p>
-            <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.62rem" }}>Standard rate after MAYDAY: $997/year. You will never pay that.</p>
+            <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.62rem", marginBottom: 6 }}>Standard rate after MAYDAY: $997/year. You will never pay that.</p>
+            <div style={{ borderTop: "1px solid rgba(176,142,80,0.1)", paddingTop: 8, marginTop: 2 }}>
+              <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.58rem", lineHeight: 1.6 }}>
+                Annual membership begins after MAYDAY. To attend, choose your event tier below: <span style={{ color: "rgba(63,185,80,0.7)" }}>Day Pass $97</span> · <span style={{ color: "rgba(88,166,255,0.7)" }}>Mastermind $197</span> · <span style={{ color: "rgba(176,142,80,0.7)" }}>War Room $397</span>
+              </p>
+            </div>
           </div>
         </div>
 
