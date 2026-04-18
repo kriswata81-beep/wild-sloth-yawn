@@ -1,4 +1,4 @@
-// XI.Phone — Incoming Call Handler
+// XI.Phone â Incoming Call Handler
 // Twilio webhook: ALL incoming calls go to voicemail with XI greeting
 
 import { NextResponse } from 'next/server';
@@ -8,13 +8,12 @@ export async function POST(req: Request) {
   const from = formData.get('From') as string;
   const to = formData.get('To') as string;
   const callerName = formData.get('CallerName') as string || 'Unknown';
-
   const deviceRole = getDeviceRole(to);
 
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say voice="alice" language="en-US">
-    \${deviceRole === 'steward'
+    ${deviceRole === 'steward'
       ? 'Aloha. You have reached the Makoa Brotherhood steward line. Please leave your message after the tone. XI will review and respond.'
       : 'Aloha. You have reached the Makoa Ambassador line for business inquiries. Please leave your message after the tone. XI will review and respond.'
     }
@@ -33,12 +32,12 @@ export async function POST(req: Request) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-    await fetch(`\${supabaseUrl}/rest/v1/xi_phone_calls`, {
+    await fetch(`${supabaseUrl}/rest/v1/xi_phone_calls`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'apikey': supabaseKey,
-        'Authorization': `Bearer \${supabaseKey}`,
+        'Authorization': `Bearer ${supabaseKey}`,
       },
       body: JSON.stringify({
         from_number: from,
