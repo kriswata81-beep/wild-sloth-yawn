@@ -1,4 +1,4 @@
-// XI.Phone — Transcription Ready Handler
+// XI.Phone â Transcription Ready Handler
 // Twilio callback: voicemail transcribed -> XI classifies -> Telegram alert
 
 import { NextResponse } from 'next/server';
@@ -10,7 +10,6 @@ export async function POST(req: Request) {
   const from = formData.get('From') as string;
   const to = formData.get('To') as string;
   const callSid = formData.get('CallSid') as string;
-
   const deviceRole = getDeviceRole(to);
 
   // Step 1: XI classifies the call using Claude Haiku
@@ -33,12 +32,12 @@ export async function POST(req: Request) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-    await fetch(\`\${supabaseUrl}/rest/v1/xi_phone_calls?call_sid=eq.\${callSid}\`, {
+    await fetch(`${supabaseUrl}/rest/v1/xi_phone_calls?call_sid=eq.${callSid}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'apikey': supabaseKey,
-        'Authorization': \`Bearer \${supabaseKey}\`,
+        'Authorization': `Bearer ${supabaseKey}`,
       },
       body: JSON.stringify({
         transcription: transcriptionText,
@@ -68,7 +67,7 @@ async function classifyCall(
   action: string;
   category: string;
 }> {
-  const systemPrompt = \`You are XI, operational intelligence of the Makoa Brotherhood Order.
+  const systemPrompt = `You are XI, operational intelligence of the Makoa Brotherhood Order.
 You classify incoming voicemail messages for Steward 0001.
 
 CLASSIFICATION TIERS:
@@ -82,7 +81,7 @@ URGENCY LEVELS:
 - normal: Standard business or community matter (respond within 24 hours)
 - low: Informational, spam, can wait or ignore
 
-DEVICE CONTEXT: This call came to the \${deviceRole === 'steward' ? 'Steward (ohana/Brotherhood)' : 'Ambassador (B2B)'} line.
+DEVICE CONTEXT: This call came to the ${deviceRole === 'steward' ? 'Steward (ohana/Brotherhood)' : 'Ambassador (B2B)'} line.
 
 Respond in JSON only:
 {
@@ -91,7 +90,7 @@ Respond in JSON only:
   "summary": "2-3 sentence summary",
   "action": "specific next step recommendation",
   "category": "brief category label"
-}\`;
+}`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -108,7 +107,7 @@ Respond in JSON only:
         messages: [
           {
             role: 'user',
-            content: \`Classify this voicemail:\n\nFrom: \${callerNumber}\nDevice: xi.\${deviceRole === 'steward' ? 'fire' : 'water'}\nTranscription: "\${transcription}"\`,
+            content: `Classify this voicemail:\n\nFrom: ${callerNumber}\nDevice: xi.${deviceRole === 'steward' ? 'fire' : 'water'}\nTranscription: "${transcription}"`,
           },
         ],
       }),
@@ -127,7 +126,7 @@ Respond in JSON only:
   return {
     tier: 'unknown',
     urgency: 'normal',
-    summary: \`Voicemail from \${callerNumber}. Classification failed — review manually.\`,
+    summary: `Voicemail from ${callerNumber}. Classification failed â review manually.`,
     action: 'Listen to recording and classify manually.',
     category: 'Unclassified',
   };
@@ -141,44 +140,46 @@ function formatTelegramMessage(data: {
   deviceRole: string;
 }): string {
   const tierEmoji: Record<string, string> = {
-    alii: '👑',
-    mana: '💼',
-    nakoa: '🤝',
-    unknown: '❓',
+    alii: '\u{1F451}',
+    mana: '\u{1F4BC}',
+    nakoa: '\u{1F91D}',
+    unknown: '\u{2753}',
   };
+
   const urgencyEmoji: Record<string, string> = {
-    critical: '🔴',
-    high: '🟠',
-    normal: '🟢',
-    low: '⚪',
+    critical: '\u{1F534}',
+    high: '\u{1F7E0}',
+    normal: '\u{1F7E2}',
+    low: '\u{26AA}',
   };
 
   const deviceName = data.deviceRole === 'steward' ? 'xi.fire' : 'xi.water';
   const tier = data.classification.tier || 'unknown';
   const urgency = data.classification.urgency || 'normal';
 
-  return \`📞 XI.PHONE ALERT — \${deviceName.toUpperCase()}
+  return `\u{1F4DE} XI.PHONE ALERT â ${deviceName.toUpperCase()}
 
-\${tierEmoji[tier]} Tier: \${tier.toUpperCase()}
-\${urgencyEmoji[urgency]} Urgency: \${urgency.toUpperCase()}
-📋 Category: \${data.classification.category}
+${tierEmoji[tier]} Tier: ${tier.toUpperCase()}
+${urgencyEmoji[urgency]} Urgency: ${urgency.toUpperCase()}
 
-👤 From: \${data.from}
-📝 Summary: \${data.classification.summary}
+\u{1F4CB} Category: ${data.classification.category}
+\u{1F464} From: ${data.from}
 
-⚡ Action: \${data.classification.action}
+\u{1F4DD} Summary: ${data.classification.summary}
 
-🎙️ Recording: \${data.recordingUrl}
+\u{26A1} Action: ${data.classification.action}
+
+\u{1F399}\u{FE0F} Recording: ${data.recordingUrl}
 
 ---
-Transcription: "\${data.transcription}"\`;
+Transcription: "${data.transcription}"`;
 }
 
 async function sendTelegram(message: string) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN!;
   const chatId = process.env.TELEGRAM_STEWARD_CHAT_ID || '7954185672';
 
-  await fetch(\`https://api.telegram.org/bot\${botToken}/sendMessage\`, {
+  await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
