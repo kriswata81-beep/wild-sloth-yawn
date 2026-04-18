@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>XI.Cowork</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --xi-black: #0a0a0a;
+      --xi-gold: #c9a84c;
+      --xi-red: #8b2500;
+      --xi-green: #1a472a;
+      --xi-blue: #1a3a5c;
+      --xi-white: #f0ece2;
+      --xi-gray: #2a2a2a;
+      --alii-gold: #ffd700;
+      --mana-blue: #4a90d9;
+      --nakoa-green: #4a9d6e;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--xi-black);
+      color: var(--xi-white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .boot-screen {
+      position: fixed; inset: 0; z-index: 1000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: var(--xi-black);
+      transition: opacity 1s ease;
+    }
+    .boot-screen.fade-out { opacity: 0; pointer-events: none; }
+    .xi-logo {
+      width: 120px; height: 120px;
+      border: 3px solid var(--xi-gold);
+      border-radius: 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px; font-weight: 900;
+      color: var(--xi-gold);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(201,168,76,0.3); }
+      50% { box-shadow: 0 0 40px rgba(201,168,76,0.6); }
+    }
+    .boot-text {
+      margin-top: 20px; font-size: 14px;
+      color: var(--xi-gold); opacity: 0.7;
+      letter-spacing: 4px; text-transform: uppercase;
+    }
+    .boot-device {
+      margin-top: 8px; font-size: 11px;
+      color: #666; letter-spacing: 2px;
+    }
+
+    /* Header */
+    .header {
+      padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--xi-gray);
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .device-badge {
+      padding: 4px 10px; border-radius: 12px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .device-badge.fire { background: var(--xi-red); color: var(--xi-white); }
+    .device-badge.water { background: var(--xi-blue); color: var(--xi-white); }
+    .header-title { font-size: 18px; font-weight: 700; }
+    .status-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--nakoa-green);
+      box-shadow: 0 0 6px rgba(74,157,110,0.6);
+    }
+
+    /* Navigation */
+    .nav {
+      display: flex; padding: 8px 16px; gap: 8px;
+      overflow-x: auto; border-bottom: 1px solid var(--xi-gray);
+    }
+    .nav-btn {
+      padding: 8px 16px; border-radius: 20px;
+      border: 1px solid var(--xi-gray);
+      background: transparent; color: var(--xi-white);
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .nav-btn.active {
+      background: var(--xi-gold);
+      color: var(--xi-black);
+      border-color: var(--xi-gold);
+    }
+
+    /* Sections */
+    .section { display: none; padding: 16px 20px; }
+    .section.active { display: block; }
+
+    /* Cards */
+    .card {
+      background: var(--xi-gray); border-radius: 16px;
+      padding: 16px; margin-bottom: 12px;
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .card-title { font-size: 14px; font-weight: 700; }
+    .card-badge {
+      padding: 2px 8px; border-radius: 8px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .badge-alii { background: var(--alii-gold); color: var(--xi-black); }
+    .badge-mana { background: var(--mana-blue); color: white; }
+    .badge-nakoa { background: var(--nakoa-green); color: white; }
+    .badge-critical { background: #ff3b30; color: white; }
+    .badge-high { background: #ff9500; color: white; }
+    .card-body { font-size: 13px; line-height: 1.5; opacity: 0.85; }
+    .card-action {
+      margin-top: 10px; padding: 8px 16px;
+      background: var(--xi-gold); color: var(--xi-black);
+      border: none; border-radius: 10px;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer; width: 100%;
+    }
+
+    /* Comms Hub */
+    .comms-input-area {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 12px 16px; background: var(--xi-gray);
+      border-top: 1px solid #333;
+      display: none; gap: 8px;
+    }
+    .comms-input-area.active { display: flex; }
+    .comms-input {
+      flex: 1; padding: 10px 14px;
+      background: var(--xi-black); border: 1px solid #444;
+      border-radius: 20px; color: var(--xi-white);
+      font-size: 14px; outline: none;
+    }
+    .comms-send {
+      padding: 10px 20px; background: var(--xi-gold);
+      color: var(--xi-black); border: none; border-radius: 20px;
+      font-weight: 700; font-size: 14px; cursor: pointer;
+    }
+
+    /* Message bubbles */
+    .message {
+      max-width: 85%; padding: 10px 14px;
+      border-radius: 16px; margin-bottom: 8px;
+      font-size: 13px; line-height: 1.4;
+    }
+    .message.from-xi {
+      background: var(--xi-gray);
+      border-bottom-left-radius: 4px;
+      align-self: flex-start;
+    }
+    .message.from-device {
+      background: var(--xi-gold); color: var(--xi-black);
+      border-bottom-right-radius: 4px;
+      align-self: flex-end; margin-left: auto;
+    }
+    .message-meta {
+      font-size: 10px; opacity: 0.5;
+      margin-top: 4px;
+    }
+    .messages-container {
+      display: flex; flex-direction: column;
+      padding-bottom: 80px;
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-bottom: 16px;
+    }
+    .stat-card {
+      background: var(--xi-gray); border-radius: 12px;
+      padding: 14px; text-align: center;
+    }
+    .stat-value {
+      font-size: 28px; font-weight: 900;
+      color: var(--xi-gold);
+    }
+    .stat-label {
+      font-size: 11px; opacity: 0.6;
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .quick-btn {
+      padding: 16px; border-radius: 14px;
+      border: 1px solid var(--xi-gray);
+      background: transparent; color: var(--xi-white);
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; text-align: center;
+      transition: all 0.2s;
+    }
+    .quick-btn:active {
+      background: var(--xi-gold);
+      color: var(--xi-black);
+      transform: scale(0.97);
+    }
+    .quick-btn-icon { font-size: 24px; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+
+<!-- Boot Screen -->
+<div class="boot-screen" id="bootScreen">
+  <div class="xi-logo">XI</div>
+  <div class="boot-text">Initializing</div>
+  <div class="boot-device" id="bootDevice">Detecting device...</div>
+</div>
+
+<!-- Main App -->
+<div id="app" style="display:none;">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="device-badge" id="deviceBadge">--</div>
+      <div class="header-title">XI.Cowork</div>
+    </div>
+    <div class="status-dot"></div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav">
+    <button class="nav-btn active" onclick="showSection('dashboard')">Dashboard</button>
+    <button class="nav-btn" onclick="showSection('calls')">Calls</button>
+    <button class="nav-btn" onclick="showSection('comms')">XI.Comms</button>
+    <button class="nav-btn" onclick="showSection('ops')">Field Ops</button>
+    <button class="nav-btn" onclick="showSection('warchest')">Warchest</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="section active" id="sec-dashboard">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="statCalls">0</div>
+        <div class="stat-label">Calls Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statActions">0</div>
+        <div class="stat-label">Actions Due</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statComms">0</div>
+        <div class="stat-label">Unread Comms</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statWarchest">$0</div>
+        <div class="stat-label">Warchest</div>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom:12px;font-size:15px;">Quick Actions</h3>
+    <div class="quick-actions" id="quickActions">
+      <!-- Populated by JS based on device role -->
+    </div>
+  </div>
+
+  <!-- Calls Section -->
+  <div class="section" id="sec-calls">
+    <h3 style="margin-bottom:12px;font-size:15px;">Recent Calls â XI Classified</h3>
+    <div id="callsList">
+      <div class="card">
+        <div class="card-body" style="text-align:center;opacity:0.5;">
+          No calls yet. XI is monitoring.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- XI.Comms Section -->
+  <div class="section" id="sec-comms">
+    <h3 style="margin-bottom:12px;font-size:15px;">XI.Comms Hub</h3>
+    <div class="messages-container" id="messagesContainer">
+      <div class="message from-xi">
+        <strong>XI</strong><br>
+        XI.Cowork initialized. I am monitoring both lines. All calls are being screened and classified. Send me a message or task anytime.
+        <div class="message-meta">System | Just now</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Field Ops Section -->
+  <div class="section" id="sec-ops">
+    <h3 style="margin-bottom:12px;font-size:15px;" id="opsTitle">Field Operations</h3>
+    <div id="opsContent">
+      <!-- Populated by JS based on device role -->
+    </div>
+  </div>
+
+  <!-- Warchest Section -->
+  <div class="section" id="sec-warchest">
+    <h3 style="margin-bottom:12px;font-size:15px;">Warchest â 96792</h3>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">80%</div>
+        <div class="stat-label">Brothers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">10%</div>
+        <div class="stat-label">House</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body" style="text-align:center;">
+        Stripe integration pending.<br>
+        Connect at makoa.live/portal
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Comms Input (fixed bottom) -->
+<div class="comms-input-area" id="commsInput">
+  <input class="comms-input" id="messageInput" placeholder="Message XI..." autocomplete="off">
+  <button class="comms-send" onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+  // âââââââââââââââââââââââââââââââââââââââââââââââ
+  // DEVICE DETECTION & ROLE ASSIGNMENT
+  // âââââââââââââââââââââââââââââââââââââââââââââââ
+  const DEVICE_CONFIG = {
+    'xi.fire': {
+      role: 'steward',
+      label: 'STEWARD',
+      color: 'fire',
+      title: 'Ohana Affairs',
+      // Match by any of these
+      fingerprints: ['RZCY10RD62X', 'SM-S166V', '08:02:3C:74:BB:30']
+    },
+    'xi.water': {
+      role: 'ambassador',
+      label: 'AMBASSADOR',
+      color: 'water',
+      title: 'B2B Affairs',
+      fingerprints: ['XT2413V', '0C:7D:B0:34:2C']
+    }
+  };
+
+  let currentDevice = null;
+  let apiBase = ''; // Set to your makoa.live URL
+
+  function detectDevice() {
+    // Check localStorage for manual override first
+    const saved = localStorage.getItem('xi_device');
+    if (saved && DEVICE_CONFIG[saved]) {
+      return saved;
+    }
+
+    // Try to detect via user agent
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.includes('sm-s166') || ua.includes('a16')) return 'xi.fire';
+    if (ua.includes('xt2413') || ua.includes('moto g play')) return 'xi.water';
+
+    // Fallback: prompt user
+    return null;
+  }
+
+  function initDevice(deviceName) {
+    currentDevice = deviceName;
+    const config = DEVICE_CONFIG[deviceName];
+    localStorage.setItem('xi_device', deviceName);
+
+    // Update UI
+    const badge = document.getElementById('deviceBadge');
+    badge.textContent = `${deviceName} â ${config.label}`;
+    badge.classList.add(config.color);
+
+    document.getElementById('bootDevice').textContent = `${deviceName} | ${config.title}`;
+
+    // Set up role-specific quick actions
+    setupQuickActions(config.role);
+    setupFieldOps(config.role);
+  }
+
+  function setupQuickActions(role) {
+    const container = document.getElementById('quickActions');
+    if (role === 'steward') {
+      container.innerHTML = `
+        <button class="quick-btn" onclick="quickAction('check_calls')">
+          <div class="quick-btn-icon">ð</div>Missed Calls
+        </button>
+        <button class="quick-btn" onclick="quickAction('brotherhood')">
+          <div class="quick-btn-icon">ð¤</div>Brotherhood
+        </button>
+        <button class="quick-btn" onclick="quickAction('emergency')">
+          <div class="quick-btn-icon">ð¨</div>Cluster 911
+        </button>
+        <button class="quick-btn" onclick="quickAction('cross_comm')">
+          <div class="quick-btn-icon">ð¬</div>Msg xi.water
+        </button>
+      `;
+    } else {
+      container.innerHTML = `
+        <button class="quick-btn" onclick="quickAction('check_calls')">
+          <div class="quick-btn-icon">ð</div>Missed Calls
+        </button>
+        <button class="quick-btn" onclick="quickAction('pono_home')">
+          <div class="quick-btn-icon">ð </div>Pono Home
+        </button>
+        <button class="quick-btn" onclick="quickAction('tp_pro')">
+          <div class="quick-btn-icon">ð§»</div>TP Pro
+        </button>
+        <button class="quick-btn" onclick="quickAction('cross_comm')">
+          <div class="quick-btn-icon">ð¬</div>Msg xi.fire
+        </button>
+      `;
+    }
+  }
+
+  function setupFieldOps(role) {
+    const title = document.getElementById('opsTitle');
+    const content = document.getElementById('opsContent');
+
+    if (role === 'steward') {
+      title.textContent = 'Steward Ops â Ohana Affairs';
+      content.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Steward Applications</div>
+            <div class="card-badge badge-alii">ALII</div>
+          </div>
+          <div class="card-body">Review pending steward applications. XI scores and classifies automatically.</div>
+          <button class="card-action" onclick="window.open('https://makoa.live/portal/applications')">Open Applications</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Territory 96792</div>
+            <div class="card-badge badge-nakoa">ACTIVE</div>
+          </div>
+          <div class="card-body">West Oahu founding territory. Check-ins, warchest, cluster news.</div>
+          <button class="card-action" onclick="window.open('https://makoa.live/portal')">Territory Dashboard</button>
+        </div>
+      `;
+    } else {
+      title.textContent = 'Ambassador Ops â B2B Affairs';
+      content.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Pono Home Leads</div>
+            <div class="card-badge badge-mana">MANA</div>
+          </div>
+          <div class="card-body">Active buyer/seller leads. Probate + foreclosure pipeline from Hoohiki scraper.</div>
+          <button class="card-action" onclick="quickAction('pono_home')">View Pipeline</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">TP Pro Westside</div>
+            <div class="card-badge badge-mana">LAUNCH MAY 1</div>
+          </div>
+          <div class="card-body">Community delivery network. Ambassador outreach + Holoholo Card signups.</div>
+          <button class="card-action" onclick="quickAction('tp_pro')">Launch Dashboard</button>
+        </div>
+      `;
+    }
+  }
+
+  // âââââââââââââââââââââââââââââââââââââââââââââââ
+  // NAVIGATION
+  // âââââââââââââââââââââââââââââââââââââââââââââââ
+  function showSection(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`sec-${name}`).classList.add('active');
+    event.target.classList.add('active');
+
+    // Show/hide comms input
+    const commsInput = document.getElementById('commsInput');
+    commsInput.classList.toggle('active', name === 'comms');
+  }
+
+  // âââââââââââââââââââââââââââââââââââââââââââââââ
+  // MESSAGING â XI.COMMS
+  // âââââââââââââââââââââââââââââââââââââââââââââââ
+  function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    // Add user message
+    addMessage(text, 'device');
+    input.value = '';
+
+    // Send to XI API for processing
+    processWithXI(text);
+  }
+
+  function addMessage(text, from, meta) {
+    const container = document.getElementById('messagesContainer');
+    const div = document.createElement('div');
+    div.className = `message from-${from === 'device' ? 'device' : 'xi'}`;
+
+    const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    div.innerHTML = `${from === 'xi' ? '<strong>XI</strong><br>' : ''}${text}
+      <div class="message-meta">${meta || (from === 'device' ? currentDevice : 'XI')} | ${time}</div>`;
+
+    container.appendChild(div);
+    div.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  async function processWithXI(message) {
+    // Local XI processing â will connect to API
+    const deviceConfig = DEVICE_CONFIG[currentDevice];
+
+    // For now, simulate XI response
+    setTimeout(() => {
+      addMessage(
+        `Received on ${currentDevice}. Processing as ${deviceConfig.role} task. I will route this through the 7G Net and update you via Telegram.`,
+        'xi'
+      );
+    }, 800);
+
+    // TODO: Wire to /api/xi-phone/comms endpoint
+    // This will send to Claude API for processing and
+    // cross-route to the other device if needed
+  }
+
+  // âââââââââââââââââââââââââââââââââââââââââââââââ
+  // QUICK ACTIONS
+  // âââââââââââââââââââââââââââââââââââââââââââââââ
+  function quickAction(action) {
+    switch(action) {
+      case 'check_calls':
+        showSection('calls');
+        document.querySelectorAll('.nav-btn')[1].classList.add('active');
+        loadCalls();
+        break;
+      case 'brotherhood':
+        window.open('https://makoa.live/portal');
+        break;
+      case 'emergency':
+        addMessage('ð¨ CLUSTER 911 ACTIVATED â Alerting all Alii in 96792', 'xi');
+        showSection('comms');
+        break;
+      case 'cross_comm':
+        showSection('comms');
+        const target = currentDevice === 'xi.fire' ? 'xi.water' : 'xi.fire';
+        document.getElementById('messageInput').placeholder = `Message ${target} via XI...`;
+        break;
+      case 'pono_home':
+        addMessage('Loading Pono Home pipeline... XI.Scorer running on latest leads.', 'xi');
+        break;
+      case 'tp_pro':
+        addMessage('TP Pro Westside â 13 days to launch. Ambassador targets loaded.', 'xi');
+        break;
+    }
+  }
+
+  async function loadCalls() {
+    // TODO: Fetch from Supabase
+    const list = document.getElementById('callsList');
+    list.innerHTML = `
+      <div class="card">
+        <div class="card-body" style="text-align:center;opacity:0.5;">
+          XI is monitoring. Calls will appear here with classification and summary.
+        </div>
+      </div>
+    `;
+  }
+
+  // âââââââââââââââââââââââââââââââââââââââââââââââ
+  // BOOT SEQUENCE
+  // âââââââââââââââââââââââââââââââââââââââââââââââ
+  window.addEventListener('load', () => {
+    const device = detectDevice();
+
+    if (device) {
+      initDevice(device);
+    } else {
+      // First run â ask which device
+      document.getElementById('bootDevice').innerHTML =
+        '<button onclick="selectDevice(\'xi.fire\')" style="margin:8px;padding:12px 24px;background:#8b2500;color:white;border:none;border-radius:12px;font-weight:700;font-size:14px;">XI.FIRE (Steward)</button>' +
+        '<button onclick="selectDevice(\'xi.water\')" style="margin:8px;padding:12px 24px;background:#1a3a5c;color:white;border:none;border-radius:12px;font-weight:700;font-size:14px;">XI.WATER (Ambassador)</button>';
+      return;
+    }
+
+    // Boot animation
+    setTimeout(() => {
+      document.getElementById('bootScreen').classList.add('fade-out');
+      document.getElementById('app').style.display = 'block';
+    }, 2500);
+  });
+
+  function selectDevice(name) {
+    initDevice(name);
+    setTimeout(() => {
+      document.getElementById('bootScreen').classList.add('fade-out');
+      document.getElementById('app').style.display = 'block';
+    }, 1500);
+  }
+
+  // Enter key sends message
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && document.getElementById('commsInput').classList.contains('active')) {
+      sendMessage();
+    }
+  });
+
+  // âââââââââââââââââââââââââââââââââââââââââââââââ
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/xi/sw.js')
+        .then((reg) => {
+          console.log('[XI] Service worker registered. Scope:', reg.scope);
+        })
+        .catch((err) => {
+          console.log('[XI] Service worker registration failed:', err);
+        });
+    });
+  }
+</script>
+</body>
+</html>
