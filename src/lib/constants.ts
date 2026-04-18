@@ -143,12 +143,11 @@ export const SOCIAL_ACCOUNTS: Record<string, {
       isMadeForKids: false,
     },
   },
-  // Not yet connected — Steward to OAuth at my.blotato.com
   twitter: {
     platform: "twitter",
-    accountId: "",
-    username: "",
-    connected: false,
+    accountId: "16548",
+    username: "@ChiefsWaka82172",
+    connected: true,
     label: "Twitter / X",
     color: "#1DA1F2",
     defaults: {},

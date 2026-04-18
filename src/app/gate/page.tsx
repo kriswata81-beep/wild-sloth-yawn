@@ -298,6 +298,7 @@ export default function GatePageRoute() {
         <img
           src="/assets/hero-waianae-moon.png"
           alt="Hawaiian moonrise over the mountains"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
           style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" }}
         />
         <div style={{
@@ -496,14 +497,14 @@ export default function GatePageRoute() {
             May 1st · Kapolei · A Hotel
           </p>
           <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.5rem", marginBottom: 16 }}>
-            8–20 brothers. May 1–4. Friday dusk to Monday morning.
+            4 weekends · 4AM Wednesday calls · Team leaders worldwide · May 1–31.
           </p>
 
           <div style={{ borderLeft: `2px solid ${GOLD_20}`, paddingLeft: 14, marginBottom: 20 }}>
             {[
-              "War Room. Mastermind. 4am ice bath.",
-              "Founding fire. Brothers sworn in.",
-              "The only event where brothers are elevated.",
+              "Bring your team. Choose your weekend. 72hrs.",
+              "War Room mastermind. Elite reset training.",
+              "Co-Founders Founding — May 31, Blue Moon.",
             ].map(line => (
               <p key={line} style={{
                 fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",

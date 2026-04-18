@@ -496,7 +496,7 @@ export default function Home() {
               { icon: "⚒", label: "A real trade", detail: "Labor, knowledge, territory. The route moves men — not products." },
               { icon: "🏠", label: "A real house", detail: "Mākoa House — West Oahu. Physical. Permanent. Yours." },
               { icon: "◈", label: "A real rank", detail: "Nā Koa → Mana → Aliʻi. Earned through the work, not bought." },
-              { icon: "🔥", label: "A real founding", detail: "West Oahu. May 1–4. Co-Founders Weekend — first weekend of every month." },
+              { icon: "🔥", label: "A real founding", detail: "West Oahu. The entire month of May. 4 weekends. Team leaders worldwide. Co-Founders Founding — May 31, Blue Moon." },
             ].map(item => (
               <div key={item.label} style={{
                 display: "flex", alignItems: "flex-start", gap: 16,

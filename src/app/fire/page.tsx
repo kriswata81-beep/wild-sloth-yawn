@@ -140,21 +140,22 @@ export default function FirePage() {
         </div>
 
         <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.3em", marginBottom: 12 }}>
-          MĀKOA ORDER · WEST OAHUʻ · MAY 1–4
+          MĀKOA ORDER · WEST OAHU · THE ENTIRE MONTH OF MAY
         </p>
         <h1 style={{
           fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
           fontSize: "2.4rem", color: GOLD, margin: "0 0 10px", fontWeight: 300, lineHeight: 1.15,
         }}>
-          What the Founding Fire<br />Actually Is
+          The MAYDAY Call<br />Is Global
         </h1>
         <p style={{ color: "rgba(176,142,80,0.55)", fontSize: "0.38rem", letterSpacing: "0.18em", marginBottom: 18, marginTop: 2 }}>
-          $97 · $197 · $4,997 &nbsp;·&nbsp; 48 SEATS TOTAL &nbsp;·&nbsp; GATE CLOSES APR 25
+          4 WEEKENDS · 4 WEDNESDAY 4AM CALLS · 2 FOUNDING DINNERS · MAY 1–31
         </p>
         <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.46rem", lineHeight: 1.8, maxWidth: 460, margin: "0 auto 24px" }}>
-          Not a retreat. Not a seminar. Not a men's group.<br />
-          A 48-hour founding event where an order of men is born.<br />
-          Here is exactly what happens — without giving away the mystery.
+          Not a retreat. Not a seminar.<br />
+          A month-long summit for team leaders and brotherhood networks worldwide.<br />
+          Bring your Aliʻi, your Mana, your Nā Koa. Choose your weekend.<br />
+          The Co-Founders Founding closes the month — May 31, under the Blue Moon.
         </p>
 
         {/* Urgency */}
@@ -165,7 +166,7 @@ export default function FirePage() {
         }}>
           <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#e05c5c", animation: "coronaPulse 1.2s ease-in-out infinite" }} />
           <p style={{ color: "#e05c5c", fontSize: "0.36rem", letterSpacing: "0.16em" }}>
-            GATE CLOSES APRIL 25 · 20 SEATS REMAINING
+            CO-FOUNDERS FOUNDING · MAY 31 · SEATS ALMOST GONE
           </p>
         </div>
       </div>

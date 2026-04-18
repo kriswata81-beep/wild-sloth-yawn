@@ -49,6 +49,8 @@ async function fetchLiveSeats(): Promise<SeatCounts> {
 
 const EARLY_BIRD_CUTOFF = new Date("2026-04-15T23:59:59-10:00");
 const MAY_1 = new Date("2026-05-01T17:00:00-10:00");
+// Co-Founders Founding Weekend — second full moon, May 31 (Blue Moon)
+const CO_FOUNDERS_FOUNDING = new Date("2026-05-29T17:00:00-10:00");
 // Hotel block cutoffs — teams need more lead time than solos
 const TEAM_HOTEL_CUTOFF = new Date("2026-04-22T23:59:59-10:00");
 const SOLO_HOTEL_CUTOFF = new Date("2026-04-25T23:59:59-10:00");
@@ -340,7 +342,7 @@ function Founding48Content() {
           color: "rgba(176,142,80,0.5)", fontSize: "0.4rem", letterSpacing: "0.28em",
           marginBottom: 10, animation: "fadeUp 0.9s ease 0.1s both",
         }}>
-          🌕 FOUNDING BROTHERS MONTH
+          🌕🌕 TWO FULL MOONS · THE ENTIRE MONTH OF MAY
         </p>
         <h1 style={{
           fontFamily: "'Cormorant Garamond', serif",
@@ -351,7 +353,7 @@ function Founding48Content() {
           margin: "0 0 12px",
           animation: "fadeUp 0.9s ease 0.2s both",
         }}>
-          Co-Founders<br />Weekend
+          MAYDAY<br />Month of May
         </h1>
         <p style={{
           fontFamily: "'Cormorant Garamond', serif",
@@ -361,32 +363,56 @@ function Founding48Content() {
           marginBottom: 8,
           animation: "fadeUp 0.9s ease 0.35s both",
         }}>
-          May 1–4 · Kapolei · West Oahu
+          West Oahu · Hawaii · May 1–31, 2026
         </p>
         <p style={{
           color: "rgba(232,224,208,0.55)",
           fontSize: "0.78rem",
           lineHeight: 1.7,
-          marginBottom: 32,
+          marginBottom: 20,
           animation: "fadeUp 0.9s ease 0.5s both",
         }}>
-          The first weekend of every month, founding brothers are sworn in.<br />
-          This is where the order is built — one weekend at a time.
+          A month-long summit for team leaders and brotherhood networks worldwide.<br />
+          4 weekends · 4 Wednesday 4AM calls · 2 co-founder dinners · 1 founding.<br />
+          Bring your team. Choose your weekend. Stay for the founding.
         </p>
-        <div style={{ maxWidth: 400, margin: "0 auto", animation: "fadeUp 0.9s ease 0.6s both" }}>
-          <div style={{ marginBottom: 20 }}>
-            <CountdownBlock target={MAY_1} label="FOUNDING FIRE IN" color={GOLD} />
-          </div>
-          {isEarlyBird && (
-            <div style={{
-              background: "rgba(248,81,73,0.06)",
-              border: "1px solid rgba(248,81,73,0.2)",
-              borderRadius: 8,
-              padding: "14px 16px",
+
+        {/* Month at a glance */}
+        <div style={{ maxWidth: 420, margin: "0 auto 24px", animation: "fadeUp 0.9s ease 0.55s both" }}>
+          {[
+            { date: "May 1", label: "🌕 Full Moon 1 — MAYDAY Opening", color: GOLD },
+            { date: "May 7", label: "Wed 4AM — Global Leader Call #1", color: BLUE },
+            { date: "May 8–10", label: "Weekend 1 — War Room + Meet & Greet", color: GOLD_DIM },
+            { date: "May 14", label: "Wed 4AM — Global Leader Call #2", color: BLUE },
+            { date: "May 15–17", label: "Weekend 2 — Elite Reset Training", color: GOLD_DIM },
+            { date: "May 21", label: "Wed 4AM — Global Leader Call #3", color: BLUE },
+            { date: "May 22–24", label: "Weekend 3 — Mastermind Small Groups", color: GOLD_DIM },
+            { date: "May 28", label: "Wed 4AM — Global Leader Call #4", color: BLUE },
+            { date: "May 29–31", label: "🌕 Full Moon 2 — CO-FOUNDERS FOUNDING", color: GOLD },
+          ].map((row) => (
+            <div key={row.date} style={{
+              display: "flex", gap: 10, alignItems: "center",
+              padding: "6px 12px",
+              borderBottom: "1px solid rgba(176,142,80,0.06)",
             }}>
-              <CountdownBlock target={EARLY_BIRD_CUTOFF} label="⚡ EARLY BIRD CLOSES IN" color={RED} />
+              <span style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.38rem", minWidth: 70, textAlign: "right" }}>{row.date}</span>
+              <span style={{ color: row.color, fontSize: "0.4rem" }}>{row.label}</span>
             </div>
-          )}
+          ))}
+        </div>
+
+        <div style={{ maxWidth: 400, margin: "0 auto", animation: "fadeUp 0.9s ease 0.6s both", display: "grid", gap: 12 }}>
+          <div>
+            <CountdownBlock target={MAY_1} label="🌕 MAYDAY OPENING IN" color={GOLD} />
+          </div>
+          <div style={{
+            background: "rgba(176,142,80,0.04)",
+            border: "1px solid rgba(176,142,80,0.15)",
+            borderRadius: 8,
+            padding: "14px 16px",
+          }}>
+            <CountdownBlock target={CO_FOUNDERS_FOUNDING} label="🌕 CO-FOUNDERS FOUNDING (MAY 31) IN" color={GOLD} />
+          </div>
         </div>
         <p style={{
           color: "rgba(232,224,208,0.3)",
@@ -395,7 +421,7 @@ function Founding48Content() {
           marginTop: 20,
           animation: "fadeUp 0.9s ease 0.7s both",
         }}>
-          Limited seats. Once they're gone, this moment is gone.
+          Team leaders from around the world. Bring your crew. This happens once.
         </p>
       </div>
 
@@ -1326,6 +1352,56 @@ function Founding48Content() {
         <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginBottom: 32 }}>
           limited seats · once they're gone, this moment is gone
         </p>
+
+        {/* ── MAKOA HOUSE — CHARTER UNLOCK ─────────────────────────────────── */}
+        <div style={{
+          background: "rgba(167,139,250,0.05)",
+          border: "1px solid rgba(167,139,250,0.18)",
+          borderRadius: 10,
+          padding: "22px 20px",
+          marginBottom: 20,
+        }}>
+          <p style={{ color: "#a78bfa", fontSize: "0.44rem", letterSpacing: "0.22em", marginBottom: 10 }}>
+            ◉ MAYDAY UNLOCKS — MAKOA HOUSE CHARTER
+          </p>
+          <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.46rem", lineHeight: 1.75, marginBottom: 14 }}>
+            Every founding brother who completes MAYDAY gets first access to open a Makoa House in their territory.
+            One house per zip cluster. One stone per charter. May 31 — Blue Moon — is the global founding date.
+          </p>
+          <div style={{ display: "grid", gap: 8, marginBottom: 14 }}>
+            {[
+              { icon: "◆", label: "Mana live-in path", desc: "90 days → Aliʻi elevation" },
+              { icon: "◉", label: "Master Room timeshare", desc: "Aliʻi access at every house worldwide" },
+              { icon: "◈", label: "Trade route equity", desc: "80/10/10 — brother runs the route" },
+              { icon: "▲", label: "Nakoa Trade Academy", desc: "9AM–2PM · Tool library · P2P dispatch" },
+            ].map((item, i) => (
+              <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                <span style={{ color: "#a78bfa", fontSize: "0.5rem", flexShrink: 0 }}>{item.icon}</span>
+                <div>
+                  <span style={{ color: "#e8e0d0", fontSize: "0.44rem" }}>{item.label}</span>
+                  <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.4rem", marginLeft: 8 }}>{item.desc}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <a
+            href="/houses"
+            style={{
+              display: "block",
+              textAlign: "center",
+              background: "rgba(167,139,250,0.08)",
+              border: "1px solid rgba(167,139,250,0.25)",
+              color: "#a78bfa",
+              fontSize: "0.44rem",
+              letterSpacing: "0.18em",
+              padding: "10px",
+              textDecoration: "none",
+              borderRadius: 5,
+            }}
+          >
+            VIEW THE HOUSE CHARTER SYSTEM →
+          </a>
+        </div>
 
         {/* ── SPONSOR STRIP ────────────────────────────────────────────────── */}
         <div style={{

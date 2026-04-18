@@ -100,6 +100,7 @@ export default function GatePage({ visitorName, onPledge }: GatePageProps) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/assets/hero-waianae-moon.png"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
           alt="Waiʻanae Mountains under the Flower Moon"
           style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" }}
         />

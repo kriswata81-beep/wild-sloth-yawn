@@ -306,6 +306,7 @@ export default function PosterPage() {
         <img
           src="/mayday-poster-20seats.png"
           alt="MAYDAY 2026 — Only 20 Seats Remaining"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
           style={{ width: "100%", borderRadius: 12, border: "1px solid rgba(176,142,80,0.2)", display: "block" }}
         />
       </div>

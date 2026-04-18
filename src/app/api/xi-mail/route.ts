@@ -423,6 +423,146 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
       </div>
     `,
   }),
+
+  // Gary Vee / VIP speaker invite — MAYDAY Co-Founders Weekend
+  speaker_invite_vip: (data) => ({
+    subject: "An invite — not a pitch.",
+    html: `
+      <div style="background:#04060a;color:#e8e0d0;padding:48px 32px;font-family:'Georgia',serif;max-width:560px;margin:0 auto;">
+        <p style="color:#b08e50;font-size:11px;letter-spacing:4px;margin-bottom:32px;">MĀKOA ORDER · PRIVATE CORRESPONDENCE</p>
+
+        <p style="color:#e8e0d0;font-size:17px;line-height:1.9;margin-bottom:20px;">
+          ${data.first_name || "Gary"} —
+        </p>
+
+        <p style="color:rgba(232,224,208,0.7);font-size:15px;line-height:1.9;margin-bottom:20px;">
+          I'm not sending this to a team. I'm not pitching a sponsorship.
+          I'm writing directly because what we're building in Hawaii is the thing
+          you've been describing for years — and I think you should see it in person.
+        </p>
+
+        <p style="color:rgba(232,224,208,0.7);font-size:15px;line-height:1.9;margin-bottom:20px;">
+          Mākoa is a brotherhood. Not a brand. Not a podcast. A physical order of men
+          organized around territory, trade routes, and a law of the house.
+          80% of every job goes to the brother who did the work.
+          10% to the house. 10% to the order.
+          No middleman. No corporate. Men on routes.
+        </p>
+
+        <p style="color:rgba(232,224,208,0.7);font-size:15px;line-height:1.9;margin-bottom:20px;">
+          This May — the entire month — we're running MAYDAY:
+          4 weekends, 4 Wednesday 4AM global calls, 2 co-founder dinners,
+          and the Co-Founders Founding on May 31 — the Blue Moon.
+          Team leaders from around the world. War room mastermind.
+          72-hour elite reset. West Oahu.
+        </p>
+
+        <p style="color:rgba(232,224,208,0.7);font-size:15px;line-height:1.9;margin-bottom:20px;">
+          I'm inviting you as a Co-Founding witness — not a keynote speaker,
+          not a paid appearance. A seat at the table with the men who are building
+          this thing from the ground up in Hawaii.
+          No camera crew required. No agenda handed to you.
+          Just a room full of men making a decision about the next 100 years.
+        </p>
+
+        <div style="border-left:2px solid #b08e50;padding-left:20px;margin:28px 0;">
+          <p style="color:#b08e50;font-size:13px;line-height:1.8;margin:0;">
+            May 29–31 · West Oahu, Hawaiʻi<br/>
+            Co-Founders Founding · Blue Moon · May 31<br/>
+            Full weekend covered · 2-person travel + accommodation<br/>
+            No public announcement without your approval
+          </p>
+        </div>
+
+        <p style="color:rgba(232,224,208,0.7);font-size:15px;line-height:1.9;margin-bottom:20px;">
+          If this is something you want to witness, reply here.
+          If it's not — no follow-up, no pitch deck, no newsletter.
+          I respect your time more than that.
+        </p>
+
+        <p style="color:rgba(232,224,208,0.7);font-size:15px;line-height:1.9;margin-bottom:32px;">
+          One brotherhood. One founding. One Blue Moon.
+        </p>
+
+        <p style="color:#e8e0d0;font-size:15px;margin-bottom:4px;">${data.sender_name || "Kris"}</p>
+        <p style="color:rgba(232,224,208,0.35);font-size:12px;margin-bottom:4px;">Mana Steward 0001 · Mākoa Order · West Oahu</p>
+        <p style="color:rgba(232,224,208,0.25);font-size:12px;">${data.sender_email || "steward@makoa.live"} · makoa.live/founding48</p>
+
+        <p style="color:rgba(176,142,80,0.15);font-size:10px;text-align:center;margin-top:48px;letter-spacing:2px;">
+          XI · MĀKOA ORDER · EST. 2026 · PRIVATE
+        </p>
+      </div>
+    `,
+  }),
+
+  // Makoa House application confirmation — sent to anyone who applies to open a house
+  house_application_confirm: (data) => ({
+    subject: "Your house application is in.",
+    html: `
+      <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="width:48px;height:48px;border-radius:50%;border:1.5px solid #b08e50;margin:0 auto 16px;"></div>
+          <p style="color:#b08e50;font-size:11px;letter-spacing:4px;">MĀKOA ORDER · HOUSE CHARTERS</p>
+        </div>
+        <p style="color:#e8e0d0;font-size:17px;font-style:italic;text-align:center;margin-bottom:24px;">
+          ${data.name || "Brother"} — your application is in.
+        </p>
+        <p style="color:rgba(232,224,208,0.6);font-size:14px;line-height:1.8;margin-bottom:16px;">
+          We received your application to open a Makoa House in ${data.location || "your territory"}.
+          XI will review and respond within 5 days.
+        </p>
+        <p style="color:rgba(232,224,208,0.5);font-size:13px;line-height:1.8;margin-bottom:16px;">
+          What happens next:<br/>
+          — XI reviews your zip cluster for open territory<br/>
+          — A Mana Steward will reach out to verify your standing<br/>
+          — If approved, you'll receive your 90-day live-in start date<br/>
+          — Day 90: elevation vote. Aliʻi class. Stone sealed.
+        </p>
+        <p style="color:rgba(232,224,208,0.4);font-size:13px;line-height:1.8;margin-bottom:24px;">
+          MAYDAY is the founding moment. If your application is approved before May 31,
+          your charter date will be sealed on the Blue Moon — alongside every other
+          founding house worldwide.
+        </p>
+        <div style="text-align:center;margin-top:32px;">
+          <a href="https://makoa.live/houses" style="display:inline-block;padding:12px 28px;border:1px solid rgba(176,142,80,0.4);color:#b08e50;text-decoration:none;font-size:11px;letter-spacing:3px;">VIEW THE CHARTER SYSTEM</a>
+        </div>
+        <p style="color:rgba(176,142,80,0.15);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
+          XI · MĀKOA ORDER · EST. 2026
+        </p>
+      </div>
+    `,
+  }),
+
+  // 90-day live-in milestone — sent at Day 30, 60, and 90
+  live_in_milestone: (data) => ({
+    subject: `Day ${data.day || "30"} — the house holds.`,
+    html: `
+      <div style="background:#04060a;color:#e8e0d0;padding:40px 24px;font-family:'Georgia',serif;max-width:480px;margin:0 auto;">
+        <p style="color:#b08e50;font-size:11px;letter-spacing:4px;text-align:center;margin-bottom:32px;">MĀKOA ORDER · LIVE-IN TRACKING</p>
+        <p style="color:#e8e0d0;font-size:28px;font-style:italic;text-align:center;margin-bottom:8px;">Day ${data.day || "30"}.</p>
+        <p style="color:rgba(232,224,208,0.4);font-size:12px;text-align:center;letter-spacing:2px;margin-bottom:32px;">
+          ${data.days_remaining || "60"} DAYS TO ELEVATION
+        </p>
+        <p style="color:rgba(232,224,208,0.6);font-size:14px;line-height:1.8;margin-bottom:16px;">
+          ${data.name || "Brother"} — you're holding the house. That's not nothing.
+          Most men talk about brotherhood. You're living it.
+        </p>
+        <p style="color:rgba(232,224,208,0.5);font-size:13px;line-height:1.8;margin-bottom:24px;">
+          What XI sees so far:<br/>
+          — Trade Academy sessions hosted: ${data.academy_sessions || "0"}<br/>
+          — Wednesday 4AM calls attended: ${data.wed_sessions || "0"}<br/>
+          — Jobs dispatched from the house: ${data.jobs || "0"}<br/>
+          — War Room sessions: ${data.war_room || "0"}
+        </p>
+        <p style="color:rgba(176,142,80,0.5);font-size:13px;font-style:italic;text-align:center;margin-bottom:24px;">
+          "The stone is being carved. Finish what you started."
+        </p>
+        <p style="color:rgba(176,142,80,0.15);font-size:10px;text-align:center;margin-top:32px;letter-spacing:2px;">
+          XI · MĀKOA ORDER · EST. 2026
+        </p>
+      </div>
+    `,
+  }),
 };
 
 export async function POST(req: NextRequest) {

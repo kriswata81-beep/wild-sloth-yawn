@@ -1,0 +1,50 @@
+{
+  "name": "7G Net — Mākoa Brotherhood",
+  "short_name": "7G Net",
+  "description": "Claim your territory. Build your brotherhood.",
+  "start_url": "/app",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#04060a",
+  "theme_color": "#b08e50",
+  "categories": ["business", "lifestyle", "social"],
+  "icons": [
+    {
+      "src": "/makoa_icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/makoa_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Check In",
+      "short_name": "Check In",
+      "description": "Daily brotherhood check-in",
+      "url": "/app?tab=checkin",
+      "icons": [{ "src": "/makoa_icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "411 Feed",
+      "short_name": "411",
+      "description": "Hyper-local good news",
+      "url": "/app?tab=411",
+      "icons": [{ "src": "/makoa_icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Claim Business",
+      "short_name": "Claim",
+      "description": "Claim your business listing",
+      "url": "/app?tab=claim",
+      "icons": [{ "src": "/makoa_icon.png", "sizes": "192x192" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

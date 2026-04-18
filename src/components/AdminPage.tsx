@@ -14,6 +14,9 @@ import FamilyOfficeTab from "./admin/FamilyOfficeTab";
 import AliiSelectionTab from "./admin/AliiSelectionTab";
 import KnowledgeGraphTab from "./admin/KnowledgeGraphTab";
 import WarRoomTab from "./admin/WarRoomTab";
+import StrategyTab from "./admin/StrategyTab";
+import ReferralsTab from "./admin/ReferralsTab";
+import Net808Tab from "./admin/Net808Tab";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -95,6 +98,9 @@ const ALL_TABS = [
   "Ali'i Select",
   "XI Graph",
   "War Room",
+  "Strategy",
+  "Referrals",
+  "808 Net",
 ] as const;
 type Tab = typeof ALL_TABS[number];
 
@@ -261,7 +267,7 @@ export default function AdminPage({ onExit }: AdminPageProps) {
       }}>
         {ALL_TABS.map(t => {
           const isActive = tab === t;
-          const isNew = ["Command", "808 Channels", "Social", "Mentors", "Circle", "Routes", "XI Mail", "Family Office", "Ali'i Select", "XI Graph", "War Room"].includes(t);
+          const isNew = ["Command", "808 Channels", "Social", "Mentors", "Circle", "Routes", "XI Mail", "Family Office", "Ali'i Select", "XI Graph", "War Room", "Strategy", "Referrals"].includes(t);
           return (
             <button
               key={t}
@@ -301,7 +307,7 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
       {/* Content */}
       <div style={{ padding: "20px 16px", maxWidth: "960px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-        {loading && tab !== "Command" && tab !== "808 Channels" && tab !== "Social" && tab !== "Campaign" && tab !== "Mentors" && tab !== "Circle" && tab !== "Routes" && tab !== "XI Mail" && tab !== "Family Office" && tab !== "Ali'i Select" && tab !== "XI Graph" && tab !== "War Room" ? (
+        {loading && tab !== "Command" && tab !== "808 Channels" && tab !== "Social" && tab !== "Campaign" && tab !== "Mentors" && tab !== "Circle" && tab !== "Routes" && tab !== "XI Mail" && tab !== "Family Office" && tab !== "Ali'i Select" && tab !== "XI Graph" && tab !== "War Room" && tab !== "Strategy" && tab !== "Referrals" && tab !== "808 Net" ? (
           <p style={{ color: GOLD_DIM, fontSize: "0.52rem", textAlign: "center", padding: "40px" }}>
             Loading...
           </p>
@@ -573,6 +579,15 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
             {/* WAR ROOM PROTOCOL */}
             {tab === "War Room" && <WarRoomTab />}
+
+            {/* STRATEGY — 25 CUSTOMIZED CONTENT STRATEGIES */}
+            {tab === "Strategy" && <StrategyTab />}
+
+            {/* REFERRALS — VIRAL GROWTH TRACKER */}
+            {tab === "Referrals" && <ReferralsTab />}
+
+            {/* 808 NET — BUSINESS DIRECTORY CONTROL */}
+            {tab === "808 Net" && <Net808Tab />}
           </>
         )}
       </div>
