@@ -13,8 +13,13 @@ const RED_20 = "rgba(248,81,73,0.2)";
 const BLUE = "#58a6ff";
 const BLUE_20 = "rgba(88,166,255,0.2)";
 
-type Tab = "home" | "411" | "911" | "claim" | "checkin";
+type Tab = "home" | "411" | "911" | "claim" | "warchest";
 type AppState = "setup" | "aha" | "live";
+
+type Territory = {
+  code: string; name: string; timezone: string;
+  status: string; zip_codes: string[] | null;
+};
 
 type NewsItem = { id?: string; headline: string; body?: string; source_name?: string; category?: string; published_at?: string; time?: string };
 type Business = { name: string; category: string; claimed: boolean };
@@ -64,20 +69,33 @@ export default function AppPage() {
   const [liveNews, setLiveNews] = useState<NewsItem[]>([]);
   const [handle, setHandle] = useState("anonymous");
   const inputRef = useRef<HTMLInputElement>(null);
+  // Multi-cluster
+  const [territories, setTerritories] = useState<Territory[]>([]);
+  const [terrLoading, setTerrLoading] = useState(true);
+  const [setupHandle, setSetupHandle] = useState("");
+  const [showCustomZip, setShowCustomZip] = useState(false);
+  // Warchest
+  const [warchestTotal, setWarchestTotal] = useState(0);
+  const [pledgeAmount, setPledgeAmount] = useState<number | "">("");
+  const [pledgePurpose, setPledgePurpose] = useState("General");
+  const [pledgeSent, setPledgeSent] = useState(false);
+  const [pledging, setPledging] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 150);
     // Check if already set up from localStorage
     const saved = localStorage.getItem("7gnet_zip");
     const savedHandle = localStorage.getItem("7gnet_handle");
-    if (savedHandle) setHandle(savedHandle);
-    if (saved) { setZip(saved); setAppState("live"); fetchNews(saved); }
+    if (savedHandle) { setHandle(savedHandle); setSetupHandle(savedHandle); }
+    if (saved) { setZip(saved); setAppState("live"); fetchNews(saved); fetchWarchest(saved); }
     // Check today's check-in
     const todayKey = new Date().toDateString();
     const lastCheckin = localStorage.getItem("7gnet_checkin");
     if (lastCheckin === todayKey) setCheckedIn(true);
     const savedStreak = parseInt(localStorage.getItem("7gnet_streak") || "0");
     setStreak(savedStreak);
+    // Fetch territories
+    fetchTerritories();
     // Check URL tab param
     const params = new URLSearchParams(window.location.search);
     const t2 = params.get("tab") as Tab | null;
@@ -91,6 +109,54 @@ export default function AppPage() {
       const json = await res.json();
       if (json.news?.length) setLiveNews(json.news);
     } catch { /* use mock fallback */ }
+  }
+
+  async function fetchTerritories() {
+    try {
+      const res = await fetch(
+        "https://flzivjhxtbolcfaniskv.supabase.co/rest/v1/xi_territories?select=code,name,timezone,status,zip_codes&order=status.asc",
+        { headers: { apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZseml2amh4dGJvbGNmYW5pc2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NDcwNDMsImV4cCI6MjA5MTAyMzA0M30.sLLEl0hmMCbo-Ud18HdleJKrjTZ-mIiLdkwY7cfwGps" } }
+      );
+      const data = await res.json();
+      if (Array.isArray(data)) setTerritories(data);
+    } catch {}
+    finally { setTerrLoading(false); }
+  }
+
+  async function fetchWarchest(z: string) {
+    try {
+      const res = await fetch(`/api/cluster/warchest?zip=${z}`);
+      const json = await res.json();
+      if (json.total != null) setWarchestTotal(json.total);
+    } catch {}
+  }
+
+  async function handlePledge(e: React.FormEvent) {
+    e.preventDefault();
+    if (!pledgeAmount || Number(pledgeAmount) <= 0) return;
+    setPledging(true);
+    try {
+      await fetch("/api/cluster/warchest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ zip, handle, amount: pledgeAmount, purpose: pledgePurpose }),
+      });
+      setWarchestTotal(prev => prev + Number(pledgeAmount));
+      setPledgeSent(true);
+      if ("vibrate" in navigator) navigator.vibrate([80, 40, 160]);
+    } catch {}
+    finally { setPledging(false); }
+  }
+
+  function enterTerritory(terr: Territory) {
+    const z = terr.zip_codes?.[0] || terr.code;
+    const h = setupHandle.trim() || "anonymous";
+    localStorage.setItem("7gnet_zip", z);
+    localStorage.setItem("7gnet_handle", h);
+    localStorage.setItem("7gnet_territory", terr.code);
+    setZip(z); setHandle(h);
+    fetchNews(z); fetchWarchest(z);
+    triggerAhaMoment();
   }
 
   const meta = CLUSTER_META[zip];
@@ -127,9 +193,11 @@ export default function AppPage() {
     e.preventDefault();
     const z = zipInput.trim();
     if (!z || z.length < 4) return;
+    const h = setupHandle.trim() || "anonymous";
     localStorage.setItem("7gnet_zip", z);
-    setZip(z);
-    fetchNews(z);
+    localStorage.setItem("7gnet_handle", h);
+    setZip(z); setHandle(h);
+    fetchNews(z); fetchWarchest(z);
     triggerAhaMoment();
   }
 
@@ -203,52 +271,130 @@ export default function AppPage() {
   if (appState === "setup") return (
     <div style={{
       minHeight: "100dvh", background: BG, display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center", padding: "32px 24px",
-      fontFamily: "'JetBrains Mono', monospace",
-      opacity: ready ? 1 : 0, transition: "opacity 0.5s ease",
+      padding: "32px 24px 48px", fontFamily: "'JetBrains Mono', monospace",
+      opacity: ready ? 1 : 0, transition: "opacity 0.5s ease", overflowY: "auto",
     }}>
       <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
-      <img src="/makoa_icon.png" alt="7G Net" style={{ width: 64, height: 64, marginBottom: 24, opacity: 0.9 }} />
-      <p style={{ color: GOLD_40, fontSize: "0.38rem", letterSpacing: "0.25em", marginBottom: 8 }}>
-        7G NET · MĀKOA BROTHERHOOD
-      </p>
-      <h1 style={{
-        fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
-        fontSize: "2rem", color: GOLD, margin: "0 0 8px", fontWeight: 300, textAlign: "center",
-      }}>
-        Claim Your Territory.
-      </h1>
-      <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem", textAlign: "center", marginBottom: 32, lineHeight: 1.7 }}>
-        Enter your zip code to see your cluster,<br />your Steward, and your brothers.
-      </p>
-      <form onSubmit={handleZipSubmit} style={{ width: "100%", maxWidth: 340, display: "grid", gap: 12 }}>
+      <div style={{ textAlign: "center", marginBottom: 28 }}>
+        <img src="/makoa_icon.png" alt="7G Net" style={{ width: 56, height: 56, marginBottom: 16, opacity: 0.9 }} />
+        <p style={{ color: GOLD_40, fontSize: "0.38rem", letterSpacing: "0.25em", margin: "0 0 6px" }}>7G NET · MĀKOA BROTHERHOOD</p>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "1.8rem", color: GOLD, margin: "0 0 6px", fontWeight: 300 }}>
+          Claim Your Territory.
+        </h1>
+        <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.4rem", lineHeight: 1.6, margin: 0 }}>
+          Select your cluster. Enter as a brother.
+        </p>
+      </div>
+
+      {/* Handle entry */}
+      <div style={{ marginBottom: 20, maxWidth: 400, width: "100%", alignSelf: "center" }}>
+        <p style={{ color: GOLD_40, fontSize: "0.36rem", letterSpacing: "0.2em", margin: "0 0 6px" }}>YOUR HANDLE (optional)</p>
         <input
-          ref={inputRef}
-          type="text" inputMode="numeric" pattern="[0-9A-Za-z\s-]{4,10}"
-          value={zipInput}
-          onChange={e => setZipInput(e.target.value)}
-          placeholder="Your zip code"
-          maxLength={10}
+          type="text" value={setupHandle}
+          onChange={e => setSetupHandle(e.target.value)}
+          placeholder="How brothers know you"
+          maxLength={40}
           style={{
-            width: "100%", background: GOLD_10, border: `1px solid ${GOLD_40}`,
-            borderRadius: 6, padding: "14px 16px", color: "#e8e0d0",
-            fontSize: "1.1rem", fontFamily: "'JetBrains Mono', monospace",
-            textAlign: "center", letterSpacing: "0.1em", boxSizing: "border-box",
+            width: "100%", background: GOLD_10, border: `1px solid ${GOLD_20}`,
+            borderRadius: 6, padding: "12px 14px", color: "#e8e0d0",
+            fontSize: "0.9rem", fontFamily: "'JetBrains Mono', monospace", boxSizing: "border-box",
           }}
         />
-        <button type="submit" style={{
-          background: GOLD, border: "none", color: "#000",
-          fontSize: "0.5rem", letterSpacing: "0.2em", padding: "14px",
-          cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
-          fontWeight: 700, borderRadius: 6,
-        }}>
-          ENTER THE CLUSTER →
+      </div>
+
+      {/* Territory list */}
+      <div style={{ maxWidth: 400, width: "100%", alignSelf: "center" }}>
+        <p style={{ color: GOLD_40, fontSize: "0.36rem", letterSpacing: "0.2em", margin: "0 0 10px" }}>SELECT YOUR CLUSTER</p>
+
+        {terrLoading ? (
+          <div style={{ textAlign: "center", padding: 24, color: GOLD_40, fontSize: "0.4rem", letterSpacing: "0.15em" }}>
+            LOADING TERRITORIES...
+          </div>
+        ) : territories.length > 0 ? (
+          <div style={{ display: "grid", gap: 8 }}>
+            {/* Active + forming first */}
+            {[...territories.filter(t => t.status === "active" || t.status === "forming"),
+               ...territories.filter(t => t.status === "open")].map(t => {
+              const isLive = t.status === "active";
+              const isForming = t.status === "forming";
+              const localTime = (() => { try { return new Intl.DateTimeFormat("en-US", { timeZone: t.timezone, hour: "2-digit", minute: "2-digit", hour12: true }).format(new Date()); } catch { return ""; } })();
+              return (
+                <button
+                  key={t.code}
+                  onClick={() => (isLive || isForming) ? enterTerritory(t) : setShowCustomZip(true)}
+                  style={{
+                    background: isLive ? GOLD_10 : isForming ? "rgba(63,185,80,0.06)" : "rgba(176,142,80,0.03)",
+                    border: `1px solid ${isLive ? GOLD_40 : isForming ? "rgba(63,185,80,0.3)" : GOLD_20}`,
+                    borderRadius: 8, padding: "12px 14px", cursor: "pointer",
+                    fontFamily: "'JetBrains Mono', monospace", textAlign: "left",
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    opacity: isLive || isForming ? 1 : 0.5,
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: "0.46rem", color: isLive ? GOLD : isForming ? GREEN : GOLD_40, fontWeight: 700, marginBottom: 2 }}>
+                      {t.name}
+                    </div>
+                    <div style={{ fontSize: "0.34rem", color: GOLD_40 }}>
+                      {isLive ? "◉ LIVE" : isForming ? "◐ FORMING" : "○ OPENING SOON"}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    {localTime && <div style={{ fontSize: "0.44rem", color: isLive ? GOLD : GOLD_40, fontWeight: 700 }}>{localTime}</div>}
+                    {isLive && <div style={{ fontSize: "0.3rem", color: GREEN, marginTop: 2 }}>ENTER →</div>}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          /* Fallback: show static seed if Supabase not yet migrated */
+          <div style={{ display: "grid", gap: 8 }}>
+            {[{ code: "HI-96792", name: "West Oahu · ZIP 96792", timezone: "Pacific/Honolulu", status: "active", zip_codes: ["96792"] }].map(t => (
+              <button key={t.code} onClick={() => enterTerritory(t)} style={{
+                background: GOLD_10, border: `1px solid ${GOLD_40}`, borderRadius: 8,
+                padding: "14px 16px", cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
+                textAlign: "left", display: "flex", alignItems: "center", justifyContent: "space-between",
+              }}>
+                <div>
+                  <div style={{ fontSize: "0.46rem", color: GOLD, fontWeight: 700 }}>{t.name}</div>
+                  <div style={{ fontSize: "0.34rem", color: GOLD_40 }}>◉ LIVE · FOUNDING CLUSTER</div>
+                </div>
+                <div style={{ fontSize: "0.34rem", color: GREEN }}>ENTER →</div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Custom ZIP fallback */}
+        <button
+          onClick={() => setShowCustomZip(v => !v)}
+          style={{ background: "none", border: "none", color: GOLD_40, fontSize: "0.36rem", marginTop: 16, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", width: "100%", textAlign: "center" }}
+        >
+          {showCustomZip ? "▲ hide" : "My zip isn't listed yet →"}
         </button>
-      </form>
-      <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.36rem", marginTop: 24, textAlign: "center", lineHeight: 1.6 }}>
-        No sign-up required to browse.<br />
-        Your zip. Your cluster. Your territory.
-      </p>
+        {showCustomZip && (
+          <form onSubmit={handleZipSubmit} style={{ display: "grid", gap: 8, marginTop: 8 }}>
+            <input
+              ref={inputRef} type="text" inputMode="numeric"
+              value={zipInput} onChange={e => setZipInput(e.target.value)}
+              placeholder="Enter your zip code" maxLength={10}
+              style={{
+                background: GOLD_10, border: `1px solid ${GOLD_20}`, borderRadius: 6,
+                padding: "12px 14px", color: "#e8e0d0", fontSize: "0.9rem",
+                fontFamily: "'JetBrains Mono', monospace", textAlign: "center", boxSizing: "border-box",
+              }}
+            />
+            <button type="submit" style={{
+              background: GOLD, border: "none", color: "#000", fontSize: "0.44rem",
+              letterSpacing: "0.15em", padding: "12px", cursor: "pointer",
+              fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, borderRadius: 6,
+            }}>
+              ENTER THIS ZIP →
+            </button>
+          </form>
+        )}
+      </div>
     </div>
   );
 
@@ -723,6 +869,108 @@ export default function AppPage() {
           </div>
         )}
 
+        {/* WARCHEST TAB */}
+        {tab === "warchest" && (
+          <div style={{ padding: "20px 20px 0", animation: "fadeUp 0.4s ease" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+              <p style={{ color: GOLD, fontSize: "1rem", margin: 0 }}>◈</p>
+              <div>
+                <p style={{ color: GOLD, fontSize: "0.46rem", letterSpacing: "0.15em", margin: 0 }}>CLUSTER WARCHEST</p>
+                <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.36rem", margin: "2px 0 0" }}>Zip {zip} · fund the brotherhood</p>
+              </div>
+            </div>
+
+            {/* Total */}
+            <div style={{ background: GOLD_10, border: `1px solid ${GOLD_40}`, borderRadius: 10, padding: "20px", marginBottom: 16, textAlign: "center" }}>
+              <p style={{ color: GOLD_40, fontSize: "0.36rem", letterSpacing: "0.2em", margin: "0 0 4px" }}>TOTAL PLEDGED</p>
+              <p style={{ color: GOLD, fontSize: "2rem", fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, margin: "0 0 4px" }}>
+                ${warchestTotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+              </p>
+              <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.36rem", margin: 0 }}>
+                80% dispatched to brothers · 10% house · 10% order
+              </p>
+            </div>
+
+            {pledgeSent ? (
+              <div style={{ background: GREEN_20, border: `1px solid rgba(63,185,80,0.3)`, borderRadius: 8, padding: "28px", textAlign: "center", animation: "fadeUp 0.4s ease" }}>
+                <p style={{ color: GREEN, fontSize: "0.52rem", letterSpacing: "0.15em", margin: "0 0 8px" }}>◉ PLEDGE RECORDED</p>
+                <p style={{ color: "#e8e0d0", fontSize: "0.44rem", margin: "0 0 8px" }}>
+                  ${Number(pledgeAmount).toFixed(2)} pledged to the {zip} Warchest.
+                </p>
+                <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.38rem" }}>Your Steward will confirm and route the funds.</p>
+                <button
+                  onClick={() => { setPledgeSent(false); setPledgeAmount(""); }}
+                  style={{ marginTop: 14, background: "none", border: `1px solid ${GOLD_40}`, color: GOLD_40, fontSize: "0.38rem", padding: "7px 14px", borderRadius: 4, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace" }}
+                >
+                  pledge again
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handlePledge} style={{ display: "grid", gap: 12 }}>
+                <div>
+                  <p style={{ color: GOLD_40, fontSize: "0.38rem", letterSpacing: "0.12em", margin: "0 0 8px" }}>PLEDGE AMOUNT</p>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 8 }}>
+                    {[5, 10, 25, 50].map(amt => (
+                      <button key={amt} type="button" onClick={() => setPledgeAmount(amt)} style={{
+                        background: pledgeAmount === amt ? GOLD_20 : GOLD_10,
+                        border: `1px solid ${pledgeAmount === amt ? GOLD_40 : GOLD_20}`,
+                        color: pledgeAmount === amt ? GOLD : GOLD_40,
+                        padding: "10px 6px", borderRadius: 6, cursor: "pointer",
+                        fontFamily: "'JetBrains Mono', monospace", fontSize: "0.44rem", fontWeight: 700,
+                      }}>
+                        ${amt}
+                      </button>
+                    ))}
+                  </div>
+                  <input
+                    type="number" min="1" max="500" step="1"
+                    value={pledgeAmount === "" ? "" : pledgeAmount}
+                    onChange={e => setPledgeAmount(e.target.value ? Number(e.target.value) : "")}
+                    placeholder="Custom amount"
+                    style={{
+                      width: "100%", background: GOLD_10, border: `1px solid ${GOLD_20}`,
+                      borderRadius: 6, padding: "10px 12px", color: "#e8e0d0",
+                      fontSize: "0.9rem", fontFamily: "'JetBrains Mono', monospace", boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+                <div>
+                  <p style={{ color: GOLD_40, fontSize: "0.38rem", letterSpacing: "0.12em", margin: "0 0 6px" }}>PURPOSE</p>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                    {["General", "War Room", "Brother in need", "Trade fund"].map(p => (
+                      <button key={p} type="button" onClick={() => setPledgePurpose(p)} style={{
+                        background: pledgePurpose === p ? GOLD_10 : "transparent",
+                        border: `1px solid ${pledgePurpose === p ? GOLD_40 : GOLD_20}`,
+                        color: pledgePurpose === p ? GOLD : GOLD_40,
+                        padding: "8px 10px", borderRadius: 5, cursor: "pointer",
+                        fontFamily: "'JetBrains Mono', monospace", fontSize: "0.36rem",
+                      }}>
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={!pledgeAmount || pledging}
+                  style={{
+                    background: pledgeAmount ? GOLD : "rgba(176,142,80,0.2)",
+                    border: "none", color: pledgeAmount ? "#000" : GOLD_40,
+                    fontSize: "0.46rem", letterSpacing: "0.18em", padding: "14px",
+                    cursor: pledgeAmount ? "pointer" : "not-allowed",
+                    fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, borderRadius: 6,
+                  }}
+                >
+                  {pledging ? "PLEDGING..." : "PLEDGE TO THE WARCHEST →"}
+                </button>
+                <p style={{ color: GOLD_40, fontSize: "0.34rem", textAlign: "center", margin: 0, lineHeight: 1.6 }}>
+                  Pledge recorded now. Payment collected when your Steward activates disbursement.
+                </p>
+              </form>
+            )}
+          </div>
+        )}
+
       </div>
 
       {/* Bottom Nav */}
@@ -730,12 +978,13 @@ export default function AppPage() {
         position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
         width: "100%", maxWidth: 480,
         background: "#07090e", borderTop: `1px solid ${GOLD_20}`,
-        display: "grid", gridTemplateColumns: "repeat(4, 1fr)", padding: "8px 0 12px",
+        display: "grid", gridTemplateColumns: "repeat(5, 1fr)", padding: "8px 0 12px",
       }}>
         {[
           { key: "home" as Tab, icon: "⬡", label: "HOME" },
           { key: "411" as Tab, icon: "◈", label: "411" },
           { key: "claim" as Tab, icon: "◉", label: "CLAIM" },
+          { key: "warchest" as Tab, icon: "◆", label: "WAR$" },
           { key: "911" as Tab, icon: "▲", label: "911" },
         ].map((n) => (
           <button

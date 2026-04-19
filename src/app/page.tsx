@@ -371,6 +371,7 @@ export default function Home() {
         }}>
           <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", justifyContent: "center", padding: "0 16px" }}>
             {[
+              { href: "/net", label: "7G NET" },
               { href: "/founding48", label: "MAYDAY" },
               { href: "/trade", label: "TRADE CO." },
               { href: "/cofounder", label: "CO-FOUNDER" },

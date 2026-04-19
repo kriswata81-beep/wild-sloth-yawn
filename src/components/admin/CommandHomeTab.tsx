@@ -315,6 +315,9 @@ export default function CommandHomeTab({ activeBrothers, pendingPledges, revenue
   const [clusters, setClusters] = useState<ClusterData[]>(
     () => Object.entries(OAHU_ZIP_COORDS).map(([zip, c]) => ({ zip, ...c, alii: 0, mana: 0, nakoa: 0 }))
   );
+  const [todaySubmissions, setTodaySubmissions] = useState<Array<{
+    id: string; handle: string; zip: string; tier_flag: string; referral_code: string; q1: string; created_at: string;
+  }>>([]);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -329,6 +332,19 @@ export default function CommandHomeTab({ activeBrothers, pendingPledges, revenue
       .select("zip, tier_flag")
       .then(({ data }) => {
         if (data) setClusters(buildClusters(data));
+      });
+  }, []);
+
+  // Today's submissions — Hawaii time (UTC-10)
+  useEffect(() => {
+    const todayHST = new Date(Date.now() - 10 * 3600000).toISOString().slice(0, 10);
+    supabase
+      .from("gate_submissions")
+      .select("id, handle, zip, tier_flag, referral_code, q1, created_at")
+      .gte("created_at", `${todayHST}T00:00:00+00:00`)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        if (data) setTodaySubmissions(data as typeof todaySubmissions);
       });
   }, []);
 
@@ -377,6 +393,78 @@ export default function CommandHomeTab({ activeBrothers, pendingPledges, revenue
 
   return (
     <div style={{ animation: "fadeUp 0.4s ease forwards" }}>
+
+      {/* ── TODAY'S GATE ACTIVITY ── */}
+      <div style={{
+        marginBottom: "20px",
+        background: todaySubmissions.length > 0 ? "rgba(63,185,80,0.05)" : "rgba(176,142,80,0.03)",
+        border: `1px solid ${todaySubmissions.length > 0 ? "rgba(63,185,80,0.3)" : "rgba(176,142,80,0.12)"}`,
+        borderRadius: "12px",
+        padding: "16px",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+          <div style={{
+            width: 8, height: 8, borderRadius: "50%",
+            background: todaySubmissions.length > 0 ? GREEN : "rgba(176,142,80,0.3)",
+            boxShadow: todaySubmissions.length > 0 ? "0 0 8px rgba(63,185,80,0.6)" : "none",
+            animation: todaySubmissions.length > 0 ? "dotPulse 2s ease-in-out infinite" : "none",
+            flexShrink: 0,
+          }} />
+          <p style={{ color: todaySubmissions.length > 0 ? GREEN : GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.2em" }}>
+            TODAY'S GATE — {todaySubmissions.length} SUBMISSION{todaySubmissions.length !== 1 ? "S" : ""}
+          </p>
+        </div>
+
+        {todaySubmissions.length === 0 ? (
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.44rem", lineHeight: 1.6 }}>
+            No submissions yet today. Drop the QR or share a referral link to drive traffic.
+          </p>
+        ) : (
+          <div style={{ display: "grid", gap: 8 }}>
+            {todaySubmissions.map((s) => {
+              const tierColor = s.tier_flag === "alii" ? GOLD : s.tier_flag === "mana" ? BLUE : GREEN;
+              const tierLabel = s.tier_flag === "alii" ? "Aliʻi" : s.tier_flag === "mana" ? "Mana" : "Nā Koa";
+              const timeHST = new Date(s.created_at).toLocaleTimeString("en-US", {
+                hour: "2-digit", minute: "2-digit", hour12: true,
+                timeZone: "Pacific/Honolulu",
+              });
+              return (
+                <div key={s.id} style={{
+                  background: "rgba(0,0,0,0.3)", border: `1px solid ${tierColor}25`,
+                  borderRadius: 8, padding: "12px 14px",
+                  display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10,
+                }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                      <span style={{ color: tierColor, fontSize: "0.38rem", letterSpacing: "0.12em" }}>
+                        {tierLabel}
+                      </span>
+                      <span style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.34rem" }}>·</span>
+                      <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.36rem" }}>
+                        ZIP {s.zip || "—"}
+                      </span>
+                    </div>
+                    <p style={{ color: "#e8e0d0", fontSize: "0.48rem", marginBottom: 2 }}>
+                      {s.handle || <span style={{ color: "rgba(232,224,208,0.3)" }}>Anonymous</span>}
+                    </p>
+                    <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.38rem", lineHeight: 1.4 }}>
+                      Brings: {s.q1 || "—"}
+                    </p>
+                    {s.referral_code && (
+                      <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.36rem", marginTop: 3 }}>
+                        Ref: {s.referral_code}
+                      </p>
+                    )}
+                  </div>
+                  <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.36rem", flexShrink: 0 }}>
+                    {timeHST} HST
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* ── SOCIAL DROP ASSET ── */}
       <div style={{

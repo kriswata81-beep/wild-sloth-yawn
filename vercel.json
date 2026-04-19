@@ -11,6 +11,14 @@
     {
       "path": "/api/cron/poll-status",
       "schedule": "10 8 * * *"
+    },
+    {
+      "path": "/api/cron/echo-draft",
+      "schedule": "30 16 * * *"
+    },
+    {
+      "path": "/api/cron/alpha-brief",
+      "schedule": "0 17 * * *"
     }
   ]
 }

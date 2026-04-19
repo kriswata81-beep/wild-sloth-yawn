@@ -8,7 +8,6 @@ const GOLD_40 = "rgba(176,142,80,0.4)";
 const GOLD_20 = "rgba(176,142,80,0.2)";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
 
-const STEWARD_PASSWORD = process.env.NEXT_PUBLIC_STEWARD_PASSWORD || "makoa0001";
 const SESSION_KEY = "makoa_steward_auth";
 
 export default function StewardPage() {
@@ -28,19 +27,28 @@ export default function StewardPage() {
     return () => clearTimeout(t);
   }, []);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (password === STEWARD_PASSWORD) {
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem(SESSION_KEY, "true");
+    try {
+      const res = await fetch("/api/steward/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      if (res.ok) {
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem(SESSION_KEY, "true");
+        }
+        setAuthed(true);
+        setError("");
+      } else {
+        setError("Access denied.");
+        setShake(true);
+        setPassword("");
+        setTimeout(() => setShake(false), 600);
       }
-      setAuthed(true);
-      setError("");
-    } else {
-      setError("Access denied.");
-      setShake(true);
-      setPassword("");
-      setTimeout(() => setShake(false), 600);
+    } catch {
+      setError("Connection error. Try again.");
     }
   }
 

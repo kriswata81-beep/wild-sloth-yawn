@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
         source_name: source_name || "Brother submission",
         category: category || "community",
         is_approved: false,
+        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       })
       .select("id")
       .single();

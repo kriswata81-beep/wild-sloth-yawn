@@ -88,8 +88,66 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Essay must be 80-120 words" }, { status: 400 });
     }
 
-    // XI scores the essay
-    const { score, tier, signals, recommendation } = xiScoreEssay(essay, zip);
+    // XI scores the essay — keyword pass
+    const keywordResult = xiScoreEssay(essay, zip);
+    let { score, tier, signals, recommendation } = keywordResult;
+
+    // XI scores the essay — Claude Haiku deep pass (if API key present)
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    if (anthropicKey) {
+      try {
+        const aiRes = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "x-api-key": anthropicKey,
+            "anthropic-version": "2023-06-01",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "claude-haiku-4-5-20251001",
+            max_tokens: 256,
+            messages: [{
+              role: "user",
+              content: `You are XI, the AI scorer for Mākoa Order steward applications. Score this essay on 4 dimensions (0-25 each). Return ONLY valid JSON, no explanation.
+
+Essay: "${essay}"
+ZIP: ${zip}
+
+Return: {"authenticity": 0-25, "commitment": 0-25, "specificity": 0-25, "community_fit": 0-25, "note": "one sentence max"}
+
+Scoring guide:
+- authenticity: Does it sound like a real person with real stakes, not generic language?
+- commitment: Does the applicant show they understand the long-term obligation?
+- specificity: Do they name real places, real timelines, real actions (not vague)?
+- community_fit: Do they demonstrate belonging to this specific territory and brotherhood?`,
+            }],
+          }),
+        });
+        const aiJson = await aiRes.json();
+        const raw = aiJson.content?.[0]?.text?.trim() || "";
+        // Extract JSON from response (may have markdown fences)
+        const jsonMatch = raw.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const parsed = JSON.parse(jsonMatch[0]);
+          const aiScore = Math.round(
+            (Number(parsed.authenticity || 0) +
+             Number(parsed.commitment || 0) +
+             Number(parsed.specificity || 0) +
+             Number(parsed.community_fit || 0)) * 0.4 // Claude pass = 40% of total (max 40 pts)
+          );
+          // Blend: keyword (60%) + Claude (40%), cap at 100
+          score = Math.min(Math.round(score * 0.6 + aiScore), 100);
+          tier = score >= 70 ? "alii" : score >= 40 ? "mana" : "nakoa";
+          recommendation = score >= 70 ? "RECOMMEND: Primary Steward seat" :
+            score >= 55 ? "RECOMMEND: Co-Steward (strong)" :
+            score >= 40 ? "RECOMMEND: Co-Steward (standard)" :
+            "WAITLIST: Revisit if primary/co seats filled";
+          if (parsed.note) signals = [...signals, `xi_analysis: ${parsed.note}`];
+        }
+      } catch (err) {
+        console.error("Claude scorer error (keyword score still saved):", err);
+      }
+    }
 
     // Save to Supabase
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);

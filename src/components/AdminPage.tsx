@@ -235,22 +235,72 @@ export default function AdminPage({ onExit }: AdminPageProps) {
             MĀKOA ORDER · RESTRICTED ACCESS
           </p>
         </div>
-        <button
-          onClick={onExit}
-          style={{
-            background: "none",
-            border: "1px solid rgba(176,142,80,0.15)",
-            color: GOLD_DIM,
-            cursor: "pointer",
-            fontSize: "0.4rem",
-            padding: "6px 12px",
-            borderRadius: "4px",
-            letterSpacing: "0.1em",
-            fontFamily: "'JetBrains Mono', monospace",
-          }}
-        >
-          EXIT
-        </button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <a
+            href="/steward/dashboard"
+            style={{
+              background: "rgba(176,142,80,0.08)",
+              border: "1px solid rgba(176,142,80,0.3)",
+              color: GOLD,
+              textDecoration: "none",
+              fontSize: "0.4rem",
+              padding: "6px 12px",
+              borderRadius: "4px",
+              letterSpacing: "0.1em",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          >
+            7G NET ↗
+          </a>
+          <a
+            href="/steward/campaign"
+            style={{
+              background: "rgba(248,81,73,0.08)",
+              border: "1px solid rgba(248,81,73,0.3)",
+              color: "#f85149",
+              textDecoration: "none",
+              fontSize: "0.4rem",
+              padding: "6px 12px",
+              borderRadius: "4px",
+              letterSpacing: "0.1em",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          >
+            MAYDAY ↗
+          </a>
+          <a
+            href="/territories"
+            style={{
+              background: "rgba(88,166,255,0.08)",
+              border: "1px solid rgba(88,166,255,0.3)",
+              color: "#58a6ff",
+              textDecoration: "none",
+              fontSize: "0.4rem",
+              padding: "6px 12px",
+              borderRadius: "4px",
+              letterSpacing: "0.1em",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          >
+            TERRITORIES ↗
+          </a>
+          <button
+            onClick={onExit}
+            style={{
+              background: "none",
+              border: "1px solid rgba(176,142,80,0.15)",
+              color: GOLD_DIM,
+              cursor: "pointer",
+              fontSize: "0.4rem",
+              padding: "6px 12px",
+              borderRadius: "4px",
+              letterSpacing: "0.1em",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          >
+            EXIT
+          </button>
+        </div>
       </div>
 
       {/* Tab navigation */}

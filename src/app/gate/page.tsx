@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/integrations/supabase/client";
 import { callXIAgent } from "@/lib/xi-agent";
 import MakoaQR from "@/components/MakoaQR";
@@ -199,12 +199,14 @@ function QBlock({ num, label, children }: { num: number; label: string; children
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function GatePageRoute() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { days, hours, minutes } = useCountdown();
   const questionsRef = useRef<HTMLDivElement>(null);
 
   const [sheet, setSheet] = useState<null | "network" | "build" | "serve">(null);
   const [pledgeOpen, setPledgeOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [brotherCount, setBrotherCount] = useState<number | null>(null);
 
   // Session data
   const [handle, setHandle] = useState("");
@@ -228,8 +230,21 @@ export default function GatePageRoute() {
     if (typeof window !== "undefined") {
       setHandle(sessionStorage.getItem("makoa_handle") || "");
       setPhone(sessionStorage.getItem("makoa_phone") || "");
+      // Capture referral code from URL ?ref= param
+      const ref = searchParams.get("ref");
+      if (ref) {
+        sessionStorage.setItem("makoa_ref", ref);
+        setQ11(ref);
+      }
     }
-  }, []);
+    // Fetch live brother count
+    supabase
+      .from("gate_submissions")
+      .select("id", { count: "exact", head: true })
+      .then(({ count }) => {
+        if (count !== null) setBrotherCount(count);
+      });
+  }, [searchParams]);
 
   function scrollToQuestions() {
     questionsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -328,6 +343,26 @@ export default function GatePageRoute() {
       </div>
 
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "0 20px" }}>
+
+        {/* ── LIVE BROTHER COUNT ────────────────────────────────────────────── */}
+        {brotherCount !== null && brotherCount > 0 && (
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+            padding: "14px 20px", margin: "20px 0 0",
+            background: "rgba(63,185,80,0.06)", border: "1px solid rgba(63,185,80,0.18)",
+            borderRadius: 8,
+          }}>
+            <span style={{
+              width: 8, height: 8, borderRadius: "50%", background: "#3fb950", flexShrink: 0,
+              boxShadow: "0 0 8px rgba(63,185,80,0.6)",
+              animation: "dotPulse 2s ease-in-out infinite",
+            }} />
+            <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.52rem", margin: 0 }}>
+              <span style={{ color: "#3fb950", fontWeight: 700 }}>{brotherCount}</span>
+              {" "}brother{brotherCount !== 1 ? "s" : ""} have passed the gate
+            </p>
+          </div>
+        )}
 
         {/* ── BRUTAL CLEAR LINE — What this is ──────────────────────────────── */}
         <p style={{
@@ -703,4 +738,3 @@ export default function GatePageRoute() {
     </div>
   );
 }
-
