@@ -18,6 +18,7 @@ import StrategyTab from "./admin/StrategyTab";
 import ReferralsTab from "./admin/ReferralsTab";
 import Net808Tab from "./admin/Net808Tab";
 import ViralScriptsTab from "./admin/ViralScriptsTab";
+import FacelessTab from "./admin/FacelessTab";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -82,6 +83,7 @@ const ALL_TABS = [
   "Messages",
   "Campaign",
   "Viral Scripts",
+  "Faceless",
   "Mentors",
   "Circle",
   "Routes",
@@ -637,6 +639,9 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
             {/* VIRAL SCRIPTS — READY-TO-USE CONTENT */}
             {tab === "Viral Scripts" && <ViralScriptsTab />}
+
+            {/* FACELESS VIDEO SYSTEM */}
+            {tab === "Faceless" && <FacelessTab />}
 
             {/* REFERRALS — VIRAL GROWTH TRACKER */}
             {tab === "Referrals" && <ReferralsTab />}

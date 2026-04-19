@@ -92,6 +92,16 @@ const LINKS = [
     primary: false,
     icon: "🌿",
   },
+  {
+    href: "/faceless",
+    label: "FACELESS VIDEO SYSTEM",
+    sub: "6 formats · shot lists · scripts · captions",
+    color: GOLD_DIM,
+    bg: "rgba(176,142,80,0.03)",
+    border: "rgba(176,142,80,0.12)",
+    primary: false,
+    icon: "👁",
+  },
 ];
 
 export default function LinksPage() {
