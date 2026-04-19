@@ -102,6 +102,16 @@ const LINKS = [
     primary: false,
     icon: "👁",
   },
+  {
+    href: "/drops",
+    label: "100 MESSAGE DROPS",
+    sub: "Copy · post · repeat — Gary Vee model",
+    color: GOLD_DIM,
+    bg: "rgba(176,142,80,0.03)",
+    border: "rgba(176,142,80,0.12)",
+    primary: false,
+    icon: "⚡",
+  },
 ];
 
 export default function LinksPage() {

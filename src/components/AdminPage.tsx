@@ -19,6 +19,7 @@ import ReferralsTab from "./admin/ReferralsTab";
 import Net808Tab from "./admin/Net808Tab";
 import ViralScriptsTab from "./admin/ViralScriptsTab";
 import FacelessTab from "./admin/FacelessTab";
+import DropsTab from "./admin/DropsTab";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -84,6 +85,7 @@ const ALL_TABS = [
   "Campaign",
   "Viral Scripts",
   "Faceless",
+  "Drops",
   "Mentors",
   "Circle",
   "Routes",
@@ -642,6 +644,9 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
             {/* FACELESS VIDEO SYSTEM */}
             {tab === "Faceless" && <FacelessTab />}
+
+            {/* 100 MESSAGE DROPS */}
+            {tab === "Drops" && <DropsTab />}
 
             {/* REFERRALS — VIRAL GROWTH TRACKER */}
             {tab === "Referrals" && <ReferralsTab />}
