@@ -227,7 +227,6 @@ export default function Home() {
             opacity: ready ? 1 : 0,
             transition: "opacity 0.7s ease 0.6s",
           }}>
-            West Oahu. May 1–4. Co-Founders Weekend — every month.
           </p>
 
           {/* SEAT COUNTS */}
