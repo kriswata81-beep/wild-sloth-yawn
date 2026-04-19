@@ -285,6 +285,13 @@ export default function GatePageRoute() {
       sessionStorage.setItem("makoa_xi_tier", xiTier);
     }
 
+    // Ping Telegram — fire and forget
+    fetch("/api/gate/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ handle, tier: xiTier, zip: q10, q1, q4, q7, referral_code: q11 }),
+    }).catch(() => {});
+
     setSubmitting(false);
     setPledgeOpen(false);
     router.push("/confirm");
