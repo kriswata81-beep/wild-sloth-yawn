@@ -17,6 +17,7 @@ import WarRoomTab from "./admin/WarRoomTab";
 import StrategyTab from "./admin/StrategyTab";
 import ReferralsTab from "./admin/ReferralsTab";
 import Net808Tab from "./admin/Net808Tab";
+import ViralScriptsTab from "./admin/ViralScriptsTab";
 
 const GOLD = "#b08e50";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
@@ -80,6 +81,7 @@ const ALL_TABS = [
   "Social",
   "Messages",
   "Campaign",
+  "Viral Scripts",
   "Mentors",
   "Circle",
   "Routes",
@@ -632,6 +634,9 @@ export default function AdminPage({ onExit }: AdminPageProps) {
 
             {/* STRATEGY — 25 CUSTOMIZED CONTENT STRATEGIES */}
             {tab === "Strategy" && <StrategyTab />}
+
+            {/* VIRAL SCRIPTS — READY-TO-USE CONTENT */}
+            {tab === "Viral Scripts" && <ViralScriptsTab />}
 
             {/* REFERRALS — VIRAL GROWTH TRACKER */}
             {tab === "Referrals" && <ReferralsTab />}
