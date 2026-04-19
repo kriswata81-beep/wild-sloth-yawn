@@ -39,6 +39,7 @@ Session modes (say one of these to open):
 - [x] XI auto-scorer — Claude Haiku analysis on steward application insert
 - [x] Multi-cluster support — territory selector replaces free-form ZIP in brother app
 - [x] BUILD_QUEUE.md — this file
+- [x] MAYDAY Blitz — `/api/cron/mayday-blitz` · 40 posts/day · 14:00 UTC · Twitter(22)+IG(12)+FB(6) · Claude Haiku batch · Blotato native scheduling · 44-day window Apr 18–May 31
 
 ---
 
@@ -50,7 +51,9 @@ Session modes (say one of these to open):
 
 2. **KILO agent** — daily 9pm HST Stripe revenue reconciliation. Pull `payment_intents` from Stripe, match against `gate_submissions`, flag discrepancies, log to `admin_activity_log`, Telegram summary.
 
-3. **XI self-scoring v2** — improve the keyword scorer by adding a `xi_signals_v2` column to `steward_applications` that stores the Claude Haiku structured assessment (authenticity, commitment, specificity scores as JSON), separate from the keyword pass.
+3. **MAYDAY Blitz video pipeline** — MAYDAY-BLITZ currently posts text only (TikTok excluded). When Steward records raw phone video, build a route that accepts video upload, pushes to Blotato, and schedules across TikTok + IG Reels + YouTube Shorts. Needs: video upload endpoint + Blotato visual job polling.
+
+4. **XI self-scoring v2** — improve the keyword scorer by adding a `xi_signals_v2` column to `steward_applications` that stores the Claude Haiku structured assessment (authenticity, commitment, specificity scores as JSON), separate from the keyword pass.
 
 4. **Brother onboarding SMS** — when a new steward application is approved (`status → 'approved'`), fire a Twilio SMS to `contact_phone` with the War Room link + Telegram group invite. Needs `TWILIO_AUTH_TOKEN` set.
 

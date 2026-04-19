@@ -19,6 +19,10 @@
     {
       "path": "/api/cron/alpha-brief",
       "schedule": "0 17 * * *"
+    },
+    {
+      "path": "/api/cron/mayday-blitz",
+      "schedule": "0 14 * * *"
     }
   ]
 }

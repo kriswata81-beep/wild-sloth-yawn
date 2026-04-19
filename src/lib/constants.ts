@@ -8,31 +8,53 @@ export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://makoa.live"
 export const SUPPORT_EMAIL = "wakachief@gmail.com";
 
 // ─── MAYDAY Event ───────────────────────────────────────────────────────────
-export const MAYDAY_NAME = "MAYDAY Summit Founders Event";
-export const MAYDAY_DATE = "May 1–3, 2026";
-export const MAYDAY_LOCATION = "Kapolei, Oʻahu";
+export const MAYDAY_NAME = "MAYDAY MONTH — The Summit of Founders";
+export const MAYDAY_DATE = "May 1 – June 1, 2026";
+export const MAYDAY_DATE_SHORT = "May 2026";
+export const MAYDAY_LOCATION = "West Oʻahu — Mākoa House + Kapolei";
 export const MAYDAY_YEAR = 2026;
+
+// 4-weekend structure
+export const MAYDAY_WEEKENDS = [
+  { num: 1, dates: "May 1–4",    moon: "Flower Moon",  theme: "First Founders Round",  gateClose: "April 25" },
+  { num: 2, dates: "May 8–11",   moon: null,           theme: "Build Phase",            gateClose: "May 2"    },
+  { num: 3, dates: "May 15–18",  moon: null,           theme: "Leadership Phase",       gateClose: "May 9"    },
+  { num: 4, dates: "May 29–Jun 1", moon: "Blue Moon",  theme: "Final Founders Round",  gateClose: "May 23"   },
+] as const;
+
+// War Party Pack tiers
+export const WAR_PARTY_PACKS = {
+  full5Day:  { label: "Full 5-Day War Party Pack", duration: "Tue night → Mon morning", days: 5 },
+  elite4Day: { label: "4-Day Elite Pack",           duration: "Wed → Mon",              days: 4 },
+  builder3:  { label: "3-Day Builder Pack",         duration: "Thu → Mon",              days: 3 },
+  dayPass:   { label: "Nā Koa Day Pass",            duration: "12 hours",               days: 0 },
+} as const;
 
 // ─── Makahiki ───────────────────────────────────────────────────────────────
 export const MAKAHIKI_MONTH = "November";
 export const MAKAHIKI_SEASON = "winter";
 
 // ─── MAYDAY Seat Capacity (canonical) ──────────────────────────────────────
-// Source of truth for total seats per tier. Display "X of Y" everywhere.
-// "Remaining" counts should eventually pull live from Supabase payments table.
 export const MAYDAY_SEATS = {
-  alii: { total: 12, label: "Aliʻi · Co-Founders" },
-  mana: { total: 24, label: "Mana · Mastermind" },
-  nakoa: { total: 12, label: "Nā Koa · Day Pass" },
+  alii:  { total: 48, label: "Aliʻi · Co-Founders (1% equity)",  price: 4997 },
+  mana:  { total: 96, label: "Mana · War Room / 48h",             price: 397  },
+  nakoa: { total: 48, label: "Nā Koa · Day Pass",                 price: 97   },
 } as const;
 
-// ─── Pricing ────────────────────────────────────────────────────────────────
+// ─── Pricing (MAYDAY Month founding rates — close after May) ────────────────
+export const MAYDAY_PRICING = {
+  dayPass:    { label: "Nā Koa Day Pass",                    price: 97,   display: "$97"   },
+  mastermind: { label: "Mana Mastermind",                    price: 197,  display: "$197"  },
+  warRoom:    { label: "War Room / 48h",                     price: 397,  display: "$397"  },
+  coFounder:  { label: "Aliʻi Co-Founder (1% equity + Hale Stone)", price: 4997, display: "$4,997" },
+} as const;
+
 export const FOUNDING_DUES = 497;
 export const FOUNDING_DUES_DISPLAY = "$497/year";
 export const GATE_ENTRY_FEE = 0;
 export const GATE_ENTRY_DISPLAY = "FREE";
 export const DEPOSIT_PERCENT = 0.25;
-export const DEPOSIT_AMOUNT = Math.round(FOUNDING_DUES * DEPOSIT_PERCENT * 100) / 100; // $124.25
+export const DEPOSIT_AMOUNT = Math.round(FOUNDING_DUES * DEPOSIT_PERCENT * 100) / 100;
 
 // ─── Early Bird Cutoff ──────────────────────────────────────────────────────
 export const EARLY_BIRD_CUTOFF = new Date("2026-04-15T23:59:59-10:00");
