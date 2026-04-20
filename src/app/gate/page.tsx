@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/integrations/supabase/client";
 import { callXIAgent } from "@/lib/xi-agent";
@@ -197,7 +197,7 @@ function QBlock({ num, label, children }: { num: number; label: string; children
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
-export default function GatePageRoute() {
+function GatePageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { days, hours, minutes } = useCountdown();
@@ -743,5 +743,14 @@ export default function GatePageRoute() {
         />
       </Overlay>
     </div>
+  );
+}
+
+// ─── Suspense wrapper (required for useSearchParams in Next.js 15) ───────────
+export default function GatePageRoute() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", background: BG }} />}>
+      <GatePageInner />
+    </Suspense>
   );
 }
