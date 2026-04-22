@@ -465,6 +465,93 @@ export default function TradePage() {
           ))}
         </div>
 
+        {/* ── INTERNATIONAL · THE CHAPTER MODEL ───────────────────────────── */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+          <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>INTERNATIONAL · THE CHAPTER MODEL</p>
+          <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+        </div>
+
+        <div style={{
+          background: "rgba(176,142,80,0.03)",
+          border: `1px solid ${GOLD_20}`,
+          borderRadius: 12,
+          padding: "28px 22px",
+          marginBottom: 40,
+        }}>
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: "#e8e0d0",
+            fontSize: "1.05rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+          }}>
+            After Mayday 48, each Aliʻi returns home to open their territory&apos;s chapter under the Mākoa Trade Co. framework.
+          </p>
+
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", marginBottom: 14 }}>THE SPLIT</p>
+          <div style={{ display: "grid", gap: 8, marginBottom: 28 }}>
+            {[
+              { pct: "80%", label: "stays in your territory", desc: "your chapter's treasury, labor flows, goods & services moving locally" },
+              { pct: "10%", label: "to the Order", desc: "Mākoa Trade Co. general fund · infrastructure · 7G Net · new chapter activation" },
+              { pct: "10%", label: "to the Mayday 48 Aliʻi pool", desc: "split among the 20 founding Aliʻi forever · each earns 0.5% of global Mākoa Trade Co. revenue · perpetual · inheritable" },
+            ].map(row => (
+              <div key={row.pct} style={{
+                display: "flex", gap: 14, alignItems: "flex-start",
+                padding: "10px 14px",
+                background: "rgba(0,0,0,0.2)",
+                border: `1px solid ${GOLD_20}`,
+                borderRadius: 6,
+              }}>
+                <span style={{ color: GOLD, fontSize: "0.9rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, minWidth: 36 }}>{row.pct}</span>
+                <div>
+                  <p style={{ color: "#e8e0d0", fontSize: "0.46rem", marginBottom: 2 }}>{row.label}</p>
+                  <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.42rem", lineHeight: 1.5 }}>{row.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", marginBottom: 12 }}>THE REACH</p>
+          <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.46rem", letterSpacing: "0.1em", marginBottom: 24, lineHeight: 1.8 }}>
+            Tokyo · Berlin · Vancouver · Lagos · São Paulo · Cape Town · Sydney · your city.
+          </p>
+
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", marginBottom: 14 }}>THREE REVENUE ROUTES PER CHAPTER</p>
+          <div style={{ display: "grid", gap: 8, marginBottom: 20 }}>
+            {[
+              { label: "Labor routes", range: "$500 to $5K per job", desc: "construction, trades, maintenance, hauling" },
+              { label: "Knowledge routes", range: "$97 to $297 per workshop", desc: "" },
+              { label: "Territory dues", range: "$497/year per brother", desc: "" },
+            ].map(r => (
+              <div key={r.label} style={{
+                display: "flex", justifyContent: "space-between", alignItems: "flex-start",
+                padding: "10px 14px",
+                background: "rgba(0,0,0,0.2)",
+                border: `1px solid rgba(176,142,80,0.08)`,
+                borderRadius: 6,
+              }}>
+                <div>
+                  <p style={{ color: "#e8e0d0", fontSize: "0.46rem", marginBottom: r.desc ? 2 : 0 }}>{r.label}</p>
+                  {r.desc && <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.4rem" }}>{r.desc}</p>}
+                </div>
+                <p style={{ color: GOLD, fontSize: "0.44rem", fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginLeft: 12 }}>{r.range}</p>
+              </div>
+            ))}
+          </div>
+
+          <p style={{
+            color: "rgba(232,224,208,0.45)",
+            fontSize: "0.44rem",
+            lineHeight: 1.8,
+            borderTop: `1px solid ${GOLD_20}`,
+            paddingTop: 16,
+          }}>
+            Brothers receive 80% of labor revenue. 10% to the house. 10% to the Order. All governed by the Aliʻi Council.
+          </p>
+        </div>
+
         {/* ── THE FIVE LAWS ─────────────────────────────────────────────────── */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
@@ -532,7 +619,7 @@ export default function TradePage() {
               { stream: "Labor Route", formula: "20% of job revenue", example: "10 jobs/mo avg $1,200 = $2,400/mo to house", color: AMBER },
               { stream: "Knowledge Route", formula: "$97–$297 per workshop", example: "8 workshops/mo = $1,600–$2,400/mo", color: BLUE },
               { stream: "Territory Dues", formula: "Brothers × $497/yr", example: "72 brothers = $35,784/yr", color: GREEN },
-              { stream: "Co-Founder Seats", formula: "12 seats × $4,997", example: "One-time: $59,964 founding capital", color: GOLD },
+              { stream: "Aliʻi Founder Seats", formula: "20 Aliʻi seats across Mayday 48 — 5 founder teams per weekend × 4 weekends in May 2026", example: "One-time: $99,940 founding capital", color: GOLD },
             ].map(r => (
               <div key={r.stream} style={{
                 padding: "12px 14px",

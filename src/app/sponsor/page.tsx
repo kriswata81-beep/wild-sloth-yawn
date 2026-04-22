@@ -42,24 +42,10 @@ const GIFT_OPTIONS = [
     color: "#58a6ff",
     badge: "24HR",
   },
-  {
-    id: "warroom",
-    title: "War Room",
-    subtitle: "ALIʻI · 48HR",
-    price: "$397",
-    seats: "4 Aliʻi seats",
-    description: "The full founding experience.",
-    detail: "Friday through Sunday. The complete Aliʻi experience — War Room council, Network 2 Network, ice bath both mornings, the fire ceremony, the oath. He comes back a founding brother with a seat at the council.",
-    what: ["War Room council — Friday night", "Network 2 Network — room to room, B2B", "4am ice bath — both mornings", "Founders Summit — all classes, one table", "Founding fire + oath — the order is born", "Aliʻi council seat — 1% founding equity"],
-    priceId: "price_1TN55f6JgsMzYUQRLFSk07DF",
-    color: GOLD,
-    badge: "48HR",
-  },
 ];
 
 // Scarcity: seats remaining per tier
 const SEATS = [
-  { label: "ALIʻI WAR ROOM", remaining: 4, total: 12, color: GOLD },
   { label: "MANA MASTERMIND", remaining: 6, total: 24, color: "#58a6ff" },
   { label: "NĀ KOA DAY PASS", remaining: 10, total: 12, color: "#3fb950" },
 ];
@@ -87,7 +73,7 @@ export default function SponsorPage() {
 
   useEffect(() => {
     setVisible(true);
-    const gate = new Date("2026-04-25T23:59:59-10:00").getTime();
+    const gate = new Date("2026-05-31T23:59:59-10:00").getTime();
     const diff = gate - Date.now();
     setDaysLeft(Math.max(0, Math.ceil(diff / 86400000)));
   }, []);
@@ -157,7 +143,7 @@ export default function SponsorPage() {
       }}>
         <div style={{ width: 6, height: 6, borderRadius: "50%", background: RED, animation: "pulse 1s ease-in-out infinite", flexShrink: 0 }} />
         <p style={{ color: RED, fontSize: "0.38rem", letterSpacing: "0.16em" }}>
-          {daysLeft} DAYS LEFT · GATE CLOSES APRIL 25 · HOTEL ROOMS HELD UNTIL APRIL 20 · ONLY 20 SEATS TOTAL
+          GATE CLOSES MAY 31, 2026 (BLUE MOON) · SPONSORSHIP GIFTS FILL ALONGSIDE THE 20 ALIʻI FOUNDER SEATS
         </p>
       </div>
 
@@ -315,7 +301,7 @@ export default function SponsorPage() {
           <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.25em", marginBottom: 16 }}>HOW IT WORKS</p>
           <div style={{ display: "grid", gap: 8 }}>
             {[
-              { n: "01", t: "Choose his experience", d: "Day Pass ($97) · Mastermind ($197) · War Room ($397)" },
+              { n: "01", t: "Choose his experience", d: "Day Pass ($97) · Mastermind ($197)" },
               { n: "02", t: "Pay securely via Stripe", d: "Anonymous or named — you decide" },
               { n: "03", t: "Enter his contact info", d: "Name + email. Add a personal note if you want." },
               { n: "04", t: "He receives the message", d: '"Someone believes in you. You\'ve been sponsored into Mākoa."' },
@@ -509,6 +495,22 @@ export default function SponsorPage() {
           })}
         </div>
 
+        {/* ── ALIʻI NOTE ── */}
+        <div style={{
+          background: "rgba(176,142,80,0.04)",
+          border: `1px solid ${GOLD_20}`,
+          borderRadius: 10,
+          padding: "18px 20px",
+          marginBottom: 32,
+        }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.2em", marginBottom: 10 }}>
+            A NOTE ON ALIʻI FOUNDER SEATS
+          </p>
+          <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.42rem", lineHeight: 1.8 }}>
+            Aliʻi seats ($4,997 · 1% equity in Mākoa Trade Co.) cannot be sponsored. A man must choose his own founder seat, pay it directly, and take the oath himself. Sponsorships at the Nā Koa and Mana tiers gift a brother the experience — not the equity or the founder oath.
+          </p>
+        </div>
+
         {/* ── OUTREACH TEMPLATES ── */}
         <div style={{ marginBottom: 40 }}>
           <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.25em", marginBottom: 16 }}>
@@ -532,12 +534,12 @@ export default function SponsorPage() {
               {
                 label: "FOR CLOSE FRIENDS",
                 icon: "✊",
-                text: "Bro — I'm going to Mākoa MAYDAY in West Oahu, May 1–4. 4am ice bath, brotherhood, real work. I thought of you. Gate closes April 25. If you're in, go to makoa.live. If you need a push, I'll sponsor you.",
+                text: "Bro — I'm going to Mākoa MAYDAY in West Oahu, May 1–4. 4am ice bath, brotherhood, real work. I thought of you. Gate closes May 31 Blue Moon. If you're in, go to makoa.live. If you need a push, I'll sponsor you.",
               },
               {
                 label: "FOR INSTAGRAM / FACEBOOK",
                 icon: "📸",
-                text: "The 4am ice bath with brothers who actually show up.\n\nSponsor him before the gate closes.\n\nGate closes April 25. Only 20 seats. The Founding Fire happens once.\n\nmakoa.live/sponsor\n\n#Mākoa #SomeoneBelievesInYou #WestOahu #MAYDAY2026",
+                text: "The 4am ice bath with brothers who actually show up.\n\nSponsor him before the gate closes.\n\nGate closes May 31, 2026 (Blue Moon). The Founding Fire happens once.\n\nmakoa.live/sponsor\n\n#Mākoa #SomeoneBelievesInYou #WestOahu #MAYDAY2026",
               },
             ].map(item => (
               <OutreachCard key={item.label} {...item} />

@@ -453,6 +453,79 @@ export default function PalapalaPage() {
           Both arms report to the Aliʻi Council, which holds fiduciary authority
           under the Trust.
         </p>
+
+        {/* TRADE CO. REVENUE DOCTRINE */}
+        <div
+          style={{
+            background: "rgba(212,175,55,0.06)",
+            border: "1px solid rgba(212,175,55,0.2)",
+            borderRadius: 8,
+            padding: "28px 24px",
+            marginBottom: 24,
+          }}
+        >
+          <p
+            style={{
+              color: "#d4af37",
+              fontSize: "0.55rem",
+              letterSpacing: "0.3em",
+              marginBottom: 16,
+              fontVariant: "small-caps",
+            }}
+          >
+            TRADE CO. REVENUE DOCTRINE — 80 / 10 / 10
+          </p>
+          <p
+            style={{
+              fontSize: "1rem",
+              lineHeight: 1.9,
+              marginBottom: 16,
+              color: "rgba(245,236,217,0.85)",
+            }}
+          >
+            Every dollar of trade, labor, or knowledge moved through a Mākoa chapter splits three ways:
+          </p>
+          <p
+            style={{
+              fontSize: "1rem",
+              lineHeight: 1.9,
+              marginBottom: 8,
+              color: "rgba(245,236,217,0.85)",
+            }}
+          >
+            <strong style={{ color: "#f5ecd9" }}>80%</strong> stays in the territory — the chapter&apos;s treasury, local ops, brothers doing the work
+          </p>
+          <p
+            style={{
+              fontSize: "1rem",
+              lineHeight: 1.9,
+              marginBottom: 8,
+              color: "rgba(245,236,217,0.85)",
+            }}
+          >
+            <strong style={{ color: "#f5ecd9" }}>10%</strong> to the Order — Mākoa Trade Co. general fund · infrastructure · 7G Net · legal · territory expansion
+          </p>
+          <p
+            style={{
+              fontSize: "1rem",
+              lineHeight: 1.9,
+              marginBottom: 20,
+              color: "rgba(245,236,217,0.85)",
+            }}
+          >
+            <strong style={{ color: "#f5ecd9" }}>10%</strong> to the Mayday 48 Aliʻi pool — split across the 20 founding Aliʻi · perpetual · inheritable (0.5% of global revenue per founder, forever)
+          </p>
+          <p
+            style={{
+              fontSize: "0.9rem",
+              lineHeight: 1.9,
+              color: "rgba(212,175,55,0.7)",
+              fontStyle: "italic",
+            }}
+          >
+            This split is the economic constitution. It aligns every chapter toward local sovereignty while funding the 100-year mission.
+          </p>
+        </div>
         <p
           style={{
             fontSize: "1rem",
@@ -563,8 +636,7 @@ export default function PalapalaPage() {
             color: "rgba(245,236,217,0.85)",
           }}
         >
-          Forty-eight brothers, ever. After the blue moon, the Founding 48 is
-          closed. There will be cohorts after. There will be no second Founding
+          The Founding 48 is 48 oath signatures on the Palapala — 20 Aliʻi team leaders and the 28 brothers they bring. Once sealed at the May 31 Blue Moon, the Founding 48 closes permanently. There will be cohorts after. There will be no second Founding
           48.
         </p>
         <p
