@@ -188,7 +188,7 @@ export default function EmberPage() {
           textAlign: "center",
         }}>
           <Countdown
-            target={TIMELINE.GATE_OPENS}
+            targetIso={TIMELINE.GATE_OPENS.toISOString()}
             label="🌕 GATE OPENS · MAY 1 FULL MOON"
             variant="flame"
           />
@@ -210,7 +210,7 @@ export default function EmberPage() {
           textAlign: "center",
         }}>
           <Countdown
-            target={TIMELINE.BLUE_MOON_SEALING}
+            targetIso={TIMELINE.BLUE_MOON_SEALING.toISOString()}
             label="🌕 BLUE MOON SEALING · MAY 31"
             variant="gold"
           />
