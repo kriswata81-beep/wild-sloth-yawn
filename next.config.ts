@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
     return [
       // /home-services duplicates /services — pick /services as canonical
       { source: "/home-services", destination: "/services", permanent: true },
+      // /mayday → /founding48 (existing social posts)
+      { source: "/mayday", destination: "/founding48", permanent: true },
+      // /48 → /founding48 (new short URL for social posts)
+      { source: "/48", destination: "/founding48", permanent: true },
     ];
   },
   webpack: (config, { isServer }) => {

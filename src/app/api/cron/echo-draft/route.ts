@@ -11,10 +11,13 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
 const TELEGRAM_CHAT_ID = "7954185672"; // Steward 0001
 
+// Daily rotation: 3 text/image platforms + TikTok (image) every day
+// YouTube gets a short video drop on Mondays only (video pipeline)
 const PLATFORM_ROTATION = [
-  { platform: "instagram", label: "IG" },
-  { platform: "twitter", label: "Twitter" },
-  { platform: "facebook", label: "FB" },
+  { platform: "instagram", label: "IG",      scheduledHour: 18 }, // 8am HST
+  { platform: "facebook",  label: "FB",      scheduledHour: 20 }, // 10am HST
+  { platform: "twitter",   label: "Twitter", scheduledHour: 22 }, // 12pm HST
+  { platform: "tiktok",    label: "TikTok",  scheduledHour: 2  }, // 4pm HST next day
 ];
 
 // 7G Net content themes — rotate daily
@@ -58,11 +61,15 @@ export async function GET(req: NextRequest) {
   // Pick today's theme based on day-of-year
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
   const theme = CONTENT_THEMES[dayOfYear % CONTENT_THEMES.length];
+  const isMonday = new Date().getUTCDay() === 1;
 
-  // Pick 2 platforms for today (rotate)
-  const platformsToday = PLATFORM_ROTATION.slice(dayOfYear % PLATFORM_ROTATION.length)
-    .concat(PLATFORM_ROTATION)
-    .slice(0, 2);
+  // All 4 platforms every day — each gets its own staggered time slot
+  const platformsToday = [...PLATFORM_ROTATION];
+
+  // Mondays: add YouTube video drop at 6pm HST (4am UTC next day)
+  if (isMonday) {
+    platformsToday.push({ platform: "youtube", label: "YouTube", scheduledHour: 4 });
+  }
 
   // Pull last 7 days of fired posts to avoid repetition
   const { data: recentPosts } = await sb
@@ -74,19 +81,25 @@ export async function GET(req: NextRequest) {
 
   const recentSummary = recentPosts?.slice(0, 5).map(p => `[${p.platform}] ${p.text.slice(0, 80)}`).join("\n") || "none";
 
-  const drafts: { platform: string; text: string; id: string }[] = [];
+  const drafts: { platform: string; text: string; id: string; scheduledFor: string }[] = [];
 
-  for (const { platform } of platformsToday) {
+  for (const { platform, scheduledHour } of platformsToday) {
     try {
       const isTwitter = platform === "twitter";
       const isInstagram = platform === "instagram";
+      const isTikTok = platform === "tiktok";
+      const isYouTube = platform === "youtube";
 
-      const charLimit = isTwitter ? 220 : 400;
+      const charLimit = isTwitter ? 220 : isTikTok ? 150 : isYouTube ? 300 : 400;
       const hashtagNote = isInstagram
-        ? "End with 3-5 relevant hashtags (max 5 total). No links."
+        ? "End with 3-5 relevant hashtags (max 5 total). No links. End with: → link in bio → makoa.live"
         : isTwitter
-        ? "No hashtags. Keep it punchy. No links."
-        : "1-2 hashtags max. Focus on story.";
+        ? "No hashtags. Keep it punchy. End with: makoa.live"
+        : isTikTok
+        ? "Short, punchy hook. Max 3 hashtags. End with: makoa.live"
+        : isYouTube
+        ? "Write a video title + 2-sentence description. End with: makoa.live"
+        : "1-2 hashtags max. End with: makoa.live";
 
       const prompt = `You are ECHO, the content agent for Mākoa Order — a brotherhood network in West Oahu, Hawaii.
 
@@ -120,28 +133,37 @@ Write a single social post for ${platform.toUpperCase()}.
 
       if (!text) continue;
 
-      // Schedule for 8am HST next day = 18:00 UTC next day
-      const tomorrow = new Date();
-      tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-      tomorrow.setUTCHours(18, 0, 0, 0);
+      // Each platform fires at its own hour the NEXT day — staggered across the day
+      const scheduled = new Date();
+      scheduled.setUTCDate(scheduled.getUTCDate() + 1);
+      scheduled.setUTCHours(scheduledHour, 0, 0, 0);
 
-      const { data: inserted } = await sb
+      // TikTok and Instagram get the crest image; YouTube gets video via blotato default resolver
+      const mediaUrls = (isTikTok || isInstagram) ? ["https://makoa.live/makoa_crest.png"] : [];
+
+      const { data: inserted, error: insertErr } = await sb
         .from("social_posts")
         .insert({
           platform,
           text,
-          media_urls: [],
+          media_urls: mediaUrls,
           platform_specific: {},
           status: "draft",
-          scheduled_for: tomorrow.toISOString(),
+          scheduled_for: scheduled.toISOString(),
           created_by: "echo_agent",
           fired_by: null,
         })
         .select("id")
         .single();
 
+      if (insertErr) {
+        console.error(`[ECHO] Insert failed for ${platform}:`, insertErr.message);
+        await sendTelegram(`[ECHO] ERROR: insert failed for ${platform}: ${insertErr.message}`);
+        continue;
+      }
+
       if (inserted?.id) {
-        drafts.push({ platform, text, id: inserted.id });
+        drafts.push({ platform, text, id: inserted.id, scheduledFor: scheduled.toISOString() });
       }
     } catch (err) {
       console.error(`[ECHO] Error drafting ${platform}:`, err);
@@ -149,23 +171,17 @@ Write a single social post for ${platform.toUpperCase()}.
   }
 
   if (drafts.length === 0) {
+    await sendTelegram("[ECHO] WARNING: No drafts created today. Check ANTHROPIC_API_KEY and Supabase.");
     return NextResponse.json({ ok: true, drafts: 0, message: "No drafts created" });
   }
 
-  // Telegram ping with draft previews
-  const draftLines = drafts.map((d, i) =>
-    `<b>${i + 1}. ${d.platform.toUpperCase()}</b>\n${d.text.slice(0, 120)}${d.text.length > 120 ? "..." : ""}`
-  ).join("\n\n");
+  // Telegram ping with draft previews + scheduled times
+  const draftLines = drafts.map((d, i) => {
+    const timeStr = new Date(d.scheduledFor).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "Pacific/Honolulu", hour12: true });
+    return `<b>${i + 1}. ${d.platform.toUpperCase()} @ ${timeStr} HST</b>\n${d.text.slice(0, 100)}${d.text.length > 100 ? "..." : ""}`;
+  }).join("\n\n");
 
-  const telegramMsg = `📝 <b>ECHO · Daily Drafts Ready</b>
-
-Theme: ${theme.slice(0, 60)}...
-
-${draftLines}
-
-<a href="https://makoa.live/steward">→ Review &amp; Approve in Command Center</a>
-
-${drafts.length} draft${drafts.length > 1 ? "s" : ""} saved. Approve to schedule for 8am HST tomorrow.`;
+  const telegramMsg = `ECHO · Daily Drafts Ready\n\nTheme: ${theme.slice(0, 60)}...\n\n${draftLines}\n\n→ Review in Command Center: https://makoa.live/steward\n\n${drafts.length} draft${drafts.length > 1 ? "s" : ""} queued. Staggered throughout tomorrow.`;
 
   await sendTelegram(telegramMsg);
 

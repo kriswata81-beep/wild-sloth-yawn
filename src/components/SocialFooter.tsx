@@ -78,8 +78,18 @@ export default function SocialFooter() {
           color: ${GOLD};
           filter: drop-shadow(0 0 8px rgba(176,142,80,0.5));
         }
+        .footer-nav-link {
+          color: ${GOLD_DIM};
+          font-size: 0.38rem;
+          letter-spacing: 0.12em;
+          text-decoration: none;
+          opacity: 0.6;
+          transition: opacity 0.2s;
+        }
+        .footer-nav-link:hover { opacity: 1; }
       `}</style>
 
+      {/* Social icons */}
       <div
         style={{
           display: "flex",
@@ -104,54 +114,36 @@ export default function SocialFooter() {
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 16 }}>
+      {/* Nav links */}
+      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 16 }}>
         {[
-          { href: "/gate", label: "THE GATE" },
-          { href: "/fire", label: "THE FOUNDING FIRE" },
-          { href: "/sponsor", label: "SPONSOR A BROTHER" },
-          { href: "/trade", label: "TRADE CO." },
-          { href: "/privacy", label: "PRIVACY" },
-          { href: "/terms", label: "TERMS" },
+          { href: "/palapala", label: "PALAPALA" },
+          { href: "/gate",     label: "GATE" },
+          { href: "/fire",     label: "FIRE" },
+          { href: "/trade",    label: "TRADE" },
+          { href: "/sponsor",  label: "SPONSOR" },
+          { href: "/wahine",   label: "WAHINE" },
+          { href: "/privacy",  label: "PRIVACY" },
+          { href: "/terms",    label: "TERMS" },
         ].map(link => (
-          <a key={link.href} href={link.href} style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.12em", textDecoration: "none", opacity: 0.6, transition: "opacity 0.2s" }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
-            onMouseLeave={e => (e.currentTarget.style.opacity = "0.6")}
-          >{link.label}</a>
+          <a key={link.href} href={link.href} className="footer-nav-link">
+            {link.label}
+          </a>
         ))}
       </div>
-      <p
-        style={{
-          color: GOLD_DIM,
-          fontSize: "0.48rem",
-          letterSpacing: "0.12em",
-          margin: "0 0 4px",
-          fontFamily: "'JetBrains Mono', monospace",
-        }}
-      >
-        M&#257;koa Brotherhood &copy; 2026
+
+      {/* Brand */}
+      <p style={{ color: GOLD_DIM, fontSize: "0.48rem", letterSpacing: "0.12em", margin: "0 0 4px", fontFamily: "'JetBrains Mono', monospace" }}>
+        © 2026 Mākoa Brotherhood
       </p>
-      <p
-        style={{
-          color: GOLD_DIM,
-          fontSize: "0.52rem",
-          letterSpacing: "0.14em",
-          margin: "0 0 4px",
-          fontFamily: "'JetBrains Mono', monospace",
-          fontWeight: 600,
-        }}
-      >
+      <p style={{ color: GOLD_DIM, fontSize: "0.44rem", letterSpacing: "0.1em", margin: "0 0 4px", fontFamily: "'JetBrains Mono', monospace" }}>
+        Held under the Malu Trust · West Oʻahu · 2026
+      </p>
+      <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.14em", margin: "0 0 4px", fontFamily: "'JetBrains Mono', monospace", fontWeight: 600 }}>
         makoa.live
       </p>
-      <p
-        style={{
-          color: GOLD_15,
-          fontSize: "0.38rem",
-          letterSpacing: "0.18em",
-          margin: 0,
-          fontFamily: "'JetBrains Mono', monospace",
-        }}
-      >
-        Powered by XI
+      <p style={{ color: GOLD_15, fontSize: "0.38rem", letterSpacing: "0.18em", margin: 0, fontFamily: "'JetBrains Mono', monospace" }}>
+        Powered by XI (Extended Intelligence)
       </p>
     </footer>
   );

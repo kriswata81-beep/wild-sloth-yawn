@@ -211,6 +211,8 @@ function GatePageInner() {
   // Session data
   const [handle, setHandle] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   // 12 Questions
   const [q1, setQ1] = useState("");
@@ -228,8 +230,9 @@ function GatePageInner() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setHandle(sessionStorage.getItem("makoa_handle") || "");
+      setHandle(sessionStorage.getItem("makoa_handle") || sessionStorage.getItem("makoa_name") || "");
       setPhone(sessionStorage.getItem("makoa_phone") || "");
+      setEmail(sessionStorage.getItem("makoa_email") || "");
       // Capture referral code from URL ?ref= param
       const ref = searchParams.get("ref");
       if (ref) {
@@ -250,6 +253,24 @@ function GatePageInner() {
     questionsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  function handleSubmitClick() {
+    const missing: string[] = [];
+    if (!q1) missing.push("Q1 (what you bring)");
+    if (!q3) missing.push("Q3 (4am commitment)");
+    if (!q5) missing.push("Q5 (brothers at 2am)");
+    if (!q6) missing.push("Q6 (5 days a month)");
+    if (!q7) missing.push("Q7 (vehicle)");
+    if (!q9) missing.push("Q9 (open your home)");
+    if (!q10.trim()) missing.push("Q10 (your ZIP)");
+    if (!email.trim()) missing.push("Your email");
+    if (missing.length > 0) {
+      setValidationError(`Complete these before pledging: ${missing.join(", ")}`);
+      return;
+    }
+    setValidationError("");
+    setPledgeOpen(true);
+  }
+
   async function handleConfirm() {
     setSubmitting(true);
     const tier_flag = q1 === "Leadership and vision" ? "alii" : q1 === "Skills and service" ? "mana" : "nakoa";
@@ -268,6 +289,7 @@ function GatePageInner() {
       const { error } = await supabase.from("gate_submissions").insert({
         handle,
         phone,
+        email,
         q1, q2, q3, q4, q5, q6, q7, q8, q9,
         q10, q11, q12,
         zip: q10,
@@ -276,6 +298,23 @@ function GatePageInner() {
         tier_flag: xiTier || tier_flag,
       });
       if (error) console.error("[GatePage] Supabase insert error:", error);
+
+      // Send welcome email via xi-mail if email provided
+      if (email.trim()) {
+        fetch("/api/xi-mail", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            template: "welcome_pledge",
+            to: email.trim(),
+            data: {
+              name: handle || "Brother",
+              handle: handle || "Brother",
+              tier: xiTier || tier_flag,
+            },
+          }),
+        }).catch(() => {});
+      }
     } catch (err) {
       console.error("[GatePage] Unexpected error saving gate submission:", err);
     }
@@ -665,9 +704,35 @@ function GatePageInner() {
             <TextQ placeholder="One word." value={q12} onChange={setQ12} />
           </QBlock>
 
+          {/* ── EMAIL INPUT ─────────────────────────────────────────────── */}
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 10 }}>
+              <span style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.15em", flexShrink: 0 }}>✉</span>
+              <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.52rem", lineHeight: 1.5 }}>
+                Where should XI send your acceptance?
+              </p>
+            </div>
+            <TextQ
+              placeholder="your@email.com"
+              value={email}
+              onChange={(v) => { setEmail(v); if (validationError) setValidationError(""); }}
+            />
+          </div>
+
+          {/* ── VALIDATION ERROR ────────────────────────────────────────── */}
+          {validationError && (
+            <div style={{
+              background: "rgba(248,81,73,0.08)", border: "1px solid rgba(248,81,73,0.3)",
+              borderRadius: 6, padding: "12px 14px", marginBottom: 12,
+              color: "#f85149", fontSize: "0.48rem", lineHeight: 1.6,
+            }}>
+              {validationError}
+            </div>
+          )}
+
           {/* ── PLEDGE CTA — ONE ACTION ─────────────────────────────────── */}
           <button
-            onClick={() => setPledgeOpen(true)}
+            onClick={handleSubmitClick}
             style={{
               width: "100%", background: GOLD, color: "#000",
               border: "none", padding: "18px", fontSize: "0.62rem",

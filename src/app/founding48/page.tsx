@@ -2,6 +2,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProductId } from "@/lib/stripe";
+import { TIMELINE } from "@/lib/timeline";
 
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
@@ -15,6 +16,7 @@ const GREEN = "#3fb950";
 const GREEN_20 = "rgba(63,185,80,0.2)";
 const GREEN_10 = "rgba(63,185,80,0.1)";
 const RED = "#f85149";
+const FLAME = "#ff4e1f";
 const BG = "#04060a";
 
 // ─── Seat defaults (overridden by live Supabase data) ────────────────────────
@@ -48,12 +50,6 @@ async function fetchLiveSeats(): Promise<SeatCounts> {
 }
 
 const EARLY_BIRD_CUTOFF = new Date("2026-04-15T23:59:59-10:00");
-const MAY_1 = new Date("2026-05-01T17:00:00-10:00");
-// Co-Founders Founding Weekend — second full moon, May 31 (Blue Moon)
-const CO_FOUNDERS_FOUNDING = new Date("2026-05-29T17:00:00-10:00");
-// Hotel block cutoffs — teams need more lead time than solos
-const TEAM_HOTEL_CUTOFF = new Date("2026-04-22T23:59:59-10:00");
-const SOLO_HOTEL_CUTOFF = new Date("2026-04-25T23:59:59-10:00");
 
 function useCountdown(target: Date) {
   const zero = { days: 0, hours: 0, minutes: 0, seconds: 0 };
@@ -74,6 +70,7 @@ function useCountdown(target: Date) {
     setTime(calc());
     const id = setInterval(() => setTime(calc()), 1000);
     return () => clearInterval(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return mounted ? time : zero;
 }
@@ -133,7 +130,7 @@ function PulsingDot({ color = RED }: { color?: string }) {
   );
 }
 
-function SeatBadge({ remaining, total, label = "SEATS", color = RED }: { remaining: number; total: number; label?: string; color?: string }) {
+function SeatBadge({ remaining, total, label = "SEATS" }: { remaining: number; total: number; label?: string; color?: string }) {
   return (
     <div style={{
       display: "inline-flex", alignItems: "center", gap: 7,
@@ -194,7 +191,7 @@ function PricingBlock({
             color: isEarlyBird ? "rgba(232,224,208,0.3)" : color,
             fontSize: "0.38rem", letterSpacing: "0.12em", marginBottom: 3,
           }}>
-            {lastCallLabel || "LAST CALL · APR 16–25"}
+            {lastCallLabel || "LAST CALL · APR 16–MAY 1"}
           </p>
           <p style={{
             color: isEarlyBird ? "rgba(232,224,208,0.3)" : color,
@@ -227,31 +224,18 @@ function PricingBlock({
   );
 }
 
-const TIMELINE = [
-  // FRIDAY — ALI'I & MANA CHECK-IN
-  { time: "Friday · 5:00 PM", event: "Gates Open", detail: "Ali'i and Mana class check-in. Co-founders and founding brothers arrive at Embassy Suites Kapolei." },
-  { time: "Friday · 6:00 PM", event: "War Room Roll Call", detail: "Ali'i and Mana seated. XI opens the founding session. This is where the order begins." },
-  { time: "Friday · 9:00 PM", event: "Brotherhood Circle", detail: "First circle. Lite pūpū. Men speak. No performance. Just truth. No phones." },
-  // SATURDAY — THE FORGE
-  { time: "Saturday · 3:00 AM", event: "Wake Call", detail: "The van is running. No alarm needed. You know." },
-  { time: "Saturday · 3:33 AM", event: "In the Van", detail: "Brothers moving in the dark. West Oahu. The coast." },
-  { time: "Saturday · 4:00 AM", event: "Ice Bath", detail: "The Flower Moon sets over the Pacific. You go in." },
-  { time: "Saturday · 5:30 AM", event: "The Weight Room", detail: "Not iron — emotional weight. Guided circle: 'What I've been carrying alone.' No phones. No recording. What's said stays in the circle." },
-  { time: "Saturday · 7:00 AM", event: "Morning Formation", detail: "Oath. Silence. The sun rises over the Ko'olau." },
-  { time: "Saturday · 9:00 AM", event: "The War Room — Order & Formation", detail: "The 5D space. How the order works — dues, ranks, the 808 network. Formation structure. This is where all the realms are proved." },
-  { time: "Saturday · 11:00 AM", event: "Team Formation", detail: "War parties assigned. Brothers paired. Your team for the next 90 days." },
-  { time: "Saturday · 1:00 PM", event: "Service Route Workshop", detail: "Trade academies. Skills. Business. What each team builds." },
-  { time: "Saturday · 2:00 PM", event: "Free Time", detail: "Beach. Explore Kapolei. Rest. Bond with your brothers." },
-  { time: "Saturday · 6:00 PM", event: "Ali'i Fire Ceremony", detail: "Co-founders and Ali'i class only. Small fire ceremony. The charter is sealed. The order is founded." },
-  { time: "Saturday · 7:00 PM", event: "Bonfire · All Classes", detail: "Mana and Nā Koa join. Open bonfire. Lite pūpū. Stories. The brotherhood is one." },
-  // SUNDAY — THE FOUNDING
-  { time: "Sunday · 4:00 AM", event: "Ice Bath — Day 2", detail: "Who comes back? The ice reveals character on the second morning." },
-  { time: "Sunday · 5:30 AM", event: "Sunrise Commitments", detail: "90-day commitments set. Each brother declares what he will build." },
-  { time: "Sunday · 9:00 AM", event: "The War Room — Co-Founders Charter", detail: "Ali'i and Mana class. Co-founders charter signed. Mākoa B2B, B2C, and P2P worldwide operations. Academies, Akamai Awards for Nā Koa class." },
-  { time: "Sunday · 12:00 PM", event: "The Stones", detail: "Each brother receives his rank stone and challenge coin. Your place in the order is sealed." },
-  { time: "Sunday · 2:00 PM", event: "Mana & Nā Koa Pūpū Party", detail: "Mana class founders host. Nā Koa class welcome. Casual, no reservations needed — Kapolei town, brother-hosted." },
-  { time: "Sunday · 5:00 PM", event: "Founding Dinner — Ali'i Table", detail: "Co-founders and Ali'i class at the table. The last meal as the founding council. No phones. Just presence." },
-  { time: "Sunday · 8:00 PM", event: "The Send", detail: "All classes. Final circle. Bonfire. Departure blessing. The founding fire never goes out." },
+// Updated timeline using TIMELINE constants — all 4 weekends + Palapala drop + Blue Moon
+const EVENT_TIMELINE = [
+  { date: "Apr 21", label: "📜 The Palapala Drops", color: FLAME, detail: "The founding document is public. Read it at makoa.live/palapala" },
+  { date: "May 1", label: "🌕 Full Moon 1 — GATE OPENS · 9AM HST", color: GOLD, detail: "Applications open. XI reviews and places brothers in class." },
+  { date: "May 1–4", label: "Weekend 1 — War Room + Opening Fire", color: GOLD_DIM, detail: "First founding weekend. Ice bath. Oath. Formation." },
+  { date: "May 7", label: "Wed 4AM — Global Leader Call #1", color: BLUE, detail: "All brothers worldwide. 4am HST." },
+  { date: "May 8–11", label: "Weekend 2 — Elite Reset Training", color: GOLD_DIM, detail: "Second founding weekend. Mastermind. Deep work." },
+  { date: "May 14", label: "Wed 4AM — Global Leader Call #2", color: BLUE, detail: "All brothers worldwide. 4am HST." },
+  { date: "May 15–18", label: "Weekend 3 — Mastermind Small Groups", color: GOLD_DIM, detail: "Third founding weekend. Trade academies. Network sessions." },
+  { date: "May 21", label: "Wed 4AM — Global Leader Call #3", color: BLUE, detail: "All brothers worldwide. 4am HST." },
+  { date: "May 29–Jun 1", label: "Weekend 4 — CO-FOUNDERS FOUNDING", color: GOLD, detail: "The final founding weekend. Co-Founders Charter. Blue Moon Sealing." },
+  { date: "May 31", label: "🌕 Blue Moon — THE 48 SEALED · 11:11 PM HST", color: FLAME, detail: "The Malu Trust seals the founding 48. The order is born." },
 ];
 
 const TEAM_PACKS = [
@@ -274,7 +258,6 @@ function Founding48Content() {
 
   useEffect(() => {
     setIsEarlyBird(Date.now() < EARLY_BIRD_CUTOFF.getTime());
-    // Fetch live seat counts from Supabase via API
     fetchLiveSeats().then(setSeats);
   }, []);
 
@@ -377,25 +360,15 @@ function Founding48Content() {
           Bring your team. Choose your weekend. Stay for the founding.
         </p>
 
-        {/* Month at a glance */}
+        {/* Updated month-at-a-glance using TIMELINE constants */}
         <div style={{ maxWidth: 420, margin: "0 auto 24px", animation: "fadeUp 0.9s ease 0.55s both" }}>
-          {[
-            { date: "May 1", label: "🌕 Full Moon 1 — MAYDAY Opening", color: GOLD },
-            { date: "May 7", label: "Wed 4AM — Global Leader Call #1", color: BLUE },
-            { date: "May 8–10", label: "Weekend 1 — War Room + Meet & Greet", color: GOLD_DIM },
-            { date: "May 14", label: "Wed 4AM — Global Leader Call #2", color: BLUE },
-            { date: "May 15–17", label: "Weekend 2 — Elite Reset Training", color: GOLD_DIM },
-            { date: "May 21", label: "Wed 4AM — Global Leader Call #3", color: BLUE },
-            { date: "May 22–24", label: "Weekend 3 — Mastermind Small Groups", color: GOLD_DIM },
-            { date: "May 28", label: "Wed 4AM — Global Leader Call #4", color: BLUE },
-            { date: "May 29–31", label: "🌕 Full Moon 2 — CO-FOUNDERS FOUNDING", color: GOLD },
-          ].map((row) => (
+          {EVENT_TIMELINE.map((row) => (
             <div key={row.date} style={{
               display: "flex", gap: 10, alignItems: "center",
               padding: "6px 12px",
               borderBottom: "1px solid rgba(176,142,80,0.06)",
             }}>
-              <span style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.38rem", minWidth: 70, textAlign: "right" }}>{row.date}</span>
+              <span style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.38rem", minWidth: 80, textAlign: "right" }}>{row.date}</span>
               <span style={{ color: row.color, fontSize: "0.4rem" }}>{row.label}</span>
             </div>
           ))}
@@ -403,7 +376,7 @@ function Founding48Content() {
 
         <div style={{ maxWidth: 400, margin: "0 auto", animation: "fadeUp 0.9s ease 0.6s both", display: "grid", gap: 12 }}>
           <div>
-            <CountdownBlock target={MAY_1} label="🌕 MAYDAY OPENING IN" color={GOLD} />
+            <CountdownBlock target={TIMELINE.GATE_OPENS} label="🌕 GATE OPENS (MAY 1 FULL MOON) IN" color={GOLD} />
           </div>
           <div style={{
             background: "rgba(176,142,80,0.04)",
@@ -411,7 +384,7 @@ function Founding48Content() {
             borderRadius: 8,
             padding: "14px 16px",
           }}>
-            <CountdownBlock target={CO_FOUNDERS_FOUNDING} label="🌕 CO-FOUNDERS FOUNDING (MAY 31) IN" color={GOLD} />
+            <CountdownBlock target={TIMELINE.BLUE_MOON_SEALING} label="🌕 BLUE MOON SEALING (MAY 31) IN" color={GOLD} />
           </div>
         </div>
         <p style={{
@@ -446,16 +419,16 @@ function Founding48Content() {
         ) : (
           <div style={{
             margin: "28px 0 0",
-            background: "rgba(248,81,73,0.08)",
-            border: "1px solid rgba(248,81,73,0.3)",
+            background: "rgba(255,78,31,0.08)",
+            border: "1px solid rgba(255,78,31,0.3)",
             borderRadius: 8,
             padding: "14px 18px",
             display: "flex", alignItems: "center", gap: 12,
           }}>
-            <PulsingDot color={RED} />
+            <PulsingDot color={FLAME} />
             <div>
-              <p style={{ color: RED, fontSize: "0.48rem", letterSpacing: "0.15em", marginBottom: 2 }}>LAST CALL PRICING — APR 16–25</p>
-              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem" }}>Early bird has closed. Remaining seats at last call price.</p>
+              <p style={{ color: FLAME, fontSize: "0.48rem", letterSpacing: "0.15em", marginBottom: 2 }}>🌕 GATE OPENS MAY 1 · FULL MOON · 9AM HST</p>
+              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem" }}>Applications reviewed by XI. Gate opens with the Full Moon.</p>
             </div>
           </div>
         )}
@@ -537,7 +510,29 @@ function Founding48Content() {
               position: "absolute", left: 52, top: 0, bottom: 0,
               width: 1, background: `linear-gradient(to bottom, ${GOLD_20}, transparent)`,
             }} />
-            {TIMELINE.map((item, i) => (
+            {[
+              { time: "Friday · 5:00 PM", event: "Gates Open", detail: "Ali'i and Mana class check-in. Co-founders and founding brothers arrive at Embassy Suites Kapolei." },
+              { time: "Friday · 6:00 PM", event: "War Room Roll Call", detail: "Ali'i and Mana seated. XI opens the founding session. This is where the order begins." },
+              { time: "Friday · 9:00 PM", event: "Brotherhood Circle", detail: "First circle. Lite pūpū. Men speak. No performance. Just truth. No phones." },
+              { time: "Saturday · 3:00 AM", event: "Wake Call", detail: "The van is running. No alarm needed. You know." },
+              { time: "Saturday · 3:33 AM", event: "In the Van", detail: "Brothers moving in the dark. West Oahu. The coast." },
+              { time: "Saturday · 4:00 AM", event: "Ice Bath", detail: "The Flower Moon sets over the Pacific. You go in." },
+              { time: "Saturday · 5:30 AM", event: "The Weight Room", detail: "Not iron — emotional weight. Guided circle: 'What I've been carrying alone.' No phones. No recording. What's said stays in the circle." },
+              { time: "Saturday · 7:00 AM", event: "Morning Formation", detail: "Oath. Silence. The sun rises over the Ko'olau." },
+              { time: "Saturday · 9:00 AM", event: "The War Room — Order & Formation", detail: "The 5D space. How the order works — dues, ranks, the 808 network. Formation structure. This is where all the realms are proved." },
+              { time: "Saturday · 11:00 AM", event: "Team Formation", detail: "War parties assigned. Brothers paired. Your team for the next 90 days." },
+              { time: "Saturday · 1:00 PM", event: "Service Route Workshop", detail: "Trade academies. Skills. Business. What each team builds." },
+              { time: "Saturday · 2:00 PM", event: "Free Time", detail: "Beach. Explore Kapolei. Rest. Bond with your brothers." },
+              { time: "Saturday · 6:00 PM", event: "Ali'i Fire Ceremony", detail: "Co-founders and Ali'i class only. Small fire ceremony. The charter is sealed. The order is founded." },
+              { time: "Saturday · 7:00 PM", event: "Bonfire · All Classes", detail: "Mana and Nā Koa join. Open bonfire. Lite pūpū. Stories. The brotherhood is one." },
+              { time: "Sunday · 4:00 AM", event: "Ice Bath — Day 2", detail: "Who comes back? The ice reveals character on the second morning." },
+              { time: "Sunday · 5:30 AM", event: "Sunrise Commitments", detail: "90-day commitments set. Each brother declares what he will build." },
+              { time: "Sunday · 9:00 AM", event: "The War Room — Co-Founders Charter", detail: "Ali'i and Mana class. Co-founders charter signed. Mākoa B2B, B2C, and P2P worldwide operations. Academies, Akamai Awards for Nā Koa class." },
+              { time: "Sunday · 12:00 PM", event: "The Stones", detail: "Each brother receives his rank stone and challenge coin. Your place in the order is sealed." },
+              { time: "Sunday · 2:00 PM", event: "Mana & Nā Koa Pūpū Party", detail: "Mana class founders host. Nā Koa class welcome. Casual, no reservations needed — Kapolei town, brother-hosted." },
+              { time: "Sunday · 5:00 PM", event: "Founding Dinner — Ali'i Table", detail: "Co-founders and Ali'i class at the table. The last meal as the founding council. No phones. Just presence." },
+              { time: "Sunday · 8:00 PM", event: "The Send", detail: "All classes. Final circle. Bonfire. Departure blessing. The founding fire never goes out." },
+            ].map((item, i) => (
               <div key={i} style={{
                 display: "flex", gap: 16, marginBottom: 20,
                 opacity: showTimeline ? 1 : 0,
@@ -674,68 +669,6 @@ function Founding48Content() {
           </p>
         </div>
 
-        {/* ── HOTEL CUTOFF RAIL ─────────────────────────────────────────────── */}
-        <div style={{
-          marginBottom: 28,
-          background: "rgba(248,81,73,0.04)",
-          border: "1px solid rgba(248,81,73,0.18)",
-          borderRadius: 10,
-          padding: "20px 20px",
-        }}>
-          <p style={{ color: RED, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 14 }}>🏨 HOTEL BLOCK CUTOFFS</p>
-          <div style={{ display: "grid", gap: 10 }}>
-            {[
-              {
-                label: "TEAMS · 2+ BROTHERS",
-                cutoff: "APR 22",
-                detail: "Group room block — coordinate your party before rooms go back to the hotel.",
-                countdown: TEAM_HOTEL_CUTOFF,
-                color: GOLD,
-              },
-              {
-                label: "SOLOS · INDIVIDUAL BEDS",
-                cutoff: "APR 25",
-                detail: "Single beds held in the block. Claim yours before gate close.",
-                countdown: SOLO_HOTEL_CUTOFF,
-                color: BLUE,
-              },
-            ].map(item => {
-              const now = Date.now();
-              const diff = item.countdown.getTime() - now;
-              const days = diff > 0 ? Math.floor(diff / 86400000) : 0;
-              const hours = diff > 0 ? Math.floor((diff % 86400000) / 3600000) : 0;
-              const expired = diff <= 0;
-              return (
-                <div key={item.label} style={{
-                  background: "rgba(0,0,0,0.3)",
-                  border: `1px solid ${item.color}20`,
-                  borderLeft: `3px solid ${item.color}`,
-                  borderRadius: "0 8px 8px 0",
-                  padding: "14px 16px",
-                }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                    <p style={{ color: item.color, fontSize: "0.4rem", letterSpacing: "0.15em" }}>{item.label}</p>
-                    <div style={{
-                      background: expired ? "rgba(248,81,73,0.12)" : `${item.color}15`,
-                      border: `1px solid ${expired ? "rgba(248,81,73,0.3)" : item.color + "30"}`,
-                      borderRadius: 3, padding: "3px 8px",
-                    }}>
-                      <p style={{ color: expired ? RED : item.color, fontSize: "0.38rem", letterSpacing: "0.1em", fontWeight: 700 }}>
-                        {expired ? "CLOSED" : `${days}D ${hours}H LEFT`}
-                      </p>
-                    </div>
-                  </div>
-                  <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem", lineHeight: 1.5, marginBottom: 4 }}>{item.detail}</p>
-                  <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.38rem", letterSpacing: "0.1em" }}>CUTOFF: {item.cutoff} · 11:59 PM HST</p>
-                </div>
-              );
-            })}
-          </div>
-          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.4rem", marginTop: 12, lineHeight: 1.6 }}>
-            Hotel: Embassy Suites by Hilton Kapolei · Rooms held under MĀKOA block. After cutoff, book directly at hotel rate.
-          </p>
-        </div>
-
         {/* ── SECTION DIVIDER ───────────────────────────────────────────────── */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
@@ -770,9 +703,7 @@ function Founding48Content() {
           ))}
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            TIER 1 — 12HR NĀ KOA DAY PASS (GREEN)
-        ══════════════════════════════════════════════════════════════════════ */}
+        {/* ── TIER 1 — NĀ KOA ──────────────────────────────────────────────── */}
         <div style={{
           border: `1px solid ${GREEN_20}`,
           borderRadius: 12,
@@ -816,7 +747,7 @@ function Founding48Content() {
             earlyPrice="$149"
             lastCallPrice="$199"
             earlyLabel="EARLY BIRD · THRU APR 15"
-            lastCallLabel="LAST CALL · APR 16–25"
+            lastCallLabel="LAST CALL · APR 16–MAY 1"
             downToday="$149"
             paymentNote="Pay in full today"
             color={GREEN}
@@ -840,16 +771,9 @@ function Founding48Content() {
               <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${GREEN}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
             ) : "GRAB A NĀ KOA DAY PASS"}
           </button>
-          {isEarlyBird && (
-            <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
-              $149 today · pay in full
-            </p>
-          )}
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            TIER 2 — 24HR MANA MASTERMIND (BLUE, 6 SEATS)
-        ══════════════════════════════════════════════════════════════════════ */}
+        {/* ── TIER 2 — MANA ─────────────────────────────────────────────────── */}
         <div style={{
           border: `1px solid ${BLUE_20}`,
           borderRadius: 12,
@@ -894,7 +818,7 @@ function Founding48Content() {
             earlyPrice="$299"
             lastCallPrice="$399"
             earlyLabel="EARLY BIRD · THRU APR 15"
-            lastCallLabel="LAST CALL · APR 16–25"
+            lastCallLabel="LAST CALL · APR 16–MAY 1"
             downToday="$299"
             paymentNote="Pay in full today"
             color={BLUE}
@@ -918,16 +842,9 @@ function Founding48Content() {
               <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${BLUE}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
             ) : "CLAIM YOUR MANA SEAT"}
           </button>
-          {isEarlyBird && (
-            <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
-              $299 today · pay in full
-            </p>
-          )}
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            TIER 3 — 48HR ALIʻI WAR ROOM (GOLD, 4 SEATS)
-        ══════════════════════════════════════════════════════════════════════ */}
+        {/* ── TIER 3 — ALIʻI WAR ROOM ──────────────────────────────────────── */}
         <div style={{
           border: `1px solid ${GOLD_40}`,
           borderRadius: 12,
@@ -973,7 +890,7 @@ function Founding48Content() {
             earlyPrice="$499"
             lastCallPrice="$699"
             earlyLabel="EARLY BIRD · THRU APR 15"
-            lastCallLabel="LAST CALL · APR 16–25"
+            lastCallLabel="LAST CALL · APR 16–MAY 1"
             downToday="$124.75"
             paymentNote="Balance: 3 payments of $124.75"
             color={GOLD}
@@ -997,16 +914,9 @@ function Founding48Content() {
               <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
             ) : "CLAIM YOUR ALIʻI SEAT"}
           </button>
-          {isEarlyBird && (
-            <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginTop: 8 }}>
-              $124.75 today · 3 payments of $124.75
-            </p>
-          )}
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            TIER 4 — 72HR WAR PARTY VIP (GOLD GLOWING, 5 WAR PARTIES)
-        ══════════════════════════════════════════════════════════════════════ */}
+        {/* ── TIER 4 — WAR PARTY VIP ────────────────────────────────────────── */}
         <div style={{
           border: `2px solid ${GOLD}`,
           borderRadius: 14,
@@ -1036,7 +946,6 @@ function Founding48Content() {
             </p>
           </div>
 
-          {/* War Party badge — parties not seats */}
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 7,
             background: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.3)",
@@ -1048,7 +957,6 @@ function Founding48Content() {
             </span>
           </div>
 
-          {/* What is a War Party */}
           <div style={{
             background: "rgba(176,142,80,0.06)",
             border: `1px solid ${GOLD_20}`,
@@ -1111,16 +1019,9 @@ function Founding48Content() {
               <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
             ) : "CLAIM YOUR WAR PARTY"}
           </button>
-          {isEarlyBird && (
-            <p style={{ textAlign: "center", color: "rgba(232,224,208,0.25)", fontSize: "0.42rem", marginTop: 8 }}>
-              $199.75/brother today · book your party below
-            </p>
-          )}
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            WAR PARTY TEAM PACKS
-        ══════════════════════════════════════════════════════════════════════ */}
+        {/* ── WAR PARTY TEAM PACKS ──────────────────────────────────────────── */}
         <div style={{
           background: "#080b10",
           border: `1px solid ${GOLD_20}`,
@@ -1317,9 +1218,9 @@ function Founding48Content() {
           </p>
         </div>
 
-        {/* ── BOTTOM DUAL COUNTDOWN + CTA ───────────────────────────────────── */}
+        {/* ── BOTTOM COUNTDOWN + CTA ────────────────────────────────────────── */}
         <div style={{ marginBottom: 24 }}>
-          <CountdownBlock target={MAY_1} label="FOUNDING FIRE IN" color={GOLD} />
+          <CountdownBlock target={TIMELINE.GATE_OPENS} label="🌕 GATE OPENS (MAY 1 FULL MOON) IN" color={GOLD} />
         </div>
         {isEarlyBird && (
           <div style={{

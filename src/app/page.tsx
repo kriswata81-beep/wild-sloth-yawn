@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import SocialFooter from "@/components/SocialFooter";
+import { TIMELINE } from "@/lib/timeline";
 
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
@@ -11,10 +12,8 @@ const GOLD_DIM = "rgba(176,142,80,0.5)";
 const RED = "#f85149";
 const GREEN = "#3fb950";
 const BLUE = "#58a6ff";
+const FLAME = "#ff4e1f";
 const BG = "#04060a";
-
-const SOLD_OUT_TARGET = new Date("2026-04-25T23:59:59-10:00");
-const HOTEL_DEADLINE = new Date("2026-04-25T23:59:59-10:00");
 
 function useCountdown(target: Date) {
   const calc = () => {
@@ -34,6 +33,7 @@ function useCountdown(target: Date) {
     setTime(calc());
     const id = setInterval(() => setTime(calc()), 1000);
     return () => clearInterval(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return mounted ? time : null;
 }
@@ -76,8 +76,7 @@ export default function Home() {
   const [tapFlash, setTapFlash] = useState(false);
   const [activeProof, setActiveProof] = useState(0);
   const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const soldOutTime = useCountdown(SOLD_OUT_TARGET);
-  const hotelTime = useCountdown(HOTEL_DEADLINE);
+  const gateTime = useCountdown(TIMELINE.GATE_OPENS);
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 300);
@@ -113,6 +112,7 @@ export default function Home() {
         @keyframes goldGlow { 0%,100% { box-shadow:0 0 16px rgba(176,142,80,0.15); } 50% { box-shadow:0 0 48px rgba(176,142,80,0.45); } }
         @keyframes slideProof { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes breathe { 0%,100% { opacity:0.4; } 50% { opacity:1; } }
+        @keyframes flamePulse { 0%,100% { opacity:0.9; } 50% { opacity:1; } }
         .cta-primary { transition: transform 0.15s, box-shadow 0.15s; }
         .cta-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(176,142,80,0.35); }
         .cta-primary:active { transform: translateY(0); }
@@ -122,21 +122,37 @@ export default function Home() {
         input::placeholder { color: rgba(176,142,80,0.3); }
       `}</style>
 
+      {/* ── ANNOUNCEMENT BANNER ──────────────────────────────────────────────── */}
+      <div style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        background: FLAME,
+        padding: "10px 16px",
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+        opacity: ready ? 1 : 0,
+        transition: "opacity 0.5s ease 0.3s",
+      }}>
+        <p style={{ color: "#fff", fontSize: "12px", letterSpacing: "0.12em", fontWeight: 700, textAlign: "center", lineHeight: 1.4 }}>
+          THE PALAPALA DROPPED APR 21 ·{" "}
+          <a href="/palapala" style={{ color: "#fff", textDecoration: "underline" }}>READ THE MANIFEST</a>
+          {" "}· 🌕 GATE OPENS MAY 1 FULL MOON · BLUE MOON SEALS THE 48
+        </p>
+      </div>
+
       {/* ── URGENCY BAR ──────────────────────────────────────────────────────── */}
-      {soldOutTime && (
+      {gateTime && (
         <div style={{
-          position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+          position: "fixed", top: 38, left: 0, right: 0, zIndex: 99,
           background: "rgba(4,6,10,0.96)",
-          borderBottom: "1px solid rgba(248,81,73,0.25)",
+          borderBottom: "1px solid rgba(255,78,31,0.25)",
           padding: "9px 16px",
           display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
           opacity: ready ? 1 : 0,
           transition: "opacity 0.5s ease 0.6s",
           backdropFilter: "blur(8px)",
         }}>
-          <div style={{ width: 6, height: 6, borderRadius: "50%", background: RED, animation: "pulse 1.4s ease-in-out infinite", flexShrink: 0 }} />
-          <p style={{ color: RED, fontSize: "13px", letterSpacing: "0.1em", fontWeight: 600 }}>
-            GATE CLOSES APR 25 — {soldOutTime.days}D {soldOutTime.hours}H {soldOutTime.minutes}M {soldOutTime.seconds}S
+          <div style={{ width: 6, height: 6, borderRadius: "50%", background: FLAME, animation: "pulse 1.4s ease-in-out infinite", flexShrink: 0 }} />
+          <p style={{ color: FLAME, fontSize: "13px", letterSpacing: "0.1em", fontWeight: 600 }}>
+            🌕 GATE OPENS · FRI MAY 1 · 9AM HST · FULL MOON — {gateTime.days}D {gateTime.hours}H {gateTime.minutes}M {gateTime.seconds}S
           </p>
         </div>
       )}
@@ -148,7 +164,7 @@ export default function Home() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "80px 24px 100px",
+        padding: gateTime ? "120px 24px 100px" : "80px 24px 100px",
         position: "relative",
         background: "radial-gradient(ellipse at 50% 25%, rgba(176,142,80,0.07) 0%, transparent 60%)",
       }}>
@@ -191,7 +207,6 @@ export default function Home() {
             A BROTHERHOOD OF MEN
           </p>
 
-          {/* THE OUTCOME LINE — what you get, then the mood */}
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
@@ -216,17 +231,6 @@ export default function Home() {
           }}>
             Not a gym. Not a podcast. Not a men's group<br />
             that talks about doing things.
-          </p>
-
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            color: GOLD_DIM,
-            fontSize: "1.05rem",
-            marginBottom: 32,
-            opacity: ready ? 1 : 0,
-            transition: "opacity 0.7s ease 0.6s",
-          }}>
           </p>
 
           {/* SEAT COUNTS */}
@@ -288,7 +292,6 @@ export default function Home() {
             display: "grid", gap: 10, marginBottom: 20,
             opacity: ready ? 1 : 0, transition: "opacity 0.7s ease 0.75s",
           }}>
-            {/* I'M THE MAN — goes straight to /gate, no modal */}
             <a
               href="/gate"
               className="cta-primary"
@@ -308,7 +311,6 @@ export default function Home() {
               <span style={{ color: "#000", fontSize: "1.3rem", flexShrink: 0, marginLeft: 12 }}>→</span>
             </a>
 
-            {/* I KNOW A MAN */}
             <a
               href="/sponsor"
               className="cta-secondary"
@@ -329,32 +331,32 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Hotel deadline — only show if still active */}
-          {hotelTime && (
+          {/* Gate opens countdown */}
+          {gateTime && (
             <div style={{
-              background: "rgba(248,81,73,0.05)",
-              border: "1px solid rgba(248,81,73,0.18)",
+              background: "rgba(255,78,31,0.05)",
+              border: "1px solid rgba(255,78,31,0.18)",
               borderRadius: 8,
               padding: "12px 16px",
               marginBottom: 20,
               opacity: ready ? 1 : 0,
               transition: "opacity 0.7s ease 0.85s",
             }}>
-              <p style={{ color: "rgba(248,81,73,0.65)", fontSize: "11px", letterSpacing: "0.15em", marginBottom: 8, textAlign: "center" }}>
-                ⚡ HOTEL ROOMS HELD UNTIL APR 25
+              <p style={{ color: "rgba(255,78,31,0.65)", fontSize: "11px", letterSpacing: "0.15em", marginBottom: 8, textAlign: "center" }}>
+                🌕 GATE OPENS MAY 1 · FULL MOON
               </p>
               <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
                 {[
-                  { val: hotelTime.days, label: "DAYS" },
-                  { val: hotelTime.hours, label: "HRS" },
-                  { val: hotelTime.minutes, label: "MIN" },
-                  { val: hotelTime.seconds, label: "SEC" },
+                  { val: gateTime.days, label: "DAYS" },
+                  { val: gateTime.hours, label: "HRS" },
+                  { val: gateTime.minutes, label: "MIN" },
+                  { val: gateTime.seconds, label: "SEC" },
                 ].map(t => (
                   <div key={t.label} style={{ textAlign: "center", minWidth: 40 }}>
-                    <p style={{ color: RED, fontSize: "1.3rem", fontWeight: 700, lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>
+                    <p style={{ color: FLAME, fontSize: "1.3rem", fontWeight: 700, lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>
                       {String(t.val).padStart(2, "0")}
                     </p>
-                    <p style={{ color: "rgba(248,81,73,0.4)", fontSize: "10px", letterSpacing: "0.1em", marginTop: 2 }}>{t.label}</p>
+                    <p style={{ color: "rgba(255,78,31,0.4)", fontSize: "10px", letterSpacing: "0.1em", marginTop: 2 }}>{t.label}</p>
                   </div>
                 ))}
               </div>
@@ -370,6 +372,7 @@ export default function Home() {
         }}>
           <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", justifyContent: "center", padding: "0 16px" }}>
             {[
+              { href: "/palapala", label: "PALAPALA" },
               { href: "/net", label: "7G NET" },
               { href: "/founding48", label: "MAYDAY" },
               { href: "/trade", label: "TRADE CO." },
@@ -378,7 +381,7 @@ export default function Home() {
               { href: "/portal", label: "PORTAL" },
             ].map((link, i, arr) => (
               <span key={link.href} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <a href={link.href} className="nav-link" style={{ color: "rgba(176,142,80,0.28)", fontSize: "11px", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>
+                <a href={link.href} className="nav-link" style={{ color: link.href === "/palapala" ? "rgba(255,78,31,0.5)" : "rgba(176,142,80,0.28)", fontSize: "11px", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>
                   {link.label}
                 </a>
                 {i < arr.length - 1 && <span style={{ color: "rgba(176,142,80,0.1)", fontSize: "11px" }}>·</span>}
@@ -398,7 +401,6 @@ export default function Home() {
             <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
           </div>
 
-          {/* Rotating testimonial */}
           <div style={{
             background: GOLD_10,
             border: `1px solid ${GOLD_40}`,
@@ -435,7 +437,6 @@ export default function Home() {
                 <p style={{ color: GOLD, fontSize: "13px", letterSpacing: "0.1em" }}>{PROOF[activeProof].name}</p>
                 <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "12px", marginTop: 2 }}>{PROOF[activeProof].role}</p>
               </div>
-              {/* Dots */}
               <div style={{ display: "flex", gap: 6 }}>
                 {PROOF.map((_, i) => (
                   <button
@@ -453,7 +454,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* CTA after proof */}
           <a href="/gate" className="cta-primary" style={{
             display: "flex", alignItems: "center", justifyContent: "center",
             background: GOLD, color: "#000", borderRadius: 10, padding: "16px",
@@ -629,7 +629,7 @@ export default function Home() {
               { val: `${seatsLeft.cofounder} LEFT`, label: "Co-Founder seats", sub: "Aliʻi · $4,997 · 1% equity", color: GOLD },
               { val: `${seatsLeft.mana} of 24`, label: "Mastermind seats", sub: "Mana · $197 · 24hr", color: BLUE },
               { val: `${seatsLeft.nakoa} of 20`, label: "Day Pass seats", sub: "Nā Koa · $97 · 12hr", color: GREEN },
-              { val: "APR 25", label: "Gate Closes", sub: soldOutTime ? `${soldOutTime.days} days left` : "closing soon", color: RED },
+              { val: "MAY 1", label: "Gate Opens", sub: "Full Moon · 9AM HST", color: FLAME },
             ].map(s => (
               <div key={s.label} style={{
                 textAlign: "center", padding: "18px 12px",

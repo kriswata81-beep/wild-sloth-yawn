@@ -6,6 +6,34 @@
 import { SOCIAL_ACCOUNTS, type SocialPlatform } from "./constants";
 
 const BLOTATO_ENDPOINT = "https://backend.blotato.com/v2/posts";
+const SITE_URL = "https://makoa.live";
+
+// Default media per platform — used when caller provides no mediaUrls
+// Videos rotate by day-of-year so the feed doesn't repeat
+const YOUTUBE_VIDEOS = [
+  "/videos/01_crest_reveal.mp4",
+  "/videos/02_the_ice.mp4",
+  "/videos/03_the_oath.mp4",
+  "/videos/04_the_mission.mp4",
+  "/videos/05_the_war_room.mp4",
+  "/videos/06_countdown_12.mp4",
+  "/videos/07_seats_remaining.mp4",
+  "/videos/08_brotherhood_medicine.mp4",
+  "/videos/09_sold_out.mp4",
+  "/videos/10_the_fire.mp4",
+];
+
+function defaultMediaFor(platform: SocialPlatform): string[] {
+  if (platform === "tiktok" || platform === "instagram") {
+    return [`${SITE_URL}/makoa_crest.png`];
+  }
+  if (platform === "youtube") {
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+    const video = YOUTUBE_VIDEOS[dayOfYear % YOUTUBE_VIDEOS.length];
+    return [`${SITE_URL}${video}`];
+  }
+  return [];
+}
 
 export interface BlotatoPostInput {
   platform: SocialPlatform;
@@ -55,6 +83,21 @@ export async function blotatoPost(input: BlotatoPostInput): Promise<BlotatoResul
     };
   }
 
+  // Platform-specific media resolution — inject defaults if caller didn't provide media
+  const rawMedia = input.mediaUrls || [];
+  const media = rawMedia.length > 0 ? rawMedia : defaultMediaFor(input.platform);
+
+  // Final validation after defaults applied
+  if (input.platform === "tiktok" && media.length === 0) {
+    return { ok: false, error: "TikTok requires at least one image or video. Default injection failed." };
+  }
+  if (input.platform === "youtube") {
+    const hasVideo = media.some((u) => /\.(mp4|mov|avi|mkv|webm)/i.test(u));
+    if (!hasVideo) {
+      return { ok: false, error: "YouTube requires a video file URL. Default injection failed." };
+    }
+  }
+
   // Merge defaults + per-post overrides for the target object.
   const targetExtras = { ...account.defaults, ...(input.overrides || {}) };
 
@@ -63,7 +106,7 @@ export async function blotatoPost(input: BlotatoPostInput): Promise<BlotatoResul
       accountId: account.accountId,
       content: {
         text: input.text,
-        mediaUrls: input.mediaUrls || [],
+        mediaUrls: media,
         platform: input.platform,
       },
       target: {

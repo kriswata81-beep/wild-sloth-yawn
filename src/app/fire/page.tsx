@@ -6,6 +6,7 @@ const GOLD_DIM = "rgba(176,142,80,0.55)";
 const GOLD_FAINT = "rgba(176,142,80,0.07)";
 const GOLD_20 = "rgba(176,142,80,0.2)";
 const GOLD_40 = "rgba(176,142,80,0.4)";
+const FLAME = "#ff4e1f";
 const BG = "#04060a";
 
 export default function FirePage() {
@@ -122,6 +123,22 @@ export default function FirePage() {
         @keyframes coronaPulse { 0%,100%{opacity:0.7;transform:scale(1);}50%{opacity:1;transform:scale(1.04);} }
       `}</style>
 
+      {/* Palapala reference box */}
+      <div style={{
+        background: "rgba(255,78,31,0.07)",
+        border: "1px solid rgba(255,78,31,0.25)",
+        borderRadius: 0,
+        padding: "14px 20px",
+        textAlign: "center",
+      }}>
+        <p style={{ color: FLAME, fontSize: "0.44rem", letterSpacing: "0.15em", margin: 0 }}>
+          📜 The Palapala is public. Read the manifest first →{" "}
+          <a href="/palapala" style={{ color: FLAME, textDecoration: "underline", fontWeight: 700 }}>
+            makoa.live/palapala
+          </a>
+        </p>
+      </div>
+
       {/* Hero */}
       <div style={{
         textAlign: "center", padding: "56px 24px 40px",
@@ -158,15 +175,15 @@ export default function FirePage() {
           The Co-Founders Founding closes the month — May 31, under the Blue Moon.
         </p>
 
-        {/* Urgency */}
+        {/* Gate opens — not closes */}
         <div style={{
           display: "inline-flex", alignItems: "center", gap: 8,
-          background: "rgba(224,92,92,0.07)", border: "1px solid rgba(224,92,92,0.25)",
+          background: "rgba(255,78,31,0.07)", border: "1px solid rgba(255,78,31,0.25)",
           borderRadius: 20, padding: "7px 16px",
         }}>
-          <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#e05c5c", animation: "coronaPulse 1.2s ease-in-out infinite" }} />
-          <p style={{ color: "#e05c5c", fontSize: "0.36rem", letterSpacing: "0.16em" }}>
-            CO-FOUNDERS FOUNDING · MAY 31 · SEATS ALMOST GONE
+          <div style={{ width: 6, height: 6, borderRadius: "50%", background: FLAME, animation: "coronaPulse 1.2s ease-in-out infinite" }} />
+          <p style={{ color: FLAME, fontSize: "0.36rem", letterSpacing: "0.16em" }}>
+            🌕 APPLICATIONS OPEN MAY 1 FULL MOON · GATE OPENS 9AM HST
           </p>
         </div>
       </div>
@@ -351,7 +368,7 @@ export default function FirePage() {
             or sponsor a brother →
           </a>
           <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.34rem", marginTop: 12, letterSpacing: "0.15em" }}>
-            GATE CLOSES APRIL 25 · 20 SEATS · WEST OAHU · MAY 1–3
+            🌕 GATE OPENS MAY 1 · FULL MOON · 9AM HST · WEST OAHU
           </p>
         </div>
       </div>

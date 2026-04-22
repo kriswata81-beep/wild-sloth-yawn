@@ -85,6 +85,7 @@ function AcceptedContent() {
   const [tier, setTier] = useState("nakoa");
   const [revealed, setRevealed] = useState(false);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
   const { days, hours, minutes, seconds } = useCountdown();
 
   useEffect(() => {
@@ -100,6 +101,7 @@ function AcceptedContent() {
 
   async function handleDuesCheckout() {
     setLoadingCheckout(true);
+    setCheckoutError("");
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -111,10 +113,12 @@ function AcceptedContent() {
         window.location.href = data.url;
       } else {
         console.error("No checkout URL returned", data);
+        setCheckoutError("Checkout failed — try again or contact Steward 0001 on Telegram.");
         setLoadingCheckout(false);
       }
     } catch (err) {
       console.error("Checkout error:", err);
+      setCheckoutError("Connection error — check your signal and try again.");
       setLoadingCheckout(false);
     }
   }
@@ -355,6 +359,15 @@ function AcceptedContent() {
               </>
             ) : "I COMMIT TO THE ORDER — $124.25 TODAY"}
           </button>
+          {checkoutError && (
+            <div style={{
+              background: "rgba(248,81,73,0.08)", border: "1px solid rgba(248,81,73,0.3)",
+              borderRadius: 6, padding: "12px 14px", marginBottom: 10,
+              color: "#f85149", fontSize: "0.52rem", lineHeight: 1.6, textAlign: "center",
+            }}>
+              {checkoutError}
+            </div>
+          )}
           <p style={{ textAlign: "center", color: "rgba(232,224,208,0.45)", fontSize: "0.72rem", lineHeight: 1.6 }}>
             Founding rate: $497/yr locked for life.<br />
             Your first quarterly 48 hotel gathering is covered.
