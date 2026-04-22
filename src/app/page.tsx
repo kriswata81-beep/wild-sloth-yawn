@@ -9,9 +9,6 @@ const GOLD_40 = "rgba(176,142,80,0.4)";
 const GOLD_20 = "rgba(176,142,80,0.2)";
 const GOLD_10 = "rgba(176,142,80,0.1)";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
-const RED = "#f85149";
-const GREEN = "#3fb950";
-const BLUE = "#58a6ff";
 const FLAME = "#ff4e1f";
 const BG = "#04060a";
 
@@ -51,22 +48,44 @@ function MakoaCrest({ size = 88 }: { size?: number }) {
   );
 }
 
-const PROOF = [
-  {
-    quote: "I built this because I was the man who needed it. No one told me what to do with the weight I was carrying. Brotherhood isn't therapy — it's showing up at 4am when a brother calls. That's Mākoa.",
-    name: "Kris W.",
-    role: "Founder · West Oahu",
-  },
-  {
-    quote: "My wife sent me. I didn't want to go. I came back a different man. She knew before I did.",
-    name: "D.K.",
-    role: "Mana Brother",
-  },
-  {
-    quote: "This isn't therapy. It's not a gym. It's the thing I didn't know I was missing for 15 years.",
-    name: "J.A.",
-    role: "Nā Koa · Day Pass",
-  },
+const SCHEDULE = [
+  { time: "FRI  12pm",   event: "HNL pickup · VIP War Van → Kapolei" },
+  { time: "FRI  5–7pm",  event: "Founder fire + pūpū · gear trade circle" },
+  { time: "FRI  10pm",   event: "Lights out" },
+  { time: "SAT  3:33am", event: "Wake call" },
+  { time: "SAT  4–5am",  event: "Ice bath · elite rest training" },
+  { time: "SAT  9–2pm",  event: "Warroom + Warchest · B2B mastermind" },
+  { time: "SAT  5–7pm",  event: "Founder dinner" },
+  { time: "SAT  10pm",   event: "Lights out" },
+  { time: "SUN  3:33am", event: "Wake call" },
+  { time: "SUN  4–5am",  event: "Ice bath (full-moon bookends only)" },
+  { time: "SUN  9am",    event: "Sealing · beach luau" },
+  { time: "SUN  12pm",   event: "Departure" },
+];
+
+const WEEKENDS = [
+  { moon: "🌕", dates: "MAY 1–3",    label: "FLOWER MOON · Opening · 5 teams",  bookend: true },
+  { moon: "◦",  dates: "MAY 8–10",   label: "Weekend 2 · 5 teams",              bookend: false },
+  { moon: "◦",  dates: "MAY 15–17",  label: "Weekend 3 · 5 teams",              bookend: false },
+  { moon: "🌕", dates: "MAY 29–31",  label: "BLUE MOON · Sealing · 5 teams",   bookend: true },
+];
+
+const SEAT_INCLUDES = [
+  "The full 48-hour founding weekend",
+  "VIP War Van · HNL pickup + weekend transport",
+  "Warroom + Warchest B2B mastermind sessions",
+  "All shared meals: Fri pūpū · Sat dinner · Sun beach luau",
+  "Ice bath + elite rest training",
+  "1% equity in Mākoa Trade Co.",
+  "Charter rights to open your territory's chapter",
+  "Share of the Mayday 48 Aliʻi pool — forever",
+  "Your name on the Palapala · permanent",
+];
+
+const TRADE_SPLIT = [
+  { pct: "80%", label: "TERRITORY", desc: "Stays in your chapter · labor, goods, services" },
+  { pct: "10%", label: "THE ORDER", desc: "Mākoa treasury · infrastructure · 7G Net" },
+  { pct: "10%", label: "MAYDAY 48 POOL", desc: "Split among the 20 founding Aliʻi · forever" },
 ];
 
 export default function Home() {
@@ -74,19 +93,12 @@ export default function Home() {
   const [ready, setReady] = useState(false);
   const [tapCount, setTapCount] = useState(0);
   const [tapFlash, setTapFlash] = useState(false);
-  const [activeProof, setActiveProof] = useState(0);
   const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const gateTime = useCountdown(TIMELINE.GATE_OPENS);
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 300);
     return () => clearTimeout(t);
-  }, []);
-
-  // Auto-rotate proof
-  useEffect(() => {
-    const id = setInterval(() => setActiveProof(p => (p + 1) % PROOF.length), 5000);
-    return () => clearInterval(id);
   }, []);
 
   function handleCrestTap() {
@@ -99,8 +111,6 @@ export default function Home() {
     tapTimer.current = setTimeout(() => setTapCount(0), 2000);
   }
 
-  const seatsLeft = { cofounder: 4, mana: 6, nakoa: 10 };
-
   return (
     <div style={{ minHeight: "100vh", background: BG, color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", overflowX: "hidden" }}>
       <style>{`
@@ -110,16 +120,13 @@ export default function Home() {
         @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
         @keyframes pulse { 0%,100% { opacity:0.5; transform:scale(1); } 50% { opacity:1; transform:scale(1.5); } }
         @keyframes goldGlow { 0%,100% { box-shadow:0 0 16px rgba(176,142,80,0.15); } 50% { box-shadow:0 0 48px rgba(176,142,80,0.45); } }
-        @keyframes slideProof { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes breathe { 0%,100% { opacity:0.4; } 50% { opacity:1; } }
-        @keyframes flamePulse { 0%,100% { opacity:0.9; } 50% { opacity:1; } }
         .cta-primary { transition: transform 0.15s, box-shadow 0.15s; }
         .cta-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(176,142,80,0.35); }
         .cta-primary:active { transform: translateY(0); }
         .cta-secondary { transition: border-color 0.2s, background 0.2s; }
         .cta-secondary:hover { border-color: rgba(176,142,80,0.7) !important; background: rgba(176,142,80,0.07) !important; }
         .nav-link:hover { color: rgba(176,142,80,0.75) !important; }
-        input::placeholder { color: rgba(176,142,80,0.3); }
       `}</style>
 
       {/* ── ANNOUNCEMENT BANNER ──────────────────────────────────────────────── */}
@@ -134,7 +141,7 @@ export default function Home() {
         <p style={{ color: "#fff", fontSize: "12px", letterSpacing: "0.12em", fontWeight: 700, textAlign: "center", lineHeight: 1.4 }}>
           THE PALAPALA DROPPED APR 21 ·{" "}
           <a href="/palapala" style={{ color: "#fff", textDecoration: "underline" }}>READ THE MANIFEST</a>
-          {" "}· 🌕 GATE OPENS MAY 1 FULL MOON · BLUE MOON SEALS THE 48
+          {" "}· 🌕 GATE OPENS MAY 1 FULL MOON
         </p>
       </div>
 
@@ -186,112 +193,64 @@ export default function Home() {
           )}
         </div>
 
-        {/* Brand */}
+        {/* Hero copy */}
         <div style={{
-          textAlign: "center", maxWidth: 380,
+          textAlign: "center", maxWidth: 480,
           opacity: ready ? 1 : 0,
           transform: ready ? "translateY(0)" : "translateY(20px)",
           transition: "opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s",
         }}>
+          {/* Eyebrow */}
+          <p style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: "11px", letterSpacing: "0.28em",
+            color: GOLD, margin: "0 0 16px",
+            opacity: ready ? 1 : 0, transition: "opacity 0.7s ease 0.15s",
+          }}>
+            ◈ FOUNDING MONTH · MAY 2026
+          </p>
+
+          {/* H1 */}
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
-            fontSize: "clamp(2.6rem, 10vw, 3.4rem)",
-            color: GOLD,
-            margin: "0 0 4px",
+            fontSize: "clamp(3rem, 12vw, 4.2rem)",
+            color: "#e8e0d0",
+            margin: "0 0 12px",
             lineHeight: 1,
             letterSpacing: "0.04em",
-          }}>MĀKOA</p>
+            opacity: ready ? 1 : 0,
+            transition: "opacity 0.7s ease 0.2s",
+          }}>MAYDAY 48</p>
 
-          <p style={{ fontSize: "11px", letterSpacing: "0.32em", color: "rgba(176,142,80,0.38)", margin: "0 0 28px" }}>
-            A BROTHERHOOD OF MEN
-          </p>
-
+          {/* Subtitle */}
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
-            color: "#e8e0d0",
-            fontSize: "clamp(1.15rem, 4vw, 1.35rem)",
-            lineHeight: 1.75,
-            marginBottom: 10,
+            fontSize: "clamp(1.1rem, 4vw, 1.35rem)",
+            color: GOLD,
+            margin: "0 0 12px",
+            lineHeight: 1.5,
             opacity: ready ? 1 : 0,
-            transition: "opacity 0.7s ease 0.4s",
+            transition: "opacity 0.7s ease 0.3s",
           }}>
-            A brotherhood of men who build<br />
-            real things together.
+            The Workcation That Builds a Brotherhood
           </p>
 
+          {/* Meta */}
           <p style={{
-            color: "rgba(232,224,208,0.4)",
-            fontSize: "15px",
-            lineHeight: 1.8,
-            marginBottom: 10,
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: "11px", letterSpacing: "0.22em",
+            color: "rgba(232,224,208,0.35)",
+            margin: "0 0 40px",
             opacity: ready ? 1 : 0,
-            transition: "opacity 0.7s ease 0.5s",
+            transition: "opacity 0.7s ease 0.35s",
           }}>
-            Not a gym. Not a podcast. Not a men's group<br />
-            that talks about doing things.
+            WEST OʻAHU · 4 WEEKENDS · 2 FULL MOONS
           </p>
 
-          {/* SEAT COUNTS */}
-          <div style={{
-            display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 24,
-            opacity: ready ? 1 : 0, transition: "opacity 0.7s ease 0.65s",
-          }}>
-            {[
-              { label: "CO-FOUNDER", count: seatsLeft.cofounder, color: GOLD, sub: "Aliʻi · 1% equity" },
-              { label: "MANA", count: seatsLeft.mana, color: BLUE, sub: "Mastermind" },
-              { label: "NĀ KOA", count: seatsLeft.nakoa, color: GREEN, sub: "Day Pass" },
-            ].map(s => (
-              <div key={s.label} style={{
-                padding: "12px 6px",
-                background: `${s.color}08`,
-                border: `1px solid ${s.color}30`,
-                borderRadius: 8,
-                textAlign: "center",
-              }}>
-                <p style={{ color: s.color, fontSize: "1.5rem", fontWeight: 700, lineHeight: 1, marginBottom: 3, fontFamily: "'JetBrains Mono', monospace" }}>{s.count}</p>
-                <p style={{ color: `${s.color}90`, fontSize: "10px", letterSpacing: "0.14em", marginBottom: 2 }}>{s.label}</p>
-                <p style={{ color: "rgba(232,224,208,0.22)", fontSize: "10px" }}>{s.sub}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* TIER LADDER */}
-          <div style={{
-            background: "rgba(176,142,80,0.04)",
-            border: "1px solid rgba(176,142,80,0.1)",
-            borderRadius: 8,
-            padding: "14px 16px",
-            marginBottom: 16,
-            opacity: ready ? 1 : 0,
-            transition: "opacity 0.7s ease 0.7s",
-          }}>
-            <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "10px", letterSpacing: "0.2em", marginBottom: 10, textAlign: "center" }}>MAYDAY ENTRY TIERS</p>
-            {[
-              { tier: "NĀ KOA", price: "$97", desc: "Day Pass · 12 hrs · meet the brothers", color: GREEN },
-              { tier: "MANA", price: "$197", desc: "Mastermind · 24 hrs · deep work", color: BLUE },
-              { tier: "ALIʻI", price: "$4,997", desc: "Co-Founder · 48 hrs · 1% equity", color: GOLD },
-            ].map((t, i, arr) => (
-              <div key={t.tier} style={{
-                display: "flex", justifyContent: "space-between", alignItems: "center",
-                padding: "6px 0",
-                borderBottom: i < arr.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
-              }}>
-                <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
-                  <span style={{ color: t.color, fontSize: "10px", letterSpacing: "0.12em", fontWeight: 600 }}>{t.tier}</span>
-                  <span style={{ color: "rgba(232,224,208,0.25)", fontSize: "10px" }}>{t.desc}</span>
-                </div>
-                <span style={{ color: t.color, fontSize: "13px", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginLeft: 8 }}>{t.price}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* TWO PATHS — PRIMARY CTAs */}
-          <div style={{
-            display: "grid", gap: 10, marginBottom: 20,
-            opacity: ready ? 1 : 0, transition: "opacity 0.7s ease 0.75s",
-          }}>
+          {/* Primary CTA */}
+          <div style={{ opacity: ready ? 1 : 0, transition: "opacity 0.7s ease 0.5s" }}>
             <a
               href="/gate"
               className="cta-primary"
@@ -301,67 +260,17 @@ export default function Home() {
                 borderRadius: 10,
                 padding: "18px 22px",
                 textDecoration: "none",
+                marginBottom: 10,
                 animation: ready ? "goldGlow 4s ease-in-out 1.5s infinite" : "none",
               }}
             >
               <div style={{ textAlign: "left" }}>
-                <p style={{ color: "#000", fontSize: "15px", letterSpacing: "0.18em", fontWeight: 700, marginBottom: 3 }}>I'M THE MAN</p>
-                <p style={{ color: "rgba(0,0,0,0.5)", fontSize: "13px", lineHeight: 1.4 }}>Enter the gate. Get your tier. 12 questions.</p>
+                <p style={{ color: "#000", fontSize: "15px", letterSpacing: "0.18em", fontWeight: 700, marginBottom: 3 }}>ENTER THE GATE →</p>
+                <p style={{ color: "rgba(0,0,0,0.5)", fontSize: "13px", lineHeight: 1.4 }}>Aliʻi Founder Seat · $4,997 · 20 seats total</p>
               </div>
-              <span style={{ color: "#000", fontSize: "1.3rem", flexShrink: 0, marginLeft: 12 }}>→</span>
-            </a>
-
-            <a
-              href="/sponsor"
-              className="cta-secondary"
-              style={{
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-                background: "transparent",
-                border: `1px solid ${GOLD_40}`,
-                borderRadius: 10,
-                padding: "18px 22px",
-                textDecoration: "none",
-              }}
-            >
-              <div style={{ textAlign: "left" }}>
-                <p style={{ color: GOLD, fontSize: "15px", letterSpacing: "0.18em", fontWeight: 700, marginBottom: 3 }}>I KNOW A MAN</p>
-                <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "13px", lineHeight: 1.4 }}>Sponsor him in. He never has to know who.</p>
-              </div>
-              <span style={{ color: GOLD_DIM, fontSize: "1.3rem", flexShrink: 0, marginLeft: 12 }}>→</span>
+              <span style={{ color: "#000", fontSize: "1.3rem", flexShrink: 0, marginLeft: 12 }}>◈</span>
             </a>
           </div>
-
-          {/* Gate opens countdown */}
-          {gateTime && (
-            <div style={{
-              background: "rgba(255,78,31,0.05)",
-              border: "1px solid rgba(255,78,31,0.18)",
-              borderRadius: 8,
-              padding: "12px 16px",
-              marginBottom: 20,
-              opacity: ready ? 1 : 0,
-              transition: "opacity 0.7s ease 0.85s",
-            }}>
-              <p style={{ color: "rgba(255,78,31,0.65)", fontSize: "11px", letterSpacing: "0.15em", marginBottom: 8, textAlign: "center" }}>
-                🌕 GATE OPENS MAY 1 · FULL MOON
-              </p>
-              <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-                {[
-                  { val: gateTime.days, label: "DAYS" },
-                  { val: gateTime.hours, label: "HRS" },
-                  { val: gateTime.minutes, label: "MIN" },
-                  { val: gateTime.seconds, label: "SEC" },
-                ].map(t => (
-                  <div key={t.label} style={{ textAlign: "center", minWidth: 40 }}>
-                    <p style={{ color: FLAME, fontSize: "1.3rem", fontWeight: 700, lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>
-                      {String(t.val).padStart(2, "0")}
-                    </p>
-                    <p style={{ color: "rgba(255,78,31,0.4)", fontSize: "10px", letterSpacing: "0.1em", marginTop: 2 }}>{t.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Bottom nav */}
@@ -373,11 +282,9 @@ export default function Home() {
           <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", justifyContent: "center", padding: "0 16px" }}>
             {[
               { href: "/palapala", label: "PALAPALA" },
-              { href: "/net", label: "7G NET" },
               { href: "/founding48", label: "MAYDAY" },
               { href: "/trade", label: "TRADE CO." },
-              { href: "/cofounder", label: "CO-FOUNDER" },
-              { href: "/mana-makoa", label: "MANA MAKOA" },
+              { href: "/sponsor", label: "SPONSOR" },
               { href: "/portal", label: "PORTAL" },
             ].map((link, i, arr) => (
               <span key={link.href} style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -391,25 +298,154 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ── SOCIAL PROOF ─────────────────────────────────────────────────────── */}
-      <div style={{ background: "linear-gradient(180deg, #04060a 0%, #060810 100%)", borderTop: `1px solid ${GOLD_20}`, padding: "56px 24px" }}>
-        <div style={{ maxWidth: 400, margin: "0 auto" }}>
+      {/* ── STATEMENT ────────────────────────────────────────────────────────── */}
+      <div style={{ background: "#04060a", borderTop: `1px solid ${GOLD_20}`, padding: "64px 24px" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: "#e8e0d0",
+            fontSize: "clamp(1.2rem, 3.5vw, 1.5rem)",
+            lineHeight: 1.85,
+            marginBottom: 16,
+          }}>
+            Mākoa is a brotherhood of men who build real things together.
+          </p>
+          <p style={{
+            color: "rgba(232,224,208,0.45)",
+            fontSize: "15px",
+            lineHeight: 1.85,
+          }}>
+            Not a gym. Not a podcast. Not a men's group that talks about doing things.
+          </p>
+        </div>
+      </div>
 
+      {/* ── PITCH ────────────────────────────────────────────────────────────── */}
+      <div style={{
+        borderTop: `1px solid ${GOLD_20}`,
+        borderBottom: `1px solid ${GOLD_20}`,
+        padding: "56px 24px",
+        background: "linear-gradient(180deg, #04060a 0%, #060810 100%)",
+      }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: GOLD,
+            fontSize: "clamp(1.15rem, 3vw, 1.4rem)",
+            lineHeight: 2.0,
+          }}>
+            Mayday 48 is a once-ever founding event.<br />
+            20 Aliʻi team leaders across the month.<br />
+            48 brothers take the oath. Then the gate closes forever.
+          </p>
+        </div>
+      </div>
+
+      {/* ── 48-HOUR WEEKEND RHYTHM ───────────────────────────────────────────── */}
+      <div style={{ background: "#04060a", borderTop: `1px solid ${GOLD_20}`, padding: "56px 24px" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
             <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-            <p style={{ color: GOLD_DIM, fontSize: "11px", letterSpacing: "0.28em", whiteSpace: "nowrap" }}>BROTHERS SPEAK</p>
+            <p style={{ color: GOLD_DIM, fontSize: "11px", letterSpacing: "0.28em", whiteSpace: "nowrap" }}>THE 48-HOUR WEEKEND RHYTHM</p>
             <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
           </div>
 
           <div style={{
-            background: GOLD_10,
+            background: "rgba(176,142,80,0.03)",
+            border: `1px solid ${GOLD_20}`,
+            borderRadius: 10,
+            overflow: "hidden",
+          }}>
+            {SCHEDULE.map((row, i) => (
+              <div key={i} style={{
+                display: "flex", gap: 0,
+                borderBottom: i < SCHEDULE.length - 1 ? "1px solid rgba(176,142,80,0.06)" : "none",
+              }}>
+                <div style={{
+                  width: 110, flexShrink: 0,
+                  padding: "11px 16px",
+                  background: "rgba(0,0,0,0.25)",
+                  borderRight: "1px solid rgba(176,142,80,0.08)",
+                }}>
+                  <p style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: "11px",
+                    color: GOLD_DIM,
+                    letterSpacing: "0.06em",
+                    whiteSpace: "nowrap",
+                  }}>{row.time}</p>
+                </div>
+                <div style={{ padding: "11px 16px", flex: 1 }}>
+                  <p style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: "12px",
+                    color: "rgba(232,224,208,0.65)",
+                    lineHeight: 1.5,
+                  }}>{row.event}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── THE FOUR WEEKENDS ────────────────────────────────────────────────── */}
+      <div style={{ background: "linear-gradient(180deg, #04060a 0%, #060810 100%)", borderTop: `1px solid ${GOLD_20}`, padding: "56px 24px" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
+            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+            <p style={{ color: GOLD_DIM, fontSize: "11px", letterSpacing: "0.28em", whiteSpace: "nowrap" }}>THE FOUR WEEKENDS</p>
+            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+          </div>
+
+          <div style={{ display: "grid", gap: 8 }}>
+            {WEEKENDS.map((w, i) => (
+              <div key={i} style={{
+                display: "flex", alignItems: "center", gap: 16,
+                padding: "16px 20px",
+                background: w.bookend ? "rgba(176,142,80,0.06)" : "rgba(0,0,0,0.2)",
+                border: `1px solid ${w.bookend ? GOLD_40 : "rgba(176,142,80,0.08)"}`,
+                borderRadius: 8,
+              }}>
+                <span style={{ fontSize: "1.1rem", flexShrink: 0, width: 24, textAlign: "center" }}>{w.moon}</span>
+                <div style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "12px",
+                  color: GOLD,
+                  letterSpacing: "0.1em",
+                  minWidth: 90,
+                  flexShrink: 0,
+                }}>{w.dates}</div>
+                <p style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "12px",
+                  color: w.bookend ? "rgba(232,224,208,0.75)" : "rgba(232,224,208,0.4)",
+                  letterSpacing: "0.06em",
+                }}>{w.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── ALIʻI FOUNDER SEAT ───────────────────────────────────────────────── */}
+      <div style={{ background: "#04060a", borderTop: `1px solid ${GOLD_20}`, padding: "56px 24px" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
+            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+            <p style={{ color: GOLD_DIM, fontSize: "11px", letterSpacing: "0.28em", whiteSpace: "nowrap" }}>THE OFFER</p>
+            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+          </div>
+
+          <div style={{
             border: `1px solid ${GOLD_40}`,
             borderRadius: 12,
+            background: "linear-gradient(135deg, #0d0f14 0%, #080a0f 100%)",
             padding: "28px 24px",
-            marginBottom: 16,
             position: "relative",
             overflow: "hidden",
-            minHeight: 140,
             animation: "goldGlow 5s ease-in-out infinite",
           }}>
             <div style={{
@@ -417,288 +453,234 @@ export default function Home() {
               background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.06) 0%, transparent 70%)",
               pointerEvents: "none",
             }} />
-            <span style={{ color: GOLD_40, fontSize: "2.5rem", lineHeight: 1, display: "block", marginBottom: 12, fontFamily: "Georgia, serif" }}>"</span>
-            <p
-              key={activeProof}
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontStyle: "italic",
-                color: "#e8e0d0",
-                fontSize: "1.1rem",
-                lineHeight: 1.8,
-                marginBottom: 16,
-                animation: "slideProof 0.5s ease forwards",
-              }}
-            >
-              {PROOF[activeProof].quote}
-            </p>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div>
-                <p style={{ color: GOLD, fontSize: "13px", letterSpacing: "0.1em" }}>{PROOF[activeProof].name}</p>
-                <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "12px", marginTop: 2 }}>{PROOF[activeProof].role}</p>
-              </div>
-              <div style={{ display: "flex", gap: 6 }}>
-                {PROOF.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveProof(i)}
-                    style={{
-                      width: 6, height: 6, borderRadius: "50%",
-                      background: i === activeProof ? GOLD : "rgba(176,142,80,0.2)",
-                      border: "none", cursor: "pointer", padding: 0,
-                      transition: "background 0.3s",
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
 
-          <a href="/gate" className="cta-primary" style={{
-            display: "flex", alignItems: "center", justifyContent: "center",
-            background: GOLD, color: "#000", borderRadius: 10, padding: "16px",
-            fontSize: "14px", letterSpacing: "0.2em", textDecoration: "none",
-            fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-          }}>
-            ENTER THE GATE →
-          </a>
-        </div>
-      </div>
-
-      {/* ── WHAT IS MĀKOA ────────────────────────────────────────────────────── */}
-      <div style={{ background: "#04060a", borderTop: `1px solid ${GOLD_20}`, padding: "56px 24px" }}>
-        <div style={{ maxWidth: 400, margin: "0 auto" }}>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
-            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-            <p style={{ color: GOLD_DIM, fontSize: "11px", letterSpacing: "0.28em", whiteSpace: "nowrap" }}>WHAT IS MĀKOA</p>
-            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          </div>
-
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            color: "#e8e0d0",
-            fontSize: "1.35rem",
-            lineHeight: 1.85,
-            marginBottom: 16,
-          }}>
-            A brotherhood of men who show up<br />
-            at 4am when no one is watching.
-          </p>
-
-          <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "15px", lineHeight: 1.85, marginBottom: 32 }}>
-            Mākoa is a structured order — with ranks, territory, a trade network, and a 100-year mission. You earn your place. You hold your brothers. You build something that outlasts you.
-          </p>
-
-          <div style={{ display: "grid", gap: 10, marginBottom: 32 }}>
-            {[
-              { icon: "⚒", label: "A real trade", detail: "Labor, knowledge, territory. The route moves men — not products." },
-              { icon: "🏠", label: "A real house", detail: "Mākoa House — West Oahu. Physical. Permanent. Yours." },
-              { icon: "◈", label: "A real rank", detail: "Nā Koa → Mana → Aliʻi. Earned through the work, not bought." },
-              { icon: "🔥", label: "A real founding", detail: "West Oahu. The entire month of May. 4 weekends. Team leaders worldwide. Co-Founders Founding — May 31, Blue Moon." },
-            ].map(item => (
-              <div key={item.label} style={{
-                display: "flex", alignItems: "flex-start", gap: 16,
-                padding: "16px 18px",
-                background: GOLD_10,
-                border: `1px solid ${GOLD_20}`,
-                borderRadius: 10,
-              }}>
-                <span style={{ fontSize: "1.2rem", flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
-                <div>
-                  <p style={{ color: GOLD, fontSize: "14px", marginBottom: 4, fontWeight: 600 }}>{item.label}</p>
-                  <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "13px", lineHeight: 1.6 }}>{item.detail}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <a href="/founding48" className="cta-primary" style={{
-            display: "block", background: GOLD, color: "#000", borderRadius: 10,
-            padding: "16px", fontSize: "14px", letterSpacing: "0.2em",
-            textDecoration: "none", fontFamily: "'JetBrains Mono', monospace",
-            fontWeight: 700, textAlign: "center", marginBottom: 10,
-          }}>
-            SEE THE FULL EVENT — MAYDAY →
-          </a>
-          <a href="/trade" className="cta-secondary" style={{
-            display: "block", background: "transparent", color: GOLD_DIM,
-            border: `1px solid ${GOLD_20}`, borderRadius: 10, padding: "14px",
-            fontSize: "13px", letterSpacing: "0.15em", textDecoration: "none",
-            fontFamily: "'JetBrains Mono', monospace", textAlign: "center",
-          }}>
-            READ THE TRADE CO. DOCTRINE
-          </a>
-        </div>
-      </div>
-
-      {/* ── SPONSOR SECTION ──────────────────────────────────────────────────── */}
-      <div style={{ background: "linear-gradient(180deg, #04060a 0%, #060810 100%)", borderTop: `1px solid ${GOLD_20}`, padding: "56px 24px" }}>
-        <div style={{ maxWidth: 400, margin: "0 auto" }}>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
-            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-            <p style={{ color: GOLD_DIM, fontSize: "11px", letterSpacing: "0.28em", whiteSpace: "nowrap" }}>KNOW A MAN WHO NEEDS THIS?</p>
-            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          </div>
-
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            color: "#e8e0d0",
-            fontSize: "1.3rem",
-            lineHeight: 1.85,
-            marginBottom: 16,
-          }}>
-            Send him through the gate.<br />
-            He never has to know who sent him.
-          </p>
-
-          <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "15px", lineHeight: 1.85, marginBottom: 24 }}>
-            A wife. A mother. A brother. A friend. You choose his tier. You pay his way. He receives a message:
-          </p>
-
-          <div style={{
-            background: GOLD_10,
-            border: `1px solid ${GOLD_40}`,
-            borderRadius: 10,
-            padding: "20px 22px",
-            marginBottom: 24,
-            textAlign: "center",
-          }}>
+            {/* Title + price */}
+            <p style={{ color: GOLD_DIM, fontSize: "11px", letterSpacing: "0.28em", marginBottom: 8 }}>ALIʻI · FOUNDER SEAT</p>
             <p style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontStyle: "italic",
               color: GOLD,
-              fontSize: "1.1rem",
-              lineHeight: 1.9,
-            }}>
-              "Someone believes in you.<br />
-              You've been sponsored into Mākoa."
-            </p>
-          </div>
-
-          <div style={{ display: "grid", gap: 8, marginBottom: 24 }}>
-            {[
-              { tier: "DAY PASS", price: "$97", detail: "12 hours. One day that changes everything.", color: GREEN },
-              { tier: "MASTERMIND", price: "$197", detail: "24 hours. Deep work. Real brotherhood.", color: BLUE },
-              { tier: "WAR ROOM", price: "$397 deposit", detail: "The full 48 hours. All in.", color: GOLD },
-            ].map(t => (
-              <div key={t.tier} style={{
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-                padding: "14px 18px",
-                background: `${t.color}08`,
-                border: `1px solid ${t.color}28`,
-                borderRadius: 8,
-              }}>
-                <div>
-                  <p style={{ color: t.color, fontSize: "13px", letterSpacing: "0.15em", marginBottom: 3, fontWeight: 600 }}>{t.tier}</p>
-                  <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "13px" }}>{t.detail}</p>
-                </div>
-                <p style={{ color: t.color, fontSize: "1.1rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginLeft: 16 }}>{t.price}</p>
-              </div>
-            ))}
-          </div>
-
-          <a href="/sponsor" className="cta-primary" style={{
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-            background: "transparent", color: GOLD,
-            border: `1px solid ${GOLD_40}`, borderRadius: 10, padding: "16px",
-            fontSize: "14px", letterSpacing: "0.2em", textDecoration: "none",
-            fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-            animation: "goldGlow 4s ease-in-out infinite",
-          }}>
-            SPONSOR A BROTHER →
-          </a>
-        </div>
-      </div>
-
-      {/* ── THE NUMBERS + FINAL CTA ───────────────────────────────────────────── */}
-      <div style={{ background: "#04060a", borderTop: `1px solid ${GOLD_20}`, padding: "56px 24px" }}>
-        <div style={{ maxWidth: 400, margin: "0 auto" }}>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
-            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-            <p style={{ color: GOLD_DIM, fontSize: "11px", letterSpacing: "0.28em", whiteSpace: "nowrap" }}>THE FOUNDING NUMBERS</p>
-            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 28 }}>
-            {[
-              { val: `${seatsLeft.cofounder} LEFT`, label: "Co-Founder seats", sub: "Aliʻi · $4,997 · 1% equity", color: GOLD },
-              { val: `${seatsLeft.mana} of 24`, label: "Mastermind seats", sub: "Mana · $197 · 24hr", color: BLUE },
-              { val: `${seatsLeft.nakoa} of 20`, label: "Day Pass seats", sub: "Nā Koa · $97 · 12hr", color: GREEN },
-              { val: "MAY 1", label: "Gate Opens", sub: "Full Moon · 9AM HST", color: FLAME },
-            ].map(s => (
-              <div key={s.label} style={{
-                textAlign: "center", padding: "18px 12px",
-                background: `${s.color}06`,
-                border: `1px solid ${s.color}25`,
-                borderRadius: 10,
-              }}>
-                <p style={{ color: s.color, fontSize: "1.7rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1, marginBottom: 5 }}>{s.val}</p>
-                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "13px", marginBottom: 3 }}>{s.label}</p>
-                <p style={{ color: "rgba(232,224,208,0.28)", fontSize: "12px" }}>{s.sub}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Final close */}
-          <div style={{
-            background: GOLD_10,
-            border: `1px solid ${GOLD_40}`,
-            borderRadius: 12,
-            padding: "28px 24px",
-            textAlign: "center",
-            animation: "goldGlow 5s ease-in-out infinite",
-            marginBottom: 16,
-          }}>
-            <span style={{ color: GOLD_DIM, fontSize: "1.8rem", display: "block", marginBottom: 16, animation: "breathe 3s ease-in-out infinite" }}>◈</span>
+              fontSize: "clamp(2rem, 8vw, 2.8rem)",
+              lineHeight: 1,
+              margin: "0 0 6px",
+            }}>$4,997</p>
             <p style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontStyle: "italic",
-              color: "#e8e0d0",
-              fontSize: "1.2rem",
-              lineHeight: 1.9,
+              color: "rgba(232,224,208,0.5)",
+              fontSize: "1rem",
+              marginBottom: 24,
+            }}>Bring your team of 3–5 brothers</p>
+
+            {/* Includes */}
+            <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "10px", letterSpacing: "0.2em", marginBottom: 12 }}>YOUR SEAT INCLUDES</p>
+            <div style={{ display: "grid", gap: 7, marginBottom: 24 }}>
+              {SEAT_INCLUDES.map(item => (
+                <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                  <span style={{ color: GOLD, fontSize: "0.5rem", flexShrink: 0, marginTop: 3 }}>—</span>
+                  <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "13px", lineHeight: 1.5 }}>{item}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* What you bring */}
+            <div style={{
+              background: "rgba(0,0,0,0.3)",
+              border: "1px solid rgba(176,142,80,0.08)",
+              borderRadius: 8,
+              padding: "16px 18px",
               marginBottom: 24,
             }}>
-              We don't need hundreds.<br />
-              We need the right men.<br />
-              <span style={{ color: GOLD }}>Are you one of them?</span>
-            </p>
-            <a href="/gate" className="cta-primary" style={{
-              display: "block", background: GOLD, color: "#000",
-              borderRadius: 10, padding: "17px",
-              fontSize: "15px", letterSpacing: "0.22em",
-              textDecoration: "none", fontFamily: "'JetBrains Mono', monospace",
-              fontWeight: 700, textAlign: "center", marginBottom: 10,
+              <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "10px", letterSpacing: "0.2em", marginBottom: 10 }}>WHAT YOU BRING</p>
+              {[
+                "Your team · 3–5 brothers you vouch for",
+                "Your own Kapolei lodging (~$200–300/night)",
+                "Your gear for the trade circle",
+              ].map(item => (
+                <p key={item} style={{ color: "rgba(232,224,208,0.5)", fontSize: "13px", lineHeight: 1.7 }}>· {item}</p>
+              ))}
+            </div>
+
+            {/* Urgency */}
+            <div style={{
+              display: "flex", alignItems: "center", gap: 8,
+              marginBottom: 20,
             }}>
-              ENTER THE GATE
-            </a>
-            <a href="/sponsor" style={{
-              display: "block", color: "rgba(232,224,208,0.3)",
-              fontSize: "13px", letterSpacing: "0.12em",
-              textDecoration: "none", textAlign: "center",
-              padding: "8px",
-            }}>
-              or sponsor a brother →
-            </a>
-            <a href="/fire" style={{
-              display: "block", color: "rgba(176,142,80,0.4)",
-              fontSize: "13px", letterSpacing: "0.1em",
-              textDecoration: "none", textAlign: "center",
-              padding: "6px",
-            }}>
-              🔥 What actually happens inside →
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: FLAME, animation: "pulse 1.4s ease-in-out infinite", flexShrink: 0 }} />
+              <p style={{ color: FLAME, fontSize: "12px", letterSpacing: "0.12em" }}>
+                ◈ 5 seats open · May 1–3 Flower Moon opening weekend
+              </p>
+            </div>
+
+            {/* CTA */}
+            <a
+              href="/gate"
+              className="cta-primary"
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: GOLD, color: "#000",
+                borderRadius: 10, padding: "17px",
+                fontSize: "15px", letterSpacing: "0.22em",
+                textDecoration: "none", fontFamily: "'JetBrains Mono', monospace",
+                fontWeight: 700, textAlign: "center",
+              }}
+            >
+              ENTER THE GATE →
             </a>
           </div>
+        </div>
+      </div>
 
-          <p style={{ textAlign: "center", color: "rgba(232,224,208,0.18)", fontSize: "12px", letterSpacing: "0.12em" }}>
-            Malu Trust · West Oahu · 2026
+      {/* ── MĀKOA TRADE CO. · INTERNATIONAL ─────────────────────────────────── */}
+      <div style={{ background: "linear-gradient(180deg, #04060a 0%, #060810 100%)", borderTop: `1px solid ${GOLD_20}`, padding: "64px 24px" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto" }}>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
+            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+            <p style={{ color: GOLD_DIM, fontSize: "11px", letterSpacing: "0.28em", whiteSpace: "nowrap" }}>MĀKOA TRADE CO. · INTERNATIONAL</p>
+            <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+          </div>
+
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: "#e8e0d0",
+            fontSize: "clamp(1.15rem, 3vw, 1.4rem)",
+            lineHeight: 1.85,
+            textAlign: "center",
+            marginBottom: 8,
+          }}>
+            Mayday 48 opens the first chapters.
           </p>
-          <p style={{ textAlign: "center", color: "rgba(176,142,80,0.35)", fontSize: "13px", letterSpacing: "0.1em", marginTop: 6 }}>
-            makoa.live
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: "rgba(232,224,208,0.5)",
+            fontSize: "clamp(1rem, 2.5vw, 1.2rem)",
+            lineHeight: 1.85,
+            textAlign: "center",
+            marginBottom: 40,
+          }}>
+            Aliʻi return home to found their territory.
+          </p>
+
+          {/* 3-column split */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 40 }}>
+            {TRADE_SPLIT.map(col => (
+              <div key={col.label} style={{
+                padding: "20px 14px",
+                background: "rgba(176,142,80,0.04)",
+                border: `1px solid ${GOLD_20}`,
+                borderRadius: 10,
+                textAlign: "center",
+              }}>
+                <p style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "clamp(1.4rem, 5vw, 2rem)",
+                  fontWeight: 700,
+                  color: GOLD,
+                  lineHeight: 1,
+                  marginBottom: 8,
+                }}>{col.pct}</p>
+                <p style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "10px",
+                  letterSpacing: "0.18em",
+                  color: GOLD_DIM,
+                  marginBottom: 8,
+                }}>{col.label}</p>
+                <p style={{
+                  color: "rgba(232,224,208,0.4)",
+                  fontSize: "12px",
+                  lineHeight: 1.6,
+                }}>{col.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Cities */}
+          <p style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: "11px",
+            letterSpacing: "0.18em",
+            color: "rgba(232,224,208,0.25)",
+            textAlign: "center",
+            marginBottom: 32,
+          }}>
+            Tokyo · Berlin · Vancouver · Lagos · São Paulo · YOUR CITY
+          </p>
+
+          {/* Closer */}
+          <div style={{
+            borderTop: `1px solid ${GOLD_20}`,
+            paddingTop: 32,
+            textAlign: "center",
+          }}>
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              color: "rgba(232,224,208,0.6)",
+              fontSize: "1.05rem",
+              lineHeight: 2.0,
+              marginBottom: 8,
+            }}>
+              Each Mayday 48 Aliʻi earns 0.5% of global Trade Co. revenue · perpetual · inheritable.
+            </p>
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              color: "rgba(232,224,208,0.35)",
+              fontSize: "0.95rem",
+              lineHeight: 1.8,
+              marginBottom: 20,
+            }}>
+              100-year mission. Measured in 2126.
+            </p>
+            <a href="/palapala" style={{
+              color: GOLD_DIM,
+              fontSize: "13px",
+              letterSpacing: "0.12em",
+              textDecoration: "none",
+              fontFamily: "'JetBrains Mono', monospace",
+              borderBottom: `1px solid ${GOLD_20}`,
+              paddingBottom: 2,
+            }}>
+              Read the full Palapala →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* ── FOOTER CTAs ──────────────────────────────────────────────────────── */}
+      <div style={{ background: "#04060a", borderTop: `1px solid ${GOLD_20}`, padding: "40px 24px" }}>
+        <div style={{ maxWidth: 400, margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: 14, alignItems: "center" }}>
+          <a href="/sponsor" style={{
+            color: GOLD_DIM,
+            fontSize: "13px",
+            letterSpacing: "0.14em",
+            textDecoration: "none",
+            fontFamily: "'JetBrains Mono', monospace",
+            transition: "color 0.2s",
+          }}>
+            Sponsor a brother →
+          </a>
+          <a href="/waitlist" style={{
+            color: "rgba(232,224,208,0.3)",
+            fontSize: "13px",
+            letterSpacing: "0.12em",
+            textDecoration: "none",
+            fontFamily: "'JetBrains Mono', monospace",
+            transition: "color 0.2s",
+          }}>
+            Not ready? Waitlist →
+          </a>
+          <p style={{
+            color: "rgba(232,224,208,0.2)",
+            fontSize: "12px",
+            letterSpacing: "0.1em",
+            fontFamily: "'JetBrains Mono', monospace",
+          }}>
+            Overseas team? Ask about War Party Concierge
           </p>
         </div>
       </div>
