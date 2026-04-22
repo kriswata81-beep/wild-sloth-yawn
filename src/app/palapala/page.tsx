@@ -7,513 +7,879 @@ export const metadata: Metadata = {
   openGraph: {
     title: "The Palapala · Mākoa Manifest",
     description:
-      "The founding document of the Mākoa Brotherhood. Under the Malu Trust. Read before you walk through the Gate.",
+      "The founding document of the Mākoa Brotherhood. Under the Malu Trust.",
+    images: ["/makoa_eclipse_crest.png"],
     url: "https://makoa.live/palapala",
     type: "article",
-    images: [{ url: "/makoa_eclipse_crest.png" }],
   },
 };
 
-const GOLD = "#d4af37";
-const FLAME = "#ff4e1f";
-const CREAM = "#f5ecd9";
-const CHARCOAL = "#1a1a1a";
-const DEEP_RED = "#7a0000";
-const MALU = "#9d7fff";
-
 export default function PalapalaPage() {
   return (
-    <div
+    <main
       style={{
+        background: "#1a1a1a",
         minHeight: "100vh",
-        background: CHARCOAL,
-        color: CREAM,
-        fontFamily: "'Cormorant Garamond', Georgia, serif",
+        color: "#f5ecd9",
+        fontFamily: "Georgia, serif",
+        paddingBottom: 120,
       }}
     >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=JetBrains+Mono:wght@400;600;700&display=swap');
-
-        .palapala-body {
-          color: ${CREAM};
-          font-size: clamp(1rem, 2.5vw, 1.15rem);
-          line-height: 1.95;
-          font-family: 'Cormorant Garamond', Georgia, serif;
-        }
-        .palapala-body p { margin: 0 0 1.4em; }
-        .section-num {
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.72rem;
-          letter-spacing: 0.3em;
-          color: ${GOLD};
-          font-variant: small-caps;
-          text-transform: uppercase;
-          display: block;
-          margin-bottom: 8px;
-        }
-        .section-header {
-          font-family: 'Cormorant Garamond', Georgia, serif;
-          font-size: clamp(1.4rem, 4vw, 1.9rem);
-          font-weight: 600;
-          color: ${FLAME};
-          margin: 0 0 20px;
-          line-height: 1.2;
-        }
-        .gold-rule {
-          border: none;
-          border-top: 1px solid ${GOLD};
-          opacity: 0.4;
-          margin: 40px 0;
-        }
-        .callout-routes {
-          background: ${DEEP_RED};
-          color: ${FLAME};
-          text-align: center;
-          padding: 32px 24px;
-          margin: 36px 0;
-          border-radius: 4px;
-          font-size: clamp(1.3rem, 4vw, 1.8rem);
-          font-weight: 600;
-          font-family: 'Cormorant Garamond', Georgia, serif;
-          font-style: italic;
-          line-height: 1.4;
-          letter-spacing: 0.02em;
-        }
-        .sticky-footer {
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          background: rgba(26,26,26,0.97);
-          border-top: 1px solid rgba(212,175,55,0.25);
-          padding: 14px 20px;
-          display: flex;
-          gap: 10px;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
-          z-index: 50;
-          backdrop-filter: blur(8px);
-        }
-        .btn-flame {
-          background: ${FLAME};
-          color: #fff;
-          border: none;
-          padding: 12px 22px;
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.72rem;
-          font-weight: 700;
-          letter-spacing: 0.18em;
-          border-radius: 6px;
-          cursor: pointer;
-          text-decoration: none;
-          display: inline-block;
-          transition: opacity 0.2s;
-        }
-        .btn-flame:hover { opacity: 0.88; }
-        .btn-gold-outline {
-          background: transparent;
-          color: ${GOLD};
-          border: 1px solid ${GOLD};
-          padding: 11px 20px;
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.72rem;
-          font-weight: 600;
-          letter-spacing: 0.15em;
-          border-radius: 6px;
-          cursor: pointer;
-          text-decoration: none;
-          display: inline-block;
-          transition: background 0.2s;
-        }
-        .btn-gold-outline:hover { background: rgba(212,175,55,0.08); }
-        .btn-text-link {
-          color: rgba(245,236,217,0.5);
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.68rem;
-          letter-spacing: 0.12em;
-          text-decoration: none;
-          transition: color 0.2s;
-        }
-        .btn-text-link:hover { color: ${CREAM}; }
-        .malu-callout {
-          background: rgba(157,127,255,0.08);
-          border: 1px solid rgba(157,127,255,0.3);
-          border-left: 3px solid ${MALU};
-          border-radius: 0 6px 6px 0;
-          padding: 16px 20px;
-          margin: 24px 0;
-          color: rgba(245,236,217,0.8);
-          font-size: 0.95rem;
-          line-height: 1.8;
-        }
-        .signing-block {
-          border-top: 1px solid rgba(212,175,55,0.2);
-          padding-top: 32px;
-          margin-top: 48px;
-        }
-        .signing-label {
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.68rem;
-          letter-spacing: 0.28em;
-          color: ${GOLD};
-          font-variant: small-caps;
-          text-transform: uppercase;
-          display: block;
-          margin-bottom: 12px;
-        }
-      `}</style>
-
-      {/* ── TOP MALU TRUST BANNER ─────────────────────────────────────────── */}
+      {/* Top trust banner */}
       <div
         style={{
-          background: "rgba(157,127,255,0.1)",
-          borderBottom: `1px solid rgba(157,127,255,0.25)`,
-          padding: "10px 24px",
+          background: "#0a0606",
+          borderBottom: "1px solid rgba(212,175,55,0.2)",
+          padding: "12px",
           textAlign: "center",
         }}
       >
         <span
           style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "0.65rem",
-            letterSpacing: "0.32em",
-            color: MALU,
+            color: "#d4af37",
+            fontSize: "0.6rem",
+            letterSpacing: "0.35em",
             fontVariant: "small-caps",
-            textTransform: "uppercase",
           }}
         >
-          Under the Malu Trust
+          UNDER THE MALU TRUST
         </span>
       </div>
 
-      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      {/* Hero */}
       <div
         style={{
           textAlign: "center",
           padding: "64px 24px 40px",
-          borderBottom: `1px solid rgba(212,175,55,0.15)`,
-          background: "radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.05) 0%, transparent 65%)",
+          borderBottom: "1px solid rgba(212,175,55,0.15)",
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/makoa_eclipse_crest.png"
-          alt="Mākoa Order Crest"
-          style={{ width: 72, height: 72, borderRadius: "50%", margin: "0 auto 24px", display: "block", border: "1px solid rgba(212,175,55,0.2)" }}
-        />
         <h1
           style={{
-            fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: "clamp(2.8rem, 10vw, 4.2rem)",
-            fontWeight: 600,
-            color: CREAM,
-            margin: "0 0 8px",
-            lineHeight: 1,
-            letterSpacing: "0.06em",
+            fontFamily: "Georgia, serif",
+            fontSize: "clamp(2.5rem, 8vw, 4.5rem)",
+            color: "#f5ecd9",
+            letterSpacing: "0.15em",
+            margin: "0 0 12px",
+            fontWeight: 400,
           }}
         >
           THE PALAPALA
         </h1>
         <p
           style={{
-            fontFamily: "'Cormorant Garamond', Georgia, serif",
             fontStyle: "italic",
-            fontSize: "clamp(1.1rem, 3vw, 1.4rem)",
-            color: GOLD,
-            margin: "0 0 20px",
-            letterSpacing: "0.04em",
+            color: "#d4af37",
+            fontSize: "1.2rem",
+            margin: "0 0 24px",
           }}
         >
           the Mākoa Manifest
         </p>
         <p
           style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "0.68rem",
-            letterSpacing: "0.2em",
             color: "rgba(245,236,217,0.4)",
-            margin: 0,
+            fontSize: "0.65rem",
+            letterSpacing: "0.2em",
           }}
         >
           Dropped April 21, 2026 · West Oʻahu
         </p>
+        <div
+          style={{
+            height: 1,
+            background:
+              "linear-gradient(to right, transparent, #d4af37, transparent)",
+            maxWidth: 400,
+            margin: "32px auto 0",
+          }}
+        />
       </div>
 
-      {/* ── MAIN CONTENT ─────────────────────────────────────────────────── */}
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "48px 24px 160px" }}>
-
-        <hr className="gold-rule" />
-
+      {/* Intro quote */}
+      <div style={{ textAlign: "center", padding: "40px 24px 0" }}>
         <p
           style={{
-            fontFamily: "'Cormorant Garamond', Georgia, serif",
             fontStyle: "italic",
-            fontSize: "clamp(1.1rem, 3vw, 1.3rem)",
-            color: GOLD,
-            textAlign: "center",
-            margin: "0 0 48px",
-            lineHeight: 1.8,
+            color: "rgba(212,175,55,0.7)",
+            fontSize: "1rem",
           }}
         >
-          "Read it twice. Then read it to a brother."
+          &quot;Read it twice. Then read it to a brother.&quot;
+        </p>
+      </div>
+
+      {/* Content */}
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "48px 24px" }}>
+
+        {/* INTRO SECTION */}
+        <p
+          style={{
+            fontSize: "1.05rem",
+            lineHeight: 1.9,
+            marginBottom: 48,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          This document is not a sales page. It is a founding document. The
+          Mākoa Brotherhood publishes it today, in full, before a single
+          application is accepted. We publish it because we are not in the
+          business of selling seats. We are in the business of founding an order
+          that will outlive us by 100 years. If you belong here, the words will
+          land. If you don&apos;t, the words will not land, and you will be free
+          to carry on with your life undisturbed. Either outcome is good. Read
+          before you apply. The Gate opens Friday, May 1, 2026, at 9:00 AM HST
+          — on the Full Moon.
         </p>
 
-        {/* ── SECTION I ─────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: 48 }}>
-          <span className="section-num">I</span>
-          <h2 className="section-header">What This Is</h2>
-          <div className="palapala-body">
-            <p>
-              This is the founding document of the Mākoa Brotherhood. It is not a pitch. It is not a sales page. It is not a manifesto written to impress anyone. It is a record of what we believe, what we are building, and why we are building it — written before the first brother walks through the Gate, so that every brother who comes after knows what they are walking into.
-            </p>
-            <p>
-              The Palapala is the word. The Gate is the door. The Malu Trust is the roof. The Brotherhood is the house.
-            </p>
-            <p>
-              If you are reading this, you were meant to find it. Read it carefully. Read it honestly. If it speaks to you, walk through the Gate. If it doesn't, no hard feelings. This order is not for everyone — and that is by design.
-            </p>
-          </div>
-        </section>
+        {/* SECTION I */}
+        <div
+          style={{
+            color: "#d4af37",
+            fontSize: "0.55rem",
+            letterSpacing: "0.4em",
+            fontVariant: "small-caps",
+            marginBottom: 8,
+          }}
+        >
+          I
+        </div>
+        <h2
+          style={{
+            color: "#ff4e1f",
+            fontSize: "1.3rem",
+            letterSpacing: "0.08em",
+            marginBottom: 20,
+            fontWeight: 500,
+          }}
+        >
+          THE 100-YEAR MISSION
+        </h2>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 48,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          The Mākoa Brotherhood exists to rebuild Hawaiian sovereignty through
+          brotherhood, trade, and sovereign technology — compounded over seven
+          generations. Not a retreat. Not a podcast. Not a gym. Not a men&apos;s
+          group that talks about doing things. A structured order — with ranks,
+          territory, a trade network, and a 100-year horizon. The year is 2026.
+          Our first founding is this May. Our last founding, if we do this
+          right, will not occur in our lifetimes. The men who read this document
+          in 2126 will read it as a historical artifact and decide whether we
+          kept our word. Our word is that we will.
+        </p>
 
-        <hr className="gold-rule" />
+        {/* SECTION II */}
+        <div
+          style={{
+            color: "#d4af37",
+            fontSize: "0.55rem",
+            letterSpacing: "0.4em",
+            fontVariant: "small-caps",
+            marginBottom: 8,
+          }}
+        >
+          II
+        </div>
+        <h2
+          style={{
+            color: "#ff4e1f",
+            fontSize: "1.3rem",
+            letterSpacing: "0.08em",
+            marginBottom: 20,
+            fontWeight: 500,
+          }}
+        >
+          THE NAMED ENEMIES
+        </h2>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          We are not a neutral organization. We fight specific things. We name
+          them out loud so our enemies are clear:
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#f5ecd9" }}>The Jones Act.</strong> Ninety
+          percent of everything consumed in Hawaiʻi arrives by ship, and the
+          Jones Act requires those ships to be US-flagged, US-built, and
+          US-crewed. This triples the cost of goods for eighty-six percent of
+          Hawaiian businesses. We are taxed for the privilege of living on our
+          own islands. This will not continue forever.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#f5ecd9" }}>The attention economy.</strong>{" "}
+          The internet was built to capture your eyes, your minutes, your
+          children&apos;s minds, and the collective focus of the Hawaiian people.
+          It is hostile by design. Every minute spent on an algorithm that does
+          not serve the 100-year mission is a minute stolen from your
+          grandchildren. We are building a sovereign-tech layer that treats the
+          attention economy as an adversary.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#f5ecd9" }}>Extraction.</strong> Hawaiian
+          wealth flows outward. Every dollar that could have stayed in Kapolei,
+          Waiʻanae, Nānākuli, Makaha, Hilo, Kahului, Waimea — instead goes to a
+          mainland corporation, a hedge fund, a tech oligarch. Trade Co. is our
+          answer.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#f5ecd9" }}>Cultural erasure.</strong>{" "}
+          Language, land, and lineage are disappearing because nobody is paid to
+          keep them. Mākoa pays — in rank, in brotherhood, in Hale Stones, in
+          territorial charters — for the work of keeping Hawaiian alive as a
+          living practice, not a museum piece.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 48,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          These are our enemies. We are honest about them because a brotherhood
+          without enemies is a social club.
+        </p>
 
-        {/* ── SECTION II ────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: 48 }}>
-          <span className="section-num">II</span>
-          <h2 className="section-header">Why This Exists</h2>
-          <div className="palapala-body">
-            <p>
-              Men are dying in silence. Not from bullets — from isolation. From carrying weight no one sees. From performing strength while breaking inside. From having no one to call at 2am who will actually pick up.
-            </p>
-            <p>
-              The modern world has given men every tool except the one they need most: each other. We have apps, networks, platforms, and communities — but we do not have brothers. Not real ones. Not the kind who show up at 4am when you call. Not the kind who tell you the truth when you need to hear it. Not the kind who build something with you that outlasts you both.
-            </p>
-            <p>
-              Mākoa was built because one man needed it and couldn't find it. So he built it. And then he found the men who needed it too. And now we are building it together — not as a product, not as a brand, but as an order. A real one. With ranks, territory, a trade network, and a 100-year mission.
-            </p>
-            <p>
-              This is not therapy. This is not a men's group that talks about doing things. This is a brotherhood of men who build real things together — and who show up for each other when the weight gets heavy.
-            </p>
-          </div>
-        </section>
-
-        <hr className="gold-rule" />
-
-        {/* ── SECTION III ───────────────────────────────────────────────── */}
-        <section style={{ marginBottom: 48 }}>
-          <span className="section-num">III</span>
-          <h2 className="section-header">The Structure of the Order</h2>
-          <div className="palapala-body">
-            <p>
-              Mākoa is structured. It has to be. Brotherhood without structure is just friendship — and friendship, while good, does not build houses, run trade routes, or hold a man accountable to his word over years and decades.
-            </p>
-            <p>
-              The order has three classes:
-            </p>
-            <p>
-              <strong style={{ color: GOLD }}>Aliʻi</strong> — the council class. Men who lead. Men who carry vision and access. Men who sit at the founding table and help shape the direction of the order. The Aliʻi class is not bought — it is earned through demonstrated leadership and commitment to the mission.
-            </p>
-            <p>
-              <strong style={{ color: "#58a6ff" }}>Mana</strong> — the builder class. Men who build with their hands and their minds. Tradesmen, craftsmen, professionals, teachers. The Mana class is the backbone of what the order creates. They run the academies. They hold the knowledge. They pass it on.
-            </p>
-            <p>
-              <strong style={{ color: "#3fb950" }}>Nā Koa</strong> — the warrior class. Men who show up. Men who may not have the network yet — but who have the hunger. The Nā Koa class earns its place through action. Through service. Through showing up at 4am when no one is watching.
-            </p>
-            <p>
-              Every man enters through the Gate. Every man answers the 12 questions. XI places you in the class where you belong — not the class you think you deserve, but the class where you will grow the most. Rank is earned. It is not purchased.
-            </p>
-          </div>
-        </section>
-
-        <hr className="gold-rule" />
-
-        {/* ── SECTION IV ────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: 48 }}>
-          <span className="section-num">IV</span>
-          <h2 className="section-header">The Trade Network</h2>
-          <div className="palapala-body">
-            <p>
-              Brotherhood without economics is charity. We are not a charity. We are an order — and orders sustain themselves through work.
-            </p>
-            <p>
-              The Mākoa Trade Network is the economic engine of the brotherhood. It is built on a simple principle: brothers serve brothers, and brothers serve their communities. The route is the mechanism. The route moves labor, knowledge, and service through the network — connecting men who have skills with men who need them, and communities who need work with brothers who can do it.
-            </p>
-
-            <div className="callout-routes">
-              "Routes move people, not products."
-            </div>
-
-            <p>
-              Every brother on a route keeps 80% of what he earns. 10% goes to the house. 10% goes to the order's mission fund. This is not a franchise. This is not a pyramid. This is a trade network built on trust, accountability, and the understanding that when brothers prosper, the order prospers.
-            </p>
-            <p>
-              The Nā Koa Academy runs from 9am to 2pm. It is a tool library, a skills exchange, and a peer-to-peer dispatch system. Brothers teach what they know. Brothers learn what they need. The academy is free to all active brothers.
-            </p>
-            <p>
-              The Mana class runs the mastermind. The Aliʻi class runs the network-to-network sessions. Every class has a role. Every role has a purpose. The order is not a hierarchy of worth — it is a hierarchy of function.
-            </p>
-          </div>
-        </section>
-
-        <hr className="gold-rule" />
-
-        {/* ── SECTION V ─────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: 48 }}>
-          <span className="section-num">V</span>
-          <h2 className="section-header">The Malu Trust</h2>
-          <div className="palapala-body">
-            <p>
-              The Malu Trust is the legal and spiritual roof of the order. Malu means protection in Hawaiian. The Trust protects the brotherhood — its assets, its mission, its members, and its future.
-            </p>
-            <div className="malu-callout">
-              The Malu Trust holds the Mākoa House, the trade network infrastructure, the founding documents, and the 100-year mission. It is not owned by any one man. It is held in trust for the brotherhood — for the brothers who are here now, and for the brothers who will come after us.
-            </div>
-            <p>
-              The founding 48 brothers are the first trustees. Their names will be recorded. Their commitment will be sealed under the Blue Moon — May 31, 2026. This is not a ceremony for ceremony's sake. It is a legal and spiritual act. The order becomes real on that night.
-            </p>
-            <p>
-              The Aliʻi Council will be the governing body of the Trust. They will make decisions about the order's direction, its resources, and its mission. They will be accountable to the brotherhood — not to any outside authority, not to any investor, not to any platform.
-            </p>
-            <p>
-              The Malu Trust is the reason this order can last 100 years. Without it, we are just a group of men who met at a hotel in Kapolei. With it, we are a brotherhood with a legal structure, a physical home, and a mission that outlasts every man in it.
-            </p>
-          </div>
-        </section>
-
-        <hr className="gold-rule" />
-
-        {/* ── SECTION VI ────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: 48 }}>
-          <span className="section-num">VI</span>
-          <h2 className="section-header">The MAYDAY Founding</h2>
-          <div className="palapala-body">
-            <p>
-              The founding of the Mākoa Brotherhood happens in May 2026. The entire month of May. Four weekends. Four Wednesday 4am calls. Two founding dinners. One sealing under the Blue Moon.
-            </p>
-            <p>
-              This is not a retreat. This is not a seminar. This is a month-long summit for team leaders and brotherhood networks worldwide. You bring your Aliʻi, your Mana, your Nā Koa. You choose your weekend. You stay for the founding.
-            </p>
-            <p>
-              The Gate opens May 1 — the Full Moon. Applications are reviewed by XI. Brothers are placed in their class. The founding fire burns every weekend. The Co-Founders Founding closes the month on May 31, under the Blue Moon.
-            </p>
-            <p>
-              <strong style={{ color: GOLD }}>Weekend 1: May 1–4</strong> — The Opening. War Room roll call. First circle. The ice bath. The formation run. The oath.
-            </p>
-            <p>
-              <strong style={{ color: GOLD }}>Weekend 2: May 8–11</strong> — The Forge. Elite reset training. Mastermind small groups. The second ice bath.
-            </p>
-            <p>
-              <strong style={{ color: GOLD }}>Weekend 3: May 15–18</strong> — The Build. Trade academies. Network-to-network sessions. The third ice bath.
-            </p>
-            <p>
-              <strong style={{ color: GOLD }}>Weekend 4: May 29–June 1</strong> — The Founding. The Co-Founders Charter. The Blue Moon Sealing. The order is born.
-            </p>
-            <p>
-              Every man who stands in the founding circle becomes a Founding Brother. Not a member — a founder. The difference matters. Founders build. Members attend. You are a founder.
-            </p>
-          </div>
-        </section>
-
-        <hr className="gold-rule" />
-
-        {/* ── SECTION VII ───────────────────────────────────────────────── */}
-        <section style={{ marginBottom: 48 }}>
-          <span className="section-num">VII</span>
-          <h2 className="section-header">The Oath</h2>
-          <div className="palapala-body">
-            <p>
-              Every brother speaks the same oath. Every brother speaks it out loud. Once.
-            </p>
-            <blockquote
-              style={{
-                borderLeft: `3px solid ${GOLD}`,
-                paddingLeft: 24,
-                margin: "28px 0",
-                fontStyle: "italic",
-                fontSize: "clamp(1.05rem, 2.5vw, 1.2rem)",
-                lineHeight: 2.2,
-                color: CREAM,
-              }}
-            >
-              I stand with the order.<br />
-              I carry my brother's weight as my own.<br />
-              I show up at 4am when no one is watching.<br />
-              I serve before I lead.<br />
-              I build what will outlast me.<br />
-              Under the Malu — I am Makoa.
-            </blockquote>
-            <p>
-              The oath is not a ceremony. It is a commitment. It is the line between the man who attended and the man who belongs. You speak it once. You live it every day after.
-            </p>
-            <p>
-              The order does not ask for perfection. It asks for presence. Show up. Tell the truth. Do the work. Hold your brothers. That is the whole of it.
-            </p>
-            <p>
-              If you break the oath — if you betray a brother, if you take without giving, if you use the order for your own gain at the expense of others — you will be removed. Not with anger. Not with drama. Simply removed. The order protects itself by protecting its brothers.
-            </p>
-            <p>
-              The oath is the foundation. Everything else is built on top of it.
-            </p>
-          </div>
-        </section>
-
-        <hr className="gold-rule" />
-
-        {/* ── SIGNING BLOCK ─────────────────────────────────────────────── */}
-        <div className="signing-block">
-          <span className="signing-label">The Palapala was signed</span>
-          <p style={{ color: "rgba(245,236,217,0.6)", fontSize: "0.9rem", lineHeight: 1.8, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>
-            Published April 21, 2026
-          </p>
-          <p style={{ color: "rgba(245,236,217,0.6)", fontSize: "0.9rem", lineHeight: 1.8, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>
-            Held under the Malu Trust · West Oʻahu · 2026
-          </p>
-          <p style={{ color: GOLD, fontSize: "0.95rem", lineHeight: 1.8, margin: "0 0 16px", fontFamily: "'JetBrains Mono', monospace", fontWeight: 600 }}>
-            Signed by: Makoa Steward 0001 · Founder Trustee
-          </p>
+        {/* CALLOUT — Routes move people, not products */}
+        <div
+          style={{
+            background: "#7a0000",
+            margin: "32px -24px",
+            padding: "48px 32px",
+            textAlign: "center",
+          }}
+        >
           <p
             style={{
-              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              color: "#ff4e1f",
+              fontSize: "clamp(1.4rem, 4vw, 2rem)",
               fontStyle: "italic",
-              color: "rgba(245,236,217,0.35)",
-              fontSize: "0.95rem",
-              lineHeight: 1.8,
-              margin: "0 0 40px",
+              margin: 0,
+              letterSpacing: "0.05em",
             }}
           >
-            [Aliʻi Council signatories to be added post-Founding 48]
+            &quot;Routes move people, not products.&quot;
           </p>
         </div>
 
-        {/* ── BOTTOM MARK ───────────────────────────────────────────────── */}
-        <div style={{ textAlign: "center", paddingBottom: 24 }}>
+        {/* SECTION III */}
+        <div
+          style={{
+            color: "#d4af37",
+            fontSize: "0.55rem",
+            letterSpacing: "0.4em",
+            fontVariant: "small-caps",
+            marginBottom: 8,
+            marginTop: 48,
+          }}
+        >
+          III
+        </div>
+        <h2
+          style={{
+            color: "#ff4e1f",
+            fontSize: "1.3rem",
+            letterSpacing: "0.08em",
+            marginBottom: 20,
+            fontWeight: 500,
+          }}
+        >
+          THE LINEAGE
+        </h2>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          Two hundred years ago, under Kamehameha I, there lived a kūkini named
+          Makoa — a sworn runner who carried messages, trade, and authority
+          across the chiefdoms of Hawaiʻi. The kūkini moved between territories
+          at superhuman speed. They moved not products but people. When a chief
+          needed a decision carried from Hilo to Waiʻanae in hours, a kūkini
+          ran. Mākoa the man ran for the king. Mākoa the Brotherhood runs for
+          the Hawaiian people.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          We are not invoking his name as decoration. We are restarting his work
+          — with the stack available to us in 2026. Our Trade Co. doctrine reads
+          word-for-word as the old kūkini principle: &quot;Routes move people,
+          not products.&quot; This is not a metaphor. In 2026 this means: we
+          will build a mesh network (7G Net) where credentialed brothers move
+          between territories carrying authority, trade, and knowledge. In 2046,
+          it may mean something different. In 2126, we cannot predict — but the
+          principle holds.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 48,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          We are 200 years late. We are starting anyway.
+        </p>
+
+        {/* SECTION IV */}
+        <div
+          style={{
+            color: "#d4af37",
+            fontSize: "0.55rem",
+            letterSpacing: "0.4em",
+            fontVariant: "small-caps",
+            marginBottom: 8,
+          }}
+        >
+          IV
+        </div>
+        <h2
+          style={{
+            color: "#ff4e1f",
+            fontSize: "1.3rem",
+            letterSpacing: "0.08em",
+            marginBottom: 20,
+            fontWeight: 500,
+          }}
+        >
+          THE ORDER
+        </h2>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          The Mākoa Brotherhood is held under the Malu Trust — a sovereign
+          umbrella entity founded in West Oʻahu in 2026. &quot;Malu&quot; means
+          shelter, shade, sanctuary. The Trust is the cover under which the
+          Brotherhood grows.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          Under the Trust, two operating arms:
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#f5ecd9" }}>
+            Ohana Makoa Trade Co.
+          </strong>{" "}
+          — the B2B network. Labor, knowledge, territory. Brothers serving
+          brothers across chartered territories. Routes move people, not
+          products.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#f5ecd9" }}>Makoa Order</strong> — the B2C
+          public layer. The app every registered brother runs. Commerce, news,
+          daily updates, event coordination. Built on the 7G Net.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          Both arms report to the Aliʻi Council, which holds fiduciary authority
+          under the Trust.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          The ranks of the Brotherhood, earned not bought:
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 8,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#d4af37" }}>Nā Koa</strong> — The warriors.
+          Entry tier. Civilian who has walked the Gate. Lifetime standing.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 8,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#d4af37" }}>Mana</strong> — The empowered.
+          Mastermind-level brothers. Voice in one Brotherhood circle.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 8,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#d4af37" }}>War Room</strong> — Pre-Aliʻi
+          track. Elite Reset Training completed.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#d4af37" }}>Aliʻi</strong> — The chiefs.
+          Co-founders. One percent equity in the Brotherhood. Hale Stone path to
+          physical ownership of Mākoa Houses. Territorial charter eligibility.
+          Seat on the Council for life.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 48,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          The Mākoa Oath is taken at every rank. Revocable only by the Council.
+        </p>
+
+        {/* SECTION V */}
+        <div
+          style={{
+            color: "#d4af37",
+            fontSize: "0.55rem",
+            letterSpacing: "0.4em",
+            fontVariant: "small-caps",
+            marginBottom: 8,
+          }}
+        >
+          V
+        </div>
+        <h2
+          style={{
+            color: "#ff4e1f",
+            fontSize: "1.3rem",
+            letterSpacing: "0.08em",
+            marginBottom: 20,
+            fontWeight: 500,
+          }}
+        >
+          THE FOUNDING OF THE 48
+        </h2>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          The Mayday Summit 2026 is the founding event. Four weekends. May 1
+          through May 31. Oʻahu, West side. The full moon opens the month (May
+          1). The blue moon (May 31, 11:11 PM HST) seals it.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          Forty-eight brothers, ever. After the blue moon, the Founding 48 is
+          closed. There will be cohorts after. There will be no second Founding
+          48.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          Each weekend is structured for war and for rest. Ice at four in the
+          morning. War Room from nine to two. Territory drives, fire circles,
+          open mats, brotherhood dinners. A Founder Private Luau at the Mākoa
+          House under the Sunday sun.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          Aliʻi stay five days, Tuesday to Sunday. Lodging at Embassy Suites
+          Kapolei is included. Every meal on the table. The ring, the patch, the
+          coin, the manual — handed to you by name, in front of the cohort.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 48,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          Mana and War Room tier brothers come for their chosen weekend, their
+          chosen hours. Nā Koa come for a day. Overseas brothers fly themselves
+          in. War parties of three to five men, landing together at HNL, arriving
+          together at the Mākoa House, returning home together with a weekend
+          that will outlast them.
+        </p>
+
+        {/* SECTION VI */}
+        <div
+          style={{
+            color: "#d4af37",
+            fontSize: "0.55rem",
+            letterSpacing: "0.4em",
+            fontVariant: "small-caps",
+            marginBottom: 8,
+          }}
+        >
+          VI
+        </div>
+        <h2
+          style={{
+            color: "#ff4e1f",
+            fontSize: "1.3rem",
+            letterSpacing: "0.08em",
+            marginBottom: 20,
+            fontWeight: 500,
+          }}
+        >
+          SHIPS ARE BURNT
+        </h2>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          There is an old military custom: when a commander commits a force to a
+          campaign from which retreat is unacceptable, he orders the ships that
+          brought them burned on the beach. There is nowhere to go back to. The
+          only direction is forward.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          The Mākoa founding is run on this principle. The Aliʻi who take the
+          oath do not hedge. The Founding 48 is not a test drive. Brothers who
+          are circling, measuring, considering — belong in the Sponsorship path,
+          the waitlist, the next cohort (Ka Lani 48, June 2026 open). Brothers
+          who walk through this Gate walk without retreat.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          Ranks can be revoked by the Council, but the oath is taken forever.
+          The 1% equity in the Trust passes to your family, your territory, your
+          successor — under conditions set by the Council, never transferable to
+          outside market.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 48,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          This is not theatrics. This is a design decision. Brotherhoods without
+          irrevocable commitment become social clubs in one generation. Ours is a
+          100-year order. We will not become a social club.
+        </p>
+
+        {/* SECTION VII */}
+        <div
+          style={{
+            color: "#d4af37",
+            fontSize: "0.55rem",
+            letterSpacing: "0.4em",
+            fontVariant: "small-caps",
+            marginBottom: 8,
+          }}
+        >
+          VII
+        </div>
+        <h2
+          style={{
+            color: "#ff4e1f",
+            fontSize: "1.3rem",
+            letterSpacing: "0.08em",
+            marginBottom: 20,
+            fontWeight: 500,
+          }}
+        >
+          THE INVITATION
+        </h2>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          If you have read this far, there are three paths.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#f5ecd9" }}>THE GATE</strong> — for you.
+          Applications open Friday, May 1, 2026 at 9:00 AM HST — on the Full
+          Moon — at makoa.live/48. Pick your weekend. Pick your rank. Name your
+          war party if you bring one. Kris (Makoa Steward 0001) calls every
+          applicant within 48 hours. Brother-to-brother. No pitch. We confirm
+          seats — we do not sell them. Between now (April 21, Palapala drop) and
+          May 1 (Gate opens): 10 days of reading, circling, war-party forming.
+          You have time to bring your brothers to this decision with you.
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 24,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#f5ecd9" }}>SPONSORSHIP</strong> — for a
+          brother you know. Someone in your life belongs here and will not ask.
+          makoa.live/sponsor — pay his seat, anonymously. He receives one
+          message: &quot;Someone believes in you.&quot;
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            lineHeight: 1.9,
+            marginBottom: 64,
+            color: "rgba(245,236,217,0.85)",
+          }}
+        >
+          <strong style={{ color: "#f5ecd9" }}>THE WAITLIST</strong> — for the
+          next cohort. Founding 48 fills by the Blue Moon (May 31). After that,
+          the Founding is closed. The next cohort — Ka Lani 48 — opens June 1,
+          2026. Add your name at makoa.live/waitlist to receive first notice.
+        </p>
+
+        {/* Signing block */}
+        <div
+          style={{
+            borderTop: "1px solid rgba(212,175,55,0.2)",
+            paddingTop: 48,
+            marginTop: 64,
+            textAlign: "center",
+          }}
+        >
           <p
             style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "0.72rem",
-              letterSpacing: "0.28em",
-              color: FLAME,
-              fontWeight: 700,
+              color: "#d4af37",
+              fontSize: "0.55rem",
+              letterSpacing: "0.4em",
+              marginBottom: 20,
             }}
           >
-            ROOT · SNAP · PEG · DNA · ECHO
+            THE PALAPALA WAS SIGNED
+          </p>
+          <p
+            style={{
+              color: "rgba(245,236,217,0.6)",
+              fontSize: "0.75rem",
+              lineHeight: 2,
+            }}
+          >
+            Published April 21, 2026
+            <br />
+            Held under the Malu Trust · West Oʻahu · 2026
+            <br />
+            Signed by:{" "}
+            <strong style={{ color: "#f5ecd9" }}>
+              Makoa Steward 0001
+            </strong>{" "}
+            — Founder Trustee
+            <br />
+            <em style={{ opacity: 0.5 }}>
+              [Aliʻi Council signatories to be added post-Founding 48]
+            </em>
           </p>
         </div>
+
+        {/* ROOT line */}
+        <p
+          style={{
+            textAlign: "center",
+            color: "#ff4e1f",
+            fontWeight: 700,
+            letterSpacing: "0.3em",
+            fontSize: "0.7rem",
+            marginTop: 40,
+          }}
+        >
+          ROOT · SNAP · PEG · DNA · ECHO
+        </p>
       </div>
 
-      {/* ── STICKY FOOTER CTAs ────────────────────────────────────────────── */}
-      <div className="sticky-footer">
-        <a href="/gate" className="btn-flame">
-          Walk through the Gate →
+      {/* Sticky footer */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          background: "rgba(26,26,26,0.96)",
+          backdropFilter: "blur(8px)",
+          borderTop: "1px solid rgba(212,175,55,0.15)",
+          padding: "12px 20px",
+          display: "flex",
+          gap: 12,
+          justifyContent: "center",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <a
+          href="/gate"
+          style={{
+            background: "#ff4e1f",
+            color: "#1a1a1a",
+            padding: "10px 24px",
+            borderRadius: 6,
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: "0.55rem",
+            letterSpacing: "0.2em",
+            fontWeight: 700,
+            textDecoration: "none",
+          }}
+        >
+          WALK THROUGH THE GATE
         </a>
-        <a href="/sponsor" className="btn-gold-outline">
-          Sponsor a brother
+        <a
+          href="/sponsor"
+          style={{
+            border: "1px solid #d4af37",
+            color: "#d4af37",
+            padding: "10px 20px",
+            borderRadius: 6,
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: "0.55rem",
+            letterSpacing: "0.2em",
+            textDecoration: "none",
+            background: "transparent",
+          }}
+        >
+          SPONSOR A BROTHER
         </a>
-        <a href="/founding48" className="btn-text-link">
-          Join the Waitlist
+        <a
+          href="/founding48"
+          style={{
+            color: "rgba(245,236,217,0.4)",
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: "0.5rem",
+            letterSpacing: "0.15em",
+            textDecoration: "none",
+          }}
+        >
+          Join the Waitlist →
         </a>
       </div>
-    </div>
+    </main>
   );
 }
