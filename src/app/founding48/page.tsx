@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { ProductId } from "@/lib/stripe";
 import { TIMELINE } from "@/lib/timeline";
 
 const GOLD = "#b08e50";
@@ -9,47 +8,8 @@ const GOLD_40 = "rgba(176,142,80,0.4)";
 const GOLD_20 = "rgba(176,142,80,0.2)";
 const GOLD_10 = "rgba(176,142,80,0.1)";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
-const BLUE = "#58a6ff";
-const BLUE_20 = "rgba(88,166,255,0.2)";
-const BLUE_10 = "rgba(88,166,255,0.1)";
-const GREEN = "#3fb950";
-const GREEN_20 = "rgba(63,185,80,0.2)";
-const GREEN_10 = "rgba(63,185,80,0.1)";
-const RED = "#f85149";
 const FLAME = "#ff4e1f";
 const BG = "#04060a";
-
-// ─── Seat defaults (overridden by live Supabase data) ────────────────────────
-const WAR_PARTY_TOTAL = 2;
-const WAR_ROOM_TOTAL = 4;
-const MASTERMIND_TOTAL = 6;
-const DAYPASS_TOTAL = 10;
-
-type SeatCounts = {
-  warPartyFilled: number;
-  warRoomFilled: number;
-  mastermindFilled: number;
-  daypassFilled: number;
-};
-
-async function fetchLiveSeats(): Promise<SeatCounts> {
-  try {
-    const res = await fetch("/api/checkout", { method: "GET" });
-    if (!res.ok) throw new Error("seat fetch failed");
-    const data = await res.json();
-    const s = data.seats || {};
-    return {
-      warPartyFilled: s["MAYDAY War Party VIP"]?.filled ?? 0,
-      warRoomFilled: s["MAYDAY Aliʻi War Room"]?.filled ?? 0,
-      mastermindFilled: s["MAYDAY Mana Mastermind"]?.filled ?? 0,
-      daypassFilled: s["MAYDAY Nā Koa Day Pass"]?.filled ?? 0,
-    };
-  } catch {
-    return { warPartyFilled: 0, warRoomFilled: 0, mastermindFilled: 0, daypassFilled: 0 };
-  }
-}
-
-const EARLY_BIRD_CUTOFF = new Date("2026-04-15T23:59:59-10:00");
 
 function useCountdown(target: Date) {
   const zero = { days: 0, hours: 0, minutes: 0, seconds: 0 };
@@ -91,7 +51,7 @@ function CountdownBlock({ target, label, color = GOLD }: { target: Date; label: 
         ].map(t => (
           <div key={t.label} style={{
             flex: 1, background: "rgba(0,0,0,0.5)",
-            border: `1px solid rgba(176,142,80,0.12)`,
+            border: "1px solid rgba(176,142,80,0.12)",
             borderRadius: 6, padding: "12px 4px", textAlign: "center",
           }}>
             <p style={{
@@ -106,387 +66,228 @@ function CountdownBlock({ target, label, color = GOLD }: { target: Date; label: 
   );
 }
 
-function SeatBar({ filled, total, color }: { filled: number; total: number; color: string }) {
-  const pct = (filled / total) * 100;
-  const remaining = total - filled;
-  return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-        <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem" }}>{filled} claimed</span>
-        <span style={{ color: remaining <= 3 ? RED : color, fontSize: "0.44rem", fontWeight: remaining <= 3 ? 700 : 400 }}>
-          {remaining} of {total} remaining
-        </span>
-      </div>
-      <div style={{ height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2 }}>
-        <div style={{ width: `${pct}%`, height: "100%", background: color, borderRadius: 2, transition: "width 1s ease" }} />
-      </div>
-    </div>
-  );
-}
-
-function PulsingDot({ color = RED }: { color?: string }) {
-  return (
-    <div style={{ width: 7, height: 7, borderRadius: "50%", background: color, animation: "urgencyPulse 1.5s ease-in-out infinite", flexShrink: 0 }} />
-  );
-}
-
-function SeatBadge({ remaining, total, label = "SEATS" }: { remaining: number; total: number; label?: string; color?: string }) {
-  return (
-    <div style={{
-      display: "inline-flex", alignItems: "center", gap: 7,
-      background: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.3)",
-      borderRadius: 4, padding: "5px 11px", marginBottom: 16,
-    }}>
-      <PulsingDot />
-      <span style={{ color: RED, fontSize: "0.42rem", letterSpacing: "0.15em" }}>
-        {remaining} OF {total} {label} REMAINING
-      </span>
-    </div>
-  );
-}
-
-function PricingBlock({
-  isEarlyBird,
-  earlyPrice,
-  lastCallPrice,
-  earlyLabel,
-  lastCallLabel,
-  downToday,
-  paymentNote,
-  color,
-  bg,
-  border,
-}: {
-  isEarlyBird: boolean;
-  earlyPrice: string;
-  lastCallPrice: string;
-  earlyLabel?: string;
-  lastCallLabel?: string;
-  downToday?: string;
-  paymentNote?: string;
-  color: string;
-  bg: string;
-  border: string;
-}) {
-  return (
-    <div style={{ background: bg, border: `1px solid ${border}`, borderRadius: 8, padding: "16px", marginBottom: 18 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-        <div>
-          <p style={{
-            color: isEarlyBird ? color : "rgba(232,224,208,0.25)",
-            fontSize: "0.38rem", letterSpacing: "0.12em", marginBottom: 3,
-            textDecoration: isEarlyBird ? "none" : "line-through",
-          }}>
-            {earlyLabel || "EARLY BIRD · THRU APR 15"}
-          </p>
-          <p style={{
-            color: isEarlyBird ? color : "rgba(232,224,208,0.25)",
-            fontSize: "1.9rem", fontWeight: 700, lineHeight: 1,
-            fontFamily: "'JetBrains Mono', monospace",
-            textDecoration: isEarlyBird ? "none" : "line-through",
-          }}>{earlyPrice}</p>
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <p style={{
-            color: isEarlyBird ? "rgba(232,224,208,0.3)" : color,
-            fontSize: "0.38rem", letterSpacing: "0.12em", marginBottom: 3,
-          }}>
-            {lastCallLabel || "LAST CALL · APR 16–MAY 1"}
-          </p>
-          <p style={{
-            color: isEarlyBird ? "rgba(232,224,208,0.3)" : color,
-            fontSize: isEarlyBird ? "1.1rem" : "1.9rem",
-            fontWeight: isEarlyBird ? 400 : 700,
-            lineHeight: 1,
-            fontFamily: "'JetBrains Mono', monospace",
-          }}>{lastCallPrice}</p>
-        </div>
-      </div>
-      {(downToday || paymentNote) && (
-        <>
-          <div style={{ height: 1, background: border, margin: "10px 0" }} />
-          {downToday && (
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem" }}>
-                {isEarlyBird ? "25% down today" : "Pay in full"}
-              </span>
-              <span style={{ color, fontSize: "0.65rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>
-                {isEarlyBird ? downToday : lastCallPrice}
-              </span>
-            </div>
-          )}
-          {paymentNote && isEarlyBird && (
-            <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.42rem", marginTop: 4 }}>{paymentNote}</p>
-          )}
-        </>
-      )}
-    </div>
-  );
-}
-
-// Updated timeline using TIMELINE constants — all 4 weekends + Palapala drop + Blue Moon
-const EVENT_TIMELINE = [
-  { date: "Apr 21", label: "📜 The Palapala Drops", color: FLAME, detail: "The founding document is public. Read it at makoa.live/palapala" },
-  { date: "May 1", label: "🌕 Full Moon 1 — GATE OPENS · 9AM HST", color: GOLD, detail: "Applications open. XI reviews and places brothers in class." },
-  { date: "May 1–4", label: "Weekend 1 — War Room + Opening Fire", color: GOLD_DIM, detail: "First founding weekend. Ice bath. Oath. Formation." },
-  { date: "May 7", label: "Wed 4AM — Global Leader Call #1", color: BLUE, detail: "All brothers worldwide. 4am HST." },
-  { date: "May 8–11", label: "Weekend 2 — Elite Reset Training", color: GOLD_DIM, detail: "Second founding weekend. Mastermind. Deep work." },
-  { date: "May 14", label: "Wed 4AM — Global Leader Call #2", color: BLUE, detail: "All brothers worldwide. 4am HST." },
-  { date: "May 15–18", label: "Weekend 3 — Mastermind Small Groups", color: GOLD_DIM, detail: "Third founding weekend. Trade academies. Network sessions." },
-  { date: "May 21", label: "Wed 4AM — Global Leader Call #3", color: BLUE, detail: "All brothers worldwide. 4am HST." },
-  { date: "May 29–Jun 1", label: "Weekend 4 — CO-FOUNDERS FOUNDING", color: GOLD, detail: "The final founding weekend. Co-Founders Charter. Blue Moon Sealing." },
-  { date: "May 31", label: "🌕 Blue Moon — THE 48 SEALED · 11:11 PM HST", color: FLAME, detail: "The Malu Trust seals the founding 48. The order is born." },
+const WEEKENDS = [
+  {
+    num: "01",
+    dates: "May 1–3",
+    moon: "🌕 Flower Moon",
+    label: "GATE OPENS · WEEKEND 1",
+    detail: "The founding month begins. Gate opens May 1 at 9AM HST. First 5 Aliʻi teams arrive. Ice bath. War Room. Founding fire.",
+    color: GOLD,
+    border: GOLD_40,
+  },
+  {
+    num: "02",
+    dates: "May 8–10",
+    moon: "",
+    label: "WEEKEND 2",
+    detail: "Second cohort of 5 Aliʻi teams. Elite Reset Training. Mastermind. Territory mapping.",
+    color: GOLD_DIM,
+    border: GOLD_20,
+  },
+  {
+    num: "03",
+    dates: "May 15–17",
+    moon: "",
+    label: "WEEKEND 3",
+    detail: "Third cohort of 5 Aliʻi teams. Trade academies. Network sessions. Small group deep work.",
+    color: GOLD_DIM,
+    border: GOLD_20,
+  },
+  {
+    num: "04",
+    dates: "May 29–31",
+    moon: "🌕 Blue Moon",
+    label: "WEEKEND 4 · SEALING",
+    detail: "Final cohort of 5 Aliʻi teams. The Founding 48 is sealed at 11:11 PM HST on the Blue Moon. The order is born.",
+    color: GOLD,
+    border: GOLD_40,
+  },
 ];
 
-const TEAM_PACKS = [
-  { label: "War Party VIP · Party of 2", perPerson: "$749/each", total: "$1,498", productId: "TEAM_WAR_PARTY_2" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK PARTY OF 2" },
-  { label: "War Party VIP · Party of 3", perPerson: "$699/each", total: "$2,097", productId: "TEAM_WAR_PARTY_3" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK PARTY OF 3" },
-  { label: "War Party VIP · Party of 4", perPerson: "$649/each", total: "$2,596", productId: "TEAM_WAR_PARTY_4" as ProductId, color: GOLD, border: GOLD_40, btnLabel: "BOOK PARTY OF 4" },
-  { label: "48HR Aliʻi War Room · Team of 3", perPerson: "$449/each", total: "$1,347", productId: "TEAM_WAR_ROOM_3" as ProductId, color: GOLD, border: GOLD_20, btnLabel: "BOOK TEAM OF 3" },
-  { label: "24HR Mana Mastermind · Team of 3", perPerson: "$265/each", total: "$797", productId: "TEAM_MASTERMIND_3" as ProductId, color: BLUE, border: BLUE_20, btnLabel: "BOOK TEAM OF 3" },
+const RHYTHM = [
+  { time: "Fri · 12PM", event: "HNL Pickup", detail: "Mākoa van collects the war party from HNL. West Oahu bound." },
+  { time: "Fri · 2PM", event: "Check-In · Embassy Suites Kapolei", detail: "Room keys. Class assignment. Gear pack. No phones after this." },
+  { time: "Fri · 6PM", event: "War Room Roll Call", detail: "All Aliʻi seated. XI opens the founding session. The order begins." },
+  { time: "Fri · 9PM", event: "Brotherhood Circle", detail: "First circle. Lite pūpū. Men speak. No performance. Just truth." },
+  { time: "Sat · 3AM", event: "Wake Call", detail: "The van is running. No alarm needed. You know." },
+  { time: "Sat · 4AM", event: "Ice Bath · Ko Olina", detail: "The moon sets over the Pacific. You go in. The cold is the ritual." },
+  { time: "Sat · 7AM", event: "Morning Formation", detail: "Oath. Silence. The sun rises over the Koʻolau." },
+  { time: "Sat · 9AM", event: "The War Room", detail: "Order structure. 80/10/10 doctrine. Territory rights. Trade Co. formation." },
+  { time: "Sat · 1PM", event: "Trade Academy", detail: "Labor routes. Knowledge routes. Territory dues. What your chapter builds." },
+  { time: "Sat · 6PM", event: "Aliʻi Fire Ceremony", detail: "Founding Aliʻi only. The charter is sealed. The order is founded." },
+  { time: "Sat · 7PM", event: "Bonfire · All Brothers", detail: "Open fire. Lite pūpū. Stories. The brotherhood is one." },
+  { time: "Sun · 4AM", event: "Second Ice Bath", detail: "Who comes back? The ice reveals character on the second morning." },
+  { time: "Sun · 7AM", event: "Sunrise Commitments", detail: "90-day commitments declared. Each Aliʻi states what their chapter will build." },
+  { time: "Sun · 9AM", event: "Co-Founders Charter", detail: "Aliʻi Council seated. Palapala signed. Mākoa Trade Co. chapters activated." },
+  { time: "Sun · 12PM", event: "Departure · HNL Dropoff", detail: "Each Aliʻi returns home with a rank, a charter, and a team." },
+];
+
+const FAQS = [
+  {
+    q: "What is Mayday 48?",
+    a: "Mayday 48 is the once-ever founding event of the Mākoa Brotherhood. Four weekends across May 2026 in West Oʻahu. 20 Aliʻi team leaders take the oath and sign the Palapala. 48 total oath signatures — 20 Aliʻi and the 28 brothers they bring. The Founding 48 closes permanently at the May 31 Blue Moon.",
+  },
+  {
+    q: "Who is this for?",
+    a: "Men who lead. Team leaders, business owners, tradesmen, builders — men who carry weight and want a brotherhood that matches that weight. You must bring a team of 3–5 brothers. The Aliʻi seat is not a solo ticket.",
+  },
+  {
+    q: "What's included in the $4,997?",
+    a: "Five days (Tue–Sun) at Embassy Suites Kapolei. All meals at the table. Airport pickup and dropoff from HNL. Both ice baths. All War Room and Trade Co. sessions. The founding fire. The Aliʻi gear pack — ring, patch, coin, manual. 1% equity in Mākoa Trade Co. Territorial charter rights. Seat on the Aliʻi Council for life.",
+  },
+  {
+    q: "What do I bring?",
+    a: "Red shirt — solid, nothing on it. Black slacks. Your own towel. A notebook. Pack light. No devices during sessions. Everything else is on the table.",
+  },
+  {
+    q: "Can I attend without bringing a team?",
+    a: "No. The Aliʻi seat requires a war party of 3–5 brothers. You are not just claiming a seat — you are chartering a chapter. The brothers you bring become your founding team. If you don't have a team yet, the Palapala drop period (Apr 21 – May 1) is your window to form one.",
+  },
+  {
+    q: "What happens after Mayday 48?",
+    a: "Each Aliʻi returns home and opens their territory's chapter under the Mākoa Trade Co. framework. The 80/10/10 split activates: 80% stays in your territory, 10% to the Order, 10% to the Mayday 48 Aliʻi pool — split among the 20 founding Aliʻi forever. Your 0.5% of global Mākoa Trade Co. revenue is perpetual and inheritable.",
+  },
+  {
+    q: "Can overseas teams attend?",
+    a: "Yes. Tokyo, Berlin, Vancouver, Lagos, São Paulo, Cape Town, Sydney — every city is a potential chapter. Overseas Aliʻi fly themselves to HNL. The Mākoa van picks up from the airport. The War Party Travel Pack (available at /gate) covers logistics coordination for international teams.",
+  },
+  {
+    q: "What is the War Party Travel Pack?",
+    a: "An add-on for teams flying in from outside Hawaiʻi. Includes: HNL airport coordination, hotel block access at the Embassy Suites Kapolei group rate, XI pre-arrival briefing, and a dedicated Mākoa channel for your war party before the event. Available when you claim your Aliʻi seat at /gate.",
+  },
 ];
 
 function Founding48Content() {
   const searchParams = useSearchParams();
   const [handle, setHandle] = useState("Brother");
-  const [showTimeline, setShowTimeline] = useState(false);
-  const [loadingProduct, setLoadingProduct] = useState<ProductId | null>(null);
-  const [isEarlyBird, setIsEarlyBird] = useState(false);
-  const [seats, setSeats] = useState<SeatCounts>({
-    warPartyFilled: 0, warRoomFilled: 0, mastermindFilled: 0, daypassFilled: 0,
-  });
-
-  useEffect(() => {
-    setIsEarlyBird(Date.now() < EARLY_BIRD_CUTOFF.getTime());
-    fetchLiveSeats().then(setSeats);
-  }, []);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [openRhythm, setOpenRhythm] = useState<number | null>(null);
+  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
     const urlHandle = searchParams.get("h") || searchParams.get("handle") || "";
     const storedHandle = typeof window !== "undefined" ? sessionStorage.getItem("makoa_handle") || "" : "";
     setHandle(urlHandle || storedHandle || "Brother");
-    const t = setTimeout(() => setShowTimeline(true), 600);
+    const t = setTimeout(() => setRevealed(true), 300);
     return () => clearTimeout(t);
   }, [searchParams]);
-
-  async function handleCheckout(productId: ProductId) {
-    setLoadingProduct(productId);
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ product_id: productId, handle }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        console.error("No checkout URL returned", data);
-        setLoadingProduct(null);
-      }
-    } catch (err) {
-      console.error("Checkout error:", err);
-      setLoadingProduct(null);
-    }
-  }
-
-  const isLoading = (id: ProductId) => loadingProduct === id;
 
   return (
     <div style={{ background: BG, minHeight: "100vh", color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80 }}>
       <style>{`
-        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
         @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes urgencyPulse { 0%,100% { opacity:0.6; transform:scale(1); } 50% { opacity:1; transform:scale(1.4); } }
         @keyframes breathe { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
-        @keyframes goldGlow { 0%,100% { box-shadow: 0 0 16px rgba(176,142,80,0.2); } 50% { box-shadow: 0 0 40px rgba(176,142,80,0.5); } }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes goldGlow { 0%,100% { box-shadow: 0 0 16px rgba(176,142,80,0.15); } 50% { box-shadow: 0 0 40px rgba(176,142,80,0.4); } }
+        @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.35;} }
       `}</style>
 
-      {/* ── HERO HEADER ─────────────────────────────────────────────────────── */}
+      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
       <div style={{
         background: "linear-gradient(180deg, #060810 0%, #04060a 100%)",
         borderBottom: `1px solid ${GOLD_20}`,
-        padding: "48px 24px 40px",
+        padding: "56px 24px 48px",
         textAlign: "center",
         position: "relative",
         overflow: "hidden",
       }}>
         <div style={{
           position: "absolute", inset: 0,
-          background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.08) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
-        <div style={{ height: 1, background: `linear-gradient(to right, transparent, ${GOLD_40}, transparent)`, marginBottom: 32 }} />
-        <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.3em", marginBottom: 16 }}>
-          MĀKOA ORDER · FOUNDING EVENT
-        </p>
+        <div style={{ height: 1, background: `linear-gradient(to right, transparent, ${GOLD_40}, transparent)`, marginBottom: 40 }} />
+
         <p style={{
-          color: "rgba(176,142,80,0.5)", fontSize: "0.4rem", letterSpacing: "0.28em",
-          marginBottom: 10, animation: "fadeUp 0.9s ease 0.1s both",
+          color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.35em",
+          marginBottom: 16, animation: "fadeUp 0.8s ease 0.1s both",
         }}>
-          🌕🌕 TWO FULL MOONS · THE ENTIRE MONTH OF MAY
+          MAYDAY 48 · THE FOUNDING MONTH
         </p>
+
         <h1 style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: "italic",
           color: GOLD,
-          fontSize: "2.6rem",
-          lineHeight: 1.15,
-          margin: "0 0 12px",
-          animation: "fadeUp 0.9s ease 0.2s both",
+          fontSize: "clamp(2.4rem, 9vw, 4.2rem)",
+          lineHeight: 1.05,
+          margin: "0 0 16px",
+          animation: "fadeUp 0.8s ease 0.2s both",
         }}>
-          MAYDAY<br />Month of May
+          West Oʻahu<br />4 Weekends<br />2 Full Moons
         </h1>
+
         <p style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: "italic",
-          color: "rgba(232,224,208,0.6)",
-          fontSize: "1.1rem",
-          marginBottom: 8,
-          animation: "fadeUp 0.9s ease 0.35s both",
-        }}>
-          West Oahu · Hawaii · May 1–31, 2026
-        </p>
-        <p style={{
           color: "rgba(232,224,208,0.55)",
-          fontSize: "0.78rem",
-          lineHeight: 1.7,
-          marginBottom: 20,
-          animation: "fadeUp 0.9s ease 0.5s both",
+          fontSize: "1.1rem",
+          marginBottom: 24,
+          animation: "fadeUp 0.8s ease 0.35s both",
         }}>
-          A month-long summit for team leaders and brotherhood networks worldwide.<br />
-          4 weekends · 4 Wednesday 4AM calls · 2 co-founder dinners · 1 founding.<br />
-          Bring your team. Choose your weekend. Stay for the founding.
+          May 1–31, 2026 · Embassy Suites Kapolei · Hawaiʻi
         </p>
 
-        {/* Updated month-at-a-glance using TIMELINE constants */}
-        <div style={{ maxWidth: 420, margin: "0 auto 24px", animation: "fadeUp 0.9s ease 0.55s both" }}>
-          {EVENT_TIMELINE.map((row) => (
-            <div key={row.date} style={{
-              display: "flex", gap: 10, alignItems: "center",
-              padding: "6px 12px",
-              borderBottom: "1px solid rgba(176,142,80,0.06)",
+        {/* Core numbers */}
+        <div style={{
+          display: "grid", gridTemplateColumns: "1fr 1fr 1fr",
+          gap: 10, maxWidth: 380, margin: "0 auto 32px",
+          animation: "fadeUp 0.8s ease 0.45s both",
+        }}>
+          {[
+            { val: "20", label: "Aliʻi Teams" },
+            { val: "48", label: "Oath Signatures" },
+            { val: "1×", label: "Ever" },
+          ].map(s => (
+            <div key={s.label} style={{
+              background: "rgba(176,142,80,0.05)",
+              border: `1px solid ${GOLD_20}`,
+              borderRadius: 8, padding: "14px 8px", textAlign: "center",
             }}>
-              <span style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.38rem", minWidth: 80, textAlign: "right" }}>{row.date}</span>
-              <span style={{ color: row.color, fontSize: "0.4rem" }}>{row.label}</span>
+              <p style={{ color: GOLD, fontSize: "1.6rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>{s.val}</p>
+              <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.12em", marginTop: 4 }}>{s.label}</p>
             </div>
           ))}
         </div>
 
-        <div style={{ maxWidth: 400, margin: "0 auto", animation: "fadeUp 0.9s ease 0.6s both", display: "grid", gap: 12 }}>
-          <div>
-            <CountdownBlock target={TIMELINE.GATE_OPENS} label="🌕 GATE OPENS (MAY 1 FULL MOON) IN" color={GOLD} />
-          </div>
-          <div style={{
-            background: "rgba(176,142,80,0.04)",
-            border: "1px solid rgba(176,142,80,0.15)",
-            borderRadius: 8,
-            padding: "14px 16px",
-          }}>
-            <CountdownBlock target={TIMELINE.BLUE_MOON_SEALING} label="🌕 BLUE MOON SEALING (MAY 31) IN" color={GOLD} />
-          </div>
+        <div style={{ maxWidth: 400, margin: "0 auto", animation: "fadeUp 0.8s ease 0.55s both" }}>
+          <CountdownBlock target={TIMELINE.GATE_OPENS} label="🌕 GATE OPENS (MAY 1 FULL MOON) IN" color={GOLD} />
         </div>
-        <p style={{
-          color: "rgba(232,224,208,0.3)",
-          fontSize: "0.48rem",
-          fontStyle: "italic",
-          marginTop: 20,
-          animation: "fadeUp 0.9s ease 0.7s both",
-        }}>
-          Team leaders from around the world. Bring your crew. This happens once.
-        </p>
       </div>
 
-      <div style={{ maxWidth: 480, margin: "0 auto", padding: "0 20px" }}>
+      <div style={{ maxWidth: 520, margin: "0 auto", padding: "0 20px" }}>
 
-        {/* ── EARLY BIRD / LAST CALL BANNER ─────────────────────────────────── */}
-        {isEarlyBird ? (
-          <div style={{
-            margin: "28px 0 0",
-            background: "rgba(176,142,80,0.06)",
-            border: `1px solid ${GOLD_40}`,
-            borderRadius: 8,
-            padding: "14px 18px",
-            display: "flex", alignItems: "center", gap: 12,
-          }}>
-            <PulsingDot color={GOLD} />
-            <div>
-              <p style={{ color: GOLD, fontSize: "0.48rem", letterSpacing: "0.15em", marginBottom: 2 }}>EARLY BIRD PRICING ACTIVE</p>
-              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem" }}>Lock in your seat before April 15. Prices rise April 16.</p>
-            </div>
-          </div>
-        ) : (
-          <div style={{
-            margin: "28px 0 0",
-            background: "rgba(255,78,31,0.08)",
-            border: "1px solid rgba(255,78,31,0.3)",
-            borderRadius: 8,
-            padding: "14px 18px",
-            display: "flex", alignItems: "center", gap: 12,
-          }}>
-            <PulsingDot color={FLAME} />
-            <div>
-              <p style={{ color: FLAME, fontSize: "0.48rem", letterSpacing: "0.15em", marginBottom: 2 }}>🌕 GATE OPENS MAY 1 · FULL MOON · 9AM HST</p>
-              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem" }}>Applications reviewed by XI. Gate opens with the Full Moon.</p>
-            </div>
-          </div>
-        )}
-
-        {/* ── CROWDFUNDING MESSAGE ───────────────────────────────────────────── */}
+        {/* ── WHAT IS MAYDAY 48 ─────────────────────────────────────────────── */}
         <div style={{
-          margin: "28px 0 0",
-          background: "rgba(176,142,80,0.04)",
+          margin: "40px 0 32px",
+          background: "rgba(176,142,80,0.03)",
           border: `1px solid ${GOLD_20}`,
-          borderRadius: 10,
-          padding: "22px 20px",
-          position: "relative",
-          overflow: "hidden",
+          borderRadius: 12,
+          padding: "28px 22px",
+          opacity: revealed ? 1 : 0,
+          transform: revealed ? "translateY(0)" : "translateY(16px)",
+          transition: "opacity 0.7s ease, transform 0.7s ease",
         }}>
-          <div style={{
-            position: "absolute", inset: 0,
-            background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.05) 0%, transparent 70%)",
-            pointerEvents: "none",
-          }} />
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-            <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
-            <span style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.25em", whiteSpace: "nowrap" }}>WHY THIS MATTERS</span>
-            <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
-          </div>
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.28em", marginBottom: 16 }}>
+            WHAT IS MAYDAY 48?
+          </p>
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
             color: "#e8e0d0",
-            fontSize: "1.1rem",
+            fontSize: "1.15rem",
             lineHeight: 2.0,
-            marginBottom: 16,
+            marginBottom: 20,
           }}>
-            This is not a ticket sale.<br />
-            This is a crowdfund for the brotherhood.
+            Mayday 48 is the once-ever founding event of the Mākoa Brotherhood.
           </p>
-          <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.78rem", lineHeight: 1.7, marginBottom: 16 }}>
-            Every seat purchased funds the Makoa House — the physical space where brothers gather, train, and build. The hotel. The van. The ice. The fire. None of it happens without the men who show up first.
+          <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.48rem", lineHeight: 1.9, marginBottom: 16 }}>
+            Four weekends across May 2026. West Oʻahu. 20 Aliʻi team leaders take the oath and sign the Palapala. 48 total oath signatures — 20 Aliʻi and the 28 brothers they bring.
           </p>
-          <div style={{ display: "grid", gap: 8 }}>
-            {[
-              { icon: "🏠", text: "Funds the Makoa House operations" },
-              { icon: "🚐", text: "Covers the van, ice, and logistics" },
-              { icon: "🔥", text: "Makes the founding fire possible" },
-              { icon: "🤝", text: "Builds the brotherhood infrastructure" },
-            ].map(item => (
-              <div key={item.text} style={{
-                display: "flex", alignItems: "center", gap: 10,
-                padding: "8px 12px",
-                background: "rgba(0,0,0,0.2)",
-                border: "1px solid rgba(176,142,80,0.06)",
-                borderRadius: 6,
-              }}>
-                <span style={{ fontSize: "0.9rem", flexShrink: 0 }}>{item.icon}</span>
-                <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item.text}</p>
-              </div>
-            ))}
-          </div>
-          <div style={{ height: 1, background: GOLD_20, margin: "18px 0" }} />
+          <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.48rem", lineHeight: 1.9, marginBottom: 16 }}>
+            The Founding 48 closes permanently at the May 31 Blue Moon. There will be cohorts after. There will be no second Founding 48.
+          </p>
+          <div style={{ height: 1, background: GOLD_20, margin: "20px 0" }} />
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
@@ -495,816 +296,300 @@ function Founding48Content() {
             lineHeight: 1.9,
             textAlign: "center",
           }}>
-            You are not buying a seat.<br />
-            You are building something that lasts.
+            The Flower Moon opens the month.<br />The Blue Moon seals it.
           </p>
         </div>
 
-        {/* ── WHAT HAPPENS IN 48 HOURS ──────────────────────────────────────── */}
-        <div style={{ padding: "36px 0 28px" }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.25em", marginBottom: 24 }}>
-            WHAT HAPPENS IN 48 HOURS
-          </p>
-          <div style={{ position: "relative" }}>
-            <div style={{
-              position: "absolute", left: 52, top: 0, bottom: 0,
-              width: 1, background: `linear-gradient(to bottom, ${GOLD_20}, transparent)`,
-            }} />
-            {[
-              { time: "Friday · 5:00 PM", event: "Gates Open", detail: "Ali'i and Mana class check-in. Co-founders and founding brothers arrive at Embassy Suites Kapolei." },
-              { time: "Friday · 6:00 PM", event: "War Room Roll Call", detail: "Ali'i and Mana seated. XI opens the founding session. This is where the order begins." },
-              { time: "Friday · 9:00 PM", event: "Brotherhood Circle", detail: "First circle. Lite pūpū. Men speak. No performance. Just truth. No phones." },
-              { time: "Saturday · 3:00 AM", event: "Wake Call", detail: "The van is running. No alarm needed. You know." },
-              { time: "Saturday · 3:33 AM", event: "In the Van", detail: "Brothers moving in the dark. West Oahu. The coast." },
-              { time: "Saturday · 4:00 AM", event: "Ice Bath", detail: "The Flower Moon sets over the Pacific. You go in." },
-              { time: "Saturday · 5:30 AM", event: "The Weight Room", detail: "Not iron — emotional weight. Guided circle: 'What I've been carrying alone.' No phones. No recording. What's said stays in the circle." },
-              { time: "Saturday · 7:00 AM", event: "Morning Formation", detail: "Oath. Silence. The sun rises over the Ko'olau." },
-              { time: "Saturday · 9:00 AM", event: "The War Room — Order & Formation", detail: "The 5D space. How the order works — dues, ranks, the 808 network. Formation structure. This is where all the realms are proved." },
-              { time: "Saturday · 11:00 AM", event: "Team Formation", detail: "War parties assigned. Brothers paired. Your team for the next 90 days." },
-              { time: "Saturday · 1:00 PM", event: "Service Route Workshop", detail: "Trade academies. Skills. Business. What each team builds." },
-              { time: "Saturday · 2:00 PM", event: "Free Time", detail: "Beach. Explore Kapolei. Rest. Bond with your brothers." },
-              { time: "Saturday · 6:00 PM", event: "Ali'i Fire Ceremony", detail: "Co-founders and Ali'i class only. Small fire ceremony. The charter is sealed. The order is founded." },
-              { time: "Saturday · 7:00 PM", event: "Bonfire · All Classes", detail: "Mana and Nā Koa join. Open bonfire. Lite pūpū. Stories. The brotherhood is one." },
-              { time: "Sunday · 4:00 AM", event: "Ice Bath — Day 2", detail: "Who comes back? The ice reveals character on the second morning." },
-              { time: "Sunday · 5:30 AM", event: "Sunrise Commitments", detail: "90-day commitments set. Each brother declares what he will build." },
-              { time: "Sunday · 9:00 AM", event: "The War Room — Co-Founders Charter", detail: "Ali'i and Mana class. Co-founders charter signed. Mākoa B2B, B2C, and P2P worldwide operations. Academies, Akamai Awards for Nā Koa class." },
-              { time: "Sunday · 12:00 PM", event: "The Stones", detail: "Each brother receives his rank stone and challenge coin. Your place in the order is sealed." },
-              { time: "Sunday · 2:00 PM", event: "Mana & Nā Koa Pūpū Party", detail: "Mana class founders host. Nā Koa class welcome. Casual, no reservations needed — Kapolei town, brother-hosted." },
-              { time: "Sunday · 5:00 PM", event: "Founding Dinner — Ali'i Table", detail: "Co-founders and Ali'i class at the table. The last meal as the founding council. No phones. Just presence." },
-              { time: "Sunday · 8:00 PM", event: "The Send", detail: "All classes. Final circle. Bonfire. Departure blessing. The founding fire never goes out." },
-            ].map((item, i) => (
-              <div key={i} style={{
-                display: "flex", gap: 16, marginBottom: 20,
-                opacity: showTimeline ? 1 : 0,
-                transform: showTimeline ? "translateY(0)" : "translateY(12px)",
-                transition: `opacity 0.5s ease ${i * 0.05}s, transform 0.5s ease ${i * 0.05}s`,
-              }}>
-                <div style={{ width: 90, flexShrink: 0, textAlign: "right", paddingRight: 16 }}>
-                  <p style={{ color: GOLD_DIM, fontSize: "0.4rem", lineHeight: 1.5 }}>{item.time}</p>
-                </div>
-                <div style={{
-                  width: 8, height: 8, borderRadius: "50%",
-                  background: (i === 5 || i === 11) ? GOLD : "rgba(176,142,80,0.3)",
-                  border: `1px solid ${GOLD_40}`,
-                  flexShrink: 0, marginTop: 3,
-                  boxShadow: (i === 5 || i === 11) ? `0 0 8px ${GOLD}` : "none",
-                }} />
-                <div style={{ flex: 1 }}>
-                  <p style={{
-                    color: (i === 5 || i === 11) ? GOLD : "#e8e0d0",
-                    fontSize: "0.55rem",
-                    fontWeight: (i === 5 || i === 11) ? 600 : 400,
-                    marginBottom: 3,
-                  }}>{item.event}</p>
-                  <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.74rem", lineHeight: 1.6 }}>{item.detail}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── 3-YEAR VISION ─────────────────────────────────────────────────── */}
-        <div style={{
-          marginBottom: 36,
-          background: "linear-gradient(135deg, #0a0d12 0%, #060810 100%)",
-          border: `1px solid ${GOLD_20}`,
-          borderRadius: 12,
-          padding: "28px 22px",
-          position: "relative",
-          overflow: "hidden",
-        }}>
-          <div style={{
-            position: "absolute", inset: 0,
-            background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.05) 0%, transparent 70%)",
-            pointerEvents: "none",
-          }} />
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-            <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
-            <span style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.25em", whiteSpace: "nowrap" }}>THE 3-YEAR VISION</span>
-            <div style={{ height: 1, flex: 1, background: GOLD_20 }} />
-          </div>
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            color: GOLD,
-            fontSize: "1.3rem",
-            lineHeight: 1.4,
-            marginBottom: 20,
-          }}>
-            What we are building<br />by 2028.
-          </p>
-          <div style={{ display: "grid", gap: 16 }}>
-            {[
-              {
-                year: "YEAR 1 · 2026",
-                color: GREEN,
-                title: "The Founding Fire",
-                items: [
-                  "Founding brothers sworn in at MAYDAY",
-                  "Makoa House opens in West Oahu",
-                  "52 Wednesday 4am trainings begin",
-                  "Makahiki Lahaina — first island gathering",
-                ],
-              },
-              {
-                year: "YEAR 2 · 2027",
-                color: BLUE,
-                title: "The Network Expands",
-                items: [
-                  "3 Makoa Houses across Hawaii",
-                  "Neighbor island chapters: Maui, Big Island",
-                  "200+ active brothers in the 808",
-                  "First mainland chapter — West Coast",
-                ],
-              },
-              {
-                year: "YEAR 3 · 2028",
-                color: GOLD,
-                title: "The Order Stands",
-                items: [
-                  "10 Makoa Houses across the Pacific",
-                  "Annual Makahiki gathering — 500 brothers",
-                  "Trade academy fully operational",
-                  "The brotherhood that outlasts us all",
-                ],
-              },
-            ].map((phase, i) => (
-              <div key={i} style={{
-                padding: "16px 18px",
-                background: "rgba(0,0,0,0.3)",
-                border: `1px solid ${phase.color}20`,
-                borderLeft: `3px solid ${phase.color}`,
-                borderRadius: "0 8px 8px 0",
-              }}>
-                <p style={{ color: phase.color, fontSize: "0.38rem", letterSpacing: "0.2em", marginBottom: 6 }}>{phase.year}</p>
-                <p style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontStyle: "italic",
-                  color: "#e8e0d0",
-                  fontSize: "1.05rem",
-                  marginBottom: 10,
-                }}>{phase.title}</p>
-                <div style={{ display: "grid", gap: 5 }}>
-                  {phase.items.map(item => (
-                    <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-                      <span style={{ color: phase.color, fontSize: "0.44rem", flexShrink: 0, marginTop: 1 }}>→</span>
-                      <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.46rem", lineHeight: 1.5 }}>{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div style={{ height: 1, background: GOLD_20, margin: "20px 0" }} />
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            color: "rgba(232,224,208,0.5)",
-            fontSize: "0.95rem",
-            lineHeight: 2.0,
-            textAlign: "center",
-          }}>
-            The founding brothers become the first house leaders.<br />
-            This is how it starts.
-          </p>
-        </div>
-
-        {/* ── SECTION DIVIDER ───────────────────────────────────────────────── */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
+        {/* ── 4-WEEKEND TABLE ───────────────────────────────────────────────── */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>CHOOSE YOUR SEAT</p>
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>THE 4 WEEKENDS</p>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
-        {/* ── TIER LEGEND ───────────────────────────────────────────────────── */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "1fr 1fr",
-          gap: 8, marginBottom: 28,
-        }}>
-          {[
-            { color: GREEN, label: "NĀ KOA", sub: "12HR Day Pass" },
-            { color: BLUE, label: "MANA", sub: "24HR Mastermind" },
-            { color: GOLD, label: "ALIʻI", sub: "48HR War Room" },
-            { color: GOLD, label: "WAR PARTY", sub: "72HR VIP" },
-          ].map(t => (
-            <div key={t.label} style={{
-              display: "flex", alignItems: "center", gap: 8,
-              padding: "8px 12px",
-              background: "rgba(0,0,0,0.3)",
-              border: `1px solid ${t.color}20`,
-              borderLeft: `3px solid ${t.color}`,
-              borderRadius: "0 6px 6px 0",
+        <div style={{ display: "grid", gap: 10, marginBottom: 40 }}>
+          {WEEKENDS.map((w) => (
+            <div key={w.num} style={{
+              display: "flex", gap: 16, alignItems: "flex-start",
+              padding: "18px 16px",
+              background: w.color === GOLD ? "rgba(176,142,80,0.05)" : "rgba(0,0,0,0.2)",
+              border: `1px solid ${w.border}`,
+              borderRadius: 10,
+              animation: w.color === GOLD ? "goldGlow 5s ease-in-out infinite" : "none",
             }}>
-              <div>
-                <p style={{ color: t.color, fontSize: "0.38rem", letterSpacing: "0.15em", marginBottom: 2 }}>{t.label}</p>
-                <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.38rem" }}>{t.sub}</p>
+              <div style={{
+                width: 36, height: 36, borderRadius: "50%",
+                border: `1px solid ${w.border}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
+                background: w.color === GOLD ? "rgba(176,142,80,0.12)" : "transparent",
+              }}>
+                <span style={{ color: w.color, fontSize: "0.5rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{w.num}</span>
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
+                  <p style={{ color: w.color, fontSize: "0.44rem", letterSpacing: "0.1em" }}>{w.dates}</p>
+                  {w.moon && (
+                    <span style={{
+                      background: "rgba(176,142,80,0.1)", border: `1px solid ${GOLD_20}`,
+                      color: GOLD, fontSize: "0.34rem", letterSpacing: "0.1em",
+                      padding: "2px 8px", borderRadius: 3,
+                    }}>{w.moon}</span>
+                  )}
+                </div>
+                <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.36rem", letterSpacing: "0.14em", marginBottom: 6 }}>{w.label}</p>
+                <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.44rem", lineHeight: 1.7 }}>{w.detail}</p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* ── TIER 1 — NĀ KOA ──────────────────────────────────────────────── */}
-        <div style={{
-          border: `1px solid ${GREEN_20}`,
-          borderRadius: 12,
-          background: "linear-gradient(135deg, #0a0d0a 0%, #080a08 100%)",
-          padding: "26px 22px",
-          marginBottom: 20,
-          position: "relative",
-          overflow: "hidden",
-        }}>
-          <div style={{
-            position: "absolute", inset: 0,
-            background: "linear-gradient(135deg, rgba(63,185,80,0.04) 0%, transparent 60%)",
-            pointerEvents: "none",
-          }} />
-          <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(63,185,80,0.12)", border: `1px solid ${GREEN_20}`, color: GREEN, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
-            ⚡ 12HR · {DAYPASS_TOTAL} SEATS
-          </div>
-          <div style={{ marginBottom: 8 }}>
-            <p style={{ color: GREEN, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>NĀ KOA · 12HR DAY PASS</p>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.4rem", lineHeight: 1.2 }}>
-              Warrior Level
-            </p>
-          </div>
-          <SeatBadge remaining={DAYPASS_TOTAL - seats.daypassFilled} total={DAYPASS_TOTAL} />
-          <div style={{ marginBottom: 20 }}>
-            {[
-              "Saturday OR Sunday — your choice",
-              "Seminar block 9am–2pm",
-              "4am ice bath (both mornings)",
-              "Founding fire — Sunday only",
-              "No hotel room",
-            ].map(item => (
-              <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
-                <span style={{ color: GREEN, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.78)", fontSize: "0.74rem", lineHeight: 1.6 }}>{item}</p>
-              </div>
-            ))}
-          </div>
-          <PricingBlock
-            isEarlyBird={isEarlyBird}
-            earlyPrice="$149"
-            lastCallPrice="$199"
-            earlyLabel="EARLY BIRD · THRU APR 15"
-            lastCallLabel="LAST CALL · APR 16–MAY 1"
-            downToday="$149"
-            paymentNote="Pay in full today"
-            color={GREEN}
-            bg={GREEN_10}
-            border={GREEN_20}
-          />
-          <SeatBar filled={seats.daypassFilled} total={DAYPASS_TOTAL} color={GREEN} />
-          <button
-            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_DAY_PASS_EARLY" : "MAYDAY_DAY_PASS_LAST")}
-            disabled={isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")}
-            style={{
-              width: "100%", background: "transparent", color: GREEN,
-              border: `1px solid ${GREEN}`, padding: "15px", fontSize: "0.54rem",
-              letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
-              fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 16, opacity: (isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")) ? 0.7 : 1,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            }}
-          >
-            {(isLoading("MAYDAY_DAY_PASS_EARLY") || isLoading("MAYDAY_DAY_PASS_LAST")) ? (
-              <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${GREEN}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-            ) : "GRAB A NĀ KOA DAY PASS"}
-          </button>
+        {/* ── 48-HOUR WEEKEND RHYTHM ────────────────────────────────────────── */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+          <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>THE 48-HOUR RHYTHM</p>
+          <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
-        {/* ── TIER 2 — MANA ─────────────────────────────────────────────────── */}
-        <div style={{
-          border: `1px solid ${BLUE_20}`,
-          borderRadius: 12,
-          background: "linear-gradient(135deg, #0a0d14 0%, #080a0f 100%)",
-          padding: "26px 22px",
-          marginBottom: 20,
-          position: "relative",
-          overflow: "hidden",
-        }}>
+        <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem", lineHeight: 1.7, marginBottom: 20 }}>
+          Fri 12PM HNL pickup → Sun 12PM departure. Every Aliʻi weekend runs the same rhythm.
+        </p>
+
+        <div style={{ position: "relative", marginBottom: 40 }}>
           <div style={{
-            position: "absolute", inset: 0,
-            background: "linear-gradient(135deg, rgba(88,166,255,0.04) 0%, transparent 60%)",
-            pointerEvents: "none",
+            position: "absolute", left: 19, top: 0, bottom: 0,
+            width: 1, background: `linear-gradient(to bottom, ${GOLD_40}, transparent)`,
           }} />
-          <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(88,166,255,0.12)", border: `1px solid ${BLUE_20}`, color: BLUE, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
-            🌀 24HR · {MASTERMIND_TOTAL} SEATS
-          </div>
-          <div style={{ marginBottom: 8 }}>
-            <p style={{ color: BLUE, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>MANA · 24HR MASTERMIND</p>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.4rem", lineHeight: 1.2 }}>
-              Skills Level
-            </p>
-          </div>
-          <SeatBadge remaining={MASTERMIND_TOTAL - seats.mastermindFilled} total={MASTERMIND_TOTAL} />
-          <div style={{ marginBottom: 20 }}>
-            {[
-              "Book your own hotel",
-              "All Mastermind sessions",
-              "4am ice bath both mornings",
-              "Founding fire + oath",
-              "Founding gear pack",
-              "Founding Brother status — permanent",
-            ].map(item => (
-              <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
-                <span style={{ color: BLUE, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.78)", fontSize: "0.74rem", lineHeight: 1.6 }}>{item}</p>
+          {RHYTHM.map((r, i) => (
+            <div
+              key={i}
+              onClick={() => setOpenRhythm(openRhythm === i ? null : i)}
+              style={{
+                display: "flex", gap: 14, marginBottom: 12,
+                cursor: "pointer",
+                opacity: revealed ? 1 : 0,
+                transition: `opacity 0.5s ease ${i * 0.04}s`,
+              }}
+            >
+              <div style={{
+                width: 38, height: 38, borderRadius: "50%", flexShrink: 0,
+                background: openRhythm === i ? "rgba(176,142,80,0.15)" : "rgba(176,142,80,0.04)",
+                border: `1px solid ${openRhythm === i ? GOLD_40 : GOLD_20}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                zIndex: 1, transition: "all 0.2s",
+              }}>
+                <div style={{
+                  width: 6, height: 6, borderRadius: "50%",
+                  background: (i === 4 || i === 10) ? GOLD : "rgba(176,142,80,0.4)",
+                }} />
               </div>
-            ))}
-          </div>
-          <PricingBlock
-            isEarlyBird={isEarlyBird}
-            earlyPrice="$299"
-            lastCallPrice="$399"
-            earlyLabel="EARLY BIRD · THRU APR 15"
-            lastCallLabel="LAST CALL · APR 16–MAY 1"
-            downToday="$299"
-            paymentNote="Pay in full today"
-            color={BLUE}
-            bg={BLUE_10}
-            border={BLUE_20}
-          />
-          <SeatBar filled={seats.mastermindFilled} total={MASTERMIND_TOTAL} color={BLUE} />
-          <button
-            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_MASTERMIND_EARLY" : "MAYDAY_MASTERMIND_LAST")}
-            disabled={isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")}
-            style={{
-              width: "100%", background: "transparent", color: BLUE,
-              border: `1px solid ${BLUE}`, padding: "15px", fontSize: "0.54rem",
-              letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
-              fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 16, opacity: (isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")) ? 0.7 : 1,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            }}
-          >
-            {(isLoading("MAYDAY_MASTERMIND_EARLY") || isLoading("MAYDAY_MASTERMIND_LAST")) ? (
-              <><span style={{ display: "inline-block", width: 14, height: 14, border: `2px solid ${BLUE}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-            ) : "CLAIM YOUR MANA SEAT"}
-          </button>
+              <div style={{
+                flex: 1,
+                background: openRhythm === i ? "rgba(176,142,80,0.04)" : "transparent",
+                border: `1px solid ${openRhythm === i ? GOLD_20 : "transparent"}`,
+                borderRadius: 8, padding: openRhythm === i ? "12px 14px" : "8px 0",
+                transition: "all 0.2s",
+              }}>
+                <p style={{ color: GOLD_DIM, fontSize: "0.34rem", letterSpacing: "0.12em", marginBottom: 2 }}>{r.time}</p>
+                <p style={{ color: openRhythm === i ? GOLD : "rgba(232,224,208,0.75)", fontSize: "0.48rem", transition: "color 0.2s" }}>{r.event}</p>
+                {openRhythm === i && (
+                  <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.44rem", lineHeight: 1.8, marginTop: 8 }}>{r.detail}</p>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* ── TIER 3 — ALIʻI WAR ROOM ──────────────────────────────────────── */}
-        <div style={{
-          border: `1px solid ${GOLD_40}`,
-          borderRadius: 12,
-          background: "linear-gradient(135deg, #0d0f14 0%, #080a0f 100%)",
-          padding: "26px 22px",
-          marginBottom: 20,
-          position: "relative",
-          overflow: "hidden",
-        }}>
-          <div style={{
-            position: "absolute", inset: 0,
-            background: "linear-gradient(135deg, rgba(176,142,80,0.05) 0%, transparent 60%)",
-            pointerEvents: "none",
-          }} />
-          <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(176,142,80,0.15)", border: `1px solid ${GOLD_40}`, color: GOLD, fontSize: "0.38rem", letterSpacing: "0.12em", padding: "4px 10px", borderRadius: 3, fontWeight: 700 }}>
-            ⚔️ 48HR · {WAR_ROOM_TOTAL} SEATS
-          </div>
-          <div style={{ marginBottom: 8 }}>
-            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>ALIʻI · 48HR WAR ROOM</p>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.4rem", lineHeight: 1.2 }}>
-              Council Level
-            </p>
-          </div>
-          <SeatBadge remaining={WAR_ROOM_TOTAL - seats.warRoomFilled} total={WAR_ROOM_TOTAL} />
-          <div style={{ marginBottom: 20 }}>
-            {[
-              "Drive yourself to the hotel",
-              "Hotel room included · 2 nights shared",
-              "All War Room + Mastermind sessions",
-              "4am ice bath both mornings",
-              "Founding fire + oath",
-              "Founding gear pack",
-              "Founding Brother status — permanent",
-            ].map(item => (
-              <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
-                <span style={{ color: GOLD, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.78)", fontSize: "0.74rem", lineHeight: 1.6 }}>{item}</p>
-              </div>
-            ))}
-          </div>
-          <PricingBlock
-            isEarlyBird={isEarlyBird}
-            earlyPrice="$499"
-            lastCallPrice="$699"
-            earlyLabel="EARLY BIRD · THRU APR 15"
-            lastCallLabel="LAST CALL · APR 16–MAY 1"
-            downToday="$124.75"
-            paymentNote="Balance: 3 payments of $124.75"
-            color={GOLD}
-            bg={GOLD_10}
-            border={GOLD_40}
-          />
-          <SeatBar filled={seats.warRoomFilled} total={WAR_ROOM_TOTAL} color={GOLD} />
-          <button
-            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_ROOM_EARLY" : "MAYDAY_WAR_ROOM_LAST")}
-            disabled={isLoading("MAYDAY_WAR_ROOM_EARLY") || isLoading("MAYDAY_WAR_ROOM_LAST")}
-            style={{
-              width: "100%", background: GOLD, color: "#000",
-              border: "none", padding: "15px", fontSize: "0.54rem",
-              letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
-              fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 16, opacity: (isLoading("MAYDAY_WAR_ROOM_EARLY") || isLoading("MAYDAY_WAR_ROOM_LAST")) ? 0.7 : 1,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            }}
-          >
-            {(isLoading("MAYDAY_WAR_ROOM_EARLY") || isLoading("MAYDAY_WAR_ROOM_LAST")) ? (
-              <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-            ) : "CLAIM YOUR ALIʻI SEAT"}
-          </button>
+        {/* ── ALIʻI FOUNDER SEAT ────────────────────────────────────────────── */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+          <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>ALIʻI FOUNDER SEAT</p>
+          <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
-        {/* ── TIER 4 — WAR PARTY VIP ────────────────────────────────────────── */}
         <div style={{
           border: `2px solid ${GOLD}`,
           borderRadius: 14,
           background: "linear-gradient(135deg, #0f1018 0%, #080a0f 100%)",
           padding: "28px 22px",
-          marginBottom: 20,
+          marginBottom: 40,
           position: "relative",
           overflow: "hidden",
           animation: "goldGlow 4s ease-in-out infinite",
         }}>
           <div style={{
             position: "absolute", inset: 0,
-            background: "linear-gradient(135deg, rgba(176,142,80,0.08) 0%, transparent 60%)",
+            background: "linear-gradient(135deg, rgba(176,142,80,0.07) 0%, transparent 60%)",
             pointerEvents: "none",
           }} />
+
           <div style={{
             position: "absolute", top: 14, right: 14,
             background: GOLD, color: "#000",
-            fontSize: "0.38rem", letterSpacing: "0.12em",
+            fontSize: "0.36rem", letterSpacing: "0.12em",
             padding: "4px 10px", borderRadius: 3, fontWeight: 700,
-          }}>👑 72HR VIP · 5 WAR PARTIES</div>
+          }}>20 SEATS · 5 PER WEEKEND</div>
 
-          <div style={{ marginBottom: 8 }}>
-            <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 4 }}>WAR PARTY · 72HR VIP</p>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#e8e0d0", fontSize: "1.5rem", lineHeight: 1.2 }}>
-              The Full Experience
-            </p>
-          </div>
-
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 7,
-            background: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.3)",
-            borderRadius: 4, padding: "5px 11px", marginBottom: 16,
-          }}>
-            <PulsingDot />
-            <span style={{ color: RED, fontSize: "0.42rem", letterSpacing: "0.15em" }}>
-              {WAR_PARTY_TOTAL - seats.warPartyFilled} OF {WAR_PARTY_TOTAL} WAR PARTIES REMAINING
-            </span>
-          </div>
-
-          <div style={{
-            background: "rgba(176,142,80,0.06)",
-            border: `1px solid ${GOLD_20}`,
-            borderRadius: 8,
-            padding: "14px 16px",
-            marginBottom: 18,
-          }}>
-            <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.18em", marginBottom: 8 }}>WHAT IS A WAR PARTY?</p>
-            <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.78rem", lineHeight: 1.7 }}>
-              A War Party is 2–4 Makoa brothers who travel together. One booking covers your entire party. You arrive together, you train together, you leave together. The van picks you all up from HNL.
-            </p>
-          </div>
-
-          <div style={{ marginBottom: 20 }}>
-            {[
-              "Airport pickup + dropoff from HNL — Makoa van",
-              "Hotel room included · 2 nights shared",
-              "All War Room + Mastermind sessions",
-              "4am ice bath both mornings",
-              "Founding fire + oath",
-              "Founding gear pack for each brother",
-              "Private XI briefing for the party",
-              "Founding Brother status — permanent for all",
-            ].map(item => (
-              <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
-                <span style={{ color: GOLD, fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.48rem", lineHeight: 1.5 }}>{item}</p>
-              </div>
-            ))}
-          </div>
-
-          <PricingBlock
-            isEarlyBird={isEarlyBird}
-            earlyPrice="$799"
-            lastCallPrice="$999"
-            earlyLabel="EARLY BIRD · PER BROTHER"
-            lastCallLabel="LAST CALL · PER BROTHER"
-            downToday="$199.75"
-            paymentNote="Balance: 3 payments of $199.75 per brother"
-            color={GOLD}
-            bg={GOLD_10}
-            border={GOLD_40}
-          />
-
-          <SeatBar filled={seats.warPartyFilled} total={WAR_PARTY_TOTAL} color={GOLD} />
-
-          <button
-            onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_VAN_EARLY" : "MAYDAY_WAR_VAN_LAST")}
-            disabled={isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")}
-            style={{
-              width: "100%", background: GOLD, color: "#000",
-              border: "none", padding: "16px", fontSize: "0.54rem",
-              letterSpacing: "0.2em", cursor: "pointer", borderRadius: 6,
-              fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-              marginTop: 16, opacity: (isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? 0.7 : 1,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            }}
-          >
-            {(isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? (
-              <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-            ) : "CLAIM YOUR WAR PARTY"}
-          </button>
-        </div>
-
-        {/* ── WAR PARTY TEAM PACKS ──────────────────────────────────────────── */}
-        <div style={{
-          background: "#080b10",
-          border: `1px solid ${GOLD_20}`,
-          borderRadius: 12,
-          padding: "26px 22px",
-          marginBottom: 32,
-        }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.25em", marginBottom: 6 }}>BOOK YOUR WAR PARTY</p>
+          <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 6 }}>ALIʻI · FOUNDING SEAT</p>
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
-            color: "rgba(232,224,208,0.6)",
-            fontSize: "1.05rem",
-            marginBottom: 6,
+            color: "#e8e0d0",
+            fontSize: "1.5rem",
+            lineHeight: 1.2,
+            marginBottom: 20,
           }}>
-            Come as a party. Save as a party.
-          </p>
-          <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.74rem", lineHeight: 1.6, marginBottom: 22 }}>
-            Select your party size below. One booking covers all brothers. The van picks you all up from HNL.
+            The Full Founding Experience
           </p>
 
-          <div style={{ display: "grid", gap: 10 }}>
-            {TEAM_PACKS.map((pack) => (
-              <div key={pack.productId} style={{
-                display: "flex", justifyContent: "space-between", alignItems: "center",
-                background: "rgba(0,0,0,0.3)",
-                border: `1px solid ${pack.border}`,
-                borderRadius: 8,
-                padding: "14px 16px",
-              }}>
-                <div>
-                  <p style={{ color: pack.color, fontSize: "0.48rem", marginBottom: 3 }}>{pack.label}</p>
-                  <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem" }}>{pack.perPerson}</p>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <p style={{ color: pack.color, fontSize: "0.75rem", fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, marginBottom: 6 }}>
-                    {pack.total}
-                  </p>
-                  <button
-                    onClick={() => handleCheckout(pack.productId)}
-                    disabled={isLoading(pack.productId)}
-                    style={{
-                      background: "transparent", color: pack.color,
-                      border: `1px solid ${pack.color}`, padding: "5px 12px",
-                      fontSize: "0.38rem", letterSpacing: "0.12em",
-                      cursor: "pointer", borderRadius: 4,
-                      fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-                      opacity: isLoading(pack.productId) ? 0.7 : 1,
-                      display: "inline-flex", alignItems: "center", gap: 5,
-                    }}
-                  >
-                    {isLoading(pack.productId) ? (
-                      <><span style={{ display: "inline-block", width: 10, height: 10, border: `2px solid ${pack.color}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> ...</>
-                    ) : pack.btnLabel}
-                  </button>
-                </div>
+          <div style={{ display: "grid", gap: 7, marginBottom: 24 }}>
+            {[
+              "5 days · Tue–Sun · Embassy Suites Kapolei",
+              "All meals at the table",
+              "HNL airport pickup + dropoff",
+              "Both ice baths · Ko Olina",
+              "All War Room + Trade Co. sessions",
+              "Founding fire + Palapala oath",
+              "Aliʻi gear pack — ring · patch · coin · manual",
+              "1% equity in Mākoa Trade Co.",
+              "0.5% of global revenue · perpetual · inheritable",
+              "Territorial charter rights",
+              "Aliʻi Council seat for life",
+            ].map(item => (
+              <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                <span style={{ color: GOLD, fontSize: "0.44rem", flexShrink: 0, marginTop: 1 }}>—</span>
+                <p style={{ color: "rgba(232,224,208,0.75)", fontSize: "0.46rem", lineHeight: 1.5 }}>{item}</p>
               </div>
             ))}
           </div>
-        </div>
 
-        {/* ── WHAT TO BRING ─────────────────────────────────────────────────── */}
-        <div style={{
-          background: "#080b10",
-          border: "1px solid rgba(255,255,255,0.05)",
-          borderRadius: 10,
-          padding: "22px 20px",
-          marginBottom: 28,
-        }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 16 }}>WHAT TO BRING</p>
-          {[
-            "Red shirt — solid, nothing on it",
-            "Black slacks",
-            "Your own towel",
-            "No devices during sessions.",
-            "Pack light. That's it.",
-          ].map((item, i, arr) => (
-            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 8 }}>
-              <span style={{ color: GOLD_DIM, fontSize: "0.5rem", flexShrink: 0 }}>·</span>
-              <p style={{
-                color: i >= arr.length - 2 ? GOLD_DIM : "rgba(232,224,208,0.6)",
-                fontSize: "0.5rem",
-                fontStyle: i >= arr.length - 2 ? "italic" : "normal",
-                lineHeight: 1.5,
-              }}>{item}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* ── FOUNDING BROTHER STATUS ───────────────────────────────────────── */}
-        <div style={{
-          background: "linear-gradient(135deg, #0d0f14 0%, #080a0f 100%)",
-          border: `1px solid ${GOLD_40}`,
-          borderRadius: 12,
-          padding: "28px 22px",
-          marginBottom: 28,
-          textAlign: "center",
-          position: "relative",
-          overflow: "hidden",
-        }}>
           <div style={{
-            position: "absolute", inset: 0,
-            background: "radial-gradient(ellipse at 50% 0%, rgba(176,142,80,0.06) 0%, transparent 70%)",
-            pointerEvents: "none",
-          }} />
-          <div style={{
-            width: 48, height: 48, borderRadius: "50%",
-            border: `1px solid ${GOLD_20}`,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            margin: "0 auto 20px",
+            background: "rgba(176,142,80,0.08)",
+            border: `1px solid ${GOLD_40}`,
+            borderRadius: 8,
+            padding: "16px",
+            marginBottom: 20,
+            display: "flex", justifyContent: "space-between", alignItems: "center",
           }}>
-            <span style={{ color: GOLD_DIM, fontSize: "1.2rem", animation: "breathe 3s ease-in-out infinite" }}>◈</span>
+            <div>
+              <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.14em", marginBottom: 4 }}>ALIʻI FOUNDER SEAT</p>
+              <p style={{ color: GOLD, fontSize: "2rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>$4,997</p>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.36rem", marginBottom: 4 }}>Team of 3–5 brothers</p>
+              <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.36rem" }}>Cannot be sponsored</p>
+            </div>
           </div>
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.25em", marginBottom: 16 }}>
-            FOUNDING BROTHER STATUS
+
+          <a href="/gate" style={{
+            display: "block",
+            background: GOLD,
+            color: "#000",
+            borderRadius: 8,
+            padding: "16px",
+            textDecoration: "none",
+            fontSize: "0.54rem",
+            fontWeight: 700,
+            letterSpacing: "0.2em",
+            fontFamily: "'JetBrains Mono', monospace",
+            textAlign: "center",
+          }}>
+            CLAIM YOUR ALIʻI SEAT → /GATE
+          </a>
+
+          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.38rem", textAlign: "center", marginTop: 10 }}>
+            Gate opens May 1 · Full Moon · 9AM HST · 20 seats total
+          </p>
+        </div>
+
+        {/* ── 80/10/10 DOCTRINE ─────────────────────────────────────────────── */}
+        <div style={{
+          background: "rgba(176,142,80,0.03)",
+          border: `1px solid ${GOLD_20}`,
+          borderRadius: 12,
+          padding: "26px 22px",
+          marginBottom: 40,
+        }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.28em", marginBottom: 16 }}>
+            WHAT YOU BUILD AFTER MAYDAY 48
           </p>
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
             color: "#e8e0d0",
-            fontSize: "1.1rem",
-            lineHeight: 2.0,
-            marginBottom: 16,
-          }}>
-            Every man at the fire becomes<br />a Founding Brother.
-          </p>
-          <div style={{ display: "grid", gap: 6, marginBottom: 20 }}>
-            {["Permanent.", "Stone engraved.", "This happens once."].map(line => (
-              <p key={line} style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontStyle: "italic",
-                color: GOLD_DIM,
-                fontSize: "0.95rem",
-                lineHeight: 1.8,
-              }}>{line}</p>
-            ))}
-          </div>
-          <div style={{ height: 1, background: GOLD_20, margin: "20px 0" }} />
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            color: "rgba(232,224,208,0.4)",
-            fontSize: "0.9rem",
-          }}>
-            Under the Malu — I am Makoa.
-          </p>
-        </div>
-
-        {/* ── MEN'S HEALING ─────────────────────────────────────────────────── */}
-        <div style={{
-          borderLeft: `3px solid ${GOLD_40}`,
-          background: "rgba(176,142,80,0.03)",
-          borderRadius: "0 8px 8px 0",
-          padding: "24px 20px",
-          marginBottom: 28,
-        }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 16 }}>MEN'S HEALING</p>
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            color: "rgba(232,224,208,0.7)",
             fontSize: "1.05rem",
-            lineHeight: 2.1,
+            lineHeight: 1.9,
+            marginBottom: 20,
           }}>
-            This is not a conference.<br />
-            This is what happens when men stop performing strength<br />
-            and start building it together.<br /><br />
-            4am ice bath. Brotherhood. The oath.<br /><br />
-            Healing is not soft —<br />
-            it is the hardest thing a man can do.
+            Each Aliʻi returns home and opens their territory's chapter under the Mākoa Trade Co. framework.
           </p>
-        </div>
-
-        {/* ── FOUNDING AMBASSADOR ───────────────────────────────────────────── */}
-        <div style={{
-          background: "#080b10",
-          border: `1px solid ${GOLD_20}`,
-          borderRadius: 10,
-          padding: "24px 20px",
-          marginBottom: 28,
-        }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 16 }}>FOUNDING AMBASSADOR</p>
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            color: "rgba(232,224,208,0.7)",
-            fontSize: "1.0rem",
-            lineHeight: 2.0,
-          }}>
-            You leave MAYDAY as a founding ambassador.<br /><br />
-            Go home. Open a Makoa house in your city.<br />
-            Lead the first 4am. Build the order where you are.<br /><br />
-            The founding brothers become the first house leaders on earth.
-          </p>
-        </div>
-
-        {/* ── BOTTOM COUNTDOWN + CTA ────────────────────────────────────────── */}
-        <div style={{ marginBottom: 24 }}>
-          <CountdownBlock target={TIMELINE.GATE_OPENS} label="🌕 GATE OPENS (MAY 1 FULL MOON) IN" color={GOLD} />
-        </div>
-        {isEarlyBird && (
-          <div style={{
-            background: "rgba(248,81,73,0.06)",
-            border: "1px solid rgba(248,81,73,0.2)",
-            borderRadius: 8,
-            padding: "14px 16px",
-            marginBottom: 24,
-          }}>
-            <CountdownBlock target={EARLY_BIRD_CUTOFF} label="⚡ EARLY BIRD CLOSES IN" color={RED} />
-          </div>
-        )}
-        <button
-          onClick={() => handleCheckout(isEarlyBird ? "MAYDAY_WAR_VAN_EARLY" : "MAYDAY_WAR_VAN_LAST")}
-          disabled={isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")}
-          style={{
-            width: "100%", background: GOLD, color: "#000",
-            border: "none", padding: "17px", fontSize: "0.58rem",
-            letterSpacing: "0.22em", cursor: "pointer", borderRadius: 6,
-            fontFamily: "'JetBrains Mono', monospace", fontWeight: 700,
-            marginBottom: 12,
-            opacity: (isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? 0.7 : 1,
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-          }}
-        >
-          {(isLoading("MAYDAY_WAR_VAN_EARLY") || isLoading("MAYDAY_WAR_VAN_LAST")) ? (
-            <><span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} /> SECURING...</>
-          ) : "CLAIM YOUR FOUNDING SEAT"}
-        </button>
-        <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginBottom: 32 }}>
-          limited seats · once they're gone, this moment is gone
-        </p>
-
-        {/* ── MAKOA HOUSE — CHARTER UNLOCK ─────────────────────────────────── */}
-        <div style={{
-          background: "rgba(167,139,250,0.05)",
-          border: "1px solid rgba(167,139,250,0.18)",
-          borderRadius: 10,
-          padding: "22px 20px",
-          marginBottom: 20,
-        }}>
-          <p style={{ color: "#a78bfa", fontSize: "0.44rem", letterSpacing: "0.22em", marginBottom: 10 }}>
-            ◉ MAYDAY UNLOCKS — MAKOA HOUSE CHARTER
-          </p>
-          <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.46rem", lineHeight: 1.75, marginBottom: 14 }}>
-            Every founding brother who completes MAYDAY gets first access to open a Makoa House in their territory.
-            One house per zip cluster. One stone per charter. May 31 — Blue Moon — is the global founding date.
-          </p>
-          <div style={{ display: "grid", gap: 8, marginBottom: 14 }}>
+          <div style={{ display: "grid", gap: 8 }}>
             {[
-              { icon: "◆", label: "Mana live-in path", desc: "90 days → Aliʻi elevation" },
-              { icon: "◉", label: "Master Room timeshare", desc: "Aliʻi access at every house worldwide" },
-              { icon: "◈", label: "Trade route equity", desc: "80/10/10 — brother runs the route" },
-              { icon: "▲", label: "Nakoa Trade Academy", desc: "9AM–2PM · Tool library · P2P dispatch" },
-            ].map((item, i) => (
-              <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                <span style={{ color: "#a78bfa", fontSize: "0.5rem", flexShrink: 0 }}>{item.icon}</span>
+              { pct: "80%", label: "stays in your territory", desc: "chapter treasury · local ops · brothers doing the work" },
+              { pct: "10%", label: "to the Order", desc: "Mākoa Trade Co. general fund · 7G Net · new chapter activation" },
+              { pct: "10%", label: "to the Mayday 48 Aliʻi pool", desc: "split among the 20 founding Aliʻi forever · 0.5% per founder · perpetual · inheritable" },
+            ].map(row => (
+              <div key={row.pct} style={{
+                display: "flex", gap: 14, alignItems: "flex-start",
+                padding: "10px 14px",
+                background: "rgba(0,0,0,0.2)",
+                border: `1px solid ${GOLD_20}`,
+                borderRadius: 6,
+              }}>
+                <span style={{ color: GOLD, fontSize: "0.9rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, minWidth: 36 }}>{row.pct}</span>
                 <div>
-                  <span style={{ color: "#e8e0d0", fontSize: "0.44rem" }}>{item.label}</span>
-                  <span style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.4rem", marginLeft: 8 }}>{item.desc}</span>
+                  <p style={{ color: "#e8e0d0", fontSize: "0.46rem", marginBottom: 2 }}>{row.label}</p>
+                  <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.4rem", lineHeight: 1.5 }}>{row.desc}</p>
                 </div>
               </div>
             ))}
           </div>
-          <a
-            href="/houses"
-            style={{
-              display: "block",
-              textAlign: "center",
-              background: "rgba(167,139,250,0.08)",
-              border: "1px solid rgba(167,139,250,0.25)",
-              color: "#a78bfa",
-              fontSize: "0.44rem",
-              letterSpacing: "0.18em",
-              padding: "10px",
-              textDecoration: "none",
-              borderRadius: 5,
-            }}
-          >
-            VIEW THE HOUSE CHARTER SYSTEM →
-          </a>
+          <p style={{
+            color: "rgba(176,142,80,0.5)",
+            fontSize: "0.42rem",
+            fontStyle: "italic",
+            fontFamily: "'Cormorant Garamond', serif",
+            lineHeight: 1.9,
+            marginTop: 16,
+            textAlign: "center",
+          }}>
+            This split is the economic constitution.<br />It aligns every chapter toward local sovereignty while funding the 100-year mission.
+          </p>
         </div>
 
-        {/* ── SPONSOR STRIP ────────────────────────────────────────────────── */}
+        {/* ── FAQ ───────────────────────────────────────────────────────────── */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+          <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>FREQUENTLY ASKED</p>
+          <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
+        </div>
+
+        <div style={{ display: "grid", gap: 8, marginBottom: 40 }}>
+          {FAQS.map((faq, i) => (
+            <div
+              key={i}
+              onClick={() => setOpenFaq(openFaq === i ? null : i)}
+              style={{
+                background: openFaq === i ? "rgba(176,142,80,0.05)" : "rgba(0,0,0,0.2)",
+                border: `1px solid ${openFaq === i ? GOLD_20 : "rgba(255,255,255,0.04)"}`,
+                borderRadius: 8, padding: "14px 16px", cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+                <p style={{ color: "rgba(232,224,208,0.8)", fontSize: "0.44rem", lineHeight: 1.6 }}>{faq.q}</p>
+                <span style={{ color: GOLD_DIM, fontSize: "0.7rem", flexShrink: 0 }}>{openFaq === i ? "−" : "+"}</span>
+              </div>
+              {openFaq === i && (
+                <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.44rem", lineHeight: 1.9, marginTop: 12 }}>
+                  {faq.a}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* ── SPONSOR STRIP ─────────────────────────────────────────────────── */}
         <div style={{
           background: "rgba(176,142,80,0.04)",
           border: `1px solid ${GOLD_20}`,
@@ -1317,55 +602,70 @@ function Founding48Content() {
           gap: 16,
         }}>
           <div>
-            <p style={{ color: GOLD, fontSize: "0.46rem", letterSpacing: "0.15em", marginBottom: 4 }}>KNOW A MAN WHO NEEDS THIS?</p>
-            <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.44rem", lineHeight: 1.5 }}>
-              Send him through the gate.<br />He never has to know who.
+            <p style={{ color: GOLD, fontSize: "0.44rem", letterSpacing: "0.15em", marginBottom: 4 }}>KNOW A MAN WHO NEEDS THIS?</p>
+            <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.42rem", lineHeight: 1.5 }}>
+              Gift him a Nā Koa or Mana seat.<br />He never has to know who.
             </p>
           </div>
-          <a
-            href="/sponsor"
-            style={{
-              background: GOLD,
-              color: "#000",
-              border: "none",
-              borderRadius: 6,
-              padding: "10px 16px",
-              fontSize: "0.42rem",
-              letterSpacing: "0.15em",
-              textDecoration: "none",
-              fontFamily: "'JetBrains Mono', monospace",
-              fontWeight: 700,
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-            }}
-          >
+          <a href="/sponsor" style={{
+            background: GOLD, color: "#000",
+            border: "none", borderRadius: 6,
+            padding: "10px 16px",
+            fontSize: "0.42rem", letterSpacing: "0.15em",
+            textDecoration: "none",
+            fontFamily: "'JetBrains Mono', monospace",
+            fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0,
+          }}>
             SPONSOR →
           </a>
         </div>
 
-        {/* ── TELEGRAM STRIP ───────────────────────────────────────────────── */}
+        {/* ── NOT READY STRIP ───────────────────────────────────────────────── */}
         <div style={{
-          background: "#080b10", border: "1px solid rgba(255,255,255,0.05)",
-          borderRadius: 8, padding: "14px 16px",
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-          marginBottom: 28,
+          background: "rgba(0,0,0,0.2)",
+          border: "1px solid rgba(255,255,255,0.04)",
+          borderRadius: 8,
+          padding: "14px 16px",
+          marginBottom: 32,
+          display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12,
         }}>
-          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.48rem", lineHeight: 1.5 }}>
-            Follow the signal —<br />updates drop on Telegram
+          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem", lineHeight: 1.5 }}>
+            Not ready for the founder seat?<br />Mana + Nā Koa open May 2.
           </p>
-          <a
-            href="https://t.me/+dsS4Mz0p5wM4OGYx"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              border: `1px solid ${BLUE}`, color: BLUE, fontSize: "0.44rem",
-              padding: "8px 14px", borderRadius: 4, textDecoration: "none",
-              letterSpacing: "0.1em", whiteSpace: "nowrap", flexShrink: 0,
-            }}
-          >
-            JOIN THE SIGNAL
+          <a href="/waitlist" style={{
+            border: `1px solid ${GOLD_20}`, color: GOLD_DIM,
+            fontSize: "0.4rem", padding: "8px 14px",
+            borderRadius: 4, textDecoration: "none",
+            letterSpacing: "0.1em", whiteSpace: "nowrap", flexShrink: 0,
+          }}>
+            WAITLIST →
           </a>
         </div>
+
+        {/* ── BOTTOM CTA ────────────────────────────────────────────────────── */}
+        <div style={{ marginBottom: 24 }}>
+          <CountdownBlock target={TIMELINE.BLUE_MOON_SEALING} label="🌕 BLUE MOON SEALING (MAY 31) IN" color={GOLD} />
+        </div>
+
+        <a href="/gate" style={{
+          display: "block",
+          background: GOLD,
+          color: "#000",
+          borderRadius: 8,
+          padding: "17px",
+          textDecoration: "none",
+          fontSize: "0.56rem",
+          fontWeight: 700,
+          letterSpacing: "0.22em",
+          fontFamily: "'JetBrains Mono', monospace",
+          textAlign: "center",
+          marginBottom: 12,
+        }}>
+          CLAIM YOUR ALIʻI FOUNDER SEAT
+        </a>
+        <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.4rem", marginBottom: 32 }}>
+          $4,997 · 1% equity · team of 3–5 · gate opens May 1 · 20 seats total
+        </p>
 
         {/* ── FOOTER ───────────────────────────────────────────────────────── */}
         <div style={{ textAlign: "center", paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.04)" }}>
@@ -1378,14 +678,27 @@ function Founding48Content() {
           }}>
             Hana · Pale · Ola
           </p>
-          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginBottom: 6 }}>
-            Questions: wakachief@gmail.com
-          </p>
-          <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 12 }}>
+            {[
+              { href: "/gate", label: "THE GATE" },
+              { href: "/palapala", label: "THE PALAPALA" },
+              { href: "/trade", label: "TRADE CO." },
+              { href: "/sponsor", label: "SPONSOR" },
+              { href: "/waitlist", label: "WAITLIST" },
+            ].map(link => (
+              <a key={link.href} href={link.href} style={{
+                color: "rgba(176,142,80,0.3)",
+                fontSize: "0.38rem",
+                letterSpacing: "0.15em",
+                textDecoration: "none",
+              }}>{link.label}</a>
+            ))}
+          </div>
+          <p style={{ color: GOLD_DIM, fontSize: "0.5rem", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
             makoa.live
           </p>
-          <p style={{ color: "rgba(176,142,80,0.15)", fontSize: "0.4rem", letterSpacing: "0.15em" }}>
-            MĀKOA ORDER · MALU TRUST · WEST OAHU · 2026
+          <p style={{ color: "rgba(176,142,80,0.15)", fontSize: "0.38rem", letterSpacing: "0.15em" }}>
+            MĀKOA ORDER · MALU TRUST · WEST OAHU · WORLDWIDE · 2026
           </p>
         </div>
 

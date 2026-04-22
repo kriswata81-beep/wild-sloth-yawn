@@ -139,6 +139,25 @@ export default function FirePage() {
         </p>
       </div>
 
+      {/* Cross-link strip — top */}
+      <div style={{
+        background: "rgba(176,142,80,0.04)",
+        borderBottom: `1px solid ${GOLD_20}`,
+        padding: "12px 20px",
+        textAlign: "center",
+      }}>
+        <p style={{ color: GOLD_DIM, fontSize: "0.42rem", lineHeight: 1.8, margin: 0 }}>
+          This is what happens inside a Mayday 48 weekend.{" "}
+          <a href="/founding48" style={{ color: GOLD, textDecoration: "underline" }}>
+            See the full Mayday 48 page →
+          </a>
+          {" "}or{" "}
+          <a href="/gate" style={{ color: GOLD, textDecoration: "underline" }}>
+            enter the gate →
+          </a>
+        </p>
+      </div>
+
       {/* Hero */}
       <div style={{
         textAlign: "center", padding: "56px 24px 40px",
@@ -371,6 +390,28 @@ export default function FirePage() {
             🌕 GATE OPENS MAY 1 · FULL MOON · 9AM HST · WEST OAHU
           </p>
         </div>
+
+        {/* Cross-link strip — bottom */}
+        <div style={{
+          marginTop: 24,
+          background: "rgba(176,142,80,0.04)",
+          border: `1px solid ${GOLD_20}`,
+          borderRadius: 10,
+          padding: "16px 20px",
+          textAlign: "center",
+        }}>
+          <p style={{ color: GOLD_DIM, fontSize: "0.44rem", lineHeight: 2, margin: 0 }}>
+            Ready?{" "}
+            <a href="/gate" style={{ color: GOLD, textDecoration: "underline" }}>
+              Claim your Aliʻi founder seat →
+            </a>
+            {" "}· Or{" "}
+            <a href="/palapala" style={{ color: GOLD, textDecoration: "underline" }}>
+              read the Palapala →
+            </a>
+          </p>
+        </div>
+
       </div>
     </div>
   );
