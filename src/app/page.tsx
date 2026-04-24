@@ -112,7 +112,7 @@ const XI_LINES = [
 const divider = (label: string) => (
   <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
     <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-    <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.28em", whiteSpace: "nowrap", fontFamily: "'JetBrains Mono', monospace" }}>{label}</p>
+    <p style={{ color: GOLD_DIM, fontSize: "15px", letterSpacing: "0.2em", whiteSpace: "nowrap", fontFamily: "'JetBrains Mono', monospace" }}>{label}</p>
     <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
   </div>
 );
@@ -155,6 +155,13 @@ export default function Home() {
         .cta-secondary { transition: border-color 0.2s, background 0.2s; }
         .cta-secondary:hover { border-color: rgba(212,166,104,0.7) !important; background: rgba(212,166,104,0.07) !important; }
         .nav-link:hover { color: rgba(212,166,104,0.8) !important; }
+        .split-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .xi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        @media (max-width: 600px) {
+          .split-grid { grid-template-columns: 1fr !important; }
+          .xi-grid { grid-template-columns: 1fr !important; }
+          .schedule-time { width: 90px !important; }
+        }
       `}</style>
 
       {/* ── ANNOUNCEMENT BANNER ──────────────────────────────────────────────── */}
@@ -310,10 +317,10 @@ export default function Home() {
               { href: "/sponsor", label: "SPONSOR" },
             ].map((link, i, arr) => (
               <span key={link.href} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <a href={link.href} className="nav-link" style={{ color: link.href === "/palapala" ? "rgba(255,78,31,0.6)" : "rgba(212,166,104,0.35)", fontSize: "13px", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>
+                <a href={link.href} className="nav-link" style={{ color: link.href === "/palapala" ? "rgba(255,78,31,0.7)" : "rgba(212,166,104,0.5)", fontSize: "15px", letterSpacing: "0.15em", textDecoration: "none", transition: "color 0.2s" }}>
                   {link.label}
                 </a>
-                {i < arr.length - 1 && <span style={{ color: "rgba(212,166,104,0.12)", fontSize: "13px" }}>·</span>}
+                {i < arr.length - 1 && <span style={{ color: "rgba(212,166,104,0.15)", fontSize: "15px" }}>·</span>}
               </span>
             ))}
           </div>
@@ -480,25 +487,25 @@ export default function Home() {
                 display: "flex", gap: 0,
                 borderBottom: i < SCHEDULE.length - 1 ? "1px solid rgba(212,166,104,0.06)" : "none",
               }}>
-                <div style={{
-                  width: 120, flexShrink: 0,
-                  padding: "14px 18px",
+                <div className="schedule-time" style={{
+                  width: 110, flexShrink: 0,
+                  padding: "14px 14px",
                   background: "rgba(0,0,0,0.25)",
                   borderRight: "1px solid rgba(212,166,104,0.08)",
                 }}>
                   <p style={{
                     fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "13px",
+                    fontSize: "14px",
                     color: GOLD_DIM,
-                    letterSpacing: "0.06em",
+                    letterSpacing: "0.04em",
                     whiteSpace: "nowrap",
                   }}>{row.time}</p>
                 </div>
-                <div style={{ padding: "14px 18px", flex: 1 }}>
+                <div style={{ padding: "14px 16px", flex: 1 }}>
                   <p style={{
                     fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "15px",
-                    color: "rgba(232,224,208,0.7)",
+                    fontSize: "16px",
+                    color: "rgba(232,224,208,0.8)",
                     lineHeight: 1.6,
                   }}>{row.event}</p>
                 </div>
@@ -649,7 +656,7 @@ export default function Home() {
           </p>
 
           <p style={{
-            color: "rgba(232,224,208,0.6)",
+            color: "rgba(232,224,208,0.75)",
             fontSize: "18px",
             lineHeight: 1.9,
             marginBottom: 32,
@@ -658,7 +665,7 @@ export default function Home() {
           </p>
 
           <p style={{
-            color: "rgba(232,224,208,0.6)",
+            color: "rgba(232,224,208,0.75)",
             fontSize: "18px",
             lineHeight: 1.9,
             marginBottom: 32,
@@ -667,7 +674,7 @@ export default function Home() {
           </p>
 
           {/* 80/10/10 */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 32 }}>
+          <div className="split-grid" style={{ marginBottom: 32 }}>
             {TRADE_SPLIT.map(col => (
               <div key={col.label} style={{
                 padding: "22px 16px",
@@ -686,14 +693,14 @@ export default function Home() {
                 }}>{col.pct}</p>
                 <p style={{
                   fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "11px",
-                  letterSpacing: "0.18em",
+                  fontSize: "13px",
+                  letterSpacing: "0.14em",
                   color: GOLD_DIM,
                   marginBottom: 8,
                 }}>{col.label}</p>
                 <p style={{
-                  color: "rgba(232,224,208,0.45)",
-                  fontSize: "14px",
+                  color: "rgba(232,224,208,0.6)",
+                  fontSize: "15px",
                   lineHeight: 1.6,
                 }}>{col.desc}</p>
               </div>
@@ -701,7 +708,7 @@ export default function Home() {
           </div>
 
           <p style={{
-            color: "rgba(232,224,208,0.55)",
+            color: "rgba(232,224,208,0.75)",
             fontSize: "18px",
             lineHeight: 1.9,
             marginBottom: 28,
@@ -730,18 +737,18 @@ export default function Home() {
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
           {divider("THE 7G NET · THREE LINES")}
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 20 }}>
+          <div className="xi-grid" style={{ marginBottom: 20 }}>
             {XI_LINES.map(line => (
               <div key={line.name} style={{
-                padding: "20px 16px",
+                padding: "22px 18px",
                 background: "rgba(212,166,104,0.03)",
                 border: `1px solid ${GOLD_20}`,
                 borderRadius: 10,
               }}>
-                <p style={{ fontSize: "1.4rem", marginBottom: 8 }}>{line.icon}</p>
-                <p style={{ color: GOLD, fontSize: "13px", letterSpacing: "0.14em", marginBottom: 4, fontFamily: "'JetBrains Mono', monospace" }}>{line.name}</p>
-                <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "12px", letterSpacing: "0.08em", marginBottom: 10, fontFamily: "'JetBrains Mono', monospace" }}>{line.role}</p>
-                <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "13px", lineHeight: 1.7 }}>{line.desc}</p>
+                <p style={{ fontSize: "1.6rem", marginBottom: 10 }}>{line.icon}</p>
+                <p style={{ color: GOLD, fontSize: "15px", letterSpacing: "0.12em", marginBottom: 4, fontFamily: "'JetBrains Mono', monospace" }}>{line.name}</p>
+                <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "14px", letterSpacing: "0.06em", marginBottom: 12, fontFamily: "'JetBrains Mono', monospace" }}>{line.role}</p>
+                <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "15px", lineHeight: 1.7 }}>{line.desc}</p>
               </div>
             ))}
           </div>
@@ -749,7 +756,7 @@ export default function Home() {
           <div style={{ textAlign: "center" }}>
             <a href="/trust" style={{
               color: GOLD_DIM,
-              fontSize: "15px",
+              fontSize: "16px",
               letterSpacing: "0.12em",
               textDecoration: "none",
               fontFamily: "'JetBrains Mono', monospace",
@@ -800,7 +807,7 @@ export default function Home() {
           </a>
 
           {/* Footer CTAs */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 14, alignItems: "center" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, alignItems: "center" }}>
             {[
               { href: "/palapala", label: "Read the Palapala →" },
               { href: "/book", label: "Read the Mākoa Book (open) →" },
@@ -809,9 +816,9 @@ export default function Home() {
               { href: "/mayday48/gate", label: "Overseas teams → War Party" },
             ].map(link => (
               <a key={link.href} href={link.href} style={{
-                color: "rgba(232,224,208,0.35)",
-                fontSize: "16px",
-                letterSpacing: "0.12em",
+                color: "rgba(232,224,208,0.5)",
+                fontSize: "17px",
+                letterSpacing: "0.1em",
                 textDecoration: "none",
                 fontFamily: "'JetBrains Mono', monospace",
                 transition: "color 0.2s",
