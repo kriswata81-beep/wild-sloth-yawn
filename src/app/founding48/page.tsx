@@ -6,7 +6,6 @@ import { TIMELINE } from "@/lib/timeline";
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
 const GOLD_20 = "rgba(176,142,80,0.2)";
-const GOLD_10 = "rgba(176,142,80,0.1)";
 const GOLD_DIM = "rgba(176,142,80,0.5)";
 const FLAME = "#ff4e1f";
 const BG = "#04060a";
@@ -39,7 +38,7 @@ function CountdownBlock({ target, label, color = GOLD }: { target: Date; label: 
   const { days, hours, minutes, seconds } = useCountdown(target);
   return (
     <div>
-      <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem", letterSpacing: "0.2em", textAlign: "center", marginBottom: 10 }}>
+      <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "13px", letterSpacing: "0.2em", textAlign: "center", marginBottom: 10 }}>
         {label}
       </p>
       <div style={{ display: "flex", gap: 8 }}>
@@ -58,7 +57,7 @@ function CountdownBlock({ target, label, color = GOLD }: { target: Date; label: 
               color: color, fontSize: "1.4rem", fontWeight: 700, lineHeight: 1,
               fontFamily: "'JetBrains Mono', monospace",
             }}>{String(t.val).padStart(2, "0")}</p>
-            <p style={{ color: "rgba(176,142,80,0.4)", fontSize: "0.36rem", letterSpacing: "0.15em", marginTop: 4 }}>{t.label}</p>
+            <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "11px", letterSpacing: "0.15em", marginTop: 4 }}>{t.label}</p>
           </div>
         ))}
       </div>
@@ -199,7 +198,7 @@ function Founding48Content() {
         <div style={{ height: 1, background: `linear-gradient(to right, transparent, ${GOLD_40}, transparent)`, marginBottom: 40 }} />
 
         <p style={{
-          color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.35em",
+          color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.35em",
           marginBottom: 16, animation: "fadeUp 0.8s ease 0.1s both",
         }}>
           MAYDAY 48 · THE FOUNDING MONTH
@@ -220,8 +219,8 @@ function Founding48Content() {
         <p style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: "italic",
-          color: "rgba(232,224,208,0.55)",
-          fontSize: "1.1rem",
+          color: "rgba(232,224,208,0.6)",
+          fontSize: "1.15rem",
           marginBottom: 24,
           animation: "fadeUp 0.8s ease 0.35s both",
         }}>
@@ -245,7 +244,7 @@ function Founding48Content() {
               borderRadius: 8, padding: "14px 8px", textAlign: "center",
             }}>
               <p style={{ color: GOLD, fontSize: "1.6rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>{s.val}</p>
-              <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.12em", marginTop: 4 }}>{s.label}</p>
+              <p style={{ color: GOLD_DIM, fontSize: "12px", letterSpacing: "0.12em", marginTop: 4 }}>{s.label}</p>
             </div>
           ))}
         </div>
@@ -268,7 +267,7 @@ function Founding48Content() {
           transform: revealed ? "translateY(0)" : "translateY(16px)",
           transition: "opacity 0.7s ease, transform 0.7s ease",
         }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.28em", marginBottom: 16 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.28em", marginBottom: 16 }}>
             WHAT IS MAYDAY 48?
           </p>
           <p style={{
@@ -281,10 +280,10 @@ function Founding48Content() {
           }}>
             Mayday 48 is the once-ever founding event of the Mākoa Brotherhood.
           </p>
-          <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.48rem", lineHeight: 1.9, marginBottom: 16 }}>
+          <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "17px", lineHeight: 1.9, marginBottom: 16 }}>
             Four weekends across May 2026. West Oʻahu. 20 Aliʻi team leaders take the oath and sign the Palapala. 48 total oath signatures — 20 Aliʻi and the 28 brothers they bring.
           </p>
-          <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.48rem", lineHeight: 1.9, marginBottom: 16 }}>
+          <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "17px", lineHeight: 1.9, marginBottom: 16 }}>
             The Founding 48 closes permanently at the May 31 Blue Moon. There will be cohorts after. There will be no second Founding 48.
           </p>
           <div style={{ height: 1, background: GOLD_20, margin: "20px 0" }} />
@@ -292,7 +291,7 @@ function Founding48Content() {
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
             color: GOLD_DIM,
-            fontSize: "0.95rem",
+            fontSize: "1rem",
             lineHeight: 1.9,
             textAlign: "center",
           }}>
@@ -303,7 +302,7 @@ function Founding48Content() {
         {/* ── 4-WEEKEND TABLE ───────────────────────────────────────────────── */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>THE 4 WEEKENDS</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>THE 4 WEEKENDS</p>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
@@ -324,21 +323,21 @@ function Founding48Content() {
                 flexShrink: 0,
                 background: w.color === GOLD ? "rgba(176,142,80,0.12)" : "transparent",
               }}>
-                <span style={{ color: w.color, fontSize: "0.5rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{w.num}</span>
+                <span style={{ color: w.color, fontSize: "14px", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{w.num}</span>
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
-                  <p style={{ color: w.color, fontSize: "0.44rem", letterSpacing: "0.1em" }}>{w.dates}</p>
+                  <p style={{ color: w.color, fontSize: "15px", letterSpacing: "0.1em" }}>{w.dates}</p>
                   {w.moon && (
                     <span style={{
                       background: "rgba(176,142,80,0.1)", border: `1px solid ${GOLD_20}`,
-                      color: GOLD, fontSize: "0.34rem", letterSpacing: "0.1em",
+                      color: GOLD, fontSize: "12px", letterSpacing: "0.1em",
                       padding: "2px 8px", borderRadius: 3,
                     }}>{w.moon}</span>
                   )}
                 </div>
-                <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.36rem", letterSpacing: "0.14em", marginBottom: 6 }}>{w.label}</p>
-                <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.44rem", lineHeight: 1.7 }}>{w.detail}</p>
+                <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "12px", letterSpacing: "0.14em", marginBottom: 6 }}>{w.label}</p>
+                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "16px", lineHeight: 1.7 }}>{w.detail}</p>
               </div>
             </div>
           ))}
@@ -347,11 +346,11 @@ function Founding48Content() {
         {/* ── 48-HOUR WEEKEND RHYTHM ────────────────────────────────────────── */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>THE 48-HOUR RHYTHM</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>THE 48-HOUR RHYTHM</p>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
-        <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem", lineHeight: 1.7, marginBottom: 20 }}>
+        <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "16px", lineHeight: 1.7, marginBottom: 20 }}>
           Fri 12PM HNL pickup → Sun 12PM departure. Every Aliʻi weekend runs the same rhythm.
         </p>
 
@@ -390,10 +389,10 @@ function Founding48Content() {
                 borderRadius: 8, padding: openRhythm === i ? "12px 14px" : "8px 0",
                 transition: "all 0.2s",
               }}>
-                <p style={{ color: GOLD_DIM, fontSize: "0.34rem", letterSpacing: "0.12em", marginBottom: 2 }}>{r.time}</p>
-                <p style={{ color: openRhythm === i ? GOLD : "rgba(232,224,208,0.75)", fontSize: "0.48rem", transition: "color 0.2s" }}>{r.event}</p>
+                <p style={{ color: GOLD_DIM, fontSize: "12px", letterSpacing: "0.12em", marginBottom: 2 }}>{r.time}</p>
+                <p style={{ color: openRhythm === i ? GOLD : "rgba(232,224,208,0.8)", fontSize: "17px", transition: "color 0.2s" }}>{r.event}</p>
                 {openRhythm === i && (
-                  <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.44rem", lineHeight: 1.8, marginTop: 8 }}>{r.detail}</p>
+                  <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "16px", lineHeight: 1.8, marginTop: 8 }}>{r.detail}</p>
                 )}
               </div>
             </div>
@@ -403,7 +402,7 @@ function Founding48Content() {
         {/* ── ALIʻI FOUNDER SEAT ────────────────────────────────────────────── */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>ALIʻI FOUNDER SEAT</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>ALIʻI FOUNDER SEAT</p>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
@@ -426,11 +425,11 @@ function Founding48Content() {
           <div style={{
             position: "absolute", top: 14, right: 14,
             background: GOLD, color: "#000",
-            fontSize: "0.36rem", letterSpacing: "0.12em",
+            fontSize: "12px", letterSpacing: "0.12em",
             padding: "4px 10px", borderRadius: 3, fontWeight: 700,
           }}>20 SEATS · 5 PER WEEKEND</div>
 
-          <p style={{ color: GOLD, fontSize: "0.42rem", letterSpacing: "0.22em", marginBottom: 6 }}>ALIʻI · FOUNDING SEAT</p>
+          <p style={{ color: GOLD, fontSize: "13px", letterSpacing: "0.22em", marginBottom: 6 }}>ALIʻI · FOUNDING SEAT</p>
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
@@ -457,8 +456,8 @@ function Founding48Content() {
               "Aliʻi Council seat for life",
             ].map(item => (
               <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                <span style={{ color: GOLD, fontSize: "0.44rem", flexShrink: 0, marginTop: 1 }}>—</span>
-                <p style={{ color: "rgba(232,224,208,0.75)", fontSize: "0.46rem", lineHeight: 1.5 }}>{item}</p>
+                <span style={{ color: GOLD, fontSize: "16px", flexShrink: 0, marginTop: 1 }}>—</span>
+                <p style={{ color: "rgba(232,224,208,0.8)", fontSize: "17px", lineHeight: 1.5 }}>{item}</p>
               </div>
             ))}
           </div>
@@ -472,12 +471,12 @@ function Founding48Content() {
             display: "flex", justifyContent: "space-between", alignItems: "center",
           }}>
             <div>
-              <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.14em", marginBottom: 4 }}>ALIʻI FOUNDER SEAT</p>
+              <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.14em", marginBottom: 4 }}>ALIʻI FOUNDER SEAT</p>
               <p style={{ color: GOLD, fontSize: "2rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>$4,997</p>
             </div>
             <div style={{ textAlign: "right" }}>
-              <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.36rem", marginBottom: 4 }}>Team of 3–5 brothers</p>
-              <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.36rem" }}>Cannot be sponsored</p>
+              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "14px", marginBottom: 4 }}>Team of 3–5 brothers</p>
+              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "14px" }}>Cannot be sponsored</p>
             </div>
           </div>
 
@@ -488,7 +487,7 @@ function Founding48Content() {
             borderRadius: 8,
             padding: "16px",
             textDecoration: "none",
-            fontSize: "0.54rem",
+            fontSize: "16px",
             fontWeight: 700,
             letterSpacing: "0.2em",
             fontFamily: "'JetBrains Mono', monospace",
@@ -497,7 +496,7 @@ function Founding48Content() {
             CLAIM YOUR ALIʻI SEAT → /GATE
           </a>
 
-          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.38rem", textAlign: "center", marginTop: 10 }}>
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "14px", textAlign: "center", marginTop: 10 }}>
             Gate opens May 1 · Full Moon · 9AM HST · 20 seats total
           </p>
         </div>
@@ -510,7 +509,7 @@ function Founding48Content() {
           padding: "26px 22px",
           marginBottom: 40,
         }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.28em", marginBottom: 16 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.28em", marginBottom: 16 }}>
             WHAT YOU BUILD AFTER MAYDAY 48
           </p>
           <p style={{
@@ -536,17 +535,17 @@ function Founding48Content() {
                 border: `1px solid ${GOLD_20}`,
                 borderRadius: 6,
               }}>
-                <span style={{ color: GOLD, fontSize: "0.9rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, minWidth: 36 }}>{row.pct}</span>
+                <span style={{ color: GOLD, fontSize: "1.1rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, minWidth: 36 }}>{row.pct}</span>
                 <div>
-                  <p style={{ color: "#e8e0d0", fontSize: "0.46rem", marginBottom: 2 }}>{row.label}</p>
-                  <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.4rem", lineHeight: 1.5 }}>{row.desc}</p>
+                  <p style={{ color: "#e8e0d0", fontSize: "17px", marginBottom: 2 }}>{row.label}</p>
+                  <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "15px", lineHeight: 1.5 }}>{row.desc}</p>
                 </div>
               </div>
             ))}
           </div>
           <p style={{
-            color: "rgba(176,142,80,0.5)",
-            fontSize: "0.42rem",
+            color: "rgba(176,142,80,0.55)",
+            fontSize: "16px",
             fontStyle: "italic",
             fontFamily: "'Cormorant Garamond', serif",
             lineHeight: 1.9,
@@ -560,7 +559,7 @@ function Founding48Content() {
         {/* ── FAQ ───────────────────────────────────────────────────────────── */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>FREQUENTLY ASKED</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>FREQUENTLY ASKED</p>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
@@ -577,11 +576,11 @@ function Founding48Content() {
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-                <p style={{ color: "rgba(232,224,208,0.8)", fontSize: "0.44rem", lineHeight: 1.6 }}>{faq.q}</p>
-                <span style={{ color: GOLD_DIM, fontSize: "0.7rem", flexShrink: 0 }}>{openFaq === i ? "−" : "+"}</span>
+                <p style={{ color: "rgba(232,224,208,0.85)", fontSize: "17px", lineHeight: 1.6 }}>{faq.q}</p>
+                <span style={{ color: GOLD_DIM, fontSize: "1.1rem", flexShrink: 0 }}>{openFaq === i ? "−" : "+"}</span>
               </div>
               {openFaq === i && (
-                <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.44rem", lineHeight: 1.9, marginTop: 12 }}>
+                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "17px", lineHeight: 1.9, marginTop: 12 }}>
                   {faq.a}
                 </p>
               )}
@@ -602,8 +601,8 @@ function Founding48Content() {
           gap: 16,
         }}>
           <div>
-            <p style={{ color: GOLD, fontSize: "0.44rem", letterSpacing: "0.15em", marginBottom: 4 }}>KNOW A MAN WHO NEEDS THIS?</p>
-            <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.42rem", lineHeight: 1.5 }}>
+            <p style={{ color: GOLD, fontSize: "15px", letterSpacing: "0.15em", marginBottom: 4 }}>KNOW A MAN WHO NEEDS THIS?</p>
+            <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "15px", lineHeight: 1.5 }}>
               Gift him a Nā Koa or Mana seat.<br />He never has to know who.
             </p>
           </div>
@@ -611,7 +610,7 @@ function Founding48Content() {
             background: GOLD, color: "#000",
             border: "none", borderRadius: 6,
             padding: "10px 16px",
-            fontSize: "0.42rem", letterSpacing: "0.15em",
+            fontSize: "14px", letterSpacing: "0.15em",
             textDecoration: "none",
             fontFamily: "'JetBrains Mono', monospace",
             fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0,
@@ -629,12 +628,12 @@ function Founding48Content() {
           marginBottom: 32,
           display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12,
         }}>
-          <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.42rem", lineHeight: 1.5 }}>
+          <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "16px", lineHeight: 1.5 }}>
             Not ready for the founder seat?<br />Mana + Nā Koa open May 2.
           </p>
           <a href="/waitlist" style={{
             border: `1px solid ${GOLD_20}`, color: GOLD_DIM,
-            fontSize: "0.4rem", padding: "8px 14px",
+            fontSize: "14px", padding: "8px 14px",
             borderRadius: 4, textDecoration: "none",
             letterSpacing: "0.1em", whiteSpace: "nowrap", flexShrink: 0,
           }}>
@@ -654,7 +653,7 @@ function Founding48Content() {
           borderRadius: 8,
           padding: "17px",
           textDecoration: "none",
-          fontSize: "0.56rem",
+          fontSize: "17px",
           fontWeight: 700,
           letterSpacing: "0.22em",
           fontFamily: "'JetBrains Mono', monospace",
@@ -663,7 +662,7 @@ function Founding48Content() {
         }}>
           CLAIM YOUR ALIʻI FOUNDER SEAT
         </a>
-        <p style={{ textAlign: "center", color: "rgba(232,224,208,0.2)", fontSize: "0.4rem", marginBottom: 32 }}>
+        <p style={{ textAlign: "center", color: "rgba(232,224,208,0.3)", fontSize: "14px", marginBottom: 32 }}>
           $4,997 · 1% equity · team of 3–5 · gate opens May 1 · 20 seats total
         </p>
 
@@ -673,7 +672,7 @@ function Founding48Content() {
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
             color: GOLD_DIM,
-            fontSize: "0.95rem",
+            fontSize: "1rem",
             marginBottom: 12,
           }}>
             Hana · Pale · Ola
@@ -687,17 +686,17 @@ function Founding48Content() {
               { href: "/waitlist", label: "WAITLIST" },
             ].map(link => (
               <a key={link.href} href={link.href} style={{
-                color: "rgba(176,142,80,0.3)",
-                fontSize: "0.38rem",
+                color: "rgba(176,142,80,0.4)",
+                fontSize: "13px",
                 letterSpacing: "0.15em",
                 textDecoration: "none",
               }}>{link.label}</a>
             ))}
           </div>
-          <p style={{ color: GOLD_DIM, fontSize: "0.5rem", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "15px", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
             makoa.live
           </p>
-          <p style={{ color: "rgba(176,142,80,0.15)", fontSize: "0.38rem", letterSpacing: "0.15em" }}>
+          <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "13px", letterSpacing: "0.15em" }}>
             MĀKOA ORDER · MALU TRUST · WEST OAHU · WORLDWIDE · 2026
           </p>
         </div>
@@ -711,7 +710,7 @@ export default function Founding48Page() {
   return (
     <Suspense fallback={
       <div style={{ background: "#04060a", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <p style={{ color: "rgba(176,142,80,0.4)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.5rem", letterSpacing: "0.2em" }}>
+        <p style={{ color: "rgba(176,142,80,0.4)", fontFamily: "'JetBrains Mono', monospace", fontSize: "16px", letterSpacing: "0.2em" }}>
           LOADING...
         </p>
       </div>

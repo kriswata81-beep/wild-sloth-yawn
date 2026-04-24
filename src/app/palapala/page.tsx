@@ -37,7 +37,7 @@ export default function PalapalaPage() {
         <span
           style={{
             color: "#d4af37",
-            fontSize: "0.6rem",
+            fontSize: "13px",
             letterSpacing: "0.35em",
             fontVariant: "small-caps",
           }}
@@ -78,8 +78,8 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            color: "rgba(245,236,217,0.4)",
-            fontSize: "0.65rem",
+            color: "rgba(245,236,217,0.5)",
+            fontSize: "14px",
             letterSpacing: "0.2em",
           }}
         >
@@ -102,7 +102,7 @@ export default function PalapalaPage() {
           style={{
             fontStyle: "italic",
             color: "rgba(212,175,55,0.7)",
-            fontSize: "1rem",
+            fontSize: "1.1rem",
           }}
         >
           &quot;Read it twice. Then read it to a brother.&quot;
@@ -115,7 +115,7 @@ export default function PalapalaPage() {
         {/* INTRO SECTION */}
         <p
           style={{
-            fontSize: "1.05rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 48,
             color: "rgba(245,236,217,0.85)",
@@ -136,7 +136,7 @@ export default function PalapalaPage() {
         <div
           style={{
             color: "#d4af37",
-            fontSize: "0.55rem",
+            fontSize: "14px",
             letterSpacing: "0.4em",
             fontVariant: "small-caps",
             marginBottom: 8,
@@ -157,7 +157,7 @@ export default function PalapalaPage() {
         </h2>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 48,
             color: "rgba(245,236,217,0.85)",
@@ -178,7 +178,7 @@ export default function PalapalaPage() {
         <div
           style={{
             color: "#d4af37",
-            fontSize: "0.55rem",
+            fontSize: "14px",
             letterSpacing: "0.4em",
             fontVariant: "small-caps",
             marginBottom: 8,
@@ -199,7 +199,7 @@ export default function PalapalaPage() {
         </h2>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -210,7 +210,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -225,7 +225,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -241,7 +241,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -255,7 +255,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -269,7 +269,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 48,
             color: "rgba(245,236,217,0.85)",
@@ -305,7 +305,7 @@ export default function PalapalaPage() {
         <div
           style={{
             color: "#d4af37",
-            fontSize: "0.55rem",
+            fontSize: "14px",
             letterSpacing: "0.4em",
             fontVariant: "small-caps",
             marginBottom: 8,
@@ -327,7 +327,7 @@ export default function PalapalaPage() {
         </h2>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -343,7 +343,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -360,7 +360,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 48,
             color: "rgba(245,236,217,0.85)",
@@ -373,7 +373,7 @@ export default function PalapalaPage() {
         <div
           style={{
             color: "#d4af37",
-            fontSize: "0.55rem",
+            fontSize: "14px",
             letterSpacing: "0.4em",
             fontVariant: "small-caps",
             marginBottom: 8,
@@ -394,7 +394,7 @@ export default function PalapalaPage() {
         </h2>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -407,7 +407,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -417,7 +417,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -432,7 +432,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -444,7 +444,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -467,7 +467,7 @@ export default function PalapalaPage() {
           <p
             style={{
               color: "#d4af37",
-              fontSize: "0.55rem",
+              fontSize: "13px",
               letterSpacing: "0.3em",
               marginBottom: 16,
               fontVariant: "small-caps",
@@ -477,7 +477,7 @@ export default function PalapalaPage() {
           </p>
           <p
             style={{
-              fontSize: "1rem",
+              fontSize: "1.1rem",
               lineHeight: 1.9,
               marginBottom: 16,
               color: "rgba(245,236,217,0.85)",
@@ -487,7 +487,7 @@ export default function PalapalaPage() {
           </p>
           <p
             style={{
-              fontSize: "1rem",
+              fontSize: "1.1rem",
               lineHeight: 1.9,
               marginBottom: 8,
               color: "rgba(245,236,217,0.85)",
@@ -497,7 +497,7 @@ export default function PalapalaPage() {
           </p>
           <p
             style={{
-              fontSize: "1rem",
+              fontSize: "1.1rem",
               lineHeight: 1.9,
               marginBottom: 8,
               color: "rgba(245,236,217,0.85)",
@@ -507,7 +507,7 @@ export default function PalapalaPage() {
           </p>
           <p
             style={{
-              fontSize: "1rem",
+              fontSize: "1.1rem",
               lineHeight: 1.9,
               marginBottom: 20,
               color: "rgba(245,236,217,0.85)",
@@ -517,7 +517,7 @@ export default function PalapalaPage() {
           </p>
           <p
             style={{
-              fontSize: "0.9rem",
+              fontSize: "1rem",
               lineHeight: 1.9,
               color: "rgba(212,175,55,0.7)",
               fontStyle: "italic",
@@ -528,7 +528,7 @@ export default function PalapalaPage() {
         </div>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -538,7 +538,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 8,
             color: "rgba(245,236,217,0.85)",
@@ -549,7 +549,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 8,
             color: "rgba(245,236,217,0.85)",
@@ -560,7 +560,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 8,
             color: "rgba(245,236,217,0.85)",
@@ -571,7 +571,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -584,7 +584,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 48,
             color: "rgba(245,236,217,0.85)",
@@ -597,7 +597,7 @@ export default function PalapalaPage() {
         <div
           style={{
             color: "#d4af37",
-            fontSize: "0.55rem",
+            fontSize: "14px",
             letterSpacing: "0.4em",
             fontVariant: "small-caps",
             marginBottom: 8,
@@ -618,7 +618,7 @@ export default function PalapalaPage() {
         </h2>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -630,7 +630,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -641,7 +641,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -654,7 +654,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -666,7 +666,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 48,
             color: "rgba(245,236,217,0.85)",
@@ -683,7 +683,7 @@ export default function PalapalaPage() {
         <div
           style={{
             color: "#d4af37",
-            fontSize: "0.55rem",
+            fontSize: "14px",
             letterSpacing: "0.4em",
             fontVariant: "small-caps",
             marginBottom: 8,
@@ -704,7 +704,7 @@ export default function PalapalaPage() {
         </h2>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -717,7 +717,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -731,7 +731,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -744,7 +744,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 48,
             color: "rgba(245,236,217,0.85)",
@@ -759,7 +759,7 @@ export default function PalapalaPage() {
         <div
           style={{
             color: "#d4af37",
-            fontSize: "0.55rem",
+            fontSize: "14px",
             letterSpacing: "0.4em",
             fontVariant: "small-caps",
             marginBottom: 8,
@@ -780,7 +780,7 @@ export default function PalapalaPage() {
         </h2>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -790,7 +790,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -807,7 +807,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
             color: "rgba(245,236,217,0.85)",
@@ -820,7 +820,7 @@ export default function PalapalaPage() {
         </p>
         <p
           style={{
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 64,
             color: "rgba(245,236,217,0.85)",
@@ -844,7 +844,7 @@ export default function PalapalaPage() {
           <p
             style={{
               color: "#d4af37",
-              fontSize: "0.55rem",
+              fontSize: "13px",
               letterSpacing: "0.4em",
               marginBottom: 20,
             }}
@@ -854,7 +854,7 @@ export default function PalapalaPage() {
           <p
             style={{
               color: "rgba(245,236,217,0.6)",
-              fontSize: "0.75rem",
+              fontSize: "16px",
               lineHeight: 2,
             }}
           >
@@ -881,7 +881,7 @@ export default function PalapalaPage() {
             color: "#ff4e1f",
             fontWeight: 700,
             letterSpacing: "0.3em",
-            fontSize: "0.7rem",
+            fontSize: "14px",
             marginTop: 40,
           }}
         >
@@ -912,10 +912,10 @@ export default function PalapalaPage() {
           style={{
             background: "#ff4e1f",
             color: "#1a1a1a",
-            padding: "10px 24px",
+            padding: "12px 24px",
             borderRadius: 6,
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "0.55rem",
+            fontSize: "13px",
             letterSpacing: "0.2em",
             fontWeight: 700,
             textDecoration: "none",
@@ -928,10 +928,10 @@ export default function PalapalaPage() {
           style={{
             border: "1px solid #d4af37",
             color: "#d4af37",
-            padding: "10px 20px",
+            padding: "12px 20px",
             borderRadius: 6,
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "0.55rem",
+            fontSize: "13px",
             letterSpacing: "0.2em",
             textDecoration: "none",
             background: "transparent",
@@ -942,9 +942,9 @@ export default function PalapalaPage() {
         <a
           href="/founding48"
           style={{
-            color: "rgba(245,236,217,0.4)",
+            color: "rgba(245,236,217,0.5)",
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "0.5rem",
+            fontSize: "13px",
             letterSpacing: "0.15em",
             textDecoration: "none",
           }}

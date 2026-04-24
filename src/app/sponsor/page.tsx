@@ -61,7 +61,7 @@ function SeatBar({ remaining, total, color }: { remaining: number; total: number
 
 export default function SponsorPage() {
   const [visible, setVisible] = useState(false);
-  const [expanded, setExpanded] = useState<string | null>("warroom");
+  const [expanded, setExpanded] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [anonymous, setAnonymous] = useState(true);
   const [sponsorName, setSponsorName] = useState("");
@@ -112,12 +112,12 @@ export default function SponsorPage() {
     width: "100%", padding: "12px 14px",
     background: "rgba(176,142,80,0.05)", border: `1px solid ${GOLD_20}`,
     borderRadius: 8, color: TEXT,
-    fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem",
+    fontFamily: "'JetBrains Mono', monospace", fontSize: "16px",
     outline: "none", boxSizing: "border-box", letterSpacing: "0.03em",
   };
 
   const labelStyle: React.CSSProperties = {
-    display: "block", fontSize: "0.38rem", letterSpacing: "0.2em",
+    display: "block", fontSize: "13px", letterSpacing: "0.2em",
     color: GOLD_DIM, marginBottom: 6,
     fontFamily: "'JetBrains Mono', monospace", textTransform: "uppercase",
   };
@@ -142,7 +142,7 @@ export default function SponsorPage() {
         display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
       }}>
         <div style={{ width: 6, height: 6, borderRadius: "50%", background: RED, animation: "pulse 1s ease-in-out infinite", flexShrink: 0 }} />
-        <p style={{ color: RED, fontSize: "0.38rem", letterSpacing: "0.16em" }}>
+        <p style={{ color: RED, fontSize: "14px", letterSpacing: "0.16em" }}>
           GATE CLOSES MAY 31, 2026 (BLUE MOON) · SPONSORSHIP GIFTS FILL ALONGSIDE THE 20 ALIʻI FOUNDER SEATS
         </p>
       </div>
@@ -157,9 +157,9 @@ export default function SponsorPage() {
           background: GOLD_FAINT, border: `1px solid ${GOLD_20}`,
           borderRadius: 20, padding: "6px 16px", marginBottom: 20,
         }}>
-          <span style={{ fontSize: "0.7rem" }}>💛</span>
-          <p style={{ color: GOLD_DIM, fontSize: "0.34rem", letterSpacing: "0.2em" }}>
-            "SOMEONE BELIEVES IN YOU" CAMPAIGN
+          <span style={{ fontSize: "1rem" }}>💛</span>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.2em" }}>
+            &quot;SOMEONE BELIEVES IN YOU&quot; CAMPAIGN
           </p>
         </div>
 
@@ -168,7 +168,7 @@ export default function SponsorPage() {
           fontSize: "clamp(2.4rem, 8vw, 3.6rem)", color: GOLD,
           fontWeight: 300, margin: "0 0 8px", lineHeight: 1.1,
         }}>
-          He won't ask for help.
+          He won&apos;t ask for help.
         </h1>
         <h2 style={{
           fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
@@ -185,17 +185,17 @@ export default function SponsorPage() {
           borderRadius: 12, padding: "20px 24px",
           animation: "shimmer 3s ease-in-out infinite",
         }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.32rem", letterSpacing: "0.2em", marginBottom: 10 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.2em", marginBottom: 10 }}>
             THE MESSAGE HE RECEIVES
           </p>
           <p style={{
             fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
             color: TEXT, fontSize: "1.1rem", lineHeight: 1.8,
           }}>
-            "Someone believes in you.<br />
-            <span style={{ color: GOLD }}>You've been sponsored into Mākoa.</span>"
+            &quot;Someone believes in you.<br />
+            <span style={{ color: GOLD }}>You&apos;ve been sponsored into Mākoa.</span>&quot;
           </p>
-          <p style={{ color: TEXT_DIM, fontSize: "0.38rem", marginTop: 10, lineHeight: 1.6 }}>
+          <p style={{ color: TEXT_DIM, fontSize: "16px", marginTop: 10, lineHeight: 1.6 }}>
             He never has to know who — unless you want him to.<br />
             Anonymous or named. You choose.
           </p>
@@ -214,7 +214,7 @@ export default function SponsorPage() {
             <span key={w.label} style={{
               background: GOLD_FAINT, border: `1px solid ${GOLD_20}`,
               borderRadius: 20, padding: "5px 12px",
-              color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.08em",
+              color: GOLD_DIM, fontSize: "14px", letterSpacing: "0.08em",
             }}>{w.icon} {w.label}</span>
           ))}
         </div>
@@ -224,13 +224,13 @@ export default function SponsorPage() {
 
         {/* ── WHY THIS WORKS ── */}
         <div style={{ marginBottom: 32 }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.25em", marginBottom: 16 }}>WHY THIS WORKS</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.25em", marginBottom: 16 }}>WHY THIS WORKS</p>
           <div style={{ borderLeft: `3px solid ${GOLD_20}`, paddingLeft: 18, background: GOLD_FAINT, borderRadius: "0 10px 10px 0", padding: "20px 18px" }}>
-            <p style={{ color: TEXT_DIM, fontSize: "0.48rem", lineHeight: 2, fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
-              "Most men carry it alone. The job, the family, the weight.<br /><br />
-              Mākoa is not another retreat or circle. It's a brotherhood that builds real things — labor, knowledge, territory — and holds men accountable at 4am when no one is watching.<br /><br />
-              Many of the right men won't self-apply. Not because they don't want it — because pride and inertia get in the way.<br /><br />
-              <span style={{ color: GOLD }}>Sponsorship bypasses that. You become the push he needed but would never ask for.</span>"
+            <p style={{ color: TEXT_DIM, fontSize: "18px", lineHeight: 2, fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
+              &quot;Most men carry it alone. The job, the family, the weight.<br /><br />
+              Mākoa is not another retreat or circle. It&apos;s a brotherhood that builds real things — labor, knowledge, territory — and holds men accountable at 4am when no one is watching.<br /><br />
+              Many of the right men won&apos;t self-apply. Not because they don&apos;t want it — because pride and inertia get in the way.<br /><br />
+              <span style={{ color: GOLD }}>Sponsorship bypasses that. You become the push he needed but would never ask for.</span>&quot;
             </p>
           </div>
         </div>
@@ -238,15 +238,15 @@ export default function SponsorPage() {
         {/* ── SCARCITY SEATS ── */}
         <div style={{ marginBottom: 32, background: GOLD_FAINT, border: `1px solid ${GOLD_20}`, borderRadius: 12, padding: "20px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.22em" }}>SEATS REMAINING</p>
-            <p style={{ color: RED, fontSize: "0.36rem", letterSpacing: "0.14em" }}>WHEN THEY'RE GONE — THEY'RE GONE</p>
+            <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em" }}>SEATS REMAINING</p>
+            <p style={{ color: RED, fontSize: "13px", letterSpacing: "0.14em" }}>WHEN THEY&apos;RE GONE — THEY&apos;RE GONE</p>
           </div>
           <div style={{ display: "grid", gap: 12 }}>
             {SEATS.map((s, i) => (
               <div key={i}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <p style={{ color: s.color, fontSize: "0.36rem", letterSpacing: "0.12em" }}>{s.label}</p>
-                  <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.36rem" }}>
+                  <p style={{ color: s.color, fontSize: "14px", letterSpacing: "0.12em" }}>{s.label}</p>
+                  <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "14px" }}>
                     <span style={{ color: s.color, fontWeight: 700 }}>{s.remaining}</span> of {s.total} left
                   </p>
                 </div>
@@ -254,14 +254,14 @@ export default function SponsorPage() {
               </div>
             ))}
           </div>
-          <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.34rem", marginTop: 12, textAlign: "center" }}>
+          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "13px", marginTop: 12, textAlign: "center" }}>
             Hotel rooms held until April 20 · Act before they release
           </p>
         </div>
 
         {/* ── WHAT HE'S WALKING INTO ── */}
         <div style={{ marginBottom: 32 }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.25em", marginBottom: 16 }}>WHAT HE'S WALKING INTO</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.25em", marginBottom: 16 }}>WHAT HE&apos;S WALKING INTO</p>
           <div style={{ display: "grid", gap: 8 }}>
             {[
               { icon: "🧊", label: "4AM ICE BATH", desc: "Both mornings. Ko Olina. The cold is the ritual." },
@@ -279,17 +279,17 @@ export default function SponsorPage() {
                 background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.04)",
                 borderRadius: 8,
               }}>
-                <span style={{ fontSize: "1rem", flexShrink: 0 }}>{p.icon}</span>
+                <span style={{ fontSize: "1.1rem", flexShrink: 0 }}>{p.icon}</span>
                 <div>
-                  <p style={{ color: GOLD, fontSize: "0.36rem", letterSpacing: "0.1em", marginBottom: 2 }}>{p.label}</p>
-                  <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.36rem" }}>{p.desc}</p>
+                  <p style={{ color: GOLD, fontSize: "13px", letterSpacing: "0.1em", marginBottom: 2 }}>{p.label}</p>
+                  <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "15px" }}>{p.desc}</p>
                 </div>
               </div>
             ))}
           </div>
           <a href="/fire" style={{
             display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-            marginTop: 12, color: GOLD_DIM, fontSize: "0.38rem",
+            marginTop: 12, color: GOLD_DIM, fontSize: "15px",
             textDecoration: "none", letterSpacing: "0.1em",
           }}>
             🔥 Read the full 48-hour breakdown →
@@ -298,7 +298,7 @@ export default function SponsorPage() {
 
         {/* ── HOW IT WORKS ── */}
         <div style={{ marginBottom: 32 }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.25em", marginBottom: 16 }}>HOW IT WORKS</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.25em", marginBottom: 16 }}>HOW IT WORKS</p>
           <div style={{ display: "grid", gap: 8 }}>
             {[
               { n: "01", t: "Choose his experience", d: "Day Pass ($97) · Mastermind ($197)" },
@@ -313,10 +313,10 @@ export default function SponsorPage() {
                 background: GOLD_FAINT, border: `1px solid ${GOLD_10}`,
                 borderRadius: 8,
               }}>
-                <p style={{ color: GOLD_DIM, fontSize: "0.9rem", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", flexShrink: 0, width: 24 }}>{s.n}</p>
+                <p style={{ color: GOLD_DIM, fontSize: "1.1rem", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", flexShrink: 0, width: 24 }}>{s.n}</p>
                 <div>
-                  <p style={{ color: "rgba(232,224,208,0.8)", fontSize: "0.42rem", marginBottom: 2 }}>{s.t}</p>
-                  <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.38rem" }}>{s.d}</p>
+                  <p style={{ color: "rgba(232,224,208,0.85)", fontSize: "17px", marginBottom: 2 }}>{s.t}</p>
+                  <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "15px" }}>{s.d}</p>
                 </div>
               </div>
             ))}
@@ -328,7 +328,7 @@ export default function SponsorPage() {
           background: "rgba(63,185,80,0.04)", border: "1px solid rgba(63,185,80,0.15)",
           borderRadius: 10, padding: "16px 18px", marginBottom: 32,
         }}>
-          <p style={{ color: "#3fb950", fontSize: "0.36rem", letterSpacing: "0.18em", marginBottom: 10 }}>YOUR PEACE OF MIND</p>
+          <p style={{ color: "#3fb950", fontSize: "13px", letterSpacing: "0.18em", marginBottom: 10 }}>YOUR PEACE OF MIND</p>
           <div style={{ display: "grid", gap: 8 }}>
             {[
               "If he can't make it — contact wakachief@gmail.com within 7 days. We'll work with you.",
@@ -337,15 +337,15 @@ export default function SponsorPage() {
               "Anonymous by default — he receives the gift, not the obligation.",
             ].map((r, i) => (
               <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                <span style={{ color: "#3fb950", fontSize: "0.5rem", flexShrink: 0, marginTop: 1 }}>✓</span>
-                <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.4rem", lineHeight: 1.6 }}>{r}</p>
+                <span style={{ color: "#3fb950", fontSize: "1rem", flexShrink: 0, marginTop: 1 }}>✓</span>
+                <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "16px", lineHeight: 1.6 }}>{r}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* ── GIFT OPTIONS ── */}
-        <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.3em", textAlign: "center", marginBottom: 20 }}>
+        <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.3em", textAlign: "center", marginBottom: 20 }}>
           CHOOSE HIS EXPERIENCE
         </p>
 
@@ -370,20 +370,20 @@ export default function SponsorPage() {
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                       <span style={{
                         background: `${opt.color}15`, border: `1px solid ${opt.color}40`,
-                        color: opt.color, fontSize: "0.32rem", letterSpacing: "0.14em",
+                        color: opt.color, fontSize: "12px", letterSpacing: "0.14em",
                         padding: "3px 8px", borderRadius: 3,
                       }}>{opt.badge}</span>
-                      <p style={{ color: opt.color, fontSize: "0.34rem", letterSpacing: "0.14em" }}>{opt.subtitle}</p>
+                      <p style={{ color: opt.color, fontSize: "13px", letterSpacing: "0.14em" }}>{opt.subtitle}</p>
                     </div>
                     <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "1.3rem", color: TEXT, fontWeight: 400, lineHeight: 1, marginBottom: 4 }}>
                       {opt.title}
                     </p>
-                    <p style={{ color: TEXT_DIM, fontSize: "0.4rem" }}>{opt.description}</p>
+                    <p style={{ color: TEXT_DIM, fontSize: "16px" }}>{opt.description}</p>
                   </div>
                   <div style={{ textAlign: "right", flexShrink: 0 }}>
                     <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.6rem", color: opt.color, fontWeight: 300, lineHeight: 1, marginBottom: 2 }}>{opt.price}</p>
-                    <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "0.32rem" }}>{opt.seats}</p>
-                    <span style={{ color: opt.color, fontSize: "0.7rem" }}>{isExpanded ? "−" : "+"}</span>
+                    <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "13px" }}>{opt.seats}</p>
+                    <span style={{ color: opt.color, fontSize: "1.1rem" }}>{isExpanded ? "−" : "+"}</span>
                   </div>
                 </button>
 
@@ -394,12 +394,12 @@ export default function SponsorPage() {
 
                     {/* What he gets */}
                     <div style={{ background: `${opt.color}07`, border: `1px solid ${opt.color}20`, borderRadius: 8, padding: "14px", marginBottom: 18 }}>
-                      <p style={{ color: opt.color, fontSize: "0.34rem", letterSpacing: "0.14em", marginBottom: 10 }}>WHAT HE GETS</p>
+                      <p style={{ color: opt.color, fontSize: "13px", letterSpacing: "0.14em", marginBottom: 10 }}>WHAT HE GETS</p>
                       <div style={{ display: "grid", gap: 6 }}>
                         {opt.what.map((w, i) => (
                           <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                            <span style={{ color: opt.color, fontSize: "0.4rem", flexShrink: 0, opacity: 0.6 }}>→</span>
-                            <p style={{ color: TEXT_DIM, fontSize: "0.4rem", lineHeight: 1.5 }}>{w}</p>
+                            <span style={{ color: opt.color, fontSize: "1rem", flexShrink: 0, opacity: 0.6 }}>→</span>
+                            <p style={{ color: TEXT_DIM, fontSize: "16px", lineHeight: 1.5 }}>{w}</p>
                           </div>
                         ))}
                       </div>
@@ -412,10 +412,10 @@ export default function SponsorPage() {
                       borderRadius: 8, marginBottom: 18, cursor: "pointer",
                     }} onClick={() => setAnonymous(!anonymous)}>
                       <div>
-                        <p style={{ color: TEXT, fontSize: "0.44rem", marginBottom: 2 }}>
+                        <p style={{ color: TEXT, fontSize: "17px", marginBottom: 2 }}>
                           {anonymous ? "Anonymous gift" : "Reveal your name"}
                         </p>
-                        <p style={{ color: TEXT_DIM, fontSize: "0.38rem" }}>
+                        <p style={{ color: TEXT_DIM, fontSize: "15px" }}>
                           {anonymous ? "He won't know who sent this" : "He'll know it came from you"}
                         </p>
                       </div>
@@ -477,7 +477,7 @@ export default function SponsorPage() {
                         color: formReady ? "#000" : GOLD_DIM,
                         border: `1px solid ${formReady ? opt.color : GOLD_20}`,
                         borderRadius: 8, fontFamily: "'JetBrains Mono', monospace",
-                        fontSize: "0.48rem", fontWeight: 700, letterSpacing: "0.15em",
+                        fontSize: "16px", fontWeight: 700, letterSpacing: "0.15em",
                         cursor: formReady && !loading ? "pointer" : "not-allowed",
                         opacity: !formReady ? 0.4 : 1, transition: "all 0.2s",
                       }}
@@ -485,7 +485,7 @@ export default function SponsorPage() {
                       {loading ? "PROCESSING..." : `SPONSOR HIM — ${opt.price}`}
                     </button>
 
-                    <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.36rem", textAlign: "center", marginTop: 8 }}>
+                    <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "14px", textAlign: "center", marginTop: 8 }}>
                       Secure checkout via Stripe · He receives his invitation after payment
                     </p>
                   </div>
@@ -503,20 +503,20 @@ export default function SponsorPage() {
           padding: "18px 20px",
           marginBottom: 32,
         }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.2em", marginBottom: 10 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.2em", marginBottom: 10 }}>
             A NOTE ON ALIʻI FOUNDER SEATS
           </p>
-          <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.42rem", lineHeight: 1.8 }}>
+          <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "17px", lineHeight: 1.8 }}>
             Aliʻi seats ($4,997 · 1% equity in Mākoa Trade Co.) cannot be sponsored. A man must choose his own founder seat, pay it directly, and take the oath himself. Sponsorships at the Nā Koa and Mana tiers gift a brother the experience — not the equity or the founder oath.
           </p>
         </div>
 
         {/* ── OUTREACH TEMPLATES ── */}
         <div style={{ marginBottom: 40 }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.25em", marginBottom: 16 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.25em", marginBottom: 16 }}>
             SHARE THIS — OUTREACH TEMPLATES
           </p>
-          <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem", lineHeight: 1.7, marginBottom: 14 }}>
+          <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "16px", lineHeight: 1.7, marginBottom: 14 }}>
             The highest ROI move: a direct message from someone who knows him. Use these.
           </p>
           <div style={{ display: "grid", gap: 8 }}>
@@ -550,10 +550,10 @@ export default function SponsorPage() {
         {/* Footer */}
         <div style={{ textAlign: "center", paddingTop: 24, borderTop: `1px solid ${GOLD_10}`, marginBottom: 40 }}>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: GOLD, fontSize: "1.2rem", lineHeight: 1.6, marginBottom: 16 }}>
-            "Give him the push he won't give himself.<br />
-            The Founding Fire happens once."
+            &quot;Give him the push he won&apos;t give himself.<br />
+            The Founding Fire happens once.&quot;
           </p>
-          <p style={{ color: GOLD_DIM, fontSize: "0.52rem", letterSpacing: "0.14em", marginBottom: 16, fontWeight: 600 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "16px", letterSpacing: "0.14em", marginBottom: 16, fontWeight: 600 }}>
             makoa.live/sponsor
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: 20, flexWrap: "wrap" }}>
@@ -564,7 +564,7 @@ export default function SponsorPage() {
               { href: "/wahine", label: "WAHINE CIRCLE" },
             ].map(link => (
               <Link key={link.href} href={link.href} style={{
-                color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.14em",
+                color: GOLD_DIM, fontSize: "14px", letterSpacing: "0.14em",
                 textDecoration: "none", borderBottom: `1px solid ${GOLD_20}`, paddingBottom: 2,
               }}>
                 {link.label}
@@ -591,14 +591,14 @@ function OutreachCard({ label, icon, text }: { label: string; icon: string; text
       }}
     >
       <div style={{ flex: 1 }}>
-        <p style={{ color: GOLD_DIM, fontSize: "0.34rem", letterSpacing: "0.14em", marginBottom: 6, fontFamily: "'JetBrains Mono', monospace" }}>
+        <p style={{ color: "rgba(176,142,80,0.6)", fontSize: "13px", letterSpacing: "0.14em", marginBottom: 6, fontFamily: "'JetBrains Mono', monospace" }}>
           {icon} {label}
         </p>
-        <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.38rem", lineHeight: 1.6, whiteSpace: "pre-line", fontFamily: "'JetBrains Mono', monospace" }}>
+        <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "15px", lineHeight: 1.6, whiteSpace: "pre-line", fontFamily: "'JetBrains Mono', monospace" }}>
           {text}
         </p>
       </div>
-      <p style={{ color: copied ? GOLD : "rgba(176,142,80,0.25)", fontSize: "0.34rem", flexShrink: 0, fontFamily: "'JetBrains Mono', monospace", transition: "color 0.2s" }}>
+      <p style={{ color: copied ? GOLD : "rgba(176,142,80,0.3)", fontSize: "13px", flexShrink: 0, fontFamily: "'JetBrains Mono', monospace", transition: "color 0.2s" }}>
         {copied ? "✓ COPIED" : "TAP"}
       </p>
     </button>

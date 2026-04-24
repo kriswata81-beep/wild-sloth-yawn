@@ -111,7 +111,7 @@ export default function WaitlistPage() {
         <div style={{ height: 1, background: `linear-gradient(to right, transparent, ${GOLD_40}, transparent)`, marginBottom: 40 }} />
 
         <p style={{
-          color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.35em",
+          color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.35em",
           marginBottom: 16, animation: "fadeUp 0.7s ease 0.1s both",
         }}>
           ◈ MAYDAY 48 · WAITLIST
@@ -147,7 +147,7 @@ export default function WaitlistPage() {
           animation: "fadeUp 0.8s ease 0.45s both",
         }}>
           <div style={{ width: 6, height: 6, borderRadius: "50%", background: GOLD, animation: "pulse 1.5s ease-in-out infinite" }} />
-          <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.18em" }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.18em" }}>
             GATE CLOSES MAY 31, 2026 (BLUE MOON)
           </p>
         </div>
@@ -163,10 +163,10 @@ export default function WaitlistPage() {
           padding: "24px 20px",
           marginBottom: 32,
         }}>
-          <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.48rem", lineHeight: 1.9, marginBottom: 16 }}>
+          <p style={{ color: "rgba(232,224,208,0.75)", fontSize: "17px", lineHeight: 1.9, marginBottom: 16 }}>
             Mayday 48 seats 20 Aliʻi founder teams across May 2026. Founders come first — they carry the oath, 1% equity, and charter rights.
           </p>
-          <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "0.48rem", lineHeight: 1.9 }}>
+          <p style={{ color: "rgba(232,224,208,0.75)", fontSize: "17px", lineHeight: 1.9 }}>
             Once the founding 20 are seated, two more tiers open for brothers who want to witness Mākoa without carrying the founder weight:
           </p>
         </div>
@@ -185,11 +185,11 @@ export default function WaitlistPage() {
               <div style={{
                 position: "absolute", top: 14, right: 14,
                 background: `${tier.color}15`, border: `1px solid ${tier.border}`,
-                color: tier.color, fontSize: "0.34rem", letterSpacing: "0.14em",
+                color: tier.color, fontSize: "12px", letterSpacing: "0.14em",
                 padding: "3px 8px", borderRadius: 3, fontWeight: 700,
               }}>{tier.badge}</div>
 
-              <p style={{ color: tier.color, fontSize: "0.4rem", letterSpacing: "0.2em", marginBottom: 6 }}>{tier.label}</p>
+              <p style={{ color: tier.color, fontSize: "13px", letterSpacing: "0.2em", marginBottom: 6 }}>{tier.label}</p>
               <p style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontStyle: "italic",
@@ -205,8 +205,8 @@ export default function WaitlistPage() {
               <div style={{ display: "grid", gap: 6, marginBottom: 14 }}>
                 {tier.items.map(item => (
                   <div key={item} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                    <span style={{ color: tier.color, fontSize: "0.44rem", flexShrink: 0, opacity: 0.7 }}>→</span>
-                    <p style={{ color: TEXT_DIM, fontSize: "0.44rem", lineHeight: 1.5 }}>{item}</p>
+                    <span style={{ color: tier.color, fontSize: "16px", flexShrink: 0, opacity: 0.7 }}>→</span>
+                    <p style={{ color: TEXT_DIM, fontSize: "17px", lineHeight: 1.5 }}>{item}</p>
                   </div>
                 ))}
               </div>
@@ -217,7 +217,7 @@ export default function WaitlistPage() {
                 borderRadius: 4, padding: "4px 10px",
               }}>
                 <div style={{ width: 5, height: 5, borderRadius: "50%", background: tier.color, animation: "pulse 1.5s ease-in-out infinite" }} />
-                <p style={{ color: tier.color, fontSize: "0.34rem", letterSpacing: "0.14em" }}>{tier.opens}</p>
+                <p style={{ color: tier.color, fontSize: "13px", letterSpacing: "0.14em" }}>{tier.opens}</p>
               </div>
             </div>
           ))}
@@ -231,10 +231,10 @@ export default function WaitlistPage() {
           padding: "18px 20px",
           marginBottom: 32,
         }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.2em", marginBottom: 10 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.2em", marginBottom: 10 }}>
             HOW SPONSORSHIP WORKS
           </p>
-          <p style={{ color: TEXT_DIM, fontSize: "0.44rem", lineHeight: 1.9 }}>
+          <p style={{ color: TEXT_DIM, fontSize: "17px", lineHeight: 1.9 }}>
             Both Mana and Nā Koa tiers are available exclusively through sponsorship during Mayday 48. A wife, mother, brother, or friend pays the entry; the sponsored man takes the seat. Self-claim opens after the founding month closes May 31.
           </p>
         </div>
@@ -260,13 +260,13 @@ export default function WaitlistPage() {
               }}>
                 You're on the list.
               </p>
-              <p style={{ color: TEXT_DIM, fontSize: "0.44rem", lineHeight: 1.8 }}>
+              <p style={{ color: TEXT_DIM, fontSize: "17px", lineHeight: 1.8 }}>
                 We'll message you May 2 when Mana + Nā Koa entry opens.<br />
                 In the meantime — read the Palapala.
               </p>
               <a href="/palapala" style={{
                 display: "inline-block", marginTop: 16,
-                color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.14em",
+                color: GOLD_DIM, fontSize: "15px", letterSpacing: "0.14em",
                 textDecoration: "none", borderBottom: `1px solid ${GOLD_20}`, paddingBottom: 2,
               }}>
                 Read the Palapala →
@@ -274,10 +274,10 @@ export default function WaitlistPage() {
             </div>
           ) : (
             <>
-              <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.22em", marginBottom: 16 }}>
+              <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", marginBottom: 16 }}>
                 JOIN THE WAITLIST
               </p>
-              <p style={{ color: TEXT_DIM, fontSize: "0.44rem", lineHeight: 1.7, marginBottom: 20 }}>
+              <p style={{ color: TEXT_DIM, fontSize: "17px", lineHeight: 1.7, marginBottom: 20 }}>
                 Drop your email. We'll message you May 2 when entry opens.
               </p>
               <form onSubmit={handleSubmit}>
@@ -296,7 +296,7 @@ export default function WaitlistPage() {
                       borderRadius: 8,
                       color: TEXT,
                       fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "0.6rem",
+                      fontSize: "17px",
                       outline: "none",
                       letterSpacing: "0.03em",
                     }}
@@ -311,7 +311,7 @@ export default function WaitlistPage() {
                       border: `1px solid ${email && !loading ? GOLD : GOLD_20}`,
                       borderRadius: 8,
                       fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "0.48rem",
+                      fontSize: "16px",
                       fontWeight: 700,
                       letterSpacing: "0.15em",
                       cursor: email && !loading ? "pointer" : "not-allowed",
@@ -324,7 +324,7 @@ export default function WaitlistPage() {
                   </button>
                 </div>
                 {error && (
-                  <p style={{ color: "#e05c5c", fontSize: "0.4rem", marginTop: 10 }}>{error}</p>
+                  <p style={{ color: "#e05c5c", fontSize: "15px", marginTop: 10 }}>{error}</p>
                 )}
               </form>
             </>
@@ -341,8 +341,8 @@ export default function WaitlistPage() {
             borderRadius: 8,
             textDecoration: "none",
           }}>
-            <p style={{ color: TEXT_DIM, fontSize: "0.44rem" }}>Sponsor a brother in now</p>
-            <p style={{ color: GOLD, fontSize: "0.44rem" }}>→</p>
+            <p style={{ color: TEXT_DIM, fontSize: "17px" }}>Sponsor a brother in now</p>
+            <p style={{ color: GOLD, fontSize: "17px" }}>→</p>
           </a>
           <a href="/gate" style={{
             display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -352,8 +352,8 @@ export default function WaitlistPage() {
             borderRadius: 8,
             textDecoration: "none",
           }}>
-            <p style={{ color: TEXT_DIM, fontSize: "0.44rem" }}>Want a founder seat?</p>
-            <p style={{ color: GOLD, fontSize: "0.44rem" }}>→ /gate</p>
+            <p style={{ color: TEXT_DIM, fontSize: "17px" }}>Want a founder seat?</p>
+            <p style={{ color: GOLD, fontSize: "17px" }}>→ /gate</p>
           </a>
           <a href="/palapala" style={{
             display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -363,8 +363,8 @@ export default function WaitlistPage() {
             borderRadius: 8,
             textDecoration: "none",
           }}>
-            <p style={{ color: TEXT_DIM, fontSize: "0.44rem" }}>Read the full Palapala</p>
-            <p style={{ color: GOLD, fontSize: "0.44rem" }}>→</p>
+            <p style={{ color: TEXT_DIM, fontSize: "17px" }}>Read the full Palapala</p>
+            <p style={{ color: GOLD, fontSize: "17px" }}>→</p>
           </a>
         </div>
 
@@ -379,10 +379,10 @@ export default function WaitlistPage() {
           }}>
             Hana · Pale · Ola
           </p>
-          <p style={{ color: GOLD_DIM, fontSize: "0.5rem", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "15px", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
             makoa.live
           </p>
-          <p style={{ color: "rgba(176,142,80,0.15)", fontSize: "0.38rem", letterSpacing: "0.15em" }}>
+          <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "13px", letterSpacing: "0.15em" }}>
             MĀKOA ORDER · MALU TRUST · WEST OAHU · WORLDWIDE · 2026
           </p>
         </div>

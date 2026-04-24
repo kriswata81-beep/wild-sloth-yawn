@@ -162,7 +162,7 @@ export default function TradePage() {
         <div style={{ height: 1, background: `linear-gradient(to right, transparent, ${GOLD_40}, transparent)`, marginBottom: 48 }} />
 
         <p style={{
-          color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.35em",
+          color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.35em",
           marginBottom: 20, animation: "fadeUp 0.7s ease 0.1s both",
         }}>
           MĀKOA ORDER · COMMERCIAL DOCTRINE
@@ -207,7 +207,7 @@ export default function TradePage() {
               border: `1px solid ${c.color}40`,
               borderRadius: 4,
               color: c.color,
-              fontSize: "0.42rem",
+              fontSize: "14px",
               letterSpacing: "0.22em",
               background: `${c.color}08`,
             }}>{c.label}</div>
@@ -224,7 +224,7 @@ export default function TradePage() {
           transform: revealed ? "translateY(0)" : "translateY(20px)",
           transition: "opacity 0.8s ease, transform 0.8s ease",
         }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.28em", marginBottom: 20 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.28em", marginBottom: 20 }}>
             THE QUESTION THAT UNLOCKS EVERYTHING
           </p>
 
@@ -251,7 +251,7 @@ export default function TradePage() {
               lineHeight: 1.9,
               marginBottom: 20,
             }}>
-              "What does the trade route actually sell or move?"
+              &quot;What does the trade route actually sell or move?&quot;
             </p>
 
             <div style={{ height: 1, background: GOLD_20, marginBottom: 20 }} />
@@ -264,11 +264,11 @@ export default function TradePage() {
               lineHeight: 1.7,
               marginBottom: 16,
             }}>
-              The trade isn't what you sell.<br />
+              The trade isn&apos;t what you sell.<br />
               The trade is the men.
             </p>
 
-            <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "0.5rem", lineHeight: 1.9 }}>
+            <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "17px", lineHeight: 1.9 }}>
               A man who passes the gate becomes a node in the network. His skill is inventory. His house is a port. His brotherhood is route protection. The route moves three things: <span style={{ color: AMBER }}>labor</span>, <span style={{ color: BLUE }}>knowledge</span>, and <span style={{ color: GREEN }}>territory</span>. Everything else is downstream of that.
             </p>
           </div>
@@ -277,7 +277,7 @@ export default function TradePage() {
         {/* ── THREE CARGOS ─────────────────────────────────────────────────── */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>WHAT THE ROUTE MOVES</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>WHAT THE ROUTE MOVES</p>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
@@ -304,7 +304,7 @@ export default function TradePage() {
 
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
                 <div style={{ flex: 1 }}>
-                  <p style={{ color: c.color, fontSize: "0.38rem", letterSpacing: "0.22em", marginBottom: 8 }}>{c.label}</p>
+                  <p style={{ color: c.color, fontSize: "13px", letterSpacing: "0.22em", marginBottom: 8 }}>{c.label}</p>
                   <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
                     <span style={{ color: c.color, fontSize: "1.4rem", lineHeight: 1 }}>{c.icon}</span>
                     <p style={{
@@ -315,10 +315,10 @@ export default function TradePage() {
                       lineHeight: 1.1,
                     }}>{c.title}</p>
                   </div>
-                  <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.47rem", lineHeight: 1.5 }}>{c.sub}</p>
+                  <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "16px", lineHeight: 1.5 }}>{c.sub}</p>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, marginLeft: 12 }}>
-                  <span style={{ color: c.color, fontSize: "0.8rem" }}>{activeCargo === c.id ? "−" : "+"}</span>
+                  <span style={{ color: c.color, fontSize: "1.1rem" }}>{activeCargo === c.id ? "−" : "+"}</span>
                   <div style={{
                     background: `${c.color}12`,
                     border: `1px solid ${c.border}`,
@@ -326,22 +326,22 @@ export default function TradePage() {
                     padding: "4px 8px",
                     textAlign: "right",
                   }}>
-                    <p style={{ color: c.color, fontSize: "0.5rem", fontWeight: 700 }}>{c.stat}</p>
-                    <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.36rem" }}>{c.statLabel}</p>
+                    <p style={{ color: c.color, fontSize: "15px", fontWeight: 700 }}>{c.stat}</p>
+                    <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "13px" }}>{c.statLabel}</p>
                   </div>
                 </div>
               </div>
 
               {activeCargo === c.id && (
                 <div style={{ marginTop: 20 }}>
-                  <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "0.48rem", lineHeight: 1.9, marginBottom: 16 }}>
+                  <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "17px", lineHeight: 1.9, marginBottom: 16 }}>
                     {c.doctrine}
                   </p>
                   <div style={{ display: "grid", gap: 6 }}>
                     {c.lines.map(line => (
                       <div key={line} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                        <span style={{ color: c.color, fontSize: "0.44rem", flexShrink: 0, marginTop: 1 }}>→</span>
-                        <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "0.46rem", lineHeight: 1.5 }}>{line}</p>
+                        <span style={{ color: c.color, fontSize: "15px", flexShrink: 0, marginTop: 1 }}>→</span>
+                        <p style={{ color: "rgba(232,224,208,0.75)", fontSize: "17px", lineHeight: 1.5 }}>{line}</p>
                       </div>
                     ))}
                   </div>
@@ -359,7 +359,7 @@ export default function TradePage() {
           padding: "28px 22px",
           marginBottom: 40,
         }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.28em", marginBottom: 20 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.28em", marginBottom: 20 }}>
             THE SELF-FUNDING LOOP
           </p>
 
@@ -384,14 +384,14 @@ export default function TradePage() {
               }}>
                 <span style={{
                   color: row.color,
-                  fontSize: "0.4rem",
+                  fontSize: "14px",
                   fontWeight: 700,
                   minWidth: 20,
                   flexShrink: 0,
                 }}>{row.step}</span>
                 <p style={{
-                  color: row.step === "∞" ? GOLD : "rgba(232,224,208,0.6)",
-                  fontSize: "0.47rem",
+                  color: row.step === "∞" ? GOLD : "rgba(232,224,208,0.7)",
+                  fontSize: "17px",
                   fontWeight: row.bold ? 700 : 400,
                   fontStyle: row.bold ? "italic" : "normal",
                   fontFamily: row.bold ? "'Cormorant Garamond', serif" : "inherit",
@@ -405,7 +405,7 @@ export default function TradePage() {
         {/* ── THE ROUTE MAP ─────────────────────────────────────────────────── */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>THE ROUTE MAP</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>THE ROUTE MAP</p>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
@@ -448,18 +448,18 @@ export default function TradePage() {
 
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                  <p style={{ color: node.active ? "#e8e0d0" : "rgba(232,224,208,0.5)", fontSize: "0.5rem" }}>{node.city}</p>
+                  <p style={{ color: node.active ? "#e8e0d0" : "rgba(232,224,208,0.55)", fontSize: "17px" }}>{node.city}</p>
                   <span style={{
                     background: `${node.color}15`,
                     border: `1px solid ${node.color}30`,
                     color: node.color,
-                    fontSize: "0.34rem",
+                    fontSize: "12px",
                     letterSpacing: "0.12em",
                     padding: "2px 6px",
                     borderRadius: 3,
                   }}>{node.status}</span>
                 </div>
-                <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem" }}>{node.year}</p>
+                <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "14px" }}>{node.year}</p>
               </div>
             </div>
           ))}
@@ -468,7 +468,7 @@ export default function TradePage() {
         {/* ── INTERNATIONAL · THE CHAPTER MODEL ───────────────────────────── */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>INTERNATIONAL · THE CHAPTER MODEL</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>INTERNATIONAL · THE CHAPTER MODEL</p>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
@@ -483,14 +483,14 @@ export default function TradePage() {
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
             color: "#e8e0d0",
-            fontSize: "1.05rem",
+            fontSize: "1.1rem",
             lineHeight: 1.9,
             marginBottom: 24,
           }}>
             After Mayday 48, each Aliʻi returns home to open their territory&apos;s chapter under the Mākoa Trade Co. framework.
           </p>
 
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", marginBottom: 14 }}>THE SPLIT</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", marginBottom: 14 }}>THE SPLIT</p>
           <div style={{ display: "grid", gap: 8, marginBottom: 28 }}>
             {[
               { pct: "80%", label: "stays in your territory", desc: "your chapter's treasury, labor flows, goods & services moving locally" },
@@ -504,21 +504,21 @@ export default function TradePage() {
                 border: `1px solid ${GOLD_20}`,
                 borderRadius: 6,
               }}>
-                <span style={{ color: GOLD, fontSize: "0.9rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, minWidth: 36 }}>{row.pct}</span>
+                <span style={{ color: GOLD, fontSize: "1.1rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, minWidth: 36 }}>{row.pct}</span>
                 <div>
-                  <p style={{ color: "#e8e0d0", fontSize: "0.46rem", marginBottom: 2 }}>{row.label}</p>
-                  <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.42rem", lineHeight: 1.5 }}>{row.desc}</p>
+                  <p style={{ color: "#e8e0d0", fontSize: "17px", marginBottom: 2 }}>{row.label}</p>
+                  <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "15px", lineHeight: 1.5 }}>{row.desc}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", marginBottom: 12 }}>THE REACH</p>
-          <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.46rem", letterSpacing: "0.1em", marginBottom: 24, lineHeight: 1.8 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", marginBottom: 12 }}>THE REACH</p>
+          <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "17px", letterSpacing: "0.1em", marginBottom: 24, lineHeight: 1.8 }}>
             Tokyo · Berlin · Vancouver · Lagos · São Paulo · Cape Town · Sydney · your city.
           </p>
 
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.22em", marginBottom: 14 }}>THREE REVENUE ROUTES PER CHAPTER</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", marginBottom: 14 }}>THREE REVENUE ROUTES PER CHAPTER</p>
           <div style={{ display: "grid", gap: 8, marginBottom: 20 }}>
             {[
               { label: "Labor routes", range: "$500 to $5K per job", desc: "construction, trades, maintenance, hauling" },
@@ -533,17 +533,17 @@ export default function TradePage() {
                 borderRadius: 6,
               }}>
                 <div>
-                  <p style={{ color: "#e8e0d0", fontSize: "0.46rem", marginBottom: r.desc ? 2 : 0 }}>{r.label}</p>
-                  {r.desc && <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "0.4rem" }}>{r.desc}</p>}
+                  <p style={{ color: "#e8e0d0", fontSize: "17px", marginBottom: r.desc ? 2 : 0 }}>{r.label}</p>
+                  {r.desc && <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "14px" }}>{r.desc}</p>}
                 </div>
-                <p style={{ color: GOLD, fontSize: "0.44rem", fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginLeft: 12 }}>{r.range}</p>
+                <p style={{ color: GOLD, fontSize: "16px", fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginLeft: 12 }}>{r.range}</p>
               </div>
             ))}
           </div>
 
           <p style={{
-            color: "rgba(232,224,208,0.45)",
-            fontSize: "0.44rem",
+            color: "rgba(232,224,208,0.5)",
+            fontSize: "16px",
             lineHeight: 1.8,
             borderTop: `1px solid ${GOLD_20}`,
             paddingTop: 16,
@@ -555,7 +555,7 @@ export default function TradePage() {
         {/* ── THE FIVE LAWS ─────────────────────────────────────────────────── */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
-          <p style={{ color: GOLD_DIM, fontSize: "0.42rem", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>TRADE CO. DOCTRINE</p>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", whiteSpace: "nowrap" }}>TRADE CO. DOCTRINE</p>
           <div style={{ flex: 1, height: 1, background: GOLD_20 }} />
         </div>
 
@@ -575,18 +575,18 @@ export default function TradePage() {
                   flexShrink: 0,
                   background: GOLD_10,
                 }}>
-                  <span style={{ color: GOLD, fontSize: "0.44rem", fontWeight: 700 }}>{law.num}</span>
+                  <span style={{ color: GOLD, fontSize: "14px", fontWeight: 700 }}>{law.num}</span>
                 </div>
                 <div>
                   <p style={{
                     fontFamily: "'Cormorant Garamond', serif",
                     fontStyle: "italic",
                     color: "#e8e0d0",
-                    fontSize: "1.05rem",
+                    fontSize: "1.1rem",
                     marginBottom: 6,
                     lineHeight: 1.2,
                   }}>{law.title}</p>
-                  <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.46rem", lineHeight: 1.8 }}>{law.body}</p>
+                  <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "17px", lineHeight: 1.8 }}>{law.body}</p>
                 </div>
               </div>
             </div>
@@ -601,7 +601,7 @@ export default function TradePage() {
           padding: "26px 22px",
           marginBottom: 40,
         }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.28em", marginBottom: 6 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.28em", marginBottom: 6 }}>
             REVENUE ARCHITECTURE
           </p>
           <p style={{
@@ -629,10 +629,10 @@ export default function TradePage() {
                 borderRadius: "0 6px 6px 0",
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
-                  <p style={{ color: r.color, fontSize: "0.44rem", letterSpacing: "0.1em" }}>{r.stream}</p>
-                  <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.4rem" }}>{r.formula}</p>
+                  <p style={{ color: r.color, fontSize: "15px", letterSpacing: "0.1em" }}>{r.stream}</p>
+                  <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "14px" }}>{r.formula}</p>
                 </div>
-                <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.44rem", lineHeight: 1.5 }}>{r.example}</p>
+                <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "16px", lineHeight: 1.5 }}>{r.example}</p>
               </div>
             ))}
           </div>
@@ -652,8 +652,8 @@ export default function TradePage() {
                 borderRadius: 8,
               }}>
                 <p style={{ color: GOLD, fontSize: "1.6rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>{stat.value}</p>
-                <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.12em", marginTop: 4 }}>{stat.label}</p>
-                <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.38rem", marginTop: 2 }}>{stat.sub}</p>
+                <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.12em", marginTop: 4 }}>{stat.label}</p>
+                <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "13px", marginTop: 2 }}>{stat.sub}</p>
               </div>
             ))}
           </div>
@@ -678,7 +678,7 @@ export default function TradePage() {
 
           <span style={{ color: GOLD_DIM, fontSize: "2rem", display: "block", marginBottom: 20, animation: "breathe 3s ease-in-out infinite" }}>◈</span>
 
-          <p style={{ color: GOLD_DIM, fontSize: "0.4rem", letterSpacing: "0.28em", marginBottom: 20 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.28em", marginBottom: 20 }}>
             THE 100-YEAR MISSION
           </p>
 
@@ -695,7 +695,7 @@ export default function TradePage() {
             Built by men who pass the gate.
           </p>
 
-          <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.48rem", lineHeight: 1.9, marginBottom: 28, maxWidth: 380, margin: "0 auto 28px" }}>
+          <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "17px", lineHeight: 1.9, marginBottom: 28, maxWidth: 380, margin: "0 auto 28px" }}>
             In 100 years, Mākoa Trade Co. will be the largest brotherhood-backed labor and knowledge network in the Pacific. Every node will be self-sustaining. Every house will be owned by the order. Every brother will have a trade, a territory, and a legacy.
           </p>
 
@@ -706,7 +706,7 @@ export default function TradePage() {
               color: "#000",
               borderRadius: 6,
               padding: "15px",
-              fontSize: "0.52rem",
+              fontSize: "16px",
               letterSpacing: "0.2em",
               textDecoration: "none",
               fontFamily: "'JetBrains Mono', monospace",
@@ -722,7 +722,7 @@ export default function TradePage() {
               border: `1px solid ${GOLD_20}`,
               borderRadius: 6,
               padding: "13px",
-              fontSize: "0.48rem",
+              fontSize: "15px",
               letterSpacing: "0.15em",
               textDecoration: "none",
               fontFamily: "'JetBrains Mono', monospace",
@@ -733,11 +733,11 @@ export default function TradePage() {
             <a href="/mana-makoa" style={{
               display: "block",
               background: "transparent",
-              color: "rgba(232,224,208,0.3)",
+              color: "rgba(232,224,208,0.35)",
               border: `1px solid rgba(232,224,208,0.08)`,
               borderRadius: 6,
               padding: "13px",
-              fontSize: "0.46rem",
+              fontSize: "15px",
               letterSpacing: "0.15em",
               textDecoration: "none",
               fontFamily: "'JetBrains Mono', monospace",
@@ -754,7 +754,7 @@ export default function TradePage() {
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
             color: GOLD_DIM,
-            fontSize: "0.95rem",
+            fontSize: "1rem",
             marginBottom: 12,
           }}>
             Hana · Pale · Ola
@@ -767,17 +767,17 @@ export default function TradePage() {
               { href: "/sponsor", label: "SPONSOR" },
             ].map(link => (
               <a key={link.href} href={link.href} style={{
-                color: "rgba(176,142,80,0.3)",
-                fontSize: "0.4rem",
+                color: "rgba(176,142,80,0.4)",
+                fontSize: "13px",
                 letterSpacing: "0.15em",
                 textDecoration: "none",
               }}>{link.label}</a>
             ))}
           </div>
-          <p style={{ color: "rgba(176,142,80,0.5)", fontSize: "0.5rem", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
+          <p style={{ color: "rgba(176,142,80,0.55)", fontSize: "15px", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
             makoa.live
           </p>
-          <p style={{ color: "rgba(176,142,80,0.15)", fontSize: "0.4rem", letterSpacing: "0.15em" }}>
+          <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "13px", letterSpacing: "0.15em" }}>
             MĀKOA TRADE CO. · MĀKOA ORDER · MALU TRUST · WEST OAHU · WORLDWIDE · 2026
           </p>
         </div>

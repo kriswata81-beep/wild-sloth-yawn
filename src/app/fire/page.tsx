@@ -131,7 +131,7 @@ export default function FirePage() {
         padding: "14px 20px",
         textAlign: "center",
       }}>
-        <p style={{ color: FLAME, fontSize: "0.44rem", letterSpacing: "0.15em", margin: 0 }}>
+        <p style={{ color: FLAME, fontSize: "15px", letterSpacing: "0.15em", margin: 0 }}>
           📜 The Palapala is public. Read the manifest first →{" "}
           <a href="/palapala" style={{ color: FLAME, textDecoration: "underline", fontWeight: 700 }}>
             makoa.live/palapala
@@ -146,7 +146,7 @@ export default function FirePage() {
         padding: "12px 20px",
         textAlign: "center",
       }}>
-        <p style={{ color: GOLD_DIM, fontSize: "0.42rem", lineHeight: 1.8, margin: 0 }}>
+        <p style={{ color: GOLD_DIM, fontSize: "15px", lineHeight: 1.8, margin: 0 }}>
           This is what happens inside a Mayday 48 weekend.{" "}
           <a href="/founding48" style={{ color: GOLD, textDecoration: "underline" }}>
             See the full Mayday 48 page →
@@ -175,7 +175,7 @@ export default function FirePage() {
           <span style={{ color: GOLD, fontSize: "1.5rem", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>🔥</span>
         </div>
 
-        <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.3em", marginBottom: 12 }}>
+        <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.3em", marginBottom: 12 }}>
           MĀKOA ORDER · WEST OAHU · THE ENTIRE MONTH OF MAY
         </p>
         <h1 style={{
@@ -184,10 +184,10 @@ export default function FirePage() {
         }}>
           The MAYDAY Call<br />Is Global
         </h1>
-        <p style={{ color: "rgba(176,142,80,0.55)", fontSize: "0.38rem", letterSpacing: "0.18em", marginBottom: 18, marginTop: 2 }}>
+        <p style={{ color: "rgba(176,142,80,0.6)", fontSize: "13px", letterSpacing: "0.18em", marginBottom: 18, marginTop: 2 }}>
           4 WEEKENDS · 4 WEDNESDAY 4AM CALLS · 2 FOUNDING DINNERS · MAY 1–31
         </p>
-        <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "0.46rem", lineHeight: 1.8, maxWidth: 460, margin: "0 auto 24px" }}>
+        <p style={{ color: "rgba(232,224,208,0.55)", fontSize: "18px", lineHeight: 1.8, maxWidth: 460, margin: "0 auto 24px" }}>
           Not a retreat. Not a seminar.<br />
           A month-long summit for team leaders and brotherhood networks worldwide.<br />
           Bring your Aliʻi, your Mana, your Nā Koa. Choose your weekend.<br />
@@ -201,7 +201,7 @@ export default function FirePage() {
           borderRadius: 20, padding: "7px 16px",
         }}>
           <div style={{ width: 6, height: 6, borderRadius: "50%", background: FLAME, animation: "coronaPulse 1.2s ease-in-out infinite" }} />
-          <p style={{ color: FLAME, fontSize: "0.36rem", letterSpacing: "0.16em" }}>
+          <p style={{ color: FLAME, fontSize: "14px", letterSpacing: "0.16em" }}>
             🌕 APPLICATIONS OPEN MAY 1 FULL MOON · GATE OPENS 9AM HST
           </p>
         </div>
@@ -210,7 +210,7 @@ export default function FirePage() {
       <div style={{ maxWidth: 580, margin: "0 auto", padding: "36px 20px" }}>
 
         {/* Timeline */}
-        <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.25em", marginBottom: 20 }}>
+        <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.25em", marginBottom: 20 }}>
           THE 48-HOUR TIMELINE
         </p>
 
@@ -250,15 +250,15 @@ export default function FirePage() {
                 borderRadius: 10, padding: open === i ? "14px 16px" : "10px 0",
                 transition: "all 0.25s",
               }}>
-                <p style={{ color: GOLD_DIM, fontSize: "0.34rem", letterSpacing: "0.14em", marginBottom: 3 }}>{m.time}</p>
-                <p style={{ color: open === i ? GOLD : "rgba(232,224,208,0.75)", fontSize: "0.48rem", marginBottom: open === i ? 10 : 0, transition: "color 0.2s" }}>
+                <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.14em", marginBottom: 3 }}>{m.time}</p>
+                <p style={{ color: open === i ? GOLD : "rgba(232,224,208,0.8)", fontSize: "18px", marginBottom: open === i ? 10 : 0, transition: "color 0.2s" }}>
                   {m.title}
                 </p>
 
                 {open === i && (
                   <div>
                     <p style={{
-                      color: "rgba(232,224,208,0.6)", fontSize: "0.44rem", lineHeight: 1.8,
+                      color: "rgba(232,224,208,0.7)", fontSize: "17px", lineHeight: 1.8,
                       marginBottom: 12, whiteSpace: m.isOath ? "pre-line" : undefined,
                       fontFamily: m.isOath ? "'Cormorant Garamond', serif" : undefined,
                       fontStyle: m.isOath ? "italic" : undefined,
@@ -269,8 +269,8 @@ export default function FirePage() {
                       borderLeft: `2px solid ${GOLD_40}`, paddingLeft: 12,
                       background: "rgba(176,142,80,0.04)", borderRadius: "0 6px 6px 0", padding: "8px 12px",
                     }}>
-                      <p style={{ color: GOLD, fontSize: "0.4rem", fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
-                        "{m.reveal}"
+                      <p style={{ color: GOLD, fontSize: "16px", fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
+                        &quot;{m.reveal}&quot;
                       </p>
                     </div>
                   </div>
@@ -285,10 +285,10 @@ export default function FirePage() {
           background: GOLD_FAINT, border: `1px solid ${GOLD_20}`,
           borderRadius: 12, padding: "20px", marginTop: 32, marginBottom: 32,
         }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.36rem", letterSpacing: "0.22em", marginBottom: 14 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.22em", marginBottom: 14 }}>
             FOUNDING BROTHERS · FORMING NOW
           </p>
-          <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "0.4rem", lineHeight: 1.7, marginBottom: 16 }}>
+          <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "16px", lineHeight: 1.7, marginBottom: 16 }}>
             Real men from West Oahu and Hawaii who have already stepped through the gate:
           </p>
           <div style={{ display: "grid", gap: 8 }}>
@@ -311,28 +311,28 @@ export default function FirePage() {
                   display: "flex", alignItems: "center", justifyContent: "center",
                   flexShrink: 0,
                 }}>
-                  <span style={{ color: b.color, fontSize: "0.7rem" }}>{i === 3 ? "?" : b.name[0]}</span>
+                  <span style={{ color: b.color, fontSize: "1rem" }}>{i === 3 ? "?" : b.name[0]}</span>
                 </div>
                 <div style={{ flex: 1 }}>
-                  <p style={{ color: i === 3 ? GOLD : "rgba(232,224,208,0.7)", fontSize: "0.42rem" }}>{b.name}</p>
-                  <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "0.36rem" }}>{b.region}</p>
+                  <p style={{ color: i === 3 ? GOLD : "rgba(232,224,208,0.8)", fontSize: "16px" }}>{b.name}</p>
+                  <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "14px" }}>{b.region}</p>
                 </div>
                 <div style={{
                   background: `${b.color}15`, border: `1px solid ${b.color}30`,
                   borderRadius: 4, padding: "3px 8px",
                 }}>
-                  <p style={{ color: b.color, fontSize: "0.32rem", letterSpacing: "0.1em" }}>{b.class}</p>
+                  <p style={{ color: b.color, fontSize: "13px", letterSpacing: "0.1em" }}>{b.class}</p>
                 </div>
               </div>
             ))}
           </div>
-          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.36rem", marginTop: 12, textAlign: "center" }}>
+          <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "13px", marginTop: 12, textAlign: "center" }}>
             Names shown with permission · Some anonymized by request
           </p>
         </div>
 
         {/* FAQ */}
-        <p style={{ color: GOLD_DIM, fontSize: "0.38rem", letterSpacing: "0.25em", marginBottom: 16 }}>
+        <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.25em", marginBottom: 16 }}>
           QUESTIONS MEN ACTUALLY ASK
         </p>
         <div style={{ display: "grid", gap: 8, marginBottom: 32 }}>
@@ -348,11 +348,11 @@ export default function FirePage() {
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-                <p style={{ color: "rgba(232,224,208,0.75)", fontSize: "0.42rem", lineHeight: 1.5 }}>{faq.q}</p>
-                <span style={{ color: GOLD_DIM, fontSize: "0.6rem", flexShrink: 0 }}>{open === 100 + i ? "−" : "+"}</span>
+                <p style={{ color: "rgba(232,224,208,0.85)", fontSize: "17px", lineHeight: 1.5 }}>{faq.q}</p>
+                <span style={{ color: GOLD_DIM, fontSize: "1.1rem", flexShrink: 0 }}>{open === 100 + i ? "−" : "+"}</span>
               </div>
               {open === 100 + i && (
-                <p style={{ color: "rgba(232,224,208,0.5)", fontSize: "0.42rem", lineHeight: 1.8, marginTop: 10 }}>
+                <p style={{ color: "rgba(232,224,208,0.65)", fontSize: "17px", lineHeight: 1.8, marginTop: 10 }}>
                   {faq.a}
                 </p>
               )}
@@ -370,23 +370,23 @@ export default function FirePage() {
             fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
             color: GOLD, fontSize: "1.3rem", lineHeight: 1.4, marginBottom: 16,
           }}>
-            "The founding fire burns the first weekend of every month.<br />Your seat — or someone else's."
+            &quot;The founding fire burns the first weekend of every month.<br />Your seat — or someone else&apos;s.&quot;
           </p>
           <a href="/gate" style={{
             display: "block", background: GOLD, color: BG,
             borderRadius: 8, padding: "14px 0", textDecoration: "none",
-            fontSize: "0.42rem", fontWeight: 700, letterSpacing: "0.18em",
+            fontSize: "16px", fontWeight: 700, letterSpacing: "0.18em",
             fontFamily: "'JetBrains Mono', monospace", marginBottom: 10,
           }}>
             ENTER THE GATE → MAKOA.LIVE
           </a>
           <a href="/sponsor" style={{
-            display: "block", color: GOLD_DIM, fontSize: "0.38rem",
+            display: "block", color: GOLD_DIM, fontSize: "15px",
             textDecoration: "none", letterSpacing: "0.12em", padding: "8px",
           }}>
             or sponsor a brother →
           </a>
-          <p style={{ color: "rgba(176,142,80,0.2)", fontSize: "0.34rem", marginTop: 12, letterSpacing: "0.15em" }}>
+          <p style={{ color: "rgba(176,142,80,0.25)", fontSize: "13px", marginTop: 12, letterSpacing: "0.15em" }}>
             🌕 GATE OPENS MAY 1 · FULL MOON · 9AM HST · WEST OAHU
           </p>
         </div>
@@ -400,7 +400,7 @@ export default function FirePage() {
           padding: "16px 20px",
           textAlign: "center",
         }}>
-          <p style={{ color: GOLD_DIM, fontSize: "0.44rem", lineHeight: 2, margin: 0 }}>
+          <p style={{ color: GOLD_DIM, fontSize: "17px", lineHeight: 2, margin: 0 }}>
             Ready?{" "}
             <a href="/gate" style={{ color: GOLD, textDecoration: "underline" }}>
               Claim your Aliʻi founder seat →
