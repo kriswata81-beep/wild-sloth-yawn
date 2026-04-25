@@ -661,8 +661,7 @@ export default function PalapalaPage() {
             color: "rgba(245,236,217,0.85)",
           }}
         >
-          Aliʻi stay five days, Tuesday to Sunday. Lodging at Embassy Suites
-          Kapolei is included. Every meal on the table. The ring, the patch, the
+          Aliʻi stay Fri–Sun in Kapolei (808-757-6985). Every meal on the table. The ring, the patch, the
           coin, the manual — handed to you by name, in front of the cohort.
         </p>
         <p

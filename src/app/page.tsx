@@ -73,7 +73,7 @@ const WEEKENDS = [
 ];
 
 const SEAT_INCLUDES = [
-  "The full 48-hour founding weekend",
+  "Fri–Sun · Kapolei · 808-757-6985",
   "VIP War Van · HNL pickup + weekend transport",
   "Warroom + Warchest · B2B mastermind sessions",
   "All shared meals · Fri pūpū · Sat dinner · Sun beach luau",
@@ -707,7 +707,7 @@ export default function Home() {
               <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "13px", letterSpacing: "0.22em", marginBottom: 14 }}>YOU BRING</p>
               {[
                 "Your team of 3–5 brothers you vouch for",
-                "Your own Kapolei lodging (or use an Overseas Bundle)",
+                "Your own lodging in Kapolei (or use an Overseas Bundle)",
                 "Your gear for the trade circle",
               ].map(item => (
                 <p key={item} style={{ color: "rgba(232,224,208,0.55)", fontSize: "18px", lineHeight: 1.8 }}>· {item}</p>

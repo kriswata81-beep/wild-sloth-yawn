@@ -19,7 +19,7 @@ const BERKUS_ROWS = [
   { factor: "Sound Idea", score: "$400,000–$450,000", note: "100-year vision · Hawaiian sovereignty · anti-capture doctrine" },
   { factor: "Prototype / Working Product", score: "$150,000–$200,000", note: "makoa.live live · XI keeper layer · gate + intake flow operational" },
   { factor: "Quality Management Team", score: "$100,000–$150,000", note: "Steward 0001 · XI autonomous layer · Aliʻi Council structure" },
-  { factor: "Strategic Relationships", score: "$50,000–$100,000", note: "West Oʻahu territory · Embassy Suites Kapolei · founding cohort" },
+  { factor: "Strategic Relationships", score: "$50,000–$100,000", note: "West Oʻahu territory · Kapolei · founding cohort" },
   { factor: "Product Rollout / Sales", score: "$100,000–$150,000", note: "Mayday 48 gate open · 4 gate submissions · founding window live" },
 ];
 
@@ -39,7 +39,7 @@ const NEXT_STEPS = [
   {
     n: "3",
     title: "Prepare for West Oʻahu",
-    desc: "Embassy Suites Kapolei. Red shirt, solid. Black slacks. Notebook. Pack light. The brotherhood handles the rest.",
+    desc: "Kapolei · 808-757-6985. Red shirt, solid. Black slacks. Notebook. Pack light. The brotherhood handles the rest.",
     action: null,
   },
   {

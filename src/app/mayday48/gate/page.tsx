@@ -223,7 +223,7 @@ export default function Mayday48GatePage() {
 
           <div style={{ display: "grid", gap: 8, marginBottom: 24 }}>
             {[
-              "5 days · Tue–Sun · Embassy Suites Kapolei",
+              "Fri–Sun · Kapolei · 808-757-6985",
               "All meals at the table",
               "HNL airport pickup + dropoff",
               "Both ice baths · Ko Olina",

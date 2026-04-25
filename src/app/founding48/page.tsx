@@ -107,7 +107,7 @@ const WEEKENDS = [
 
 const RHYTHM = [
   { time: "Fri · 12PM", event: "HNL Pickup", detail: "Mākoa van collects the war party from HNL. West Oahu bound." },
-  { time: "Fri · 2PM", event: "Check-In · Embassy Suites Kapolei", detail: "Room keys. Class assignment. Gear pack. No phones after this." },
+  { time: "Fri · 2PM", event: "Check-In · Kapolei", detail: "Room keys. Class assignment. Gear pack. No phones after this." },
   { time: "Fri · 6PM", event: "War Room Roll Call", detail: "All Aliʻi seated. XI opens the founding session. The order begins." },
   { time: "Fri · 9PM", event: "Brotherhood Circle", detail: "First circle. Lite pūpū. Men speak. No performance. Just truth." },
   { time: "Sat · 3AM", event: "Wake Call", detail: "The van is running. No alarm needed. You know." },
@@ -134,7 +134,7 @@ const FAQS = [
   },
   {
     q: "What's included in the Aliʻi founder seat?",
-    a: "Five days (Tue–Sun) at Embassy Suites Kapolei. All meals at the table. Airport pickup and dropoff from HNL. Both ice baths. All War Room and Trade Co. sessions. The founding fire. The Aliʻi gear pack — ring, patch, coin, manual. 1% equity in Mākoa Trade Co. Territorial charter rights. Seat on the Aliʻi Council for life. The seat price is revealed when you step through the gate.",
+    a: "Fri–Sun in Kapolei. All meals at the table. Airport pickup and dropoff from HNL. Both ice baths. All War Room and Trade Co. sessions. The founding fire. The Aliʻi gear pack — ring, patch, coin, manual. 1% equity in Mākoa Trade Co. Territorial charter rights. Seat on the Aliʻi Council for life. The seat price is revealed when you step through the gate. Questions: 808-757-6985.",
   },
   {
     q: "What do I bring?",
@@ -154,7 +154,7 @@ const FAQS = [
   },
   {
     q: "What is the War Party Travel Pack?",
-    a: "An add-on for teams flying in from outside Hawaiʻi. Includes: HNL airport coordination, hotel block access at the Embassy Suites Kapolei group rate, XI pre-arrival briefing, and a dedicated Mākoa channel for your war party before the event. Available when you claim your Aliʻi seat at /gate.",
+    a: "An add-on for teams flying in from outside Hawaiʻi. Includes: HNL airport coordination, Kapolei lodging coordination, XI pre-arrival briefing, and a dedicated Mākoa channel for your war party before the event. Available when you claim your Aliʻi seat at /mayday48/gate. Questions: 808-757-6985.",
   },
 ];
 
@@ -226,7 +226,7 @@ function Founding48Content() {
           marginBottom: 24,
           animation: "fadeUp 0.8s ease 0.35s both",
         }}>
-          May 1–31, 2026 · Embassy Suites Kapolei · Hawaiʻi
+          May 1–31, 2026 · Kapolei, Hawaiʻi · 808-757-6985
         </p>
 
         {/* Core numbers */}
@@ -445,7 +445,7 @@ function Founding48Content() {
 
           <div style={{ display: "grid", gap: 7, marginBottom: 24 }}>
             {[
-              "5 days · Tue–Sun · Embassy Suites Kapolei",
+              "Fri–Sun · Kapolei · 808-757-6985",
               "All meals at the table",
               "HNL airport pickup + dropoff",
               "Both ice baths · Ko Olina",
