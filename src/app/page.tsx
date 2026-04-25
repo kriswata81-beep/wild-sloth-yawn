@@ -356,6 +356,34 @@ export default function Home() {
         </div>
       </div>
 
+      {/* ── PERMANENT CLOSING STATEMENT ─────────────────────────────────────── */}
+      <div style={{
+        background: "rgba(255,78,31,0.04)",
+        borderTop: `1px solid rgba(255,78,31,0.15)`,
+        borderBottom: `1px solid rgba(255,78,31,0.15)`,
+        padding: "22px 24px",
+        textAlign: "center",
+      }}>
+        <p style={{
+          color: "rgba(255,78,31,0.85)",
+          fontSize: "clamp(13px, 2vw, 15px)",
+          letterSpacing: "0.16em",
+          lineHeight: 1.8,
+          fontFamily: "'JetBrains Mono', monospace",
+          fontWeight: 600,
+        }}>
+          The Founding 48 closes permanently at the Blue Moon on May 31, 2026 at 11:11 PM HST.
+        </p>
+        <p style={{
+          color: "rgba(232,224,208,0.3)",
+          fontSize: "13px",
+          letterSpacing: "0.12em",
+          marginTop: 6,
+        }}>
+          After this date, the 20 Aliʻi founding seats will never open again. Next cohort (Ka Lani 48) begins June 1.
+        </p>
+      </div>
+
       {/* ── LOYALTY LINE ─────────────────────────────────────────────────────── */}
       <div style={{ background: "#04060a", borderTop: `1px solid ${GOLD_20}`, padding: "72px 24px" }}>
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
