@@ -169,6 +169,87 @@ export default function Mayday48GatePage() {
 
       <div style={{ maxWidth: 600, margin: "0 auto", padding: "48px 24px 0" }}>
 
+        {/* ── PRICE REVEAL ──────────────────────────────────────────────────── */}
+        <div style={{
+          border: `2px solid ${GOLD_40}`,
+          borderRadius: 14,
+          background: "linear-gradient(135deg, #0f1018 0%, #080a0f 100%)",
+          padding: "32px 28px",
+          marginBottom: 32,
+          position: "relative",
+          overflow: "hidden",
+          animation: "goldGlow 5s ease-in-out infinite",
+        }}>
+          <div style={{
+            position: "absolute", inset: 0,
+            background: "radial-gradient(ellipse at 50% 0%, rgba(212,166,104,0.07) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }} />
+
+          <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.28em", marginBottom: 20 }}>
+            ALIʻI FOUNDER SEAT · MAYDAY 48
+          </p>
+
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 16, marginBottom: 8, flexWrap: "wrap" }}>
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              color: GOLD,
+              fontSize: "clamp(3rem, 12vw, 4.5rem)",
+              fontWeight: 400,
+              lineHeight: 1,
+              margin: 0,
+            }}>$4,997</p>
+            <p style={{
+              color: "rgba(232,224,208,0.5)",
+              fontSize: "17px",
+              lineHeight: 1.5,
+              paddingBottom: 6,
+            }}>one-time · founding seat</p>
+          </div>
+
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            color: "rgba(232,224,208,0.6)",
+            fontSize: "clamp(1rem, 2.5vw, 1.2rem)",
+            lineHeight: 1.7,
+            marginBottom: 24,
+          }}>
+            1% equity in Mākoa Trade Co. · 0.5% of global revenue forever · inheritable
+          </p>
+
+          <div style={{ display: "grid", gap: 8, marginBottom: 24 }}>
+            {[
+              "5 days · Tue–Sun · Embassy Suites Kapolei",
+              "All meals at the table",
+              "HNL airport pickup + dropoff",
+              "Both ice baths · Ko Olina",
+              "All War Room + Trade Co. sessions",
+              "Founding fire + Palapala oath",
+              "Aliʻi gear pack — ring · patch · coin · manual",
+              "Territorial charter rights",
+              "Aliʻi Council seat for life",
+            ].map(item => (
+              <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                <span style={{ color: GOLD, fontSize: "16px", flexShrink: 0, marginTop: 1 }}>◈</span>
+                <p style={{ color: "rgba(232,224,208,0.75)", fontSize: "17px", lineHeight: 1.5 }}>{item}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{
+            background: "rgba(0,0,0,0.3)",
+            border: `1px solid rgba(212,166,104,0.1)`,
+            borderRadius: 8,
+            padding: "14px 18px",
+          }}>
+            <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "15px", lineHeight: 1.7 }}>
+              Team of 3–5 brothers required · Cannot be sponsored · 20 seats total · 5 per weekend
+            </p>
+          </div>
+        </div>
+
         {/* ── INTRO ─────────────────────────────────────────────────────────── */}
         <div style={{
           background: "rgba(212,166,104,0.03)",

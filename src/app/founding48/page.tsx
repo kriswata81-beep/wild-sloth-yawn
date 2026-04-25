@@ -132,8 +132,8 @@ const FAQS = [
     a: "Men who lead. Team leaders, business owners, tradesmen, builders — men who carry weight and want a brotherhood that matches that weight. You must bring a team of 3–5 brothers. The Aliʻi seat is not a solo ticket.",
   },
   {
-    q: "What's included in the $4,997?",
-    a: "Five days (Tue–Sun) at Embassy Suites Kapolei. All meals at the table. Airport pickup and dropoff from HNL. Both ice baths. All War Room and Trade Co. sessions. The founding fire. The Aliʻi gear pack — ring, patch, coin, manual. 1% equity in Mākoa Trade Co. Territorial charter rights. Seat on the Aliʻi Council for life.",
+    q: "What's included in the Aliʻi founder seat?",
+    a: "Five days (Tue–Sun) at Embassy Suites Kapolei. All meals at the table. Airport pickup and dropoff from HNL. Both ice baths. All War Room and Trade Co. sessions. The founding fire. The Aliʻi gear pack — ring, patch, coin, manual. 1% equity in Mākoa Trade Co. Territorial charter rights. Seat on the Aliʻi Council for life. The seat price is revealed when you step through the gate.",
   },
   {
     q: "What do I bring?",
@@ -462,25 +462,7 @@ function Founding48Content() {
             ))}
           </div>
 
-          <div style={{
-            background: "rgba(176,142,80,0.08)",
-            border: `1px solid ${GOLD_40}`,
-            borderRadius: 8,
-            padding: "16px",
-            marginBottom: 20,
-            display: "flex", justifyContent: "space-between", alignItems: "center",
-          }}>
-            <div>
-              <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.14em", marginBottom: 4 }}>ALIʻI FOUNDER SEAT</p>
-              <p style={{ color: GOLD, fontSize: "2rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>$4,997</p>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "14px", marginBottom: 4 }}>Team of 3–5 brothers</p>
-              <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "14px" }}>Cannot be sponsored</p>
-            </div>
-          </div>
-
-          <a href="/gate" style={{
+          <a href="/mayday48/gate" style={{
             display: "block",
             background: GOLD,
             color: "#000",
@@ -493,7 +475,7 @@ function Founding48Content() {
             fontFamily: "'JetBrains Mono', monospace",
             textAlign: "center",
           }}>
-            CLAIM YOUR ALIʻI SEAT → /GATE
+            CLAIM YOUR ALIʻI SEAT →
           </a>
 
           <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "14px", textAlign: "center", marginTop: 10 }}>
@@ -646,7 +628,7 @@ function Founding48Content() {
           <CountdownBlock target={TIMELINE.BLUE_MOON_SEALING} label="🌕 BLUE MOON SEALING (MAY 31) IN" color={GOLD} />
         </div>
 
-        <a href="/gate" style={{
+        <a href="/mayday48/gate" style={{
           display: "block",
           background: GOLD,
           color: "#000",
@@ -663,7 +645,7 @@ function Founding48Content() {
           CLAIM YOUR ALIʻI FOUNDER SEAT
         </a>
         <p style={{ textAlign: "center", color: "rgba(232,224,208,0.3)", fontSize: "14px", marginBottom: 32 }}>
-          $4,997 · 1% equity · team of 3–5 · gate opens May 1 · 20 seats total
+          1% equity · team of 3–5 · gate opens May 1 · 20 seats total · price revealed inside
         </p>
 
         {/* ── FOOTER ───────────────────────────────────────────────────────── */}
