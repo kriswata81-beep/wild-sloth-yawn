@@ -175,7 +175,7 @@ function Founding48Content() {
   }, [searchParams]);
 
   return (
-    <div style={{ background: BG, minHeight: "100vh", color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80 }}>
+    <div style={{ background: BG, minHeight: "100vh", color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80, paddingTop: 52 }}>
       <style>{`
         @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
         @keyframes breathe { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
@@ -663,7 +663,7 @@ function Founding48Content() {
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 12 }}>
             {[
-              { href: "/gate", label: "THE GATE" },
+              { href: "/mayday48/gate", label: "THE GATE" },
               { href: "/palapala", label: "THE PALAPALA" },
               { href: "/trade", label: "TRADE CO." },
               { href: "/sponsor", label: "SPONSOR" },

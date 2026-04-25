@@ -72,7 +72,7 @@ const XI_LINES = [
 
 export default function TrustPage() {
   return (
-    <div style={{ minHeight: "100vh", background: BG, color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80 }}>
+    <div style={{ minHeight: "100vh", background: BG, color: "#e8e0d0", fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80, paddingTop: 52 }}>
       <style>{`
         @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
         @keyframes breathe { 0%,100%{opacity:0.5;}50%{opacity:1;} }

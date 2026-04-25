@@ -23,6 +23,7 @@ export default function PalapalaPage() {
         color: "#f5ecd9",
         fontFamily: "Georgia, serif",
         paddingBottom: 120,
+        paddingTop: 52,
       }}
     >
       {/* Top trust banner */}
@@ -959,7 +960,7 @@ export default function PalapalaPage() {
           SPONSOR A BROTHER
         </a>
         <a
-          href="/founding48"
+          href="/waitlist"
           style={{
             color: "rgba(245,236,217,0.5)",
             fontFamily: "'JetBrains Mono', monospace",

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import LastChanceBanner from "@/components/LastChanceBanner";
 import SiteNav from "@/components/SiteNav";
+import TimelineStrip from "@/components/TimelineStrip";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <SiteNav />
         <LastChanceBanner />
+        <TimelineStrip />
         {children}
         <Analytics />
         <SpeedInsights />

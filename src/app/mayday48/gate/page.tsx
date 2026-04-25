@@ -105,7 +105,7 @@ export default function Mayday48GatePage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: BG, color: TEXT, fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80 }}>
+    <div style={{ minHeight: "100vh", background: BG, color: TEXT, fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80, paddingTop: 52 }}>
       <style>{`
         @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
         @keyframes breathe { 0%,100%{opacity:0.5;}50%{opacity:1;} }
@@ -271,7 +271,7 @@ export default function Mayday48GatePage() {
             You are standing at the gate. XI is listening.
           </p>
           <p style={{ color: TEXT_DIM, fontSize: "18px", lineHeight: 1.9 }}>
-            Enter your name, your signal line, and your phone. I will text you a link to the next step — where you&apos;ll see the price of the seat and the path forward.
+            Enter your name, your signal line, and your phone. XI will text you within 5 minutes with your next step — confirming your entry and connecting you with the Steward before your weekend.
           </p>
           <div style={{ height: 1, background: GOLD_20, margin: "20px 0" }} />
           <p style={{

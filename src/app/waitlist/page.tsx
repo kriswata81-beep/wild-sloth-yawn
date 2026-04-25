@@ -86,7 +86,7 @@ export default function WaitlistPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: BG, color: TEXT, fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80 }}>
+    <div style={{ minHeight: "100vh", background: BG, color: TEXT, fontFamily: "'JetBrains Mono', monospace", paddingBottom: 80, paddingTop: 52 }}>
       <style>{`
         @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
         @keyframes breathe { 0%,100%{opacity:0.5;}50%{opacity:1;} }
@@ -344,7 +344,7 @@ export default function WaitlistPage() {
             <p style={{ color: TEXT_DIM, fontSize: "17px" }}>Sponsor a brother in now</p>
             <p style={{ color: GOLD, fontSize: "17px" }}>→</p>
           </a>
-          <a href="/gate" style={{
+          <a href="/mayday48/gate" style={{
             display: "flex", justifyContent: "space-between", alignItems: "center",
             padding: "14px 18px",
             background: "rgba(176,142,80,0.04)",
@@ -353,7 +353,7 @@ export default function WaitlistPage() {
             textDecoration: "none",
           }}>
             <p style={{ color: TEXT_DIM, fontSize: "17px" }}>Want a founder seat?</p>
-            <p style={{ color: GOLD, fontSize: "17px" }}>→ /gate</p>
+            <p style={{ color: GOLD, fontSize: "17px" }}>→ /mayday48/gate</p>
           </a>
           <a href="/palapala" style={{
             display: "flex", justifyContent: "space-between", alignItems: "center",

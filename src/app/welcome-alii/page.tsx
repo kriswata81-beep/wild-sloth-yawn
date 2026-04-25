@@ -2,6 +2,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { usePageTracker } from "@/hooks/use-page-tracker";
+import { supabase } from "@/integrations/supabase/client";
 
 const GOLD = "#D4A668";
 const GOLD_40 = "rgba(212,166,104,0.4)";
@@ -55,6 +56,12 @@ function WelcomeContent() {
   const [name, setName] = useState("Brother");
   const [phase, setPhase] = useState(0); // staggered reveal phases
   const [showBerkus, setShowBerkus] = useState(false);
+  const [seatsClaimed, setSeatsClaimed] = useState(1);
+
+  useEffect(() => {
+    supabase.from("seats_counter").select("seats_claimed").eq("id", 1).single()
+      .then(({ data }) => { if (data) setSeatsClaimed(data.seats_claimed); });
+  }, []);
 
   useEffect(() => {
     const n = searchParams.get("name") || searchParams.get("handle") || "";
@@ -575,7 +582,7 @@ function WelcomeContent() {
             lineHeight: 1.8,
             marginBottom: 20,
           }}>
-            {20 - 1} seats remain. The gate closes May 31 at 11:11 PM HST.
+            {20 - seatsClaimed} seats remain. The gate closes May 31 at 11:11 PM HST.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <a href="/founding48" style={{
