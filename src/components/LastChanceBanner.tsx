@@ -1,10 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 const GATE_OPEN = new Date("2026-05-01T09:00:00-10:00").getTime();
 const BANNER_START_DAYS = 9; // show banner when 9 or fewer days until gate opens
 
 export default function LastChanceBanner() {
+  const pathname = usePathname();
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
@@ -22,6 +24,7 @@ export default function LastChanceBanner() {
   if (dismissed) return null;
   if (daysLeft === null) return null;
   if (daysLeft > BANNER_START_DAYS) return null;
+  if (pathname.startsWith("/welcome-alii") || pathname.startsWith("/seat-claimed")) return null;
 
   const urgent = daysLeft <= 3;
   const color = urgent ? "#e05c5c" : "#b08e50";

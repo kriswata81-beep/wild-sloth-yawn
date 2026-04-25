@@ -54,7 +54,6 @@ function WelcomeContent() {
   const searchParams = useSearchParams();
   const [name, setName] = useState("Brother");
   const [phase, setPhase] = useState(0); // staggered reveal phases
-  const [showValuation, setShowValuation] = useState(false);
   const [showBerkus, setShowBerkus] = useState(false);
 
   useEffect(() => {

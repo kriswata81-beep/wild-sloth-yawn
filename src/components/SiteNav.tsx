@@ -28,6 +28,10 @@ export default function SiteNav() {
   // Close menu on route change
   useEffect(() => { setOpen(false); }, [pathname]);
 
+  // Hide nav on post-payment pages — no distractions
+  const HIDDEN_PATHS = ["/welcome-alii", "/seat-claimed"];
+  if (HIDDEN_PATHS.some(p => pathname.startsWith(p))) return null;
+
   return (
     <>
       <style>{`
