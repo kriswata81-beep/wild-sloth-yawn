@@ -165,13 +165,17 @@ function Founding48Content() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [openRhythm, setOpenRhythm] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupDismissed, setPopupDismissed] = useState(false);
 
   useEffect(() => {
     const urlHandle = searchParams.get("h") || searchParams.get("handle") || "";
     const storedHandle = typeof window !== "undefined" ? sessionStorage.getItem("makoa_handle") || "" : "";
     setHandle(urlHandle || storedHandle || "Brother");
     const t = setTimeout(() => setRevealed(true), 300);
-    return () => clearTimeout(t);
+    // Show popup after 8 seconds
+    const p = setTimeout(() => setShowPopup(true), 8000);
+    return () => { clearTimeout(t); clearTimeout(p); };
   }, [searchParams]);
 
   return (
@@ -686,6 +690,162 @@ function Founding48Content() {
         </div>
 
       </div>
+
+      {/* ── CONTACT POPUP ────────────────────────────────────────────────────── */}
+      <style>{`
+        @keyframes popupSlideUp {
+          from { opacity: 0; transform: translateY(24px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popupPulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+        .popup-close:hover { background: rgba(176,142,80,0.15) !important; }
+        .popup-call:hover { background: rgba(176,142,80,0.9) !important; }
+        .popup-email:hover { border-color: rgba(176,142,80,0.5) !important; background: rgba(176,142,80,0.08) !important; }
+      `}</style>
+
+      {showPopup && !popupDismissed && (
+        <div style={{
+          position: "fixed",
+          bottom: 24,
+          right: 20,
+          zIndex: 9000,
+          width: "min(340px, calc(100vw - 40px))",
+          background: "linear-gradient(160deg, #0f1018 0%, #080a0f 100%)",
+          border: `1px solid ${GOLD_40}`,
+          borderRadius: 16,
+          padding: "24px 22px 20px",
+          boxShadow: "0 8px 48px rgba(0,0,0,0.7), 0 0 40px rgba(176,142,80,0.12)",
+          animation: "popupSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) both",
+        }}>
+          {/* Close */}
+          <button
+            className="popup-close"
+            onClick={() => setPopupDismissed(true)}
+            style={{
+              position: "absolute", top: 12, right: 12,
+              background: "rgba(176,142,80,0.06)",
+              border: `1px solid rgba(176,142,80,0.15)`,
+              borderRadius: 6,
+              color: GOLD_DIM,
+              fontSize: "13px",
+              cursor: "pointer",
+              padding: "3px 8px",
+              fontFamily: "'JetBrains Mono', monospace",
+              lineHeight: 1.4,
+              transition: "background 0.15s",
+            }}
+          >✕</button>
+
+          {/* Header */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: "50%",
+              background: "rgba(176,142,80,0.1)",
+              border: `1px solid ${GOLD_40}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+            }}>
+              <span style={{ color: GOLD, fontSize: "1rem" }}>◈</span>
+            </div>
+            <div>
+              <p style={{ color: GOLD, fontSize: "13px", letterSpacing: "0.18em", fontWeight: 700, lineHeight: 1.2 }}>
+                MĀKOA TRADE CO.
+              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 2 }}>
+                <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#3fb950", animation: "popupPulse 2s ease-in-out infinite" }} />
+                <p style={{ color: "rgba(63,185,80,0.8)", fontSize: "11px", letterSpacing: "0.12em" }}>HOTLINE OPEN</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Steward line */}
+          <div style={{
+            background: "rgba(176,142,80,0.05)",
+            border: `1px solid rgba(176,142,80,0.12)`,
+            borderRadius: 8,
+            padding: "12px 14px",
+            marginBottom: 14,
+          }}>
+            <p style={{ color: "rgba(232,224,208,0.45)", fontSize: "11px", letterSpacing: "0.2em", marginBottom: 4 }}>
+              STEWARD ON DUTY
+            </p>
+            <p style={{ color: "#e8e0d0", fontSize: "15px", lineHeight: 1.4 }}>
+              <span style={{ color: GOLD, fontWeight: 700 }}>AIKA</span>
+              <span style={{ color: "rgba(232,224,208,0.4)", fontSize: "13px" }}> · Makoa0001</span>
+            </p>
+            <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "12px", marginTop: 2, letterSpacing: "0.06em" }}>
+              Questions? Ready to claim your seat?
+            </p>
+          </div>
+
+          {/* Contact rows */}
+          <div style={{ display: "grid", gap: 8, marginBottom: 16 }}>
+            <a
+              href="tel:8087576985"
+              className="popup-call"
+              style={{
+                display: "flex", alignItems: "center", gap: 10,
+                background: GOLD,
+                borderRadius: 8,
+                padding: "11px 14px",
+                textDecoration: "none",
+                transition: "background 0.15s",
+              }}
+            >
+              <span style={{ fontSize: "1rem" }}>📞</span>
+              <div>
+                <p style={{ color: "#000", fontSize: "14px", fontWeight: 700, letterSpacing: "0.08em", lineHeight: 1.2 }}>
+                  808-757-6985
+                </p>
+                <p style={{ color: "rgba(0,0,0,0.55)", fontSize: "11px", letterSpacing: "0.1em" }}>CALL OR TEXT · HOTLINE</p>
+              </div>
+            </a>
+
+            <a
+              href="mailto:Wakachefs@gmail.com"
+              className="popup-email"
+              style={{
+                display: "flex", alignItems: "center", gap: 10,
+                background: "transparent",
+                border: `1px solid rgba(176,142,80,0.2)`,
+                borderRadius: 8,
+                padding: "11px 14px",
+                textDecoration: "none",
+                transition: "all 0.15s",
+              }}
+            >
+              <span style={{ fontSize: "1rem" }}>✉</span>
+              <div>
+                <p style={{ color: "#e8e0d0", fontSize: "13px", letterSpacing: "0.04em", lineHeight: 1.2 }}>
+                  Wakachefs@gmail.com
+                </p>
+                <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "11px", letterSpacing: "0.1em" }}>EMAIL · MAKOA0001</p>
+              </div>
+            </a>
+          </div>
+
+          {/* CTA */}
+          <a
+            href="/mayday48/gate"
+            style={{
+              display: "block",
+              background: "transparent",
+              border: `1px solid ${GOLD_20}`,
+              borderRadius: 8,
+              padding: "10px",
+              textDecoration: "none",
+              textAlign: "center",
+              color: GOLD_DIM,
+              fontSize: "12px",
+              letterSpacing: "0.18em",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          >
+            ENTER THE GATE →
+          </a>
+        </div>
+      )}
+
     </div>
   );
 }
