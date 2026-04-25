@@ -148,7 +148,7 @@ export default function WaitlistPage() {
         }}>
           <div style={{ width: 6, height: 6, borderRadius: "50%", background: GOLD, animation: "pulse 1.5s ease-in-out infinite" }} />
           <p style={{ color: GOLD_DIM, fontSize: "13px", letterSpacing: "0.18em" }}>
-            GATE CLOSES MAY 31, 2026 (BLUE MOON)
+            GATE OPENS MAY 1, 2026 (FULL MOON)
           </p>
         </div>
       </div>

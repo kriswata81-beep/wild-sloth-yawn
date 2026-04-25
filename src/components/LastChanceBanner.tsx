@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const GATE_CLOSE = new Date("2026-04-25T23:59:59-10:00").getTime();
-const BANNER_START_DAYS = 9; // show banner when 9 or fewer days remain
+const GATE_OPEN = new Date("2026-05-01T09:00:00-10:00").getTime();
+const BANNER_START_DAYS = 9; // show banner when 9 or fewer days until gate opens
 
 export default function LastChanceBanner() {
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
@@ -10,7 +10,7 @@ export default function LastChanceBanner() {
 
   useEffect(() => {
     const calc = () => {
-      const diff = GATE_CLOSE - Date.now();
+      const diff = GATE_OPEN - Date.now();
       if (diff <= 0) { setDaysLeft(0); return; }
       setDaysLeft(Math.ceil(diff / 86400000));
     };
@@ -29,10 +29,10 @@ export default function LastChanceBanner() {
   const border = urgent ? "rgba(224,92,92,0.35)" : "rgba(176,142,80,0.3)";
 
   const label = daysLeft === 0
-    ? "THE GATE IS CLOSED"
+    ? "🌕 THE GATE IS OPEN — MAY 1 FULL MOON"
     : daysLeft === 1
-    ? "LAST DAY — GATE CLOSES TONIGHT"
-    : `${daysLeft} DAYS LEFT — GATE CLOSES APRIL 25`;
+    ? "GATE OPENS TOMORROW — MAY 1 FULL MOON"
+    : `${daysLeft} DAYS UNTIL THE GATE OPENS — MAY 1 FULL MOON`;
 
   return (
     <div style={{
@@ -56,15 +56,15 @@ export default function LastChanceBanner() {
       }} />
       <style>{`@keyframes bannerPulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }`}</style>
 
-      <a href="/sponsor" style={{ textDecoration: "none", flex: 1, textAlign: "center" }}>
+      <a href="/mayday48/gate" style={{ textDecoration: "none", flex: 1, textAlign: "center" }}>
         <p style={{
           color,
-          fontSize: "0.38rem",
+          fontSize: "14px",
           letterSpacing: "0.18em",
           fontFamily: "'JetBrains Mono', monospace",
           fontWeight: 700,
         }}>
-          ⚠ {label} · ONLY 20 SEATS REMAIN · <span style={{ textDecoration: "underline" }}>ENTER THE GATE →</span>
+          {label} · 20 FOUNDING SEATS · <span style={{ textDecoration: "underline" }}>ENTER THE GATE →</span>
         </p>
       </a>
 
@@ -72,7 +72,7 @@ export default function LastChanceBanner() {
         onClick={() => setDismissed(true)}
         style={{
           background: "none", border: "none", cursor: "pointer",
-          color: `${color}60`, fontSize: "0.5rem", flexShrink: 0,
+          color: `${color}60`, fontSize: "1rem", flexShrink: 0,
           fontFamily: "'JetBrains Mono', monospace",
           padding: "0 4px",
         }}

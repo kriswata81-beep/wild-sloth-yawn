@@ -143,7 +143,7 @@ export default function SponsorPage() {
       }}>
         <div style={{ width: 6, height: 6, borderRadius: "50%", background: RED, animation: "pulse 1s ease-in-out infinite", flexShrink: 0 }} />
         <p style={{ color: RED, fontSize: "14px", letterSpacing: "0.16em" }}>
-          GATE CLOSES MAY 31, 2026 (BLUE MOON) · SPONSORSHIP GIFTS FILL ALONGSIDE THE 20 ALIʻI FOUNDER SEATS
+          GATE OPENS MAY 1, 2026 (FULL MOON) · SPONSORSHIP GIFTS FILL ALONGSIDE THE 20 ALIʻI FOUNDER SEATS
         </p>
       </div>
 
@@ -534,12 +534,12 @@ export default function SponsorPage() {
               {
                 label: "FOR CLOSE FRIENDS",
                 icon: "✊",
-                text: "Bro — I'm going to Mākoa MAYDAY in West Oahu, May 1–4. 4am ice bath, brotherhood, real work. I thought of you. Gate closes May 31 Blue Moon. If you're in, go to makoa.live. If you need a push, I'll sponsor you.",
+                text: "Bro — I'm going to Mākoa MAYDAY in West Oahu, May 1–4. 4am ice bath, brotherhood, real work. I thought of you. Gate opens May 1 Full Moon. If you're in, go to makoa.live. If you need a push, I'll sponsor you.",
               },
               {
                 label: "FOR INSTAGRAM / FACEBOOK",
                 icon: "📸",
-                text: "The 4am ice bath with brothers who actually show up.\n\nSponsor him before the gate closes.\n\nGate closes May 31, 2026 (Blue Moon). The Founding Fire happens once.\n\nmakoa.live/sponsor\n\n#Mākoa #SomeoneBelievesInYou #WestOahu #MAYDAY2026",
+                text: "The 4am ice bath with brothers who actually show up.\n\nSponsor him before the gate seals.\n\nGate opens May 1, 2026 (Full Moon). The Founding Fire happens once.\n\nmakoa.live/sponsor\n\n#Mākoa #SomeoneBelievesInYou #WestOahu #MAYDAY2026",
               },
             ].map(item => (
               <OutreachCard key={item.label} {...item} />
