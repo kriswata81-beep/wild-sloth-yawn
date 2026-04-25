@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import SocialFooter from "@/components/SocialFooter";
 import { TIMELINE } from "@/lib/timeline";
+import { usePageTracker } from "@/hooks/use-page-tracker";
+import { supabase } from "@/integrations/supabase/client";
 
 const GOLD = "#D4A668";
 const GOLD_40 = "rgba(212,166,104,0.4)";
@@ -124,10 +126,18 @@ export default function Home() {
   const [tapFlash, setTapFlash] = useState(false);
   const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const gateTime = useCountdown(TIMELINE.GATE_OPENS);
+  const [seatsClaimed, setSeatsClaimed] = useState(1);
+
+  usePageTracker("home");
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 300);
     return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    supabase.from("seats_counter").select("seats_claimed").eq("id", 1).single()
+      .then(({ data }) => { if (data) setSeatsClaimed(data.seats_claimed); });
   }, []);
 
   function handleCrestTap() {
@@ -166,7 +176,7 @@ export default function Home() {
 
       {/* ── ANNOUNCEMENT BANNER ──────────────────────────────────────────────── */}
       <div style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        position: "fixed", top: 52, left: 0, right: 0, zIndex: 100,
         background: FLAME,
         padding: "10px 16px",
         display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
@@ -174,16 +184,15 @@ export default function Home() {
         transition: "opacity 0.5s ease 0.3s",
       }}>
         <p style={{ color: "#fff", fontSize: "13px", letterSpacing: "0.12em", fontWeight: 700, textAlign: "center", lineHeight: 1.4 }}>
-          THE PALAPALA DROPPED APR 21 ·{" "}
-          <a href="/palapala" style={{ color: "#fff", textDecoration: "underline" }}>READ THE MANIFEST</a>
-          {" "}· 🌕 GATE OPENS MAY 1 FULL MOON
+          🌕 GATE OPENS MAY 1 · 9AM HST (FULL MOON) · FOUNDING WINDOW CLOSES MAY 31 · 11:11 PM HST (BLUE MOON SEALING) ·{" "}
+          <a href="/palapala" style={{ color: "#fff", textDecoration: "underline" }}>READ THE PALAPALA™</a>
         </p>
       </div>
 
       {/* ── URGENCY BAR ──────────────────────────────────────────────────────── */}
       {gateTime && (
         <div style={{
-          position: "fixed", top: 38, left: 0, right: 0, zIndex: 99,
+          position: "fixed", top: 90, left: 0, right: 0, zIndex: 99,
           background: "rgba(4,6,10,0.96)",
           borderBottom: "1px solid rgba(255,78,31,0.25)",
           padding: "9px 16px",
@@ -206,7 +215,7 @@ export default function Home() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: gateTime ? "130px 24px 100px" : "80px 24px 100px",
+        padding: gateTime ? "180px 24px 100px" : "130px 24px 100px",
         position: "relative",
         background: "radial-gradient(ellipse at 50% 25%, rgba(212,166,104,0.08) 0%, transparent 60%)",
       }}>
@@ -254,7 +263,7 @@ export default function Home() {
             lineHeight: 1,
             letterSpacing: "-0.02em",
             fontWeight: 400,
-          }}>MAYDAY 48</h1>
+          }}>MAYDAY 48™</h1>
 
           {/* Subtitle */}
           <p style={{
@@ -273,10 +282,30 @@ export default function Home() {
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: "14px", letterSpacing: "0.18em",
             color: "rgba(232,224,208,0.4)",
-            margin: "0 0 48px",
+            margin: "0 0 20px",
           }}>
             4 weekends · 2 full moons · 20 founding seats · one oath
           </p>
+
+          {/* Seats counter */}
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 10,
+            background: "rgba(212,166,104,0.06)",
+            border: `1px solid ${GOLD_40}`,
+            borderRadius: 8,
+            padding: "10px 20px",
+            marginBottom: 36,
+          }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: GOLD, animation: "pulse 2s ease-in-out infinite" }} />
+            <p style={{ color: GOLD, fontSize: "14px", letterSpacing: "0.18em", fontWeight: 700 }}>
+              SEATS CLAIMED: {seatsClaimed} OF 20
+            </p>
+            <p style={{ color: "rgba(212,166,104,0.4)", fontSize: "13px", letterSpacing: "0.1em" }}>
+              · {20 - seatsClaimed} REMAINING
+            </p>
+          </div>
 
           {/* Primary CTA */}
           <div style={{ opacity: ready ? 1 : 0, transition: "opacity 0.7s ease 0.5s" }}>
@@ -297,7 +326,7 @@ export default function Home() {
               <p style={{ color: "#000", fontSize: "17px", letterSpacing: "0.18em", fontWeight: 700 }}>ENTER THE GATE →</p>
             </a>
             <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "14px", letterSpacing: "0.1em" }}>
-              see what it costs inside · after you&apos;ve read the Palapala
+              see what it costs inside · after you&apos;ve read the Palapala™
             </p>
           </div>
         </div>
@@ -310,8 +339,8 @@ export default function Home() {
         }}>
           <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", justifyContent: "center", padding: "0 16px" }}>
             {[
-              { href: "/palapala", label: "PALAPALA" },
-              { href: "/founding48", label: "MAYDAY" },
+              { href: "/palapala", label: "PALAPALA™" },
+              { href: "/founding48", label: "MAYDAY 48™" },
               { href: "/trust", label: "WHAT WE ARE" },
               { href: "/trade", label: "TRADE CO." },
               { href: "/sponsor", label: "SPONSOR" },
@@ -347,7 +376,7 @@ export default function Home() {
             fontSize: "clamp(1rem, 2.5vw, 1.25rem)",
             lineHeight: 1.7,
           }}>
-            Under the Malu Trust. Sealed on the Palapala.
+            Under the Malu Trust™. Sealed on the Palapala™.
           </p>
         </div>
       </div>
@@ -363,7 +392,7 @@ export default function Home() {
             lineHeight: 1.85,
             marginBottom: 16,
           }}>
-            Mākoa is a brotherhood of men who build real things together.
+            Mākoa™ is a brotherhood of men who build real things together.
           </p>
           <p style={{
             color: "rgba(232,224,208,0.5)",
@@ -390,12 +419,36 @@ export default function Home() {
             fontSize: "clamp(1.2rem, 3vw, 1.5rem)",
             lineHeight: 2.0,
           }}>
-            Mayday 48 is a once-ever founding event.<br />
+            Mayday 48™ is a once-ever founding event.<br />
             Twenty men take the oath in May 2026 on West Oʻahu.<br />
             They become the founding chiefs of a 100-year trade brotherhood<br />
             that opens chapters in every city on earth.
           </p>
         </div>
+      </div>
+
+      {/* ── FOUNDING WINDOW BANNER ───────────────────────────────────────────── */}
+      <div style={{
+        background: "rgba(212,166,104,0.04)",
+        borderTop: `1px solid ${GOLD_20}`,
+        borderBottom: `1px solid ${GOLD_20}`,
+        padding: "28px 24px",
+        textAlign: "center",
+      }}>
+        <p style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          color: GOLD,
+          fontSize: "clamp(13px, 2.5vw, 15px)",
+          letterSpacing: "0.2em",
+          lineHeight: 1.8,
+          fontWeight: 700,
+        }}>
+          🌕 GATE OPENS MAY 1 · 9AM HST (FULL MOON)<br />
+          FOUNDING WINDOW CLOSES MAY 31 · 11:11 PM HST (BLUE MOON SEALING)
+        </p>
+        <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "14px", letterSpacing: "0.12em", marginTop: 10 }}>
+          Founding period runs the full month of May 2026 · After the Blue Moon, the Founding 48 closes permanently · Next cohort (Ka Lani 48) opens June 1
+        </p>
       </div>
 
       {/* ── WAR PARTY TRAVEL PACKS ───────────────────────────────────────────── */}
@@ -551,7 +604,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ── THE FOUNDER SEAT (NO PRICE) ──────────────────────────────────────── */}
+      {/* ── THE FOUNDER SEAT ─────────────────────────────────────────────────── */}
       <div style={{ background: "#04060a", borderTop: `1px solid ${GOLD_20}`, padding: "64px 24px" }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
           {divider("🔥 THE FOUNDER SEAT")}
@@ -577,10 +630,32 @@ export default function Home() {
               color: GOLD,
               fontSize: "clamp(1.4rem, 4vw, 1.8rem)",
               lineHeight: 1.4,
-              marginBottom: 28,
+              marginBottom: 16,
             }}>
               20 men. One oath. Forever.
             </p>
+
+            {/* Equity tease — prominent */}
+            <div style={{
+              background: "rgba(212,166,104,0.08)",
+              border: `1px solid ${GOLD_40}`,
+              borderRadius: 8,
+              padding: "16px 20px",
+              marginBottom: 24,
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+            }}>
+              <span style={{ color: GOLD, fontSize: "1.5rem", flexShrink: 0 }}>◈</span>
+              <div>
+                <p style={{ color: GOLD, fontSize: "17px", fontWeight: 700, letterSpacing: "0.1em", marginBottom: 4 }}>
+                  1% EQUITY IN MĀKOA TRADE CO.
+                </p>
+                <p style={{ color: "rgba(232,224,208,0.6)", fontSize: "15px", lineHeight: 1.5 }}>
+                  0.5% of global revenue · perpetual · inheritable · passes to your family
+                </p>
+              </div>
+            </div>
 
             {/* Includes */}
             <p style={{ color: "rgba(232,224,208,0.35)", fontSize: "13px", letterSpacing: "0.22em", marginBottom: 16 }}>YOUR SEAT INCLUDES</p>
@@ -628,7 +703,7 @@ export default function Home() {
               ENTER THE GATE →
             </a>
             <p style={{ textAlign: "center", color: "rgba(232,224,208,0.25)", fontSize: "15px", lineHeight: 1.7 }}>
-              see what it costs inside · after you&apos;ve<br />read the Palapala and chosen to step through
+              see what it costs inside · after you&apos;ve<br />read the Palapala™ and chosen to step through
             </p>
           </div>
         </div>
@@ -641,7 +716,7 @@ export default function Home() {
         background: "linear-gradient(180deg, #04060a 0%, #060810 100%)",
       }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
-          {divider("WHAT MĀKOA STANDS FOR")}
+          {divider("WHAT MĀKOA™ STANDS FOR")}
 
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
@@ -661,7 +736,7 @@ export default function Home() {
             lineHeight: 1.9,
             marginBottom: 32,
           }}>
-            We build what outlives us. We trade in our territory. We hold our brothers. We sign the Palapala.
+            We build what outlives us. We trade in our territory. We hold our brothers. We sign the Palapala™.
           </p>
 
           <p style={{
@@ -670,7 +745,7 @@ export default function Home() {
             lineHeight: 1.9,
             marginBottom: 32,
           }}>
-            Mākoa is a men&apos;s crowdfunding — twenty founders pooling into a 100-year trade order. Every dollar routed through a Mākoa chapter follows the same split:
+            Mākoa™ is a men&apos;s crowdfunding — twenty founders pooling into a 100-year trade order. Every dollar routed through a Mākoa chapter follows the same split:
           </p>
 
           {/* 80/10/10 */}
@@ -784,7 +859,7 @@ export default function Home() {
             lineHeight: 2.0,
             marginBottom: 40,
           }}>
-            If the Palapala moves you, step through the gate.<br />
+            If the Palapala™ moves you, step through the gate.<br />
             If not, close the page and go build your own thing.<br />
             We&apos;ll be here either way.
           </p>
@@ -809,8 +884,8 @@ export default function Home() {
           {/* Footer CTAs */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16, alignItems: "center" }}>
             {[
-              { href: "/palapala", label: "Read the Palapala →" },
-              { href: "/book", label: "Read the Mākoa Book (open) →" },
+              { href: "/palapala", label: "Read the Palapala™ →" },
+              { href: "/book", label: "Read the Mākoa™ Book (open) →" },
               { href: "/sponsor", label: "Sponsor a brother →" },
               { href: "/waitlist", label: "Not ready? Waitlist →" },
               { href: "/mayday48/gate", label: "Overseas teams → War Party" },
@@ -833,6 +908,18 @@ export default function Home() {
       {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
       <div style={{ borderTop: `1px solid ${GOLD_20}` }}>
         <SocialFooter />
+      </div>
+
+      {/* ── TRADEMARK FOOTER ─────────────────────────────────────────────────── */}
+      <div style={{
+        borderTop: `1px solid rgba(212,166,104,0.06)`,
+        padding: "20px 24px",
+        textAlign: "center",
+        background: BG,
+      }}>
+        <p style={{ color: "rgba(212,166,104,0.2)", fontSize: "13px", letterSpacing: "0.1em", lineHeight: 1.8 }}>
+          Mākoa™, Malu Trust™, Mayday 48™, and Palapala™ are trademarks of the Malu Trust. All rights reserved. © 2026 Malu Trust.
+        </p>
       </div>
     </div>
   );

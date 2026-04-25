@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import LastChanceBanner from "@/components/LastChanceBanner";
+import SiteNav from "@/components/SiteNav";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-title" content="7G Net" />
       </head>
       <body>
+        <SiteNav />
         <LastChanceBanner />
         {children}
         <Analytics />

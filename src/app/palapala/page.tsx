@@ -42,7 +42,7 @@ export default function PalapalaPage() {
             fontVariant: "small-caps",
           }}
         >
-          UNDER THE MALU TRUST
+          UNDER THE MALU TRUST™
         </span>
       </div>
 
@@ -64,7 +64,7 @@ export default function PalapalaPage() {
             fontWeight: 400,
           }}
         >
-          THE PALAPALA
+          THE PALAPALA™
         </h1>
         <p
           style={{
@@ -74,7 +74,7 @@ export default function PalapalaPage() {
             margin: "0 0 24px",
           }}
         >
-          the Mākoa Manifest
+          the Mākoa™ Manifest
         </p>
         <p
           style={{
@@ -887,6 +887,25 @@ export default function PalapalaPage() {
         >
           ROOT · SNAP · PEG · DNA · ECHO
         </p>
+
+        {/* Copyright */}
+        <div style={{
+          borderTop: "1px solid rgba(212,175,55,0.1)",
+          marginTop: 48,
+          paddingTop: 24,
+          textAlign: "center",
+        }}>
+          <p style={{
+            color: "rgba(212,175,55,0.35)",
+            fontSize: "13px",
+            lineHeight: 1.9,
+            letterSpacing: "0.06em",
+          }}>
+            © 2026 Malu Trust / Steward 0001. All rights reserved.<br />
+            Unauthorized reproduction or derivative works prohibited.<br />
+            Mākoa™, Malu Trust™, Mayday 48™, and Palapala™ are trademarks of the Malu Trust.
+          </p>
+        </div>
       </div>
 
       {/* Sticky footer */}
@@ -908,7 +927,7 @@ export default function PalapalaPage() {
         }}
       >
         <a
-          href="/gate"
+          href="/mayday48/gate"
           style={{
             background: "#ff4e1f",
             color: "#1a1a1a",

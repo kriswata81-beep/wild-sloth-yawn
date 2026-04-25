@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { usePageTracker } from "@/hooks/use-page-tracker";
 
 const GOLD = "#D4A668";
 const GOLD_40 = "rgba(212,166,104,0.4)";
@@ -43,6 +44,7 @@ const NEXT_STEPS = [
 ];
 
 export default function Mayday48GatePage() {
+  usePageTracker("mayday48-gate");
   const [avatarName, setAvatarName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");

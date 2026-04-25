@@ -2,6 +2,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { TIMELINE } from "@/lib/timeline";
+import { usePageTracker } from "@/hooks/use-page-tracker";
 
 const GOLD = "#b08e50";
 const GOLD_40 = "rgba(176,142,80,0.4)";
@@ -159,6 +160,7 @@ const FAQS = [
 
 function Founding48Content() {
   const searchParams = useSearchParams();
+  usePageTracker("founding48");
   const [handle, setHandle] = useState("Brother");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [openRhythm, setOpenRhythm] = useState<number | null>(null);
