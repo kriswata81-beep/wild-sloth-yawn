@@ -67,7 +67,7 @@ export default function LastChanceBanner() {
           fontFamily: "'JetBrains Mono', monospace",
           fontWeight: 700,
         }}>
-          {label} · 20 FOUNDING SEATS · <span style={{ textDecoration: "underline" }}>ENTER THE GATE →</span>
+          {label} · 12 FOUNDING SEATS · <span style={{ textDecoration: "underline" }}>ENTER THE GATE →</span>
         </p>
       </a>
 

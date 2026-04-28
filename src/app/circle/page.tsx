@@ -68,7 +68,7 @@ const CIRCLES = [
       "Priority when new territories open",
       "Your name on the founding wall",
     ],
-    note: "20 seats. One payment. Brother for life.",
+    note: "12 seats. One payment. Brother for life.",
   },
 ];
 

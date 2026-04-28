@@ -66,10 +66,10 @@ const SCHEDULE = [
 ];
 
 const WEEKENDS = [
-  { moon: "🌕", dates: "MAY 1–3",   label: "FLOWER MOON · Opening · 5 teams",  bookend: true },
-  { moon: "◦",  dates: "MAY 8–10",  label: "Weekend 2 · 5 teams",              bookend: false },
-  { moon: "◦",  dates: "MAY 15–17", label: "Weekend 3 · 5 teams",              bookend: false },
-  { moon: "🌕", dates: "MAY 29–31", label: "BLUE MOON · Sealing · 5 teams",   bookend: true },
+  { moon: "🌕", dates: "MAY 1–3",   label: "FLOWER MOON · Opening · 3 teams",  bookend: true },
+  { moon: "◦",  dates: "MAY 8–10",  label: "Weekend 2 · 3 teams",              bookend: false },
+  { moon: "◦",  dates: "MAY 15–17", label: "Weekend 3 · 3 teams",              bookend: false },
+  { moon: "🌕", dates: "MAY 29–31", label: "BLUE MOON · Sealing · 3 teams",   bookend: true },
 ];
 
 const SEAT_INCLUDES = [
@@ -87,7 +87,7 @@ const SEAT_INCLUDES = [
 const TRADE_SPLIT = [
   { pct: "80%", label: "TERRITORY", desc: "Stays in your chapter · labor, goods, services" },
   { pct: "10%", label: "THE ORDER", desc: "Mākoa treasury · infrastructure · 7G Net" },
-  { pct: "10%", label: "MAYDAY 48 POOL", desc: "Split among the 20 founding Aliʻi · forever" },
+  { pct: "10%", label: "MAYDAY 48 POOL", desc: "Split among the 12 founding Aliʻi · forever" },
 ];
 
 const XI_LINES = [
@@ -284,7 +284,7 @@ export default function Home() {
             color: "rgba(232,224,208,0.4)",
             margin: "0 0 20px",
           }}>
-            4 weekends · 2 full moons · 20 founding seats · one oath
+            4 weekends · 2 full moons · 12 Aliʻi seats · one oath
           </p>
 
           {/* Seats counter */}
@@ -300,10 +300,10 @@ export default function Home() {
           }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: GOLD, animation: "pulse 2s ease-in-out infinite" }} />
             <p style={{ color: GOLD, fontSize: "14px", letterSpacing: "0.18em", fontWeight: 700 }}>
-              SEATS CLAIMED: {seatsClaimed} OF 20
+              SEATS CLAIMED: {seatsClaimed} OF 12
             </p>
             <p style={{ color: "rgba(212,166,104,0.4)", fontSize: "13px", letterSpacing: "0.1em" }}>
-              · {20 - seatsClaimed} REMAINING
+              · {12 - seatsClaimed} REMAINING
             </p>
           </div>
 
@@ -380,7 +380,7 @@ export default function Home() {
           letterSpacing: "0.12em",
           marginTop: 6,
         }}>
-          After this date, the 20 Aliʻi founding seats will never open again. Next cohort (Ka Lani 48) begins June 1.
+          After this date, the 12 Aliʻi founding seats will never open again. Next cohort (Ka Lani 48) begins June 1.
         </p>
       </div>
 
@@ -448,7 +448,7 @@ export default function Home() {
             lineHeight: 2.0,
           }}>
             Mayday 48™ is a once-ever founding event.<br />
-            Twenty men take the oath in May 2026 on West Oʻahu.<br />
+            Twelve Aliʻi take the oath in May 2026 on West Oʻahu.<br />
             They become the founding chiefs of a 100-year trade brotherhood<br />
             that opens chapters in every city on earth.
           </p>
@@ -660,7 +660,7 @@ export default function Home() {
               lineHeight: 1.4,
               marginBottom: 16,
             }}>
-              20 men. One oath. Forever.
+              12 Aliʻi. One oath. Forever.
             </p>
 
             {/* Equity tease — prominent */}
@@ -773,7 +773,7 @@ export default function Home() {
             lineHeight: 1.9,
             marginBottom: 32,
           }}>
-            Mākoa™ is a men&apos;s crowdfunding — twenty founders pooling into a 100-year trade order. Every dollar routed through a Mākoa chapter follows the same split:
+            Mākoa™ is a men&apos;s crowdfunding — twelve founders pooling into a 100-year trade order. Every dollar routed through a Mākoa chapter follows the same split:
           </p>
 
           {/* 80/10/10 */}

@@ -72,7 +72,7 @@ const WEEKENDS = [
     dates: "May 1–3",
     moon: "🌕 Flower Moon",
     label: "GATE OPENS · WEEKEND 1",
-    detail: "The founding month begins. Gate opens May 1 at 9AM HST. First 5 Aliʻi teams arrive. Ice bath. War Room. Founding fire.",
+    detail: "The founding month begins. Gate opens May 1 at 9AM HST. First 3 Aliʻi teams arrive. Ice bath. War Room. Founding fire.",
     color: GOLD,
     border: GOLD_40,
   },
@@ -81,7 +81,7 @@ const WEEKENDS = [
     dates: "May 8–10",
     moon: "",
     label: "WEEKEND 2",
-    detail: "Second cohort of 5 Aliʻi teams. Elite Reset Training. Mastermind. Territory mapping.",
+    detail: "Second cohort of 3 Aliʻi teams. Elite Reset Training. Mastermind. Territory mapping.",
     color: GOLD_DIM,
     border: GOLD_20,
   },
@@ -90,7 +90,7 @@ const WEEKENDS = [
     dates: "May 15–17",
     moon: "",
     label: "WEEKEND 3",
-    detail: "Third cohort of 5 Aliʻi teams. Trade academies. Network sessions. Small group deep work.",
+    detail: "Third cohort of 3 Aliʻi teams. Trade academies. Network sessions. Small group deep work.",
     color: GOLD_DIM,
     border: GOLD_20,
   },
@@ -99,7 +99,7 @@ const WEEKENDS = [
     dates: "May 29–31",
     moon: "🌕 Blue Moon",
     label: "WEEKEND 4 · SEALING",
-    detail: "Final cohort of 5 Aliʻi teams. The Founding 48 is sealed at 11:11 PM HST on the Blue Moon. The order is born.",
+    detail: "Final cohort of 3 Aliʻi teams. The Founding 48 is sealed at 11:11 PM HST on the Blue Moon. The order is born.",
     color: GOLD,
     border: GOLD_40,
   },
@@ -126,7 +126,7 @@ const RHYTHM = [
 const FAQS = [
   {
     q: "What is Mayday 48?",
-    a: "Mayday 48 is the once-ever founding event of the Mākoa Brotherhood. Four weekends across May 2026 in West Oʻahu. 20 Aliʻi team leaders take the oath and sign the Palapala. 48 total oath signatures — 20 Aliʻi and the 28 brothers they bring. The Founding 48 closes permanently at the May 31 Blue Moon.",
+    a: "Mayday 48 is the once-ever founding event of the Mākoa Brotherhood. Four weekends across May 2026 in West Oʻahu. 12 Aliʻi team leaders take the oath and sign the Palapala. 48 total oath signatures — 12 Aliʻi and 36 brothers across four tiers. The Founding 48 closes permanently at the May 31 Blue Moon.",
   },
   {
     q: "Who is this for?",
@@ -146,7 +146,7 @@ const FAQS = [
   },
   {
     q: "What happens after Mayday 48?",
-    a: "Each Aliʻi returns home and opens their territory's chapter under the Mākoa Trade Co. framework. The 80/10/10 split activates: 80% stays in your territory, 10% to the Order, 10% to the Mayday 48 Aliʻi pool — split among the 20 founding Aliʻi forever. Your 0.5% of global Mākoa Trade Co. revenue is perpetual and inheritable.",
+    a: "Each Aliʻi returns home and opens their territory's chapter under the Mākoa Trade Co. framework. The 80/10/10 split activates: 80% stays in your territory, 10% to the Order, 10% to the Mayday 48 Aliʻi pool — split among the 12 founding Aliʻi forever. Your 0.5% of global Mākoa Trade Co. revenue is perpetual and inheritable.",
   },
   {
     q: "Can overseas teams attend?",
@@ -240,7 +240,7 @@ function Founding48Content() {
           animation: "fadeUp 0.8s ease 0.45s both",
         }}>
           {[
-            { val: "20", label: "Aliʻi Teams" },
+            { val: "12", label: "Aliʻi Teams" },
             { val: "48", label: "Oath Signatures" },
             { val: "1×", label: "Ever" },
           ].map(s => (
@@ -287,7 +287,7 @@ function Founding48Content() {
             Mayday 48 is the once-ever founding event of the Mākoa Brotherhood.
           </p>
           <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "17px", lineHeight: 1.9, marginBottom: 16 }}>
-            Four weekends across May 2026. West Oʻahu. 20 Aliʻi team leaders take the oath and sign the Palapala. 48 total oath signatures — 20 Aliʻi and the 28 brothers they bring.
+            Four weekends across May 2026. West Oʻahu. 12 Aliʻi team leaders take the oath and sign the Palapala. 48 total oath signatures — 12 Aliʻi and 36 brothers across four tiers.
           </p>
           <p style={{ color: "rgba(232,224,208,0.7)", fontSize: "17px", lineHeight: 1.9, marginBottom: 16 }}>
             The Founding 48 closes permanently at the May 31 Blue Moon. There will be cohorts after. There will be no second Founding 48.
@@ -433,7 +433,7 @@ function Founding48Content() {
             background: GOLD, color: "#000",
             fontSize: "12px", letterSpacing: "0.12em",
             padding: "4px 10px", borderRadius: 3, fontWeight: 700,
-          }}>20 SEATS · 5 PER WEEKEND</div>
+          }}>12 SEATS · 3 PER WEEKEND</div>
 
           <p style={{ color: GOLD, fontSize: "13px", letterSpacing: "0.22em", marginBottom: 6 }}>ALIʻI · FOUNDING SEAT</p>
           <p style={{
@@ -485,7 +485,7 @@ function Founding48Content() {
           </a>
 
           <p style={{ color: "rgba(232,224,208,0.3)", fontSize: "14px", textAlign: "center", marginTop: 10 }}>
-            Gate opens May 1 · Full Moon · 9AM HST · 20 seats total
+            Gate opens May 1 · Full Moon · 9AM HST · 12 seats total
           </p>
         </div>
 
@@ -514,7 +514,7 @@ function Founding48Content() {
             {[
               { pct: "80%", label: "stays in your territory", desc: "chapter treasury · local ops · brothers doing the work" },
               { pct: "10%", label: "to the Order", desc: "Mākoa Trade Co. general fund · 7G Net · new chapter activation" },
-              { pct: "10%", label: "to the Mayday 48 Aliʻi pool", desc: "split among the 20 founding Aliʻi forever · 0.5% per founder · perpetual · inheritable" },
+              { pct: "10%", label: "to the Mayday 48 Aliʻi pool", desc: "split among the 12 founding Aliʻi forever · 0.5% per founder · perpetual · inheritable" },
             ].map(row => (
               <div key={row.pct} style={{
                 display: "flex", gap: 14, alignItems: "flex-start",
@@ -651,7 +651,7 @@ function Founding48Content() {
           CLAIM YOUR ALIʻI FOUNDER SEAT
         </a>
         <p style={{ textAlign: "center", color: "rgba(232,224,208,0.3)", fontSize: "14px", marginBottom: 32 }}>
-          1% equity · team of 3–5 · gate opens May 1 · 20 seats total · price revealed inside
+          1% equity · team of 3–5 · gate opens May 1 · 12 seats total · price revealed inside
         </p>
 
         {/* ── FOOTER ───────────────────────────────────────────────────────── */}
