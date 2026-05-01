@@ -247,7 +247,7 @@ export default function Mayday48GatePage() {
             padding: "14px 18px",
           }}>
             <p style={{ color: "rgba(232,224,208,0.4)", fontSize: "15px", lineHeight: 1.7 }}>
-              Team of 3–5 brothers required · Cannot be sponsored · 20 seats total · 5 per weekend
+              Team of 3–5 brothers required · Cannot be sponsored · 12 seats total · 3 per weekend
             </p>
           </div>
         </div>
@@ -510,4 +510,23 @@ export default function Mayday48GatePage() {
             {[
               { href: "/palapala", label: "PALAPALA" },
               { href: "/trust", label: "WHAT WE ARE" },
-              { href: "/founding48", label:
+              { href: "/pregate", label: "WORLDWIDE" },
+              { href: "/", label: "HOME" },
+            ].map(link => (
+              <a key={link.href} href={link.href} style={{
+                color: GOLD_DIM, fontSize: "14px", letterSpacing: "0.15em",
+                textDecoration: "none",
+              }}>
+                {link.label}
+              </a>
+            ))}
+          </div>
+          <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "13px", lineHeight: 1.7 }}>
+            Mākoa Brotherhood · West Oʻahu · Est. 2026
+          </p>
+        </div>
+
+      </div>
+    </div>
+  );
+}
