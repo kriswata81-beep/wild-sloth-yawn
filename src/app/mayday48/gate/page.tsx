@@ -13,11 +13,11 @@ const TEXT = "#e8e0d0";
 const TEXT_DIM = "rgba(232,224,208,0.55)";
 
 const WEEKENDS = [
-  { value: "may1-3", label: "May 1–3 · Flower Moon opening" },
-  { value: "may8-10", label: "May 8–10 · Weekend 2" },
-  { value: "may15-17", label: "May 15–17 · Weekend 3" },
-  { value: "may29-31", label: "May 29–31 · Blue Moon sealing" },
-  { value: "unsure", label: "Not sure yet" },
+  { value: "may1-3", label: "May 1–3 · Flower Moon · 1 SEAT REMAINING", soldOut: false, urgent: true },
+  { value: "may8-10", label: "May 8–10 · Weekend 2", soldOut: false, urgent: false },
+  { value: "may15-17", label: "May 15–17 · Weekend 3", soldOut: false, urgent: false },
+  { value: "may29-31", label: "May 29–31 · Blue Moon sealing", soldOut: false, urgent: false },
+  { value: "unsure", label: "Not sure yet", soldOut: false, urgent: false },
 ];
 
 const NEXT_STEPS = [
@@ -376,8 +376,8 @@ export default function Mayday48GatePage() {
                       style={{
                         display: "flex", alignItems: "center", gap: 14,
                         padding: "14px 16px",
-                        background: weekend === w.value ? "rgba(212,166,104,0.08)" : "rgba(0,0,0,0.2)",
-                        border: `1px solid ${weekend === w.value ? GOLD_40 : "rgba(212,166,104,0.08)"}`,
+                        background: w.urgent ? "rgba(212,166,104,0.06)" : weekend === w.value ? "rgba(212,166,104,0.08)" : "rgba(0,0,0,0.2)",
+                        border: `1px solid ${w.urgent ? "rgba(212,166,104,0.35)" : weekend === w.value ? GOLD_40 : "rgba(212,166,104,0.08)"}`,
                         borderRadius: 8,
                       }}
                     >
@@ -392,12 +392,22 @@ export default function Mayday48GatePage() {
                           <div style={{ width: 8, height: 8, borderRadius: "50%", background: GOLD }} />
                         )}
                       </div>
-                      <p style={{
-                        color: weekend === w.value ? TEXT : TEXT_DIM,
-                        fontSize: "17px",
-                        lineHeight: 1.4,
-                        transition: "color 0.15s",
-                      }}>{w.label}</p>
+                      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <p style={{
+                          color: weekend === w.value ? TEXT : TEXT_DIM,
+                          fontSize: "17px",
+                          lineHeight: 1.4,
+                          transition: "color 0.15s",
+                        }}>{w.label}</p>
+                        {w.urgent && (
+                          <span style={{
+                            fontSize: "10px", letterSpacing: "0.15em",
+                            color: FLAME, border: `1px solid ${FLAME}`,
+                            padding: "2px 8px", borderRadius: 3,
+                            opacity: 0.85, flexShrink: 0, marginLeft: 10,
+                          }}>TONIGHT</span>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -500,27 +510,4 @@ export default function Mayday48GatePage() {
             {[
               { href: "/palapala", label: "PALAPALA" },
               { href: "/trust", label: "WHAT WE ARE" },
-              { href: "/founding48", label: "MAYDAY 48" },
-              { href: "/sponsor", label: "SPONSOR" },
-              { href: "/waitlist", label: "WAITLIST" },
-            ].map(link => (
-              <a key={link.href} href={link.href} style={{
-                color: "rgba(212,166,104,0.3)",
-                fontSize: "13px",
-                letterSpacing: "0.15em",
-                textDecoration: "none",
-              }}>{link.label}</a>
-            ))}
-          </div>
-          <p style={{ color: GOLD_DIM, fontSize: "15px", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
-            makoa.live
-          </p>
-          <p style={{ color: "rgba(212,166,104,0.15)", fontSize: "13px", letterSpacing: "0.15em" }}>
-            MĀKOA ORDER · MALU TRUST · WEST OAHU · WORLDWIDE · 2026
-          </p>
-        </div>
-
-      </div>
-    </div>
-  );
-}
+              { href: "/founding48", label:
