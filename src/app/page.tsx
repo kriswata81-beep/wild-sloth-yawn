@@ -310,7 +310,7 @@ export default function Home() {
           {/* Primary CTA */}
           <div style={{ opacity: ready ? 1 : 0, transition: "opacity 0.7s ease 0.5s" }}>
             <a
-              href="/mayday48/gate"
+              href="/pregate"
               className="cta-primary"
               style={{
                 display: "flex", alignItems: "center", justifyContent: "center",
@@ -535,7 +535,7 @@ export default function Home() {
             </p>
 
             <a
-              href="/mayday48/gate"
+              href="/pregate"
               className="cta-primary"
               style={{
                 display: "flex", alignItems: "center", justifyContent: "center",
@@ -716,7 +716,7 @@ export default function Home() {
 
             {/* CTA */}
             <a
-              href="/mayday48/gate"
+              href="/pregate"
               className="cta-primary"
               style={{
                 display: "flex", alignItems: "center", justifyContent: "center",
@@ -893,7 +893,7 @@ export default function Home() {
           </p>
 
           <a
-            href="/mayday48/gate"
+            href="/pregate"
             className="cta-primary"
             style={{
               display: "flex", alignItems: "center", justifyContent: "center",
