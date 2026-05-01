@@ -289,7 +289,7 @@ export default function CofounderPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          priceId: "price_1TKnnt836uPpUiqMrOthQ4oE",
+          priceId: "price_1TSC1SCgIZbWkf5OYw0pK0EC",
           customerEmail: form.email,
           metadata: { circle_type: "cofounder", full_name: form.name, phone: form.phone, region: form.region },
         }),

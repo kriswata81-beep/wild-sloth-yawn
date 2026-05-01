@@ -9,7 +9,7 @@ const TIERS = [
   {
     name: "KOA BASIC",
     price: "$149",
-    priceId: "price_1TKnnq836uPpUiqMq9pUwx1k",
+    priceId: "price_1TSCA4CgIZbWkf5ONU3SMdVb",
     interval: "/mo",
     color: "#8b9aaa",
     icon: "◇",
@@ -25,7 +25,7 @@ const TIERS = [
   {
     name: "KOA PLUS",
     price: "$249",
-    priceId: "price_1TKnnr836uPpUiqMXGEiDvCh",
+    priceId: "price_1TSCABCgIZbWkf5O7bR7cPeT",
     interval: "/mo",
     color: "#58a6ff",
     icon: "◆",
@@ -44,7 +44,7 @@ const TIERS = [
   {
     name: "KOA PREMIUM",
     price: "$399",
-    priceId: "price_1TKnnr836uPpUiqMEgHiLMe6",
+    priceId: "price_1TSCAICgIZbWkf5OePO7Cnaj",
     interval: "/mo",
     color: GOLD,
     icon: "◈",
@@ -63,7 +63,7 @@ const TIERS = [
   {
     name: "KOA ELITE",
     price: "$599",
-    priceId: "price_1TKnns836uPpUiqM2KAEa2Ib",
+    priceId: "price_1TSCAOCgIZbWkf5OP48SVsVM",
     interval: "/mo",
     color: "#c9a050",
     icon: "◉",
