@@ -1,28 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-// TODO: Wire to Supabase gate_intake table + Twilio SMS
-// Confirm with Kris before fully enabling Twilio:
-//   - Supabase: insert row into gate_intake (encrypted email + phone)
-//   - Twilio: send SMS to phone with link: makoa.live/mayday48/paywall?ref={token}
-// For now: logs submission and returns 200 so the form UX works end-to-end.
+const SUPABASE_URL = "https://flzivjhxtbolcfaniskv.supabase.co";
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 
 export async function POST(req: NextRequest) {
   try {
     const { avatarName, email, phone, weekend } = await req.json();
 
     if (!avatarName || !email || !phone) {
-      return NextResponse.json({ error: "avatarName, email, and phone are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "avatarName, email, and phone are required" },
+        { status: 400 }
+      );
     }
 
-    // Basic format validation
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const phoneOk = phone.replace(/\D/g, "").length >= 7;
 
-    if (!emailOk) return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
-    if (!phoneOk) return NextResponse.json({ error: "Invalid phone number" }, { status: 400 });
+    if (!emailOk)
+      return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
+    if (!phoneOk)
+      return NextResponse.json({ error: "Invalid phone number" }, { status: 400 });
 
-    // TODO: replace with Supabase insert
-    console.log("[gate-intake] new submission:", {
+    // Save to Supabase using service role key (bypasses RLS for insert)
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+    const { error: dbError } = await supabase.from("gate_intake").insert({
+      avatar_name: avatarName,
+      email,
+      phone,
+      weekend: weekend || null,
+    });
+
+    if (dbError) {
+      console.error("[gate-intake] Supabase insert error:", dbError);
+      return NextResponse.json({ error: "Failed to save submission" }, { status: 500 });
+    }
+
+    console.log("[gate-intake] saved to Supabase:", {
       avatarName,
       email,
       phone,
@@ -30,9 +46,15 @@ export async function POST(req: NextRequest) {
       ts: new Date().toISOString(),
     });
 
-    // TODO: trigger Twilio SMS here
-    // const paywall_url = `https://makoa.live/mayday48/paywall?ref=${token}`;
-    // await twilioClient.messages.create({ to: phone, from: TWILIO_FROM, body: `XI here. Your gate link: ${paywall_url}` });
+    // Notify steward via Supabase email (uses service role)
+    try {
+      await supabase.functions.invoke("notify-steward", {
+        body: { avatarName, email, phone, weekend: weekend || "not specified" },
+      });
+    } catch (notifyErr) {
+      // Non-fatal — submission is already saved
+      console.warn("[gate-intake] steward notification failed (non-fatal):", notifyErr);
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {

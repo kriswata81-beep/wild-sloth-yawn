@@ -13,11 +13,11 @@ const TEXT = "#e8e0d0";
 const TEXT_DIM = "rgba(232,224,208,0.55)";
 
 const WEEKENDS = [
-  { value: "may1-3", label: "May 1–3 · Flower Moon · 1 SEAT REMAINING", soldOut: false, urgent: true },
-  { value: "may8-10", label: "May 8–10 · Weekend 2", soldOut: false, urgent: false },
-  { value: "may15-17", label: "May 15–17 · Weekend 3", soldOut: false, urgent: false },
-  { value: "may29-31", label: "May 29–31 · Blue Moon sealing", soldOut: false, urgent: false },
-  { value: "unsure", label: "Not sure yet", soldOut: false, urgent: false },
+  { value: "may1-3", label: "May 1–3 · Flower Moon · 1 SEAT REMAINING", soldOut: false, urgent: true, badge: "THIS WEEKEND" },
+  { value: "may8-10", label: "May 8–10 · Weekend 2", soldOut: false, urgent: false, badge: "" },
+  { value: "may15-17", label: "May 15–17 · Weekend 3", soldOut: false, urgent: false, badge: "" },
+  { value: "may29-31", label: "May 29–31 · Blue Moon sealing", soldOut: false, urgent: false, badge: "" },
+  { value: "unsure", label: "Not sure yet", soldOut: false, urgent: false, badge: "" },
 ];
 
 const NEXT_STEPS = [
@@ -71,10 +71,10 @@ export default function Mayday48GatePage() {
         setSubmitted(true);
       } else {
         const data = await res.json().catch(() => ({}));
-        setError(data.error || "Something went wrong. Try again or email wakachief@gmail.com");
+        setError(data.error || "Something went wrong. Try again or call 808-757-6985");
       }
     } catch {
-      setError("Something went wrong. Try again or email wakachief@gmail.com");
+      setError("Something went wrong. Try again or call 808-757-6985");
     } finally {
       setLoading(false);
     }
@@ -399,13 +399,13 @@ export default function Mayday48GatePage() {
                           lineHeight: 1.4,
                           transition: "color 0.15s",
                         }}>{w.label}</p>
-                        {w.urgent && (
+                        {w.urgent && w.badge && (
                           <span style={{
                             fontSize: "10px", letterSpacing: "0.15em",
                             color: FLAME, border: `1px solid ${FLAME}`,
                             padding: "2px 8px", borderRadius: 3,
                             opacity: 0.85, flexShrink: 0, marginLeft: 10,
-                          }}>TONIGHT</span>
+                          }}>{w.badge}</span>
                         )}
                       </div>
                     </div>

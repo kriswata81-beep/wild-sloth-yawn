@@ -331,7 +331,7 @@ export default function SponsorPage() {
           <p style={{ color: "#3fb950", fontSize: "13px", letterSpacing: "0.18em", marginBottom: 10 }}>YOUR PEACE OF MIND</p>
           <div style={{ display: "grid", gap: 8 }}>
             {[
-              "If he can't make it — contact wakachief@gmail.com within 7 days. We'll work with you.",
+              "If he can't make it — contact Wakachefs@gmail.com within 7 days. We'll work with you.",
               "Transfer option available — his spot can go to another man you choose.",
               "He is never pressured. The gate is an invitation, not a demand.",
               "Anonymous by default — he receives the gift, not the obligation.",
@@ -558,7 +558,7 @@ export default function SponsorPage() {
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: 20, flexWrap: "wrap" }}>
             {[
-              { href: "/gate", label: "THE GATE" },
+              { href: "/mayday48/gate", label: "THE GATE" },
               { href: "/fire", label: "THE FOUNDING FIRE" },
               { href: "/founding48", label: "MAYDAY" },
               { href: "/wahine", label: "WAHINE CIRCLE" },
