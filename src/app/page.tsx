@@ -310,7 +310,7 @@ export default function Home() {
           {/* Primary CTA */}
           <div style={{ opacity: ready ? 1 : 0, transition: "opacity 0.7s ease 0.5s" }}>
             <a
-              href="/mayday48/gate"
+              href="/pregate"
               className="cta-primary"
               style={{
                 display: "flex", alignItems: "center", justifyContent: "center",
@@ -323,10 +323,10 @@ export default function Home() {
                 gap: 10,
               }}
             >
-              <p style={{ color: "#000", fontSize: "17px", letterSpacing: "0.18em", fontWeight: 700 }}>ENTER THE GATE →</p>
+              <p style={{ color: "#000", fontSize: "17px", letterSpacing: "0.18em", fontWeight: 700 }}>CLAIM YOUR TERRITORY →</p>
             </a>
             <p style={{ color: "rgba(232,224,208,0.25)", fontSize: "14px", letterSpacing: "0.1em" }}>
-              see what it costs inside · after you&apos;ve read the Palapala™
+              whatever city · whatever country · the order is spreading
             </p>
           </div>
         </div>
