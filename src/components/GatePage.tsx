@@ -470,7 +470,7 @@ export default function GatePage({ visitorName, onPledge }: GatePageProps) {
             marginBottom: 8,
             letterSpacing: "0.15em",
           }}>
-            Questions: wakachief@gmail.com
+            Questions: Wakachefs@gmail.com · 808-757-6985
           </p>
           <p style={{
             color: "rgba(176,142,80,0.2)",

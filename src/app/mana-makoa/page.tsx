@@ -34,7 +34,7 @@ const SERVICES = [
       "Open to community — not just members",
     ],
     cta: "REQUEST A WORKSHOP",
-    ctaHref: "mailto:wakachief@gmail.com?subject=Mana Makoa Academy Request",
+    ctaHref: "mailto:Wakachefs@gmail.com?subject=Mana Makoa Academy Request",
   },
   {
     id: "home",
@@ -55,7 +55,7 @@ const SERVICES = [
       "80% to the brother · 20% funds the house",
     ],
     cta: "BOOK A SERVICE",
-    ctaHref: "mailto:wakachief@gmail.com?subject=Mana Makoa Home Service Request",
+    ctaHref: "mailto:Wakachefs@gmail.com?subject=Mana Makoa Home Service Request",
   },
   {
     id: "b2b",
@@ -76,7 +76,7 @@ const SERVICES = [
       "Founding brother network access",
     ],
     cta: "PARTNER WITH US",
-    ctaHref: "mailto:wakachief@gmail.com?subject=Mana Makoa B2B Partnership",
+    ctaHref: "mailto:Wakachefs@gmail.com?subject=Mana Makoa B2B Partnership",
   },
   {
     id: "elite",
@@ -97,7 +97,7 @@ const SERVICES = [
       "Founding brother facilitation team",
     ],
     cta: "BOOK ELITE TRAINING",
-    ctaHref: "mailto:wakachief@gmail.com?subject=Mana Makoa Elite Training Request",
+    ctaHref: "mailto:Wakachefs@gmail.com?subject=Mana Makoa Elite Training Request",
   },
 ];
 
@@ -534,7 +534,7 @@ export default function ManaMakoaPage() {
 
           <div style={{ display: "grid", gap: 10, marginBottom: 20 }}>
             <a
-              href="/gate"
+              href="/mayday48/gate"
               style={{
                 display: "block",
                 background: GOLD,
@@ -553,7 +553,7 @@ export default function ManaMakoaPage() {
               ENTER THE GATE — JOIN THE ORDER
             </a>
             <a
-              href="mailto:wakachief@gmail.com?subject=Mana Makoa — I want to offer my skills"
+              href="mailto:Wakachefs@gmail.com?subject=Mana Makoa — I want to offer my skills"
               style={{
                 display: "block",
                 background: "transparent",
@@ -573,7 +573,7 @@ export default function ManaMakoaPage() {
           </div>
 
           <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.42rem" }}>
-            wakachief@gmail.com · Telegram: t.me/+dsS4Mz0p5wM4OGYx
+            Wakachefs@gmail.com · Telegram: t.me/+dsS4Mz0p5wM4OGYx
           </p>
         </div>
 
@@ -589,7 +589,7 @@ export default function ManaMakoaPage() {
             Hana · Pale · Ola
           </p>
           <p style={{ color: "rgba(232,224,208,0.2)", fontSize: "0.42rem", marginBottom: 6 }}>
-            Questions: wakachief@gmail.com
+            Questions: Wakachefs@gmail.com
           </p>
           <p style={{ color: "rgba(176,142,80,0.15)", fontSize: "0.4rem", letterSpacing: "0.15em" }}>
             MANA MAKOA · MĀKOA ORDER · MALU TRUST · WEST OAHU · WORLDWIDE · 2026

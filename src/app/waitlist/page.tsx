@@ -76,10 +76,10 @@ export default function WaitlistPage() {
       if (res.ok) {
         setSubmitted(true);
       } else {
-        setError("Something went wrong. Try again or email wakachief@gmail.com");
+        setError("Something went wrong. Try again or call 808-757-6985");
       }
     } catch {
-      setError("Something went wrong. Try again or email wakachief@gmail.com");
+      setError("Something went wrong. Try again or call 808-757-6985");
     } finally {
       setLoading(false);
     }

@@ -501,7 +501,7 @@ export default function HousesPage() {
           YOUR PATH STARTS HERE
         </p>
         <div style={{ display: "grid", gap: "10px" }}>
-          <a href="/gate" style={{
+          <a href="/mayday48/gate" style={{
             display: "block",
             background: GOLD_10,
             border: `1px solid ${GOLD_40}`,

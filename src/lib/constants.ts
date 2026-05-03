@@ -5,7 +5,7 @@
 // ─── Links ──────────────────────────────────────────────────────────────────
 export const TELEGRAM_GROUP = "https://t.me/+dsS4Mz0p5wM4OGYx";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://makoa.live";
-export const SUPPORT_EMAIL = "wakachief@gmail.com";
+export const SUPPORT_EMAIL = "Wakachefs@gmail.com";
 
 // ─── MAYDAY Event ───────────────────────────────────────────────────────────
 export const MAYDAY_NAME = "MAYDAY MONTH — The Summit of Founders";

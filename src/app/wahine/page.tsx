@@ -368,7 +368,7 @@ export default function WahinePage() {
           }}
         >
           {[
-            { href: "/gate", label: "THE GATE" },
+            { href: "/mayday48/gate", label: "THE GATE" },
             { href: "/sponsor", label: "SPONSOR" },
             { href: "/founding48", label: "FOUNDING 48" },
           ].map((link) => (

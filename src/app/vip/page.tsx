@@ -301,7 +301,21 @@ export default function VipPage() {
 
         {/* Footer */}
         <div style={{ textAlign: "center", marginTop: "48px", paddingTop: "24px", borderTop: "1px solid rgba(176,142,80,0.06)" }}>
-          <p style={{ color: GOLD_40, fontSize: "0.52rem", letterSpacing: "0.15em", marginBottom: "6px" }}>makoa.live</p>
+          <p style={{ color: GOLD_40, fontSize: "0.52rem", letterSpacing: "0.15em", marginBottom: "12px" }}>makoa.live</p>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 10 }}>
+            {[
+              { href: "/mayday48/gate", label: "THE GATE" },
+              { href: "/founding48", label: "MAYDAY 48" },
+              { href: "/palapala", label: "PALAPALA" },
+              { href: "/sponsor", label: "SPONSOR" },
+              { href: "/trust", label: "WHAT WE ARE" },
+            ].map(link => (
+              <a key={link.href} href={link.href} style={{
+                color: "rgba(176,142,80,0.3)", fontSize: "0.38rem",
+                letterSpacing: "0.15em", textDecoration: "none",
+              }}>{link.label}</a>
+            ))}
+          </div>
           <p style={{ color: "rgba(176,142,80,0.15)", fontSize: "0.36rem", letterSpacing: "0.12em" }}>
             Mākoa Order · West Oahu · Est. 2026 · Private Page
           </p>

@@ -548,7 +548,7 @@ export default function XIPage() {
         <div style={{ textAlign: "center", marginTop: 32, paddingTop: 24, borderTop: `1px solid ${GOLD_20}` }}>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             {[
-              { href: "/gate", label: "THE GATE" },
+              { href: "/mayday48/gate", label: "THE GATE" },
               { href: "/stones/alii", label: "ALIʻI STONE" },
               { href: "/stones/mana", label: "MANA STONE" },
               { href: "/stones/nakoa", label: "NĀ KOA STONE" },

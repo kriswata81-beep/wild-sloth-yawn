@@ -321,7 +321,7 @@ export default function Page808() {
               </p>
             </div>
 
-            <a href="/gate" style={{
+            <a href="/mayday48/gate" style={{
               display: "block", background: GOLD, color: "#000", borderRadius: 8,
               padding: "16px", fontSize: "0.5rem", letterSpacing: "0.2em",
               textDecoration: "none", fontFamily: "'JetBrains Mono', monospace",
@@ -423,7 +423,7 @@ export default function Page808() {
                 textDecoration: "none", fontFamily: "'JetBrains Mono', monospace",
                 fontWeight: 700, textAlign: "center",
               }}>CLAIM YOUR ZIP CLUSTER →</a>
-              <a href="/gate" style={{
+              <a href="/mayday48/gate" style={{
                 display: "block", background: "transparent", color: GOLD_DIM,
                 border: `1px solid ${GOLD_20}`, borderRadius: 8, padding: "12px",
                 fontSize: "0.44rem", letterSpacing: "0.15em",

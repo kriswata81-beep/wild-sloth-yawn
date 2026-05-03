@@ -51,7 +51,7 @@ export default function NotFound() {
         to the Gate.
       </p>
       <a
-        href="/gate"
+        href="/mayday48/gate"
         style={{
           display: "inline-block",
           padding: "12px 36px",

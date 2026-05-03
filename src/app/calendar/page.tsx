@@ -364,7 +364,7 @@ export default function CalendarPage() {
           <a href="/gatherings" style={{ color: GOLD, fontSize: "0.72rem", letterSpacing: "0.08em", textDecoration: "none", opacity: 0.5 }}>
             ← GATHERINGS
           </a>
-          <a href="/gate" style={{ color: GOLD, fontSize: "0.72rem", letterSpacing: "0.08em", textDecoration: "none", opacity: 0.5 }}>
+          <a href="/mayday48/gate" style={{ color: GOLD, fontSize: "0.72rem", letterSpacing: "0.08em", textDecoration: "none", opacity: 0.5 }}>
             THE GATE →
           </a>
         </div>

@@ -118,7 +118,7 @@ export default function SocialFooter() {
       <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 16 }}>
         {[
           { href: "/palapala", label: "PALAPALA" },
-          { href: "/gate",     label: "GATE" },
+          { href: "/mayday48/gate", label: "GATE" },
           { href: "/fire",     label: "FIRE" },
           { href: "/trade",    label: "TRADE" },
           { href: "/sponsor",  label: "SPONSOR" },

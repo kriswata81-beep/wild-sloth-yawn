@@ -544,7 +544,7 @@ export default function GatheringsPage() {
         {/* Back Nav */}
         <div style={{ marginTop: 40, display: "flex", justifyContent: "center", gap: 24 }}>
           <a
-            href="/gate"
+            href="/mayday48/gate"
             style={{
               color: GOLD,
               fontSize: "0.75rem",

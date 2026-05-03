@@ -715,7 +715,7 @@ export default function TradePage() {
             }}>
               CLAIM A CO-FOUNDER SEAT
             </a>
-            <a href="/gate" style={{
+            <a href="/mayday48/gate" style={{
               display: "block",
               background: "transparent",
               color: GOLD_DIM,
@@ -761,7 +761,7 @@ export default function TradePage() {
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 12 }}>
             {[
-              { href: "/gate", label: "THE GATE" },
+              { href: "/mayday48/gate", label: "THE GATE" },
               { href: "/mana-makoa", label: "MANA MAKOA" },
               { href: "/cofounder", label: "CO-FOUNDER" },
               { href: "/sponsor", label: "SPONSOR" },

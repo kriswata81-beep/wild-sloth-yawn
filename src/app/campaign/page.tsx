@@ -742,7 +742,7 @@ export default function CampaignPage() {
               { href: "/founding48", label: "MAYDAY" },
               { href: "/sponsor", label: "SPONSOR" },
               { href: "/cofounder", label: "CO-FOUNDER" },
-              { href: "/gate", label: "THE GATE" },
+              { href: "/mayday48/gate", label: "THE GATE" },
             ].map(link => (
               <a key={link.href} href={link.href} style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.4rem", letterSpacing: "0.15em", textDecoration: "none" }}>{link.label}</a>
             ))}

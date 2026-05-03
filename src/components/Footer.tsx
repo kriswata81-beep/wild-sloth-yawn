@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const FOOTER_LINKS = [
   { label: "Palapala", href: "/palapala" },
-  { label: "Gate", href: "/gate" },
+  { label: "Gate", href: "/mayday48/gate" },
   { label: "Fire", href: "/fire" },
   { label: "Trade", href: "/trade" },
   { label: "Sponsor", href: "/sponsor" },

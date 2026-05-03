@@ -28,7 +28,7 @@ const JOURNEY = [
     sublabel: "/gate — XI Reviews You",
     detail: "12 questions. XI reads every answer. No fluff. He gets a tier: Nā Koa, Mana, or Aliʻi. The order sees him before he sees the order.",
     color: GREEN,
-    href: "/gate",
+    href: "/mayday48/gate",
   },
   {
     step: "03",

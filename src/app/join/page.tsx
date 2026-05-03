@@ -113,7 +113,7 @@ function JoinContent() {
       </p>
 
       {/* CTA Button */}
-      <Link href="/gate" style={{ textDecoration: "none" }}>
+      <Link href="/mayday48/gate" style={{ textDecoration: "none" }}>
         <button
           style={{
             fontFamily: "'Georgia', serif",

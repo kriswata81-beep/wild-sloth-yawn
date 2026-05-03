@@ -92,7 +92,7 @@ export default function FirePage() {
   const faqs = [
     {
       q: "What if I can't make it after I register?",
-      a: "Life happens. Contact us at wakachief@gmail.com within 7 days of the event and we'll work with you — credit toward the next gathering or a partial refund depending on timing. We don't trap men.",
+      a: "Life happens. Contact us at Wakachefs@gmail.com or call 808-757-6985 within 7 days of the event and we'll work with you — credit toward the next gathering or a partial refund depending on timing. We don't trap men.",
     },
     {
       q: "Do I need to be in shape?",
@@ -152,7 +152,7 @@ export default function FirePage() {
             See the full Mayday 48 page →
           </a>
           {" "}or{" "}
-          <a href="/gate" style={{ color: GOLD, textDecoration: "underline" }}>
+          <a href="/mayday48/gate" style={{ color: GOLD, textDecoration: "underline" }}>
             enter the gate →
           </a>
         </p>
@@ -372,7 +372,7 @@ export default function FirePage() {
           }}>
             &quot;The founding fire burns the first weekend of every month.<br />Your seat — or someone else&apos;s.&quot;
           </p>
-          <a href="/gate" style={{
+          <a href="/mayday48/gate" style={{
             display: "block", background: GOLD, color: BG,
             borderRadius: 8, padding: "14px 0", textDecoration: "none",
             fontSize: "16px", fontWeight: 700, letterSpacing: "0.18em",
@@ -402,7 +402,7 @@ export default function FirePage() {
         }}>
           <p style={{ color: GOLD_DIM, fontSize: "17px", lineHeight: 2, margin: 0 }}>
             Ready?{" "}
-            <a href="/gate" style={{ color: GOLD, textDecoration: "underline" }}>
+            <a href="/mayday48/gate" style={{ color: GOLD, textDecoration: "underline" }}>
               Claim your Aliʻi founder seat →
             </a>
             {" "}· Or{" "}

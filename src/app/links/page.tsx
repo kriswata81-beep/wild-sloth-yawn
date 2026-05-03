@@ -12,7 +12,7 @@ const BG = "#04060a";
 
 const LINKS = [
   {
-    href: "/gate",
+    href: "/mayday48/gate",
     label: "ENTER THE GATE",
     sub: "Apply to the brotherhood — free, 3 minutes",
     color: GOLD,

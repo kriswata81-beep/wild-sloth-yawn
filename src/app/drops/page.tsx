@@ -424,7 +424,7 @@ export default function DropsPage() {
         display: "flex", justifyContent: "center", gap: 20,
       }}>
         {[
-          { href: "/gate", label: "GATE" },
+          { href: "/mayday48/gate", label: "GATE" },
           { href: "/faceless", label: "FACELESS" },
           { href: "/links", label: "LINKS" },
           { href: "/steward", label: "STEWARD" },

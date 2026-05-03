@@ -117,7 +117,7 @@ function ClaimContent() {
           <a href="/808" style={{ display: "block", background: GOLD, color: "#000", borderRadius: 8, padding: "14px", fontSize: "0.48rem", letterSpacing: "0.2em", textDecoration: "none", fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, textAlign: "center" }}>
             VIEW YOUR LISTING →
           </a>
-          <a href="/gate" style={{ display: "block", background: "transparent", color: GOLD_DIM, border: `1px solid ${GOLD_20}`, borderRadius: 8, padding: "12px", fontSize: "0.44rem", letterSpacing: "0.15em", textDecoration: "none", fontFamily: "'JetBrains Mono', monospace", textAlign: "center" }}>
+          <a href="/mayday48/gate" style={{ display: "block", background: "transparent", color: GOLD_DIM, border: `1px solid ${GOLD_20}`, borderRadius: 8, padding: "12px", fontSize: "0.44rem", letterSpacing: "0.15em", textDecoration: "none", fontFamily: "'JetBrains Mono', monospace", textAlign: "center" }}>
             JOIN THE ORDER
           </a>
         </div>

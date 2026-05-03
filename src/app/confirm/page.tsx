@@ -501,20 +501,35 @@ export default function ConfirmPage() {
         </a>
       </div>
 
+      <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 10, animation: "fadeUp 0.8s ease 1.1s both" }}>
+        {[
+          { href: "/mayday48/gate", label: "THE GATE" },
+          { href: "/founding48", label: "MAYDAY 48" },
+          { href: "/palapala", label: "PALAPALA" },
+          { href: "/trust", label: "WHAT WE ARE" },
+          { href: "/sponsor", label: "SPONSOR" },
+        ].map(link => (
+          <a key={link.href} href={link.href} style={{
+            color: "rgba(176,142,80,0.3)", fontSize: "0.4rem",
+            letterSpacing: "0.15em", textDecoration: "none",
+          }}>{link.label}</a>
+        ))}
+      </div>
+
       <p style={{
         color: "rgba(232,224,208,0.2)",
         fontSize: "0.42rem",
         marginBottom: 8,
-        animation: "fadeUp 0.8s ease 1.1s both",
+        animation: "fadeUp 0.8s ease 1.2s both",
       }}>
-        Questions: wakachief@gmail.com
+        Questions: Wakachefs@gmail.com · 808-757-6985
       </p>
 
       <p style={{
         color: "rgba(176,142,80,0.15)",
         fontSize: "0.4rem",
         letterSpacing: "0.15em",
-        animation: "fadeUp 0.8s ease 1.2s both",
+        animation: "fadeUp 0.8s ease 1.3s both",
       }}>
         MĀKOA ORDER · MALU TRUST · WEST OAHU
       </p>

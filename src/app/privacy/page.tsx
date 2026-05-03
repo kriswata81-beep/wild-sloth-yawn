@@ -65,7 +65,7 @@ const SECTIONS = [
   {
     h: "CONTACT",
     body: [
-      "Questions about your data, this policy, or anything else: wakachief@gmail.com",
+      "Questions about your data, this policy, or anything else: Wakachefs@gmail.com",
       "Mākoa Order · Malu Trust · West Oʻahu",
     ],
   },

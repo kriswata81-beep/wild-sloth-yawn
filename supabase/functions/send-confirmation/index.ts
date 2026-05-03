@@ -157,7 +157,7 @@ function buildEmailHtml(payload: ConfirmationPayload): string {
         "Watch for your XI briefing — event details, schedule, and logistics",
         "Founders Dinner vote drops in Telegram — Hawaii-owned restaurant, Kapolei",
         "4am ice bath schedule confirmed 2 weeks before MAYDAY",
-        "Questions? wakachief@gmail.com",
+        "Questions? Wakachefs@gmail.com · 808-757-6985",
       ].map(step => `
         <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
           <span style="color:#b08e50;font-size:12px;flex-shrink:0;margin-top:1px;">→</span>

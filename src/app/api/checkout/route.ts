@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     if (!available) {
       console.warn("[checkout] Seat sold out for:", product_id);
       return NextResponse.json(
-        { error: "sold_out", message: "This seat is sold out. Contact wakachief@gmail.com.", remaining: 0 },
+        { error: "sold_out", message: "This seat is sold out. Contact Wakachefs@gmail.com or call 808-757-6985.", remaining: 0 },
         { status: 409 }
       );
     }

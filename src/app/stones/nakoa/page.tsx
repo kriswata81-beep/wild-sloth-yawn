@@ -157,7 +157,7 @@ export default function NaKoaStonePage() {
             <span style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.38rem" }}>·</span>
             <a href="/circle" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", textDecoration: "none", letterSpacing: "0.15em" }}>CIRCLE</a>
             <span style={{ color: "rgba(176,142,80,0.12)", fontSize: "0.38rem" }}>·</span>
-            <a href="/gate" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", textDecoration: "none", letterSpacing: "0.15em" }}>GATE</a>
+            <a href="/mayday48/gate" style={{ color: "rgba(176,142,80,0.3)", fontSize: "0.38rem", textDecoration: "none", letterSpacing: "0.15em" }}>GATE</a>
           </div>
           <p style={{ color: "rgba(176,142,80,0.1)", fontSize: "0.36rem", letterSpacing: "0.15em", marginTop: "12px" }}>
             Mākoa Order · The Stones · 2026

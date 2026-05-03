@@ -820,7 +820,7 @@ export default function FacelessPage() {
         <div style={{ textAlign: "center", paddingBottom: 48 }}>
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 16 }}>
             {[
-              { href: "/gate", label: "THE GATE" },
+              { href: "/mayday48/gate", label: "THE GATE" },
               { href: "/links", label: "LINK IN BIO" },
               { href: "/steward", label: "STEWARD" },
             ].map(l => (

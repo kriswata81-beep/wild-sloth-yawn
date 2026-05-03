@@ -432,7 +432,7 @@ export default function YardServicePage() {
                 textDecoration: "none",
                 borderRadius: "4px",
               }}>VIEW 808 NETWORK →</a>
-              <a href="/gate" style={{
+              <a href="/mayday48/gate" style={{
                 background: "rgba(232,224,208,0.03)",
                 border: "1px solid rgba(232,224,208,0.08)",
                 color: "rgba(232,224,208,0.4)",

@@ -509,6 +509,19 @@ function PaymentSuccessContent() {
           >
             Hana · Pale · Ola
           </p>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 10 }}>
+            {[
+              { href: "/mayday48/gate", label: "THE GATE" },
+              { href: "/founding48", label: "MAYDAY 48" },
+              { href: "/palapala", label: "PALAPALA" },
+              { href: "/sponsor", label: "SPONSOR" },
+            ].map(link => (
+              <a key={link.href} href={link.href} style={{
+                color: "rgba(176,142,80,0.3)", fontSize: "0.4rem",
+                letterSpacing: "0.15em", textDecoration: "none",
+              }}>{link.label}</a>
+            ))}
+          </div>
           <p
             style={{
               color: "rgba(232,224,208,0.2)",
@@ -516,7 +529,7 @@ function PaymentSuccessContent() {
               marginBottom: 6,
             }}
           >
-            Questions: wakachief@gmail.com
+            Questions: Wakachefs@gmail.com · 808-757-6985
           </p>
           <p
             style={{
