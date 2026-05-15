@@ -16,7 +16,7 @@ const BG = "#04060a";
 
 // ─── Countdown ───────────────────────────────────────────────────────────────
 function useCountdown() {
-  const target = new Date("2026-05-01T18:00:00-10:00").getTime();
+  const target = new Date("2026-05-31T23:11:00-10:00").getTime();
   const calc = () => {
     const diff = target - Date.now();
     if (diff <= 0) return { days: 0, hours: 0, minutes: 0 };

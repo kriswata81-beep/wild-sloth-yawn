@@ -13,10 +13,10 @@ const TEXT = "#e8e0d0";
 const TEXT_DIM = "rgba(232,224,208,0.55)";
 
 const WEEKENDS = [
-  { value: "may1-3", label: "May 1–3 · Flower Moon · 1 SEAT REMAINING", soldOut: false, urgent: true, badge: "THIS WEEKEND" },
-  { value: "may8-10", label: "May 8–10 · Weekend 2", soldOut: false, urgent: false, badge: "" },
-  { value: "may15-17", label: "May 15–17 · Weekend 3", soldOut: false, urgent: false, badge: "" },
-  { value: "may29-31", label: "May 29–31 · Blue Moon sealing", soldOut: false, urgent: false, badge: "" },
+  { value: "may1-3", label: "May 1–3 · Flower Moon", soldOut: true, urgent: false, badge: "PAST" },
+  { value: "may8-10", label: "May 8–10 · Weekend 2", soldOut: true, urgent: false, badge: "PAST" },
+  { value: "may15-17", label: "May 15–17 · Weekend 3 · 2 SEATS REMAINING", soldOut: false, urgent: true, badge: "THIS WEEKEND" },
+  { value: "may29-31", label: "May 29–31 · Blue Moon sealing", soldOut: false, urgent: false, badge: "UPCOMING" },
   { value: "unsure", label: "Not sure yet", soldOut: false, urgent: false, badge: "" },
 ];
 
@@ -371,38 +371,42 @@ export default function Mayday48GatePage() {
                   {WEEKENDS.map(w => (
                     <div
                       key={w.value}
-                      className="radio-option"
-                      onClick={() => setWeekend(weekend === w.value ? "" : w.value)}
+                      className={w.soldOut ? "" : "radio-option"}
+                      onClick={() => !w.soldOut && setWeekend(weekend === w.value ? "" : w.value)}
                       style={{
                         display: "flex", alignItems: "center", gap: 14,
                         padding: "14px 16px",
-                        background: w.urgent ? "rgba(212,166,104,0.06)" : weekend === w.value ? "rgba(212,166,104,0.08)" : "rgba(0,0,0,0.2)",
-                        border: `1px solid ${w.urgent ? "rgba(212,166,104,0.35)" : weekend === w.value ? GOLD_40 : "rgba(212,166,104,0.08)"}`,
+                        background: w.soldOut ? "rgba(0,0,0,0.1)" : w.urgent ? "rgba(212,166,104,0.06)" : weekend === w.value ? "rgba(212,166,104,0.08)" : "rgba(0,0,0,0.2)",
+                        border: `1px solid ${w.soldOut ? "rgba(212,166,104,0.04)" : w.urgent ? "rgba(212,166,104,0.35)" : weekend === w.value ? GOLD_40 : "rgba(212,166,104,0.08)"}`,
                         borderRadius: 8,
+                        opacity: w.soldOut ? 0.45 : 1,
+                        cursor: w.soldOut ? "not-allowed" : "pointer",
                       }}
                     >
                       <div style={{
                         width: 18, height: 18, borderRadius: "50%",
-                        border: `2px solid ${weekend === w.value ? GOLD : "rgba(212,166,104,0.25)"}`,
+                        border: `2px solid ${w.soldOut ? "rgba(212,166,104,0.1)" : weekend === w.value ? GOLD : "rgba(212,166,104,0.25)"}`,
                         display: "flex", alignItems: "center", justifyContent: "center",
                         flexShrink: 0,
                         transition: "border-color 0.15s",
                       }}>
-                        {weekend === w.value && (
+                        {weekend === w.value && !w.soldOut && (
                           <div style={{ width: 8, height: 8, borderRadius: "50%", background: GOLD }} />
                         )}
                       </div>
                       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                         <p style={{
-                          color: weekend === w.value ? TEXT : TEXT_DIM,
+                          color: w.soldOut ? "rgba(232,224,208,0.3)" : weekend === w.value ? TEXT : TEXT_DIM,
                           fontSize: "17px",
                           lineHeight: 1.4,
                           transition: "color 0.15s",
+                          textDecoration: w.soldOut ? "line-through" : "none",
                         }}>{w.label}</p>
-                        {w.urgent && w.badge && (
+                        {w.badge && (
                           <span style={{
                             fontSize: "10px", letterSpacing: "0.15em",
-                            color: FLAME, border: `1px solid ${FLAME}`,
+                            color: w.soldOut ? "rgba(232,224,208,0.3)" : w.urgent ? FLAME : GOLD_DIM,
+                            border: `1px solid ${w.soldOut ? "rgba(232,224,208,0.15)" : w.urgent ? FLAME : GOLD_40}`,
                             padding: "2px 8px", borderRadius: 3,
                             opacity: 0.85, flexShrink: 0, marginLeft: 10,
                           }}>{w.badge}</span>
@@ -516,21 +520,4 @@ export default function Mayday48GatePage() {
             ].map(link => (
               <a key={link.href} href={link.href} style={{
                 color: "rgba(212,166,104,0.3)",
-                fontSize: "13px",
-                letterSpacing: "0.15em",
-                textDecoration: "none",
-              }}>{link.label}</a>
-            ))}
-          </div>
-          <p style={{ color: GOLD_DIM, fontSize: "15px", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
-            makoa.live
-          </p>
-          <p style={{ color: "rgba(212,166,104,0.15)", fontSize: "13px", letterSpacing: "0.15em" }}>
-            MĀKOA ORDER · MALU TRUST · WEST OAHU · WORLDWIDE · 2026
-          </p>
-        </div>
-
-      </div>
-    </div>
-  );
-}
+                fontSize:
