@@ -520,4 +520,21 @@ export default function Mayday48GatePage() {
             ].map(link => (
               <a key={link.href} href={link.href} style={{
                 color: "rgba(212,166,104,0.3)",
-                fontSize:
+                fontSize: "13px",
+                letterSpacing: "0.15em",
+                textDecoration: "none",
+              }}>{link.label}</a>
+            ))}
+          </div>
+          <p style={{ color: GOLD_DIM, fontSize: "15px", letterSpacing: "0.14em", marginBottom: 6, fontWeight: 600 }}>
+            makoa.live
+          </p>
+          <p style={{ color: "rgba(212,166,104,0.15)", fontSize: "13px", letterSpacing: "0.15em" }}>
+            MĀKOA ORDER · MALU TRUST · WEST OAHU · WORLDWIDE · 2026
+          </p>
+        </div>
+
+      </div>
+    </div>
+  );
+}
